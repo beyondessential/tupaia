@@ -1,14 +1,13 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { act } from 'react-dom/test-utils';
-import { generatePath } from 'react-router';
 
 import { QuestionType } from '@tupaia/types';
 
 import { useSubmitSurveyResponse } from '../../../api/mutations';
 import { Coconut } from '../../../components';
 import { ROUTES } from '../../../constants';
-import { successToast } from '../../../utils';
+import { generatePath, successToast } from '../../../utils';
 import { renderMutation } from '../../helpers/render';
 
 jest.mock('../../../api/queries', () => {
