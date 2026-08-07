@@ -7745,7 +7745,7 @@ __metadata:
     mitt: "npm:^3.0.1"
     msw: "npm:^1.3.1"
     nanoid: "npm:^3.3.11"
-    notistack: "npm:^3.0.1"
+    notistack: "npm:^3.0.2"
     prop-types: "npm:^15.8.1"
     react: "npm:^16.14.0"
     react-confirm: "npm:^0.1.27"
@@ -23345,16 +23345,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"notistack@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "notistack@npm:3.0.1"
+"notistack@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "notistack@npm:3.0.2"
   dependencies:
     clsx: "npm:^1.1.0"
     goober: "npm:^2.0.33"
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 10c0/dd5bd492dbaf8d07a1f45a53ae195c5d481bc7136d73a756eb076534d315216a3cd2f4628263be55ad21d8bfed6ec546e5063584ffcc2798fb2aac56e5ccf0cf
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/82a0270ee1b9e70bc1dfad4d7e1d2bbb6dc08ac887b920986dcfa58cc2aa975bd48b71f7cf3afc2e11badd142ba9ade5f708c858ee2080b9d4cd950b80c43811
   languageName: node
   linkType: hard
 
