@@ -8185,7 +8185,7 @@ __metadata:
     "@types/fs-extra": "npm:^11.0.4"
     "@types/jest": "npm:^29.5.14"
     "@types/node-schedule": "npm:^2.1.7"
-    "@types/nodemailer": "npm:^6.4.15"
+    "@types/nodemailer": "npm:^8.0.1"
     "@types/sha256": "npm:^0.2.2"
     cookie: "npm:^1.0.2"
     copyfiles: "npm:^2.4.1"
@@ -8196,7 +8196,7 @@ __metadata:
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
     node-schedule: "npm:^2.1.1"
-    nodemailer: "npm:^6.9.12"
+    nodemailer: "npm:^9.0.3"
     puppeteer: "npm:^24.3.1"
     rimraf: "npm:^6.0.1"
     sha256: "npm:^0.2.0"
@@ -9152,12 +9152,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:^6.4.15":
-  version: 6.4.15
-  resolution: "@types/nodemailer@npm:6.4.15"
+"@types/nodemailer@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@types/nodemailer@npm:8.0.1"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10c0/553e613fe08fd663bff1fb3647a8ebbcc4ca297a6249296a43f3c92499158acad5955689be2096ff3fe72f145e80d749c1fc66d5549fe665d7ceb6d0946f2a26
+  checksum: 10c0/4370ac478a6811faaa64fcf769556515c72b78c66961cde22be75bb975ce8a964cfbe5e7c0988a99250f3250faa34357c73958b019b3c63dd138ea3784442032
   languageName: node
   linkType: hard
 
@@ -23214,10 +23214,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.9.12":
-  version: 6.9.12
-  resolution: "nodemailer@npm:6.9.12"
-  checksum: 10c0/2c5ff1f064a264e008ca27f66db0dbf25c44bc38178e5ddb9a05bd7b5517bfa3c0e018845b87256df56b554ed6c3720380f3735e9029cf9f7c830e9fdab4189a
+"nodemailer@npm:^9.0.3":
+  version: 9.0.3
+  resolution: "nodemailer@npm:9.0.3"
+  checksum: 10c0/9e93516fb9fcc8835b683cdf3b90135648dabf0133ac9b04890303c2e23eef1d7bae58fe98afb0e251ae10428b96f05df483deb78f0b49f47793debbb0383216
   languageName: node
   linkType: hard
 
