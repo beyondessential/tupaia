@@ -10,19 +10,24 @@ const hasDynamicPrefix = question =>
   !!question.config.codeGenerator &&
   !!question.config.codeGenerator.dynamicPrefix;
 
-const DynamicCodeGeneratorWatchersComponent = ({ questionIds }) => (
+// Keyed by the survey's startTime so each response/repeat remounts the watchers, resetting their
+// refs → a repeat generates a fresh code, while within a response the tail is preserved across any
+// source change.
+const DynamicCodeGeneratorWatchersComponent = ({ questionIds, startTime }) => (
   <>
     {questionIds.map(questionId => (
-      <DynamicCodeGeneratorWatcher key={questionId} questionId={questionId} />
+      <DynamicCodeGeneratorWatcher key={`${startTime}:${questionId}`} questionId={questionId} />
     ))}
   </>
 );
 
 DynamicCodeGeneratorWatchersComponent.propTypes = {
   questionIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  startTime: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
+  startTime: state.assessment.startTime,
   questionIds: Object.values(state.assessment.questions || {})
     .filter(hasDynamicPrefix)
     .map(question => question.id),
