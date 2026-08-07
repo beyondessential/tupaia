@@ -1,12 +1,14 @@
-import { useParams } from 'react-router-dom';
+import { generatePath, useParams } from 'react-router-dom';
 import { useSurvey } from '../../../api';
 import { ROUTES } from '../../../constants';
-import { generatePath } from '../../../utils';
 
 export const useShare = () => {
-  const params = useParams();
-  const { data: survey } = useSurvey(params.surveyCode);
-  const path = generatePath(ROUTES.SURVEY, params);
+  const { countryCode, surveyCode } = useParams();
+  const { data: survey } = useSurvey(surveyCode);
+  const path = generatePath(ROUTES.SURVEY, {
+    countryCode: countryCode ?? null,
+    surveyCode: surveyCode ?? null,
+  });
   const link = `${window.location.origin}${path}`;
 
   return async () => {

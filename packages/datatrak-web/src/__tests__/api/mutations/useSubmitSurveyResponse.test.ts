@@ -1,13 +1,14 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { act } from 'react-dom/test-utils';
+import { generatePath } from 'react-router';
 
 import { QuestionType } from '@tupaia/types';
 
 import { useSubmitSurveyResponse } from '../../../api/mutations';
 import { Coconut } from '../../../components';
 import { ROUTES } from '../../../constants';
-import { generatePath, successToast } from '../../../utils';
+import { successToast } from '../../../utils';
 import { renderMutation } from '../../helpers/render';
 
 jest.mock('../../../api/queries', () => {
@@ -107,12 +108,18 @@ describe('useSubmitSurvey', () => {
     });
     expect(result.current.isSuccess).toBe(true);
     expect(successToast).toHaveBeenCalledWith('Congratulations! You’ve earned a coconut', Coconut);
-    expect(mockedUseNavigate).toHaveBeenCalledWith(generatePath(ROUTES.SURVEY_SUCCESS, {}), {
-      state: {
-        surveyResponse: JSON.stringify({
-          createdEntities: [],
-        }),
+    expect(mockedUseNavigate).toHaveBeenCalledWith(
+      generatePath(ROUTES.SURVEY_SUCCESS, {
+        countryCode: null,
+        surveyCode: null,
+      }),
+      {
+        state: {
+          surveyResponse: JSON.stringify({
+            createdEntities: [],
+          }),
+        },
       },
-    });
+    );
   });
 });

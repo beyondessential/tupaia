@@ -1,6 +1,5 @@
-import { useParams, useMatch, useLocation } from 'react-router';
+import { generatePath, useParams, useMatch, useLocation } from 'react-router';
 import { ROUTES } from '../../constants';
-import { generatePath } from '../../utils';
 
 export const useSurveyRouting = numberOfScreens => {
   const location = useLocation();
@@ -14,7 +13,9 @@ export const useSurveyRouting = numberOfScreens => {
       return {
         ...location,
         pathname: generatePath(ROUTES.SURVEY_RESUBMIT_SCREEN, {
-          ...params,
+          countryCode: params.countryCode ?? null,
+          surveyCode: params.surveyCode ?? null,
+          surveyResponseId: params.surveyResponseId ?? null,
           screenNumber: String(screenNumber),
         }),
       };
@@ -22,7 +23,8 @@ export const useSurveyRouting = numberOfScreens => {
     return {
       ...location,
       pathname: generatePath(ROUTES.SURVEY_SCREEN, {
-        ...params,
+        countryCode: params.countryCode ?? null,
+        surveyCode: params.surveyCode ?? null,
         screenNumber: String(screenNumber),
       }),
     };
@@ -31,10 +33,19 @@ export const useSurveyRouting = numberOfScreens => {
   const getNextPath = () => {
     if (isReview) return null;
     if (params.screenNumber && parseInt(params.screenNumber) === numberOfScreens) {
-      const REVIEW_PATH = isResubmit ? ROUTES.SURVEY_RESUBMIT_REVIEW : ROUTES.SURVEY_REVIEW;
+      const pathname = isResubmit
+        ? generatePath(ROUTES.SURVEY_RESUBMIT_REVIEW, {
+            countryCode: params.countryCode ?? null,
+            surveyCode: params.surveyCode ?? null,
+            surveyResponseId: params.surveyResponseId ?? null,
+          })
+        : generatePath(ROUTES.SURVEY_REVIEW, {
+            countryCode: params.countryCode ?? null,
+            surveyCode: params.surveyCode ?? null,
+          });
       return {
         ...location,
-        pathname: generatePath(REVIEW_PATH, params),
+        pathname,
       };
     }
     return getScreenPath(parseInt(params.screenNumber ?? '1') + 1);

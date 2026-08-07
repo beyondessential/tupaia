@@ -1,8 +1,7 @@
 import React from 'react';
-import { Navigate, Route, useParams } from 'react-router-dom';
+import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { RoutePath, ROUTES } from '../constants';
-import { generatePath } from '../utils';
+import { ROUTES } from '../constants';
 import {
   ErrorPage,
   SurveyPage,
@@ -15,10 +14,28 @@ import { SurveyLayout, useSurveyForm } from '../features';
 import { useCurrentUserContext, useSurvey } from '../api';
 import { SurveyResubmitRoute } from './SurveyResponseRoute';
 
+type SurveyScreenRoute = typeof ROUTES.SURVEY_SCREEN | typeof ROUTES.SURVEY_RESUBMIT_SCREEN;
+
 // Redirect to the start of the survey if no screen number is provided
-const SurveyStartRedirect = ({ baseRoute = ROUTES.SURVEY_SCREEN }: { baseRoute?: RoutePath }) => {
+const SurveyStartRedirect = ({
+  baseRoute = ROUTES.SURVEY_SCREEN,
+}: {
+  baseRoute?: SurveyScreenRoute;
+}) => {
   const params = useParams();
-  const path = generatePath(baseRoute, { ...params, screenNumber: '1' });
+  const path =
+    baseRoute === ROUTES.SURVEY_RESUBMIT_SCREEN
+      ? generatePath(ROUTES.SURVEY_RESUBMIT_SCREEN, {
+          countryCode: params.countryCode ?? null,
+          surveyCode: params.surveyCode ?? null,
+          surveyResponseId: params.surveyResponseId ?? null,
+          screenNumber: '1',
+        })
+      : generatePath(ROUTES.SURVEY_SCREEN, {
+          countryCode: params.countryCode ?? null,
+          surveyCode: params.surveyCode ?? null,
+          screenNumber: '1',
+        });
   return <Navigate to={path} replace={true} />;
 };
 
@@ -27,7 +44,7 @@ const SurveyPageRedirect = ({
   baseRoute = ROUTES.SURVEY_SCREEN,
   children,
 }: {
-  baseRoute?: RoutePath;
+  baseRoute?: SurveyScreenRoute;
   children: JSX.Element;
 }) => {
   const { screenNumber } = useParams();
@@ -70,7 +87,9 @@ const SurveyResubmitRedirect = () => {
   return (
     <Navigate
       to={generatePath(ROUTES.SURVEY_RESUBMIT_SCREEN, {
-        ...params,
+        countryCode: params.countryCode ?? null,
+        surveyCode: params.surveyCode ?? null,
+        surveyResponseId: params.surveyResponseId ?? null,
         screenNumber: '1',
       })}
       replace={true}
