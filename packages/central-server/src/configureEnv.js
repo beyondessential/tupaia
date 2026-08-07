@@ -7,6 +7,8 @@ const envFilePaths = [
   path.resolve(__dirname, '../../../env/pg.env'),
   path.resolve(__dirname, '../../../env/dhis.env'),
   path.resolve(__dirname, '../../../env/external-db-connections.env'),
+  /** We hit a character limit in the external-db-connections Bitwarden note */
+  path.resolve(__dirname, '../../../env/external-db-connections-2.env'),
   path.resolve(__dirname, '../../../env/mail.env'),
   path.resolve(__dirname, '../../../env/aws.env'),
   path.resolve(__dirname, '../../../env/aggregation.env'),
