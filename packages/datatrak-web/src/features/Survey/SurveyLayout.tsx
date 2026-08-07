@@ -1,6 +1,6 @@
 import React from 'react';
 import { useIsFetching } from '@tanstack/react-query';
-import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
+import { Outlet, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper as MuiPaper } from '@material-ui/core';
@@ -8,7 +8,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../../constants';
 import { useResubmitSurveyResponse, useSubmitSurveyResponse } from '../../api/mutations';
 import { SurveyParams } from '../../types';
-import { useFromLocation, useIsDesktop } from '../../utils';
+import { generatePath, useFromLocation, useIsDesktop } from '../../utils';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { getErrorsByScreen } from './utils';

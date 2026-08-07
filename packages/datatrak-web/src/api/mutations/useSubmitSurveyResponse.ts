@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { generatePath, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
@@ -11,7 +11,7 @@ import { useShowCoconutsPigs } from '../queries';
 import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { GA_EVENT, gaEvent, successToast } from '../../utils';
+import { GA_EVENT, gaEvent, generatePath, successToast } from '../../utils';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { useSurvey } from '../queries';
 import {
