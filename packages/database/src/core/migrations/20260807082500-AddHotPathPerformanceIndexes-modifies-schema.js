@@ -26,25 +26,7 @@ exports.up = async function (db) {
     END $$;
   `);
 
-  // 3. DataTrak home screen queries (recent responses, recent surveys, rewards) all reduce to
-  //    "this user's responses, newest first". The composite supersedes the single-column
-  //    user_id index, so drop it.
-  await db.runSql(`
-    CREATE INDEX IF NOT EXISTS survey_response_user_id_data_time_idx
-      ON survey_response (user_id, data_time DESC);
-    DROP INDEX IF EXISTS survey_response_user_id_idx;
-  `);
-
-  // 4. DataTrak tasks page defaults to assignee + open statuses ordered by due_date, and
-  //    taskMetrics counts open/overdue tasks. The per-row comment count filters (task_id, type).
-  await db.runSql(`
-    CREATE INDEX IF NOT EXISTS task_assignee_id_status_due_date_idx
-      ON task (assignee_id, status, due_date);
-    CREATE INDEX IF NOT EXISTS task_comment_task_id_type_idx
-      ON task_comment (task_id, type);
-  `);
-
-  // 5. Every report/analytics pull looks up data_element / data_group by code, which has had
+  // 3. Every report/analytics pull looks up data_element / data_group by code, which has had
   //    no index since the data_source table split; uniqueness is assumed throughout data-broker
   //    but currently unenforced.
   await db.runSql(`
@@ -52,7 +34,7 @@ exports.up = async function (db) {
     CREATE UNIQUE INDEX IF NOT EXISTS data_group_code_key ON data_group (code);
   `);
 
-  // 6. The sync-server snapshot query filters updated_at_sync_tick with a btree-unusable
+  // 4. The sync-server snapshot query filters updated_at_sync_tick with a btree-unusable
   //    array-overlap (&&) on project_ids. Replace the composite (whose second column is dead
   //    weight) with a plain tick btree, plus a GIN for initial syncs where the tick filter
   //    is unselective.
@@ -64,23 +46,14 @@ exports.up = async function (db) {
       ON sync_lookup USING gin (project_ids);
   `);
 
-  // 7. The DataTrak activity feed orders by creation_date with pagination and left-joins
+  // 5. The DataTrak activity feed orders by creation_date with pagination and left-joins
   //    survey_response on record_id; feed_item has no secondary indexes and grows per response.
   await db.runSql(`
     CREATE INDEX IF NOT EXISTS feed_item_creation_date_idx ON feed_item (creation_date DESC);
     CREATE INDEX IF NOT EXISTS feed_item_record_id_idx ON feed_item (record_id);
   `);
 
-  // 8. 20240806015831-AddTaskInitialRequestId indexed survey_response_id (already covered by
-  //    task_survey_response_id_idx) instead of the new initial_request_id column. Drop the
-  //    duplicate and index the intended column. The FK constraint of the same name is
-  //    unaffected (DROP INDEX only targets the relation).
-  await db.runSql(`
-    DROP INDEX IF EXISTS task_initial_request_id_fk;
-    CREATE INDEX IF NOT EXISTS task_initial_request_id_idx ON task (initial_request_id);
-  `);
-
-  // 9. The legacy MediTrak count handler selects from the very large, insert-heavy
+  // 6. The legacy MediTrak count handler selects from the very large, insert-heavy
   //    api_request_log by refresh_token, which is unindexed. Partial index keeps maintenance
   //    cost down since most requests log a NULL refresh_token.
   await db.runSql(`
@@ -89,7 +62,7 @@ exports.up = async function (db) {
       WHERE refresh_token IS NOT NULL;
   `);
 
-  // 10. Small relation tables on hot paths (/projects, /dashboards, /measures) with primary
+  // 7. Small relation tables on hot paths (/projects, /dashboards, /measures) with primary
   //     keys only. Low impact today, but removes a scaling cliff at negligible cost.
   await db.runSql(`
     CREATE INDEX IF NOT EXISTS entity_relation_hierarchy_parent_idx
@@ -108,12 +81,6 @@ exports.down = async function (db) {
 
     DROP INDEX IF EXISTS permissions_based_meditrak_sync_queue_change_time_idx;
 
-    DROP INDEX IF EXISTS survey_response_user_id_data_time_idx;
-    CREATE INDEX IF NOT EXISTS survey_response_user_id_idx ON survey_response (user_id);
-
-    DROP INDEX IF EXISTS task_assignee_id_status_due_date_idx;
-    DROP INDEX IF EXISTS task_comment_task_id_type_idx;
-
     DROP INDEX IF EXISTS data_element_code_key;
     DROP INDEX IF EXISTS data_group_code_key;
 
@@ -124,9 +91,6 @@ exports.down = async function (db) {
 
     DROP INDEX IF EXISTS feed_item_creation_date_idx;
     DROP INDEX IF EXISTS feed_item_record_id_idx;
-
-    DROP INDEX IF EXISTS task_initial_request_id_idx;
-    CREATE INDEX IF NOT EXISTS task_initial_request_id_fk ON task USING btree (survey_response_id);
 
     DROP INDEX IF EXISTS api_request_log_refresh_token_idx;
 
