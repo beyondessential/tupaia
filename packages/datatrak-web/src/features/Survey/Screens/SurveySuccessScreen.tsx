@@ -1,9 +1,10 @@
 import React from 'react';
-import { generatePath, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
+import { generatePath } from '../../../utils';
 import { useSurvey } from '../../../api/queries';
 import { SurveySuccess } from '../Components';
 

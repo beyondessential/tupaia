@@ -1,6 +1,7 @@
-import { generatePath, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSurvey } from '../../../api';
 import { ROUTES } from '../../../constants';
+import { generatePath } from '../../../utils';
 
 export const useShare = () => {
   const params = useParams();

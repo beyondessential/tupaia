@@ -3,6 +3,7 @@ export * from './detectDevice';
 export { getDataMode } from './dataMode';
 export type { DataMode } from './dataMode';
 export { formatNumberWithTrueMinus, formatFraction } from './formatNumbers';
+export { generatePath } from './generatePath';
 export { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './ga';
 export { innerText } from './innerText';
 export {

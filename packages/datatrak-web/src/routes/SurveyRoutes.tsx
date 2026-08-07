@@ -1,7 +1,8 @@
 import React from 'react';
-import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
+import { Navigate, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { RoutePath, ROUTES } from '../constants';
+import { generatePath } from '../utils';
 import {
   ErrorPage,
   SurveyPage,
