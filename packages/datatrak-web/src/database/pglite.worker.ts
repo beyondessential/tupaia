@@ -83,6 +83,14 @@ worker({
       debug: options.debug,
       wasmModule,
       fsBundle,
+      // Fire-and-forget IndexedDB writes — a large speed-up, especially for bulk writes like
+      // sync. Only enabled once a first startup has fully completed (see getConnectionConfig),
+      // because during first-run setup it is dangerous: PGlite persists the freshly created data
+      // directory with `await syncToFs()`, and under relaxed durability that await returns before
+      // the write lands — anything closing the page at the wrong moment leaves IndexedDB holding
+      // a partial data directory, which PGlite then "resumes" on every later launch, permanently
+      // broken (e.g. `language "plpgsql" does not exist`) until storage is cleared.
+      relaxedDurability: options.relaxedDurability,
     });
     await db.waitReady;
 
