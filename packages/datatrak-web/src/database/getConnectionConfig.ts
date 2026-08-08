@@ -38,6 +38,7 @@ export const getConnectionConfig = () => {
 
     sharedPGliteInstance = new PGliteWorker(workerInstance, {
       dataDir: connectionString,
+      relaxedDurability: true,
     });
   }
 

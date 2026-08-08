@@ -90,7 +90,7 @@ worker({
       // the write lands — anything closing the page at the wrong moment leaves IndexedDB holding
       // a partial data directory, which PGlite then "resumes" on every later launch, permanently
       // broken (e.g. `language "plpgsql" does not exist`) until storage is cleared.
-      relaxedDurability: options.relaxedDurability,
+      relaxedDurability: true,
     });
     await db.waitReady;
 
