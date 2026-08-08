@@ -30,8 +30,6 @@ export const createDatabase = async (
   // acquiring a connection'. Wait for PGlite directly, with no deadline, before any query runs.
   await getConnectionConfig().pglite.waitReady;
 
-  await database.executeSql('CREATE EXTENSION IF NOT EXISTS plpgsql;');
-
   onStage?.('migrating');
   await migrate(database);
 
