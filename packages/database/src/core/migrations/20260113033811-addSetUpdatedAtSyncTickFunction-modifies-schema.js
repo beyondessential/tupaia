@@ -15,14 +15,6 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  // await db.runSql(`
-  //   -- A standard Postgres install has plpgsql registered in template1 by initdb, so every database
-  //   -- gets it. PGlite ships the extension (control file, install script and library) but does not
-  //   -- always have it registered, in which case defining the trigger function below fails with
-  //   -- 'language "plpgsql" does not exist'. Registering it here is a no-op where it already exists.
-  //   CREATE EXTENSION IF NOT EXISTS plpgsql;
-  // `);
-
   return db.runSql(`
     CREATE OR REPLACE FUNCTION set_updated_at_sync_tick()
       RETURNS trigger

@@ -38,12 +38,6 @@ export const getConnectionConfig = () => {
 
     sharedPGliteInstance = new PGliteWorker(workerInstance, {
       dataDir: connectionString,
-      // TEMPORARY — REMOVE BEFORE MERGING.
-      // Maximum PGlite logging, to diagnose startup failures on low-spec devices. Everything it
-      // emits goes through `console`, so it is picked up by the startup log shown on the failure
-      // screen. Level 5 logs every protocol message, so it is slow enough to distort any timings
-      // taken while it is on.
-      debug: 5,
     });
   }
 
