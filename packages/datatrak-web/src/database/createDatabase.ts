@@ -2,6 +2,7 @@ import { BaseDatabase, ModelRegistry, browserModelClasses, migrate } from '@tupa
 
 import { DatatrakWebModelRegistry } from '../types';
 import { DatatrakDatabase } from './DatatrakDatabase';
+import { getConnectionConfig } from './getConnectionConfig';
 
 /**
  * Coarse stages of database startup, reported so the loading screen can say which one is running.
@@ -22,6 +23,12 @@ export const createDatabase = async (
   const database = new DatatrakDatabase();
   // Connect as its own step, so that booting PGlite is reported separately from running migrations
   await database.waitUntilConnected();
+
+  // `waitUntilConnected` only waits for the knex object; PGlite itself is still booting — on a
+  // slow first run (initdb, then persisting the data directory) that can take longer than knex's
+  // 60-second connection-acquisition timeout, and the first query would fail with 'Knex: Timeout
+  // acquiring a connection'. Wait for PGlite directly, with no deadline, before any query runs.
+  await getConnectionConfig().pglite.waitReady;
 
   await database.executeSql('CREATE EXTENSION IF NOT EXISTS plpgsql;');
 

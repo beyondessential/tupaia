@@ -36,12 +36,18 @@ const formatArg = (arg: unknown) => {
  * anything initdb itself printed) through `console`, which now fires in this worker where the
  * startup log capture (see startupLog.ts) can't see it. Forward it to the main thread, which
  * re-emits it through its own `console`. Formatted to strings here so every payload is cloneable.
+ *
+ * Forwarded over a dedicated BroadcastChannel, NOT `self.postMessage`: PGliteWorker's handshake
+ * requires the first message it receives from this worker to be its own `type: "here"` — a log
+ * message arriving first is consumed instead and the handshake never completes, so the database
+ * never becomes ready.
  */
+const logChannel = new BroadcastChannel('datatrak-pglite-log');
 for (const level of LEVELS) {
   const original = console[level];
   console[level] = (...args: unknown[]) => {
     original.apply(console, args);
-    self.postMessage({ type: 'datatrak-worker-log', level, args: args.map(formatArg) });
+    logChannel.postMessage({ level, args: args.map(formatArg) });
   };
 }
 

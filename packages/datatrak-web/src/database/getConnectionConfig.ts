@@ -12,15 +12,15 @@ const isLevel = (level: unknown): level is Level => LEVELS.includes(level as Lev
 
 /**
  * Re-emit log lines forwarded from the PGlite worker (see pglite.worker.ts) through this thread's
- * `console`, so the startup log capture (startupLog.ts) sees them. PGlite's own protocol messages
- * on this channel have different `type` values and are left alone.
+ * `console`, so the startup log capture (startupLog.ts) sees them. A dedicated BroadcastChannel,
+ * separate from the worker's own message channel, which PGliteWorker's handshake protocol owns.
  */
-const forwardWorkerLogs = (workerInstance: Worker) => {
-  workerInstance.addEventListener('message', event => {
+const forwardWorkerLogs = () => {
+  const logChannel = new BroadcastChannel('datatrak-pglite-log');
+  logChannel.addEventListener('message', event => {
     const { data } = event;
-    if (data?.type !== 'datatrak-worker-log') return;
-    const level: Level = isLevel(data.level) ? data.level : 'log';
-    console[level]('[pglite worker]', ...data.args);
+    const level: Level = isLevel(data?.level) ? data.level : 'log';
+    console[level]('[pglite worker]', ...(Array.isArray(data?.args) ? data.args : []));
   });
 };
 
@@ -34,7 +34,7 @@ export const getConnectionConfig = () => {
       type: 'module',
       name: 'pglite',
     });
-    forwardWorkerLogs(workerInstance);
+    forwardWorkerLogs();
 
     sharedPGliteInstance = new PGliteWorker(workerInstance, {
       dataDir: connectionString,

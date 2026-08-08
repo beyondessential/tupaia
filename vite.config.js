@@ -122,6 +122,18 @@ export default defineConfig(({ command, mode }) => {
           // the worker (datatrak-web/src/database/pglite.worker.ts) imports them with `?url` so
           // they get hashed filenames and cache-safe references like every other bundled asset
           'pglite-dist': path.resolve(__dirname, 'node_modules/@electric-sql/pglite/dist'),
+          // Pin PGlite to its ESM builds. The worker bundling pass otherwise resolves the
+          // package's `require` condition, and the CJS builds reference Node globals
+          // (`__filename`) that throw in a browser worker, killing the database at startup.
+          // Order matters: the more specific subpath must come before the package root.
+          '@electric-sql/pglite/worker': path.resolve(
+            __dirname,
+            'node_modules/@electric-sql/pglite/dist/worker/index.js',
+          ),
+          '@electric-sql/pglite': path.resolve(
+            __dirname,
+            'node_modules/@electric-sql/pglite/dist/index.js',
+          ),
         }),
       },
     },
