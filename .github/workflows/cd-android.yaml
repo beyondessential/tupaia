@@ -15,17 +15,19 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - name: Install Java
-        uses: actions/setup-java@v5
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-          cache: 'gradle'
+      # Java/Gradle setup is independent of Yarn; run them concurrently
+      - parallel:
+          - name: Install Java
+            uses: actions/setup-java@v5
+            with:
+              java-version: '11'
+              distribution: 'adopt'
+              cache: 'gradle'
 
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v6
+          - name: Validate Gradle wrapper
+            uses: gradle/actions/wrapper-validation@v6
 
-      - uses: ./.github/actions/setup-yarn
+          - uses: ./.github/actions/setup-yarn
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -36,18 +38,20 @@ jobs:
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/meditrak-app
 
-      - name: Build dependencies
-        run: yarn run build:from meditrak-app
+      # Package build and secret fetch don’t depend on each other
+      - parallel:
+          - name: Build dependencies
+            run: yarn run build:from meditrak-app
 
-      - name: Fetch environment variables
-        # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
-        # See https://github.com/bitwarden/sm-action/issues/264
-        uses: bitwarden/sm-action@v3.0.0
-        with:
-          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
-          # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
-          # Access via https://vault.bitwarden.com/#/sm
-          secrets: 682237eb-edea-4dac-a4f7-b325003d2120 > MEDITRAK_APP_ENV
+          - name: Fetch environment variables
+            # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
+            # See https://github.com/bitwarden/sm-action/issues/264
+            uses: bitwarden/sm-action@v3.0.0
+            with:
+              access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+              # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
+              # Access via https://vault.bitwarden.com/#/sm
+              secrets: 682237eb-edea-4dac-a4f7-b325003d2120 > MEDITRAK_APP_ENV
 
       - name: Write .env file
         # Register the secret with ::add-mask:: so GitHub Actions masks it in the logs
