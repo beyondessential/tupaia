@@ -1,4 +1,4 @@
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { NO_DATA_AVAILABLE } from '../dataBuilders/constants';
 
 export const limitRange = (datum, [floor, ceiling]) => {
   if (datum === NO_DATA_AVAILABLE) {

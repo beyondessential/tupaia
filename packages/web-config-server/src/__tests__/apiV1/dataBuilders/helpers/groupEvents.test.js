@@ -1,4 +1,4 @@
-import { groupEvents, getAllDataElementCodes } from '/apiV1/dataBuilders/helpers/groupEvents';
+import { groupEvents, getAllDataElementCodes } from '../../../../apiV1/dataBuilders/helpers/groupEvents';
 
 const EVENTS = [
   {

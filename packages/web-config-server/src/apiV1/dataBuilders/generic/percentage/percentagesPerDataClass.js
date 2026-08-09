@@ -3,9 +3,9 @@ import {
   getFacilityStatuses,
   limitRange,
   mapDataSourcesToElementCodes,
-} from '/apiV1/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+} from '../../../utils';
+import { DataBuilder } from '../../DataBuilder';
+import { divideValues } from '../../helpers';
 
 /**
  * Configuration schema

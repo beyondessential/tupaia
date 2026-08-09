@@ -1,11 +1,9 @@
-require('@babel/register')({
-  configFile: '../../babel.config.json', // relative to the package tests are running on
-  ignore: [/node_modules/],
+require('ts-node').register({
+  transpileOnly: true, // tsconfig.json is resolved relative to the package tests are running in
 });
 
 module.exports = {
   exit: true,
-  require: ['@babel/polyfill'],
   spec: './src/tests/**/*.test.js',
   timeout: 100000,
 };

@@ -1,4 +1,4 @@
-import { aggregateOperationalFacilityValues, getFacilityStatuses, limitRange } from '/apiV1/utils';
+import { aggregateOperationalFacilityValues, getFacilityStatuses, limitRange } from '../../../utils';
 
 // % of clinics that have these items
 // % based on facilities surveys

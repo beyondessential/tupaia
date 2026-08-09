@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import { Flight, getTotalNumPassengers, FLIGHT_DATE } from './flight';
 
 export class TotalNumOfPassengerByFlightDate extends DataBuilder {

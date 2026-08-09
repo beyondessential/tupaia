@@ -1,4 +1,4 @@
-import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
+import { fetchFromCentralServerUsingTokens } from '../requestHelpers';
 
 /*
  * Returns an array with all the available countries and the currently

@@ -1,4 +1,4 @@
-import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
+import { fetchComposedData } from '../../helpers';
 
 /**
  * Configuration schema

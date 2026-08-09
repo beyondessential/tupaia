@@ -1,5 +1,5 @@
-import { limitRange, regexLabel } from '/apiV1/utils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { limitRange, regexLabel } from '../../../utils';
+import { NO_DATA_AVAILABLE } from '../../constants';
 
 export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, aggregator) => {
   const {

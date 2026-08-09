@@ -1,7 +1,7 @@
 import { arrayToAnalytics } from '@tupaia/tsutils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { NO_DATA_AVAILABLE } from '../../../../apiV1/dataBuilders/constants';
 
-import { calculateOperationForAnalytics } from '/apiV1/dataBuilders/helpers';
+import { calculateOperationForAnalytics } from '../../../../apiV1/dataBuilders/helpers';
 
 const models = {};
 

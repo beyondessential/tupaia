@@ -1,4 +1,4 @@
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { NO_DATA_AVAILABLE } from '../constants';
 
 const FRACTION_TYPE_TO_FUNC = {
   percentage: result => result,

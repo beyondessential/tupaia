@@ -2,7 +2,7 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
 
-import { USER_SESSION_CONFIG } from '/authSession';
+import { USER_SESSION_CONFIG } from '../authSession';
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
 

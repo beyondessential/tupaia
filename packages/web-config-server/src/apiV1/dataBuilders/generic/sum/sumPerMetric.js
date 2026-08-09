@@ -1,6 +1,6 @@
-import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
+import { getDataElementCodesInGroup, sumResults } from '../../../utils';
 
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { NO_DATA_AVAILABLE } from '../../constants';
 
 function transformValueKeyToGroup(dataBuilderConfig, data, period) {
   // Create option group key mapping. e.g.: {"Visa": ["CD75", "CD76", "CD77"]} to ["CD75":"Visa", "CD76":"Visa", "CD77":"Visa"]

@@ -1,4 +1,4 @@
-import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
+import { aggregateOperationalFacilityValues, getFacilityStatuses } from '../../../utils';
 
 export const achievedVsTargetByGroup = async ({ dataBuilderConfig, query, entity }, aggregator) => {
   const { groups, dataServices } = dataBuilderConfig;

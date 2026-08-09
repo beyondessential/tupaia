@@ -1,4 +1,4 @@
-import { fetchComposedData, divideValues } from '/apiV1/dataBuilders/helpers';
+import { fetchComposedData, divideValues } from '../../helpers';
 
 export const composePercentagesPerPeriodByOrgUnit = async (config, aggregator, dhisApi) => {
   const responses = await fetchComposedData(config, aggregator, dhisApi);

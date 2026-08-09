@@ -1,4 +1,4 @@
-import { getDataElementFromId } from '/apiV1/utils';
+import { getDataElementFromId } from '../../../utils';
 import { getMostRecentPeriod } from '@tupaia/utils';
 
 export const multiDataValuesLatestSurvey = async (

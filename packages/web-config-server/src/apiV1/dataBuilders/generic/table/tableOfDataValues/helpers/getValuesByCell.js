@@ -2,12 +2,12 @@ import { groupBy, isEqual, zipObject } from 'es-toolkit/compat';
 
 import { DEFAULT_BINARY_OPTIONS_OBJECT } from '@tupaia/utils';
 
-import { addPrefixToCell } from '/apiV1/dataBuilders/generic/table/tableOfDataValues/TableConfig';
+import { addPrefixToCell } from '../TableConfig';
 import {
   calculateOperationForAnalytics,
   countAnalyticsThatSatisfyConditions,
   divideValues,
-} from '/apiV1/dataBuilders/helpers';
+} from '../../../../helpers';
 
 const groupByMetadata = (groupedResults, metadataField) => {
   const newResults = {};

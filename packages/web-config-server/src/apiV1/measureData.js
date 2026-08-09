@@ -3,8 +3,8 @@ import { snake } from 'case';
 import { uniq } from 'es-toolkit';
 
 import { CustomError } from '@tupaia/utils';
-import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
-import { getDhisApiInstance } from '/dhis';
+import { getMeasureBuilder } from './measureBuilders/getMeasureBuilder';
+import { getDhisApiInstance } from '../dhis';
 import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';

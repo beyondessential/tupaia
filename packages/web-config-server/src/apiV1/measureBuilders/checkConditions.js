@@ -1,6 +1,6 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
-import { analyticsToMeasureData } from 'apiV1/measureBuilders/helpers';
+import { analyticsToMeasureData } from './helpers';
 
 class CheckConditionsBuilder extends DataBuilder {
   async build() {

@@ -6,7 +6,7 @@ import {
   getMatchedNumeratorsAndDenominators,
   timestampToPeriodName,
   limitRange,
-} from '/apiV1/utils';
+} from '../../../utils';
 
 const { MONTH, YEAR } = PERIOD_TYPES;
 

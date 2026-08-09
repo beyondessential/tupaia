@@ -1,7 +1,7 @@
 import { getSortByKey } from '@tupaia/utils';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
-import { tableOfDataValues } from '/apiV1/dataBuilders';
+import { tableOfDataValues } from '../../../../../../apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
   tableOfDataValues,

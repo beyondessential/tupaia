@@ -1,5 +1,5 @@
-import { latestDataValueDate } from '/apiV1/dataBuilders/generic/latestData';
-import { composeBuiltData } from '/apiV1/utils';
+import { latestDataValueDate } from '../latestData';
+import { composeBuiltData } from '../../../utils';
 import { latestDownloadLink } from './latestDownloadLink';
 
 export const latestSurveyDownloadLink = async (

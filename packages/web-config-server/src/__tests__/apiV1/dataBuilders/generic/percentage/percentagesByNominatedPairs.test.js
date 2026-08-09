@@ -1,4 +1,4 @@
-import { percentagesByNominatedPairs } from '/apiV1/dataBuilders/generic/percentage/percentagesByNominatedPairs';
+import { percentagesByNominatedPairs } from '../../../../../apiV1/dataBuilders/generic/percentage/percentagesByNominatedPairs';
 
 const dataBuilderConfig = {
   pairs: {

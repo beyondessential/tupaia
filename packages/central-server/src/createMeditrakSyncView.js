@@ -1,8 +1,6 @@
 // Exact copy of: @tupaia/meditrak-app-server/src/sync/createMeditrakSyncView.ts
 // TODO: Tidy this up as part of RN-502
 
-import '@babel/polyfill';
-
 import { TupaiaDatabase } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
 
