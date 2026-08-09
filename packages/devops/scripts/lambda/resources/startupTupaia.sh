@@ -16,6 +16,9 @@ home_dir=/home/ubuntu
 logs_dir=$home_dir/logs
 deployment_scripts=$home_dir/tupaia/packages/devops/scripts/deployment-aws
 
+# Create a directory for logs to go
+mkdir -m 777 -p "$logs_dir"
+
 # Add tag for CI/CD to use as a health check
 instance_id=$(ec2metadata --instance-id)
 aws ec2 create-tags --resources "$instance_id" --tags Key=StartupBuildProgress,Value=building
@@ -26,7 +29,9 @@ tag_errored() {
   service nginx stop # stop nginx as an obvious sign the build has failed
 
   declare -i duration=$(($(date +%s) - start_time))
-  echo "Startup failed after $((duration / 60)) min $((duration % 60)) s"
+  local message="Startup failed after $((duration / 60)) min $((duration % 60)) s"
+  echo "$message" # to cloud-init output log
+  echo "$(date --iso-8601=seconds) │ $message" >>"$logs_dir"/deployment.log
 }
 trap tag_errored ERR
 
@@ -61,9 +66,6 @@ set_prompt() {
   echo "PS1=${prompt@Q}" >>"$home_dir"/.bashrc
 }
 set_prompt
-
-# Create a directory for logs to go
-mkdir -m 777 -p "$logs_dir"
 
 main() {
   local home_dir=/home/ubuntu
