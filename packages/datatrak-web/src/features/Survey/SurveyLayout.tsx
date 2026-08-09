@@ -134,7 +134,8 @@ export const SurveyLayout = () => {
 
     navigate(
       generatePath(ROUTES.SURVEY_SCREEN, {
-        ...params,
+        countryCode: params.countryCode ?? null,
+        surveyCode: params.surveyCode ?? null,
         screenNumber: surveyScreenToSnapTo,
       }),
       {
