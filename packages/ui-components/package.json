@@ -57,7 +57,7 @@
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "@types/downloadjs": "^1.4.3",
+    "@types/downloadjs": "^1.4.6",
     "@types/jest": "^29.5.14",
     "@types/qrcode": "^1.5.1",
     "@types/react-dom": "^16.9.18",
