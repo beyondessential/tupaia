@@ -15,12 +15,12 @@ const ADD_TO_ALL_KEY = '$all';
 
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
-const binaryOptionSet = [
+const binaryOptionSet = /** @type {const} */ ([
   { name: 'Yes', value: 1 },
   { name: 'No', value: 0 },
-];
+]);
 
-const accessDeniedForMeasure = {
+const accessDeniedForMeasure = /** @type {const} */ ({
   type: 'Permission Error',
   responseStatus: 403,
   responseText: {
@@ -28,7 +28,7 @@ const accessDeniedForMeasure = {
     details:
       'Measure data requested is restricted to a permission group the requesting user does not belong to.',
   },
-};
+});
 
 /* Data arrives as an array of responses (one for each measure) containing an array of org
  * units. We need to rearrange it so that it's a 1D array of objects with the values
@@ -165,14 +165,16 @@ export default class extends DataAggregatingRouteHandler {
   static PermissionsChecker = MapOverlayPermissionsChecker;
 
   buildResponse = async () => {
-    const { code } = this.entity;
     const { mapOverlayCode } = this.query;
     const measures = await this.models.mapOverlay.findMeasuresByCode(mapOverlayCode);
 
     // check permission
+    // check each distinct permission group once, and pass the already-fetched entity object so
+    // that userHasAccess doesn't refetch it for every measure
+    const permissionGroups = uniq(measures.map(measure => measure.permission_group));
     await Promise.all(
-      measures.map(async ({ permission_group: permissionGroup }) => {
-        const isUserAllowedMeasure = await this.req.userHasAccess(code, permissionGroup);
+      permissionGroups.map(async permissionGroup => {
+        const isUserAllowedMeasure = await this.req.userHasAccess(this.entity, permissionGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
         }

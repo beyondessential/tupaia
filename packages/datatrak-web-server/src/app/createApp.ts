@@ -87,7 +87,6 @@ import {
   DeleteSurveyResponseDraftRequest,
   DeleteSurveyResponseDraftRoute,
 } from '../routes';
-import { attachAccessPolicy } from './middleware';
 import { LoginRoute } from '../routes/LoginRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
@@ -111,7 +110,6 @@ export async function createApp() {
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
-    .use('*', attachAccessPolicy)
     .attachApiClientToContext({ authHandlerProvider, apiConnectionOptionsProvider })
     .attachLoginRoute(LoginRoute)
     // Get Routes
