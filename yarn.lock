@@ -8331,7 +8331,7 @@ __metadata:
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/dom-to-image": "npm:^2.6.4"
-    "@types/downloadjs": "npm:^1.4.3"
+    "@types/downloadjs": "npm:^1.4.6"
     "@types/geojson": "npm:^7946.0.10"
     "@types/leaflet": "npm:^1.7.1"
     "@types/mapbox__polyline": "npm:^1.0.2"
@@ -8417,7 +8417,7 @@ __metadata:
     "@testing-library/user-event": "npm:^13.5.0"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    "@types/downloadjs": "npm:^1.4.3"
+    "@types/downloadjs": "npm:^1.4.6"
     "@types/jest": "npm:^29.5.14"
     "@types/qrcode": "npm:^1.5.1"
     "@types/react-dom": "npm:^16.9.18"
@@ -8769,10 +8769,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/downloadjs@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@types/downloadjs@npm:1.4.3"
-  checksum: 10c0/6db3f7548ed0287dfc976ce963a9f73b62442324e532527dfe6153e515337c0524a62a9b69e73ef9d747b4feeafa4cb67330a19141ae7f8d988d9dadcf35c5c4
+"@types/downloadjs@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "@types/downloadjs@npm:1.4.6"
+  checksum: 10c0/c807ce77cd5035c7a35e58e40b1a0331fd23bd9e7776b0bc7b34a7bc0e4d0e210d5b1304e1c34d236a6fd72f8d31924b08e0f7f657d5e18fba2a2144172d6547
   languageName: node
   linkType: hard
 
