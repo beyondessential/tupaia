@@ -26,12 +26,11 @@ exports.up = async function (db) {
     END $$;
   `);
 
-  // Every report/analytics pull looks up data_element / data_group by code, which has had
-  // no index since the data_source table split; uniqueness is assumed throughout data-broker
-  // but currently unenforced.
+  // Unique attributes that should always have been enforced
   await db.runSql(`
     CREATE UNIQUE INDEX IF NOT EXISTS data_element_code_key ON data_element (code);
     CREATE UNIQUE INDEX IF NOT EXISTS data_group_code_key ON data_group (code);
+    CREATE UNIQUE INDEX IF NOT EXISTS map_overlay_code_key ON map_overlay (code);
   `);
 
   // The sync-server snapshot query filters updated_at_sync_tick with a btree-unusable
@@ -83,6 +82,7 @@ exports.down = async function (db) {
 
     DROP INDEX IF EXISTS data_element_code_key;
     DROP INDEX IF EXISTS data_group_code_key;
+    DROP INDEX IF EXISTS map_overlay_code_key;
 
     DROP INDEX IF EXISTS sync_lookup_updated_at_sync_tick_idx;
     DROP INDEX IF EXISTS sync_lookup_project_ids_gin_idx;
