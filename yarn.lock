@@ -7715,7 +7715,7 @@ __metadata:
     notistack: "npm:^3.0.1"
     prop-types: "npm:^15.8.1"
     react: "npm:^16.14.0"
-    react-confirm: "npm:^0.1.27"
+    react-confirm: "npm:^0.5.0"
     react-dom: "npm:^16.13.1"
     react-hook-form: "npm:^6.15.1"
     react-is: "npm:^16.13.1"
@@ -25308,13 +25308,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-confirm@npm:^0.1.27":
-  version: 0.1.27
-  resolution: "react-confirm@npm:0.1.27"
+"react-confirm@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "react-confirm@npm:0.5.0"
   peerDependencies:
-    react: ^0.14.7 || 15.x || 16.x || 17.x
-    react-dom: ^0.14.7 || 15.x || 16.x || 17.x
-  checksum: 10c0/239fb9199823c6b3e7cc34a395fe61ab709618f565a48011de7cfc2de1fd74ac55d9b4047123ac8ca19e1e4ab31a59e7f3e546fd8f19dac934ee251542a9d676
+    react: ">=18.x"
+    react-dom: ">=18.x"
+  checksum: 10c0/3d3fbf3e94ef40805363b21bfbdc9ba1ae8726cc80705309ae35340f3fa61ac0032125313880ad98ae7b9b6e16e2c6b36d4ee89e00f3684ff99b9720450899cd
   languageName: node
   linkType: hard
 
