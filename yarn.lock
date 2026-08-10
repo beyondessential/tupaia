@@ -3099,15 +3099,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.0.0":
-  version: 7.0.0
-  resolution: "@babel/runtime@npm:7.0.0"
-  dependencies:
-    regenerator-runtime: "npm:^0.12.0"
-  checksum: 10c0/fbbdf86380a1cfa6ce32a743549f4e4c8b8eb06a18be5054441cc0f66e75a747ae43b042d8989f4657027e1be3b9a82069865ccc5080838f004abd1161093742
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.2.0, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.27.1, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.29.7
   resolution: "@babel/runtime@npm:7.29.7"
@@ -7750,7 +7741,7 @@ __metadata:
     react-qr-reader: "npm:^3.0.0-beta-1"
     react-router: "npm:6.3.0"
     react-router-dom: "npm:6.3.0"
-    react-swipeable-views: "npm:^0.14.0"
+    react-swipeable-views: "npm:^0.14.2"
     rrule: "npm:^2.8.1"
     storybook: "npm:^8.2.9"
     styled-components: "npm:^5.1.0"
@@ -26370,42 +26361,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-swipeable-views-core@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "react-swipeable-views-core@npm:0.14.0"
+"react-swipeable-views-core@npm:^0.14.2":
+  version: 0.14.2
+  resolution: "react-swipeable-views-core@npm:0.14.2"
   dependencies:
-    "@babel/runtime": "npm:7.0.0"
-    warning: "npm:^4.0.1"
-  checksum: 10c0/ca015701587ca9cf5329088809ad5897b0344c1cd377f8f0d21277128c95019dd67aefa64d19b40bc1c171a375c003dbe3343111d9ce12b7327d72e9e98dce7e
-  languageName: node
-  linkType: hard
-
-"react-swipeable-views-utils@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "react-swipeable-views-utils@npm:0.14.0"
-  dependencies:
-    "@babel/runtime": "npm:7.0.0"
-    keycode: "npm:^2.1.7"
-    prop-types: "npm:^15.6.0"
-    react-event-listener: "npm:^0.6.0"
-    react-swipeable-views-core: "npm:^0.14.0"
-    shallow-equal: "npm:^1.2.1"
-  checksum: 10c0/acc1b1d7f0bc81485e44aa2a465adc13cd89865add87bf32b88dc0986f1556c8b227b79763a7c0b197bf6eeacc333451c7b8ab5c40517809d1a913f7b9742588
-  languageName: node
-  linkType: hard
-
-"react-swipeable-views@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "react-swipeable-views@npm:0.14.0"
-  dependencies:
-    "@babel/runtime": "npm:7.0.0"
-    prop-types: "npm:^15.5.4"
-    react-swipeable-views-core: "npm:^0.14.0"
-    react-swipeable-views-utils: "npm:^0.14.0"
+    "@babel/runtime": "npm:^7.0.0"
     warning: "npm:^4.0.1"
   peerDependencies:
     react: ^15.3.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/032e7a1ff49e6e57eb755e133968eb207a4acc67c68ed8d0b09b4fe0826b290344454da5d420f17d8f4c049d900f3c12594ba5b97a79f20ef3b30bc62e866aa1
+  checksum: 10c0/90a8a5bc9895a4dd3f84f181847b6c716c05da28f6a148224d1d5dda259fd9275cb91822e922ee8537c79f711a9dd0e635467f0b65dd8867ad2c625bf93e734a
+  languageName: node
+  linkType: hard
+
+"react-swipeable-views-utils@npm:^0.14.2":
+  version: 0.14.2
+  resolution: "react-swipeable-views-utils@npm:0.14.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.0.0"
+    keycode: "npm:^2.1.7"
+    prop-types: "npm:^15.6.0"
+    react-event-listener: "npm:^0.6.0"
+    react-swipeable-views-core: "npm:^0.14.2"
+    shallow-equal: "npm:^1.2.1"
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0 || ^17.0.0
+  checksum: 10c0/78444754f7d7ada89b4a8e78aac38f91fabcb1a8068e27ca244a561a999ec5e2e92137fee7de7d81c8b1c1b615781b2fe2a188e097d3344bb1ae225d18a8da79
+  languageName: node
+  linkType: hard
+
+"react-swipeable-views@npm:^0.14.2":
+  version: 0.14.2
+  resolution: "react-swipeable-views@npm:0.14.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.0.0"
+    prop-types: "npm:^15.5.4"
+    react-swipeable-views-core: "npm:^0.14.2"
+    react-swipeable-views-utils: "npm:^0.14.2"
+    warning: "npm:^4.0.1"
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0 || ^17.0.0
+  checksum: 10c0/5fd90cea76d3dcd51e83a2173be7b7d459339046a44c98c5f02111b7bedfc592e8efc9ba5a38198c6a24d19c645e52a00143d93b98179e32e506ae267052ee70
   languageName: node
   linkType: hard
 
@@ -26814,13 +26809,6 @@ __metadata:
   version: 0.11.1
   resolution: "regenerator-runtime@npm:0.11.1"
   checksum: 10c0/69cfa839efcf2d627fe358bf302ab8b24e5f182cb69f13e66f0612d3640d7838aad1e55662135e3ef2c1cc4322315b757626094fab13a48f9a64ab4bdeb8795b
-  languageName: node
-  linkType: hard
-
-"regenerator-runtime@npm:^0.12.0":
-  version: 0.12.1
-  resolution: "regenerator-runtime@npm:0.12.1"
-  checksum: 10c0/dbefbb38f5d6d55261aec1182d7c97ac93f2eec6ef9c756d9656eb5152f5cb3f8d873df020ddb4a3a8126c2ac1a3c2e534413cffe18d8f89b1c2a480a0a38601
   languageName: node
   linkType: hard
 
