@@ -3,6 +3,7 @@ set -e
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 tupaia_dir=$(realpath -- "$script_dir"/../../../..)
+pm2_config=$tupaia_dir/packages/devops/configs/pm2/deployment.config.js
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 . "$HOME"/.nvm/nvm.sh
@@ -31,38 +32,28 @@ set_up_central_server() {
 
 readarray -t backend_packages < <(get_backend_packages)
 
-# Start back end server packages
+set_up_central_server
+
+# Spawn the pm2 daemon up front so the parallel start jobs below don't race to create it
+pm2 ping
+
+# Start back end server packages in parallel, each start job waiting for its app's ready signal.
+# Per-app config (instances, node args etc.) lives in the pm2 ecosystem config file.
+start_pids=()
 for package in "${backend_packages[@]}"; do
-    if [[ $package = central-server ]]; then
-        set_up_central_server
-    fi
-
-    instances_flag=()
-    if [[ $package = web-config-server || $package = report-server ]]; then
-        # as many replicas as cpu cores - 1
-        instances_flag=(--instances -1)
-    fi
-
-    # Some `Link` headers for from GET requests can be huge (over 24KiB) if they include a large
-    # `filter` query parameter, which can be repeated several times over with different `page`s.
-    # See `generateLinkHeader` from /packages/central-server/src/apiV2/GETHandler/helpers.js
-    node_args_flag=()
-    if [[ $package = central-server || $package = tupaia-web-server ]]; then
-        node_args_flag=(--node-args '--max-http-header-size=32768')
-    fi
-
     echo "Starting $package..."
-    set -x
-    pm2 start \
-        --name "$package" \
-        --wait-ready \
-        --listen-timeout 15000 \
-        "${instances_flag[@]}" \
-        "${node_args_flag[@]}" \
-        --time \
-        "$tupaia_dir/packages/$package/dist"
-    set +x
+    pm2 start "$pm2_config" --only "$package" &
+    start_pids+=($!)
 done
+
+start_failed=0
+for pid in "${start_pids[@]}"; do
+    wait "$pid" || start_failed=1
+done
+if ((start_failed)); then
+    echo "One or more backend servers failed to start" >&2
+    exit 1
+fi
 
 # get pm2 to restart all processes on boot
 setup_startup_command=$(pm2 startup ubuntu -u ubuntu --hp /home/ubuntu | tail -1)
