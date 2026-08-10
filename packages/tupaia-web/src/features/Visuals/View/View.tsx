@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ViewConfig, ViewReport, isViewReport } from '@tupaia/types';
+
+import { type ViewConfig, type ViewReport, isViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
-import { SingleDownloadLink } from './SingleDownloadLink';
-import { SingleDate } from './SingleDate';
-import { SingleValue } from './SingleValue';
+import { DashboardInfoHover, DashboardItemContext } from '../../DashboardItem';
+import { DataDownload, DownloadFiles } from './Download';
+import { MultiPhotograph } from './MultiPhotograph';
 import { MultiValue } from './MultiValue';
 import { MultiValueRow } from './MultiValueRow';
-import { DataDownload, DownloadFiles } from './Download';
 import { QRCode } from './QRCode';
-import { MultiPhotograph } from './MultiPhotograph';
+import { SingleDate } from './SingleDate';
+import { SingleDownloadLink } from './SingleDownloadLink';
+import { SingleValue } from './SingleValue';
 
 const MultiSingleValueWrapper = styled.div`
   & + & {
@@ -38,7 +39,7 @@ const VIEWS = {
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
   multiPhotograph: MultiPhotograph,
-};
+} as const;
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   const { valueType } = config;
@@ -67,6 +68,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     report: originalReport,
     isEnlarged,
     isExport,
+    reportCode,
   } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
@@ -103,7 +105,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     );
   }
 
-  const Component = VIEWS[viewType as keyof typeof VIEWS];
+  const Component = VIEWS[viewType];
 
   // if the view type is not supported, return null
   if (!Component) return null;
@@ -115,6 +117,8 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   return (
     <>
       <Component
+        // Ensure stale rows don’t persist when navigating date ranges
+        key={`${reportCode}\u{200D}${report.startDate}:${report.endDate}`}
         report={
           {
             ...report,

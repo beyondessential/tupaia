@@ -177,7 +177,8 @@ export const FilterableTable = ({
                           <TableSortLabel
                             active={!!sortedConfig}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
-                            IconComponent={ChevronUp}
+                            // Lucide declares wider `className` type than MUI’s IconComponent
+                            IconComponent={ChevronUp as React.ComponentType<{ className: string }>}
                             onClick={() => updateSorting(id, sortedConfig?.desc)}
                           />
                         )}
