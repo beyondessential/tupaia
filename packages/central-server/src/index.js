@@ -6,7 +6,6 @@ import {
   AnalyticsRefresher,
   buildEntityParentChildRelationIfEmpty,
   EntityHierarchyCacher,
-  getDbMigrator,
   ModelRegistry,
   SurveyResponseOutdater,
   TaskAssigneeEmailer,
@@ -19,7 +18,7 @@ import { configureWinston } from '@tupaia/server-boilerplate';
 import { isFeatureEnabled } from '@tupaia/utils';
 import { configureEnv } from './configureEnv';
 import { createApp } from './createApp';
-import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
+import { MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithKoBo } from './kobo';
@@ -117,23 +116,18 @@ configureEnv();
   startFeedScraper(models);
 
   /**
-   * If running via PM2, run migrations then notify that we are ready
+   * If running via PM2, notify that we are ready once startup tasks have completed.
+   * Database migrations and the meditrak sync view are handled by the deployment script
+   * (see /packages/devops/scripts/deployment-common/startBackEnds.sh) before this server starts.
    */
   if (process.send) {
     try {
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
-      const dbMigrator = getDbMigrator();
-      await dbMigrator.up();
-      winston.info('Database migrations complete');
 
       await buildEntityParentChildRelationIfEmpty(models);
 
-      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
-        winston.info('Creating permissions based meditrak sync queue');
-        // don't await this as it's not critical, and will hold up the process if it fails
-        createPermissionsBasedMeditrakSyncQueue(database);
-      }
+      process.send('ready');
     } catch (error) {
       winston.error(error.message);
     }

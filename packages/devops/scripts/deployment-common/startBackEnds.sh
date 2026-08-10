@@ -20,6 +20,10 @@ get_backend_packages() {
 }
 
 set_up_central_server() {
+    # Run database migrations, so central-server can signal ready to pm2 as soon as it has started
+    echo "Running database migrations"
+    yarn workspace @tupaia/database migrate
+
     # Ensure the analytics table is fully built
     echo "Building analytics table"
     yarn workspace @tupaia/data-api install-mv-refresh
