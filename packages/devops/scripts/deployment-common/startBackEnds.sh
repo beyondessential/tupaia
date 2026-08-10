@@ -3,7 +3,7 @@ set -e
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 tupaia_dir=$(realpath -- "$script_dir"/../../../..)
-pm2_config=$tupaia_dir/packages/devops/configs/pm2/deployment.config.js
+pm2_ecosystem=$tupaia_dir/packages/devops/configs/pm2/deployment.config.js
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 . "$HOME"/.nvm/nvm.sh
@@ -36,22 +36,20 @@ set_up_central_server() {
 
 start_package() {
     echo "Starting $1..."
-    pm2 start "$pm2_config" --only "$1" &
+    pm2 start "$pm2_ecosystem" --only "$1" &
     start_pids+=($!)
 }
 
 readarray -t backend_packages < <(get_backend_packages)
 
-# Spawn the pm2 daemon up front so the parallel start jobs below don't race to create it
+# Spawn the PM2 daemon up front so the parallel start jobs below don’t race to create it
 pm2 ping
 
-# Run central-server's setup concurrently with the other servers' start jobs; central-server
-# itself only starts once its setup has completed
+# Set up central-server in background...
 set_up_central_server &
 central_server_setup_pid=$!
 
-# Start back end server packages in parallel, each start job waiting for its app's ready signal.
-# Per-app config (instances, node args etc.) lives in the pm2 ecosystem config file.
+# ...while starting the other servers...
 start_pids=()
 for package in "${backend_packages[@]}"; do
     if [[ $package != central-server ]]; then
@@ -59,10 +57,11 @@ for package in "${backend_packages[@]}"; do
     fi
 done
 
+# ...then start central-server.
 wait "$central_server_setup_pid"
 start_package central-server
 
-start_failed=0
+declare -i start_failed=0
 for pid in "${start_pids[@]}"; do
     wait "$pid" || start_failed=1
 done
