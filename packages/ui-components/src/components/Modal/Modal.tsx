@@ -28,7 +28,7 @@ interface ModalProps extends Omit<DialogProps, 'onClose' | 'open'> {
   title: string;
   isLoading?: boolean;
   error?: ModalContentProviderProps['error'];
-  buttons?: ButtonT[];
+  buttons?: readonly ButtonT[];
 }
 
 export const Modal = ({

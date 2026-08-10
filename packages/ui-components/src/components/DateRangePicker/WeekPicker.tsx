@@ -34,7 +34,7 @@ export const WeekPicker = ({
   const minAvailableWeekIndex = useBoundaryWeekOrDefault(date, minMomentDate, 1);
   const maxAvailableWeekIndex = useBoundaryWeekOrDefault(date, maxMomentDate, weeksInYear);
 
-  const menuItems = [];
+  const menuItems: React.ReactElement[] = [];
   // Prefer moment mutation to creation for performance reasons
   const mutatingMoment = date.clone();
   for (let w = 1; w <= weeksInYear; w++) {

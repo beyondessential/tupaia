@@ -38,6 +38,31 @@ configureEnv();
   const models = new ModelRegistry(database, modelClasses, true);
 
   /**
+   * Run migrations before wiring up change-listeners or the HTTP server.
+   */
+  try {
+    if (process.send) {
+      await database.waitForChangeChannel();
+      winston.info('Successfully connected to pubsub service');
+      const dbMigrator = getDbMigrator();
+      await dbMigrator.up();
+      winston.info('Database migrations complete');
+
+      await buildAncestorDescendantRelationIfEmpty(models);
+
+      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
+        winston.info('Creating permissions based meditrak sync queue');
+        // don't await this as it's not critical, and will hold up the process if it fails
+        createPermissionsBasedMeditrakSyncQueue(database);
+      }
+    } else {
+      await buildAncestorDescendantRelationIfEmpty(models);
+    }
+  } catch (error) {
+    winston.error(error.message);
+  }
+
+  /**
    * Set up change handlers e.g. for syncing
    */
   if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
@@ -109,31 +134,6 @@ configureEnv();
    * Regularly sync actions that have happened on server with the app social feed.
    */
   startFeedScraper(models);
-
-  /**
-   * If running via PM2, run migrations then notify that we are ready
-   */
-  try {
-    if (process.send) {
-      await database.waitForChangeChannel();
-      winston.info('Successfully connected to pubsub service');
-      const dbMigrator = getDbMigrator();
-      await dbMigrator.up();
-      winston.info('Database migrations complete');
-
-      await buildAncestorDescendantRelationIfEmpty(models);
-
-      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
-        winston.info('Creating permissions based meditrak sync queue');
-        // don't await this as it's not critical, and will hold up the process if it fails
-        createPermissionsBasedMeditrakSyncQueue(database);
-      }
-    } else {
-      await buildAncestorDescendantRelationIfEmpty(models);
-    }
-  } catch (error) {
-    winston.error(error.message);
-  }
 
   /**
    * Gracefully handle shutdown of ScheduledTasks
