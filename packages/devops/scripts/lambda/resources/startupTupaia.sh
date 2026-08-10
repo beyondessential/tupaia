@@ -77,7 +77,7 @@ main() {
   local instance_id=$(ec2metadata --instance-id)
 
   schedule_preaggregation_job() {
-    echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
+    echo "10 13 * * * $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
     crontab -l >>tmp.cron || echo >>tmp.cron
     crontab tmp.cron
     rm tmp.cron
@@ -108,10 +108,6 @@ main() {
   # if [[ $deployment_name = production || $deployment_name = dev ]]; then
   #   $deployment_scripts/startCloudwatchAgent.sh
   # fi
-
-  if [[ -s $NVM_DIR/nvm.sh ]]; then
-    source "$NVM_DIR/nvm.sh" # Load nvm so node is available on $PATH
-  fi
 
   fetch_latest_code
 
