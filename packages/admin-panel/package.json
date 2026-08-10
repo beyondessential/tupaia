@@ -54,7 +54,7 @@
     "prop-types": "^15.6.0",
     "react": "^16.14.0",
     "react-ace": "^10.1.0",
-    "react-beautiful-dnd": "^13.1.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-beforeunload": "^2.5.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.8.3",
