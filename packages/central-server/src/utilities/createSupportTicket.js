@@ -14,23 +14,17 @@ const emailInternally = async (subject, message) => {
 };
 
 export const buildZendeskTicketRequest = ({ zendeskApi, apiToken, email, subject, message }) => {
-  const url = `${zendeskApi}/tickets`;
-
   const ticket = {
     subject,
-    comment: {
-      body: message,
-    },
+    comment: { body: message },
   };
-
-  const base64Credentials = Buffer.from(`${email}/token:${apiToken}`).toString('base64');
-
+  const credentials = Buffer.from(`${email}/token:${apiToken}`).toString('base64');
   return {
-    url,
+    url: `${zendeskApi}/tickets`,
     requestInit: {
       method: 'POST',
       headers: {
-        Authorization: `Basic ${base64Credentials}`,
+        Authorization: `Basic ${credentials}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ ticket }),
