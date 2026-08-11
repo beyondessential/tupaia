@@ -10,7 +10,6 @@
 set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 
 declare -i start_time=$(date +%s)
-export start_time
 
 home_dir=/home/ubuntu
 logs_dir=$home_dir/logs
@@ -131,7 +130,22 @@ main() {
   echo "Startup completed in $((duration / 60)) min $((duration % 60)) s"
 }
 
-sudo -Hu ubuntu bash -leE -c "$(declare -f main); main" |&
+# Run main() as the ubuntu user.
+#
+# The function is written to a file rather than passed to `bash -c`, because sudo exports its entire
+# command line as SUDO_COMMAND. A function body full of quotes and `$(…)` breaks any descendant
+# process that parses the environment, notably scripts/bash/mergeEnvForDB.sh.
+main_script=$(mktemp /tmp/startupTupaia.XXXXXX)
+chmod 644 "$main_script" # sudo runs it as ubuntu, but mktemp creates it owned by root
+trap 'rm -f "$main_script"' EXIT
+{
+  # sudo’s env_reset drops variables inherited from this shell, so bake in the ones main() needs
+  printf 'declare -i start_time=%d\n' "$start_time"
+  declare -f main
+  printf 'main\n'
+} >"$main_script"
+
+sudo -Hu ubuntu bash -leE "$main_script" |&
   while IFS= read -r line; do
     echo "$(date --iso-8601=seconds) │ $line"
   done >>"$logs_dir"/deployment.log
