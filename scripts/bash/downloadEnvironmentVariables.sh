@@ -106,7 +106,9 @@ load_env_file_from_bw() {
     local new_file_name=$3
     local env_file_path=$base_file_path/$new_file_name.env
 
-    echo -en "${YELLOW}🚚 Loading variables for ${BOLD}${file_name}...${RESET}"
+    if [[ -t 1 ]]; then
+        echo -en "${YELLOW}🚚 Loading variables for ${BOLD}${file_name}...${RESET}"
+    fi
 
     # checkout deployment specific env vars, or dev as fallback
     deployment_env_vars=$(get_note "$file_name.$deployment_name.env")
@@ -118,7 +120,9 @@ load_env_file_from_bw() {
         echo "$dev_env_vars" >"$env_file_path"
 
         if [[ -z $dev_env_vars ]]; then
-            echo -en "$CLEAR_LINE"
+            if [[ -t 1 ]]; then
+                echo -en "$CLEAR_LINE"
+            fi
             echo -e "${YELLOW}⚠️ No item named ${BOLD}${file_name}.$deployment_name.env${RESET} or ${BOLD}${file_name}.dev.env${RESET}${YELLOW}. Wrote empty file to $env_file_path."
             return
         fi
@@ -147,7 +151,9 @@ load_env_file_from_bw() {
         sed -i -e 's/^###DEV_ONLY###//g' "$env_file_path"
     fi
 
-    echo -en "$CLEAR_LINE"
+    if [[ -t 1 ]]; then
+        echo -en "$CLEAR_LINE"
+    fi
     echo -e "${GREEN}✅ Wrote ${BOLD}${file_name}${RESET} → $env_file_path"
 }
 
