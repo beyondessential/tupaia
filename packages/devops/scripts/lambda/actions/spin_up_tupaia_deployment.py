@@ -44,35 +44,33 @@ from helpers.utilities import build_extra_tags, find_instances
 
 
 def spin_up_tupaia_deployment(event):
-    # validate input config
+    # Validate input config
     if "DeploymentName" not in event:
         raise Exception(
             'You must include the key "DeploymentName" in the lambda config, e.g. "dev".'
         )
     deployment_name = event["DeploymentName"]
-    branch = event.get(
-        "Branch", deployment_name
-    )  # branch defaults to deployment name if not specified
+    # Branch defaults to deployment name if not specified
+    branch = event.get("Branch", deployment_name)
     if deployment_name == "production" and branch != "master":
         raise Exception(
-            "The production deployment needs to check out master, not " + branch
+            f"The production deployment must check out ‘master’, not ‘{branch}’"
         )
 
-    # find current instances
-    existing_instances = find_instances(
+    existing = find_instances(
         [
             {"Name": "tag:DeploymentName", "Values": [deployment_name]},
             {"Name": "tag:DeploymentType", "Values": ["tupaia"]},
             {
                 "Name": "instance-state-name",
-                "Values": ["running", "stopped"],
+                "Values": ["pending", "running", "stopping", "stopped"],
             },  # ignore terminated instances
         ]
     )
 
-    if existing_instances:
+    if existing:
         raise Exception(
-            "A deployment already exists, perhaps you want to redeploy and swap out the existing one? The easiest way is to push a new commit."
+            f"A deployment named ‘{deployment_name}’ already exists. Trying to redeploy? The easiest way is to push a new commit."
         )
 
     # get manual input parameters, or default for any not provided
@@ -119,7 +117,7 @@ def spin_up_tupaia_deployment(event):
     )
     # set master password
     set_db_instance_master_password(
-        "tupaia-" + deployment_name, get_db_master_password()
+        f"tupaia-{deployment_name}", get_db_master_password()
     )
 
-    print("Successfully deployed branch " + branch)
+    print(f"Deployed branch ‘{branch}’ to deployment ‘{deployment_name}’")

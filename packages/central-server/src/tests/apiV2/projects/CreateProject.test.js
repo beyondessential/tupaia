@@ -1,6 +1,7 @@
-import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
 import chai from 'chai';
 import sinon from 'sinon';
+
+import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';

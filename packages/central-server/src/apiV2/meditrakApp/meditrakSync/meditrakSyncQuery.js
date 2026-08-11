@@ -92,10 +92,11 @@ export const selectFromClause = select => `
  *
  * Delete tombstones are always passed through: a deleted row is gone from `entity`
  * so it can never match the canonical join, but MediTrak still needs to be told to
- * remove a fully-deleted entity. The enqueuer (MeditrakSyncRecordUpdater) only writes
- * an entity delete to the queue when no rows remain for that code (a true full
- * deletion), never for a duplicate-only deletion — so passing all entity deletes here
- * is safe.
+ * remove an entity it holds. The enqueuer (MeditrakSyncRecordUpdater) only writes an
+ * entity delete to the queue for the canonical id the device actually holds — a full
+ * deletion, or the old canonical during re-canonicalisation (which it pairs with an
+ * upsert of the new canonical) — never for a non-canonical sibling deletion, so passing
+ * all entity deletes here is safe.
  */
 export const canonicalEntityFilter = () => ({
   query: `(

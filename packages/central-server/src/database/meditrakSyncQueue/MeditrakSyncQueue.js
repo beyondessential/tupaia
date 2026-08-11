@@ -39,9 +39,9 @@ export class MeditrakSyncQueue extends ChangeHandler {
     // Keep all the data for surveys, as we want to check if the permissions have changed
     this.changeTranslators.survey = change => [change];
 
-    // Keep entity change data so the updater can read a deleted entity's code and decide
-    // whether the delete should reach MediTrak. A code can have multiple project rows
-    // post-epic; MediTrak sees one per code, so a duplicate-only delete must be suppressed.
+    // Keep entity change data so the updater can read a deleted entity's code and
+    // re-canonicalise the delete. A code can have multiple project rows post-epic; MediTrak
+    // sees one per code, so a canonical delete becomes delete(X) + upsert of the next MIN(id).
     this.changeTranslators.entity = change => [change];
   }
 

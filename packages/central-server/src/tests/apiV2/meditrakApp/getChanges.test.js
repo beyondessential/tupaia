@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
@@ -320,6 +319,72 @@ describe('GET /changes/*', async () => {
       expect(change, 'orphaned update is returned').to.exist;
       expect(change.action, 'sent as a delete').to.equal('delete');
       expect(change.error, 'no record-less error change').to.be.undefined;
+    });
+
+    it('re-canonicalises a canonical delete: emits delete(old) + update of the new canonical', async () => {
+      // Two rows share a code. Deleting the canonical (lowest-id) row must surface
+      // a delete of the old canonical AND an update of the surviving row (the new
+      // canonical), with project_id stripped.
+      await models.country.findOrCreate({ code: 'DL' }, { name: 'Demo Land' });
+      const projectA = await upsertProject({ code: `rc_a_${Date.now()}` });
+      const projectB = await upsertProject({ code: `rc_b_${Date.now()}` });
+      const code = `rc_entity_${Date.now()}`;
+      const idX = `00000000${generateId().slice(8)}`; // lowest id = canonical
+      const idY = `ffffffff${generateId().slice(8)}`; // higher id = surviving sibling
+      await models.database.executeSql(
+        `INSERT INTO entity (id, code, name, type, country_code, project_id)
+         VALUES (?, ?, 'X', 'facility', 'DL', ?), (?, ?, 'Y', 'facility', 'DL', ?);`,
+        [idX, code, projectA.id, idY, code, projectB.id],
+      );
+      await oneSecondSleep();
+      await models.database.waitForAllChangeHandlers();
+
+      // Capture the tick after the initial inserts, then delete the canonical row.
+      const since = Date.now();
+      await oneSecondSleep();
+      await models.entity.deleteById(idX);
+      await oneSecondSleep();
+      await models.database.waitForAllChangeHandlers();
+
+      const response = await app.get(`changes?since=${since}&recordTypes=entity&appVersion=1.11.0`);
+      const deleteChange = response.body.find(c => c.record?.id === idX && c.action === 'delete');
+      const updateChange = response.body.find(c => c.record?.id === idY);
+
+      expect(deleteChange, 'old canonical deleted').to.exist;
+      expect(updateChange, 'new canonical surfaced').to.exist;
+      expect(updateChange.action, 'new canonical is not a delete').to.not.equal('delete');
+      expect(updateChange.record.id).to.equal(idY);
+      expect(updateChange.record.project_id, 'project_id stripped').to.be.undefined;
+    });
+
+    it('does not surface a delete or new update when a non-canonical sibling is deleted', async () => {
+      // The canonical (lowest-id) row survives; deleting a higher-id duplicate the
+      // device never held must produce nothing for that code.
+      await models.country.findOrCreate({ code: 'DL' }, { name: 'Demo Land' });
+      const projectA = await upsertProject({ code: `nc_a_${Date.now()}` });
+      const projectB = await upsertProject({ code: `nc_b_${Date.now()}` });
+      const code = `nc_entity_${Date.now()}`;
+      const idCanonical = `00000000${generateId().slice(8)}`; // survives
+      const idDuplicate = `ffffffff${generateId().slice(8)}`; // deleted, never held
+      await models.database.executeSql(
+        `INSERT INTO entity (id, code, name, type, country_code, project_id)
+         VALUES (?, ?, 'C', 'facility', 'DL', ?), (?, ?, 'D', 'facility', 'DL', ?);`,
+        [idCanonical, code, projectA.id, idDuplicate, code, projectB.id],
+      );
+      await oneSecondSleep();
+      await models.database.waitForAllChangeHandlers();
+
+      const since = Date.now();
+      await oneSecondSleep();
+      await models.entity.deleteById(idDuplicate);
+      await oneSecondSleep();
+      await models.database.waitForAllChangeHandlers();
+
+      const response = await app.get(`changes?since=${since}&recordTypes=entity&appVersion=1.11.0`);
+      const forCode = response.body.filter(
+        c => c.record?.id === idDuplicate || c.record?.id === idCanonical,
+      );
+      expect(forCode, 'nothing surfaces for the code').to.have.lengthOf(0);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
@@ -15,6 +15,8 @@ import {
   DHIS_REFERENCE,
   SERVER_NAME,
 } from './EventPusher.fixtures';
+
+const { expect } = chai;
 
 // relatively simple tests in here as EventBuilder contains a lot of logic, and is tested separately
 describe('EventPusher', () => {
