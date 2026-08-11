@@ -19,41 +19,47 @@ get_caller_package_directory() {
 }
 
 # Get the directory of the package that's calling this script
-CALLING_SCRIPT_DIR=$(get_caller_package_directory)
+caller_dir=$(get_caller_package_directory)
 
 # Get the directory of this script
-CURRENT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 # Fixed paths to the .env files for the test db
-file1="$CURRENT_DIR/../../env/db.env"
-file2="$CURRENT_DIR/../../env/pg.env"
-file3="$CURRENT_DIR/../../env/data-lake.env"
-file4="$CALLING_SCRIPT_DIR/.env"
+paths=(
+    "$script_dir/../../env/db.env"
+    "$script_dir/../../env/pg.env"
+    "$script_dir/../../env/data-lake.env"
+    "$caller_dir/.env"
+)
 
-common_files="$file1 $file2 $file3 $file4"
-
-# Remove files that don't exist
-for file in $common_files; do
-    if [ ! -f "$file" ]; then
-        common_files=$(echo "$common_files" | sed "s|$file||g")
+# Keep only files that exist
+common_files=()
+for file in "${paths[@]}"; do
+    if [[ -f $file ]]; then
+        common_files+=("$file")
     fi
 done
 
-# Load environment variables from .env files
-merged_content="$(cat $common_files)"
+# Snapshot the environment before reading the .env files, so that variables which are already set
+# (e.g. `DB_PORT=5433 yarn build-analytics-table`) can be given precedence afterwards
+env_keys=()
+env_values=()
+while IFS= read -r key; do
+    env_keys+=("$key")
+    env_values+=("${!key}")
+done < <(compgen -e)
 
-# Process command line arguments, overwriting values if present
-for var in $(env); do
-    if [[ "$var" == *=* ]]; then
-        key="${var%%=*}"
-        value="${var#*=}"
-        # Override values from command line
-        merged_content+=" $key=\"$value\""
-    fi
+if ((${#common_files[@]} > 0)); then
+    eval "$(cat "${common_files[@]}")"
+fi
+
+# Reinstate the pre-existing environment, overwriting anything the .env files set. Values are
+# assigned directly rather than evaluated as shell source, because they can contain quotes,
+# whitespace and other characters that don’t survive a round trip through `eval`.
+for i in "${!env_keys[@]}"; do
+    # Readonly variables can’t be reassigned, but nor could the .env files have changed them
+    printf -v "${env_keys[$i]}" '%s' "${env_values[$i]}" 2>/dev/null || true
 done
-
-# Evaluate merged content to set variables
-eval "$merged_content"
 
 if [[ $CI = true ]]; then
     echo '::endgroup::'

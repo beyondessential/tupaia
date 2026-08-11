@@ -1,6 +1,7 @@
 import chai from 'chai';
+
 import { addBaselineTestCountries, buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp, setupMapOverlayTestData } from '../testUtilities';
 
 const { expect } = chai;
@@ -38,11 +39,8 @@ describe('Permissions checker for GETMapOverlays', async () => {
     ]);
 
     // Set up the map overlays
-    ({
-      nationalMapOverlay1,
-      nationalMapOverlay2,
-      projectLevelMapOverlay1,
-    } = await setupMapOverlayTestData(models));
+    ({ nationalMapOverlay1, nationalMapOverlay2, projectLevelMapOverlay1 } =
+      await setupMapOverlayTestData(models));
   });
 
   afterEach(() => {

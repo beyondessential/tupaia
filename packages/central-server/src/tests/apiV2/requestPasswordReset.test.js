@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
 import { configureEnv } from '../../configureEnv';

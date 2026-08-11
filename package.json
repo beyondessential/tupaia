@@ -87,7 +87,7 @@
     "@storybook/builder-vite": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",
-    "@types/node": "^20.11.1",
+    "@types/node": "^26.1.2",
     "@vitejs/plugin-react": "^4.0.4",
     "babel-jest": "^29.7.0",
     "babel-preset-react-app": "^10.0.0",
@@ -101,7 +101,7 @@
     "jest-when": "^3.6.0",
     "nodemon": "^2.0.4",
     "npm-package-json-lint": "5.1.0",
-    "pm2": "^6.0.8",
+    "pm2": "^7.0.3",
     "prettier": "^3.5.1",
     "react-docgen-typescript-plugin": "^1.0.8",
     "storybook": "^8.2.9",
@@ -113,7 +113,7 @@
     "vite-plugin-ejs": "^1.6.4"
   },
   "engines": {
-    "node": "^20.11.1"
+    "node": "26.7.0"
   },
   "packageManager": "yarn@4.17.0+sha512.c2957de2f9025ab14d63b24d0d8be1f1655810e22c341042c27f7ecd017b180ec12db73d69ac366d71b304ef9f069349ce462de96f04f8f1da317f4f762c95ae"
 }

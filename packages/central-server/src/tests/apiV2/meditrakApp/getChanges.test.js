@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
