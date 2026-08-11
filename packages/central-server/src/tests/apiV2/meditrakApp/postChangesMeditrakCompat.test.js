@@ -317,4 +317,59 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     expect(savedAnswer.text).to.not.equal(canonicalId);
     expect(savedAnswer.text).to.equal(projectBRow.id);
   });
+
+  it('resolves a response submitted against a re-canonicalised entity id', async () => {
+    // Re-canonicalisation: the device swaps the deleted canonical for the new
+    // canonical Y (the surviving sibling). A response submitted with entity_id = Y
+    // must resolve cleanly to the survey project's row rather than throwing on the
+    // now-deleted old canonical.
+    const code = `meditrak_recanon_${Date.now()}`;
+    // Old canonical (lowest id) in project A, and the surviving sibling in project B.
+    const oldCanonicalId = `00000000${generateId().slice(8)}`;
+    const survivorId = `ffffffff${generateId().slice(8)}`;
+    await models.database.executeSql(
+      `INSERT INTO entity (id, code, name, type, country_code, project_id)
+       VALUES (?, ?, ?, 'village', ?, ?), (?, ?, ?, 'village', ?, ?);`,
+      [
+        oldCanonicalId,
+        code,
+        `Name ${code}`,
+        COUNTRY_CODE,
+        projectA.id,
+        survivorId,
+        code,
+        `Name ${code}`,
+        COUNTRY_CODE,
+        projectB.id,
+      ],
+    );
+    // Delete the old canonical, leaving Y as the new canonical.
+    await models.entity.deleteById(oldCanonicalId);
+
+    const responseId = generateId();
+    const surveyResponseObject = {
+      id: responseId,
+      survey_id: survey.id,
+      user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
+      start_time: generateValueOfType('date'),
+      end_time: generateValueOfType('date'),
+      timestamp: generateValueOfType('date'),
+      timezone: 'Pacific/Auckland',
+      approval_status: 'not_required',
+      entity_id: survivorId,
+      entities_upserted: [],
+      answers: [],
+    };
+
+    const response = await app.post('changes', {
+      body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
+    });
+    expect(response.statusCode).to.equal(200);
+
+    const projectBRow = await models.entity.findOne({ code, project_id: projectB.id });
+    expect(projectBRow).to.exist;
+    const saved = await models.surveyResponse.findById(responseId);
+    expect(saved.entity_id).to.equal(projectBRow.id);
+  });
 });
