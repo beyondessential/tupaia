@@ -18,14 +18,14 @@ exports.setup = function (options, seedLink) {
  * Columns that have always been foreign keys in practice, but were never enforced.
  *
  * Server only: none of the referencing tables below (map_overlay,
- * data_element_data_service, data_service_sync_group) exist in the DataTrak web browser
- * database. The one constraint from this set that does apply there, project.entity_id ->
- * entity.id, is in the companion migration 20260807113400-AddSyncedTablesMissingFKConstraints.
+ * data_element_data_service, data_service_sync_group, sync_group_log) exist in the
+ * DataTrak web browser database. The one constraint from this set that does apply
+ * there, project.entity_id -> entity.id, is in the companion migration
+ * 20260807113400-AddSyncedTablesMissingFKConstraints.
  *
  * Only references that a data audit found to be already clean are added here. Still
  * outstanding, each needing a data clean-up or a schema change of its own:
  *   - data_service_entity.entity_code -> entity.code
- *   - sync_group_log.sync_group_code -> data_service_sync_group.code
  *   - entity.country_code -> entity.code
  *   - dashboard_item.report_code and map_overlay.report_code, which point at report.code
  *     when legacy = false and legacy_report.code when legacy = true, and so cannot be
@@ -38,35 +38,41 @@ exports.setup = function (options, seedLink) {
  */
 exports.up = async function (db) {
   await db.runSql(`
-    ALTER TABLE map_overlay
-      ADD CONSTRAINT map_overlay_permission_group_fkey
-      FOREIGN KEY (permission_group) REFERENCES permission_group(name)
+    ALTER TABLE data_element_data_service
+      ADD CONSTRAINT data_element_data_service_country_code_fkey
+      FOREIGN KEY (country_code) REFERENCES entity(code)
       ON UPDATE CASCADE ON DELETE RESTRICT;
     ALTER TABLE data_element_data_service
       ADD CONSTRAINT data_element_data_service_data_element_code_fkey
       FOREIGN KEY (data_element_code) REFERENCES data_element(code)
       ON UPDATE CASCADE ON DELETE RESTRICT;
-    ALTER TABLE data_element_data_service
-      ADD CONSTRAINT data_element_data_service_country_code_fkey
-      FOREIGN KEY (country_code) REFERENCES entity(code)
-      ON UPDATE CASCADE ON DELETE RESTRICT;
     ALTER TABLE data_service_sync_group
       ADD CONSTRAINT data_service_sync_group_data_group_code_fkey
       FOREIGN KEY (data_group_code) REFERENCES data_group(code)
+      ON UPDATE CASCADE ON DELETE RESTRICT;
+    ALTER TABLE map_overlay
+      ADD CONSTRAINT map_overlay_permission_group_fkey
+      FOREIGN KEY (permission_group) REFERENCES permission_group(name)
+      ON UPDATE CASCADE ON DELETE RESTRICT;
+    ALTER TABLE sync_group_log
+      ADD CONSTRAINT sync_group_log_sync_group_code_fkey
+      FOREIGN KEY (sync_group_code) REFERENCES data_service_sync_group(code)
       ON UPDATE CASCADE ON DELETE RESTRICT;
   `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`
-    ALTER TABLE map_overlay
-      DROP CONSTRAINT IF EXISTS map_overlay_permission_group_fkey;
-    ALTER TABLE data_element_data_service
-      DROP CONSTRAINT IF EXISTS data_element_data_service_data_element_code_fkey;
     ALTER TABLE data_element_data_service
       DROP CONSTRAINT IF EXISTS data_element_data_service_country_code_fkey;
+    ALTER TABLE data_element_data_service
+      DROP CONSTRAINT IF EXISTS data_element_data_service_data_element_code_fkey;
     ALTER TABLE data_service_sync_group
       DROP CONSTRAINT IF EXISTS data_service_sync_group_data_group_code_fkey;
+    ALTER TABLE map_overlay
+      DROP CONSTRAINT IF EXISTS map_overlay_permission_group_fkey;
+    ALTER TABLE sync_group_log
+      DROP CONSTRAINT IF EXISTS sync_group_log_sync_group_code_fkey;
   `);
 };
 
