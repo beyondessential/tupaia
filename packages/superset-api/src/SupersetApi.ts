@@ -115,8 +115,7 @@ export class SupersetApi {
   }
 
   protected async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
-    // Band-aid cast: HttpsProxyAgent extends Agent, not sure what discrepancy TS is picking up
-    if (this.proxyAgent) options.agent = this.proxyAgent as unknown as RequestInit['agent'];
+    if (this.proxyAgent) options.agent = this.proxyAgent;
     winston.info(`Superset request ${options.method} ${url}`);
     return fetch(url, options);
   }
