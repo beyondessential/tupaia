@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 import { generateId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
@@ -10,6 +10,8 @@ import {
   DATA_SET,
   DATA_SET_COMPLETION,
 } from './AggregateDataPusher.fixtures';
+
+const { expect } = chai;
 
 export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should throw an error if the changed record was not found', async () => {
