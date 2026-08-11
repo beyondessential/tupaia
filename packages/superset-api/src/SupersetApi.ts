@@ -13,7 +13,7 @@ export class SupersetApi {
   protected serverName: string;
   protected baseUrl: string;
   protected accessToken: string | null = null;
-  protected proxyAgent?: HttpsProxyAgent;
+  protected proxyAgent?: HttpsProxyAgent<string>;
 
   public constructor(serverName: string, baseUrl: string) {
     if (!serverName) throw new Error('Argument serverName required');

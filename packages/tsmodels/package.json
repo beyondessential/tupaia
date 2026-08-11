@@ -27,7 +27,7 @@
     "@tupaia/types": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.11.1",
+    "@types/node": "^26.1.2",
     "knex": "^3.1.0",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.1",

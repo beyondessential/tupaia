@@ -7486,7 +7486,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/constants@workspace:packages/constants"
   dependencies:
-    "@types/node": "npm:^20.11.1"
+    "@types/node": "npm:^26.1.2"
     rimraf: "npm:^6.0.1"
     ts-node: "npm:^10.9.1"
     typescript: "npm:5.2.2"
@@ -7502,7 +7502,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:20.19.33"
+    "@types/node": "npm:^26.1.2"
     db-migrate: "npm:^0.11.5"
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
@@ -8168,7 +8168,7 @@ __metadata:
   dependencies:
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
-    https-proxy-agent: "npm:^5.0.1"
+    https-proxy-agent: "npm:^7.0.6"
     jest: "npm:^29.7.0"
     node-fetch: "npm:^1.7.3"
     rimraf: "npm:^6.0.1"
@@ -8223,7 +8223,7 @@ __metadata:
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/types": "workspace:*"
-    "@types/node": "npm:^20.11.1"
+    "@types/node": "npm:^26.1.2"
     knex: "npm:^3.1.0"
     rimraf: "npm:^6.0.1"
     ts-node: "npm:^10.9.1"
@@ -8327,7 +8327,7 @@ __metadata:
   dependencies:
     "@rmp135/sql-ts": "npm:^1.15.1"
     "@tupaia/database": "workspace:*"
-    "@types/node": "npm:20.19.33"
+    "@types/node": "npm:^26.1.2"
     diff: "npm:^8.0.2"
     dotenv: "npm:^16.4.5"
     knex: "npm:^3.1.0"
@@ -8481,7 +8481,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/cli-progress": "npm:^3.11.5"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:20.19.33"
+    "@types/node": "npm:^26.1.2"
     cli-progress: "npm:^3.12.0"
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
@@ -9069,7 +9069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=20":
+"@types/node@npm:*, @types/node@npm:>=20, @types/node@npm:^26.1.2":
   version: 26.1.2
   resolution: "@types/node@npm:26.1.2"
   dependencies:
@@ -9082,15 +9082,6 @@ __metadata:
   version: 12.12.50
   resolution: "@types/node@npm:12.12.50"
   checksum: 10c0/d11b1e0d8bb4aaf81333567b344780eb117ec5b28bc56a312f3759e94fade77bce6a4dc6174fe6269779132863fc64f8c0521324e5c2d42f3cceed66eace0cdd
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:20.19.33, @types/node@npm:^20.11.1":
-  version: 20.19.33
-  resolution: "@types/node@npm:20.19.33"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/a1a6234a2b6fa577fbb1ccc471e5e54a79c6e1a51be10a67b034461b752a50017854810e943494f20b3c3c6d14df84c93757e0a2ec57aa81c830d6faeab72cf2
   languageName: node
   linkType: hard
 
@@ -28386,14 +28377,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-width-cjs@npm:string-width@^4.2.0":
-  version: 4.2.0
-  resolution: "string-width@npm:4.2.0"
+"string-width-cjs@npm:string-width@^4.2.0, string-width@npm:^1.0.2 || 2 || 3 || 4, string-width@npm:^4.0.0, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "string-width@npm:4.2.3"
   dependencies:
     emoji-regex: "npm:^8.0.0"
     is-fullwidth-code-point: "npm:^3.0.0"
-    strip-ansi: "npm:^6.0.0"
-  checksum: 10c0/54d6451abfdca5f147f930fe4eb1bbdf409ba115042146bb93dae309342124afcfeb776149075f60a6f8d6b2d3b68f48702fc96144b37789dd7a4752284b9648
+    strip-ansi: "npm:^6.0.1"
+  checksum: 10c0/1e525e92e5eae0afd7454086eed9c818ee84374bb80328fc41217ae72ff5f065ef1c9d7f72da41de40c75fa8bb3dee63d92373fd492c84260a552c636392a47b
   languageName: node
   linkType: hard
 
@@ -28405,17 +28396,6 @@ __metadata:
     is-fullwidth-code-point: "npm:^1.0.0"
     strip-ansi: "npm:^3.0.0"
   checksum: 10c0/c558438baed23a9ab9370bb6a939acbdb2b2ffc517838d651aad0f5b2b674fb85d460d9b1d0b6a4c210dffd09e3235222d89a5bd4c0c1587f78b2bb7bc00c65e
-  languageName: node
-  linkType: hard
-
-"string-width@npm:^1.0.2 || 2 || 3 || 4, string-width@npm:^4.0.0, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.3":
-  version: 4.2.3
-  resolution: "string-width@npm:4.2.3"
-  dependencies:
-    emoji-regex: "npm:^8.0.0"
-    is-fullwidth-code-point: "npm:^3.0.0"
-    strip-ansi: "npm:^6.0.1"
-  checksum: 10c0/1e525e92e5eae0afd7454086eed9c818ee84374bb80328fc41217ae72ff5f065ef1c9d7f72da41de40c75fa8bb3dee63d92373fd492c84260a552c636392a47b
   languageName: node
   linkType: hard
 
@@ -29552,7 +29532,7 @@ __metadata:
     "@storybook/builder-vite": "npm:^8.2.9"
     "@storybook/react": "npm:^8.2.9"
     "@storybook/react-vite": "npm:^8.2.9"
-    "@types/node": "npm:^20.11.1"
+    "@types/node": "npm:^26.1.2"
     "@vitejs/plugin-react": "npm:^4.0.4"
     babel-jest: "npm:^29.7.0"
     babel-preset-react-app: "npm:^10.0.0"
@@ -29907,13 +29887,6 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 
