@@ -64,7 +64,22 @@ eval "$(yarn bw unlock --passwordenv BW_PASSWORD | grep -o -m 1 'export BW_SESSI
 
 # Collection in BitWarden where .env vars are kept
 COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
-COLLECTION_ID=$(yarn bw get collection "$COLLECTION_PATH" | jq .id)
+COLLECTION_ID=$(yarn bw get collection "$COLLECTION_PATH" | jq --raw-output .id)
+
+# Fetch the whole collection up front, and search it locally from there on. This is much faster.
+COLLECTION_ITEMS=$(yarn bw list items --collectionid "$COLLECTION_ID")
+
+if [[ -z $COLLECTION_ITEMS || $COLLECTION_ITEMS = '[]' ]]; then
+    echo -e "${BOLD}${RED}Bitwarden collection is empty.${RESET} No items found in $COLLECTION_PATH" >&2
+    exit 1
+fi
+
+get_notes_for_items_named_like() {
+    local search_term=$1
+    printf '%s' "$COLLECTION_ITEMS" |
+        jq --raw-output --arg search "$search_term" \
+            'map(select(.name | ascii_downcase | contains($search | ascii_downcase))) | .[] .notes'
+}
 
 echo
 
@@ -94,19 +109,19 @@ load_env_file_from_bw() {
     echo -en "${YELLOW}🚚 Fetching variables for ${BOLD}${FILE_NAME}...${RESET}"
 
     # checkout deployment specific env vars, or dev as fallback
-    DEPLOYMENT_ENV_VARS=$(
-        yarn bw list items --search "$FILE_NAME.$DEPLOYMENT_NAME.env" |
-            jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes"
-    )
+    DEPLOYMENT_ENV_VARS=$(get_notes_for_items_named_like "$FILE_NAME.$DEPLOYMENT_NAME.env")
 
     if [[ -n $DEPLOYMENT_ENV_VARS ]]; then
         echo "$DEPLOYMENT_ENV_VARS" >"$ENV_FILE_PATH"
     else
-        DEV_ENV_VARS=$(
-            yarn bw list items --search "$FILE_NAME.dev.env" |
-                jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes"
-        )
+        DEV_ENV_VARS=$(get_notes_for_items_named_like "$FILE_NAME.dev.env")
         echo "$DEV_ENV_VARS" >"$ENV_FILE_PATH"
+
+        if [[ -z $DEV_ENV_VARS ]]; then
+            echo -en "$CLEAR_LINE"
+            echo -e "${YELLOW}⚠️ No item named ${BOLD}${FILE_NAME}.$DEPLOYMENT_NAME.env${RESET} or ${BOLD}${FILE_NAME}.dev.env${RESET}${YELLOW}. Wrote empty file to $ENV_FILE_PATH."
+            return
+        fi
     fi
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual
