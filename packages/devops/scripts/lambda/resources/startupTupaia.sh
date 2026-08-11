@@ -12,8 +12,9 @@ set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 declare -i start_time=$(date +%s)
 
 home_dir=/home/ubuntu
+tupaia_dir=$home_dir/tupaia
 logs_dir=$home_dir/logs
-deployment_scripts=$home_dir/tupaia/packages/devops/scripts/deployment-aws
+deployment_scripts=$tupaia_dir/packages/devops/scripts/deployment-aws
 
 # Create a directory for logs to go
 mkdir -m 777 -p "$logs_dir"
@@ -35,6 +36,7 @@ tag_errored() {
 trap tag_errored ERR
 
 deployment_name=$("$deployment_scripts"/../utility/getEC2TagValue.sh DeploymentName)
+branch=$("$deployment_scripts"/../utility/getEC2TagValue.sh Branch)
 
 # Set bash prompt to have deployment name in it
 set_prompt() {
@@ -66,40 +68,37 @@ set_prompt() {
 }
 set_prompt
 
+# This script runs as root, so anything that needs to happen as the ubuntu user is individually
+# prefixed with `sudo`. Wrapping the whole of main() in a single `sudo … -c` would be terser, but
+# sudo exports its command line as SUDO_COMMAND, and a function body full of quotes and `$(…)`
+# breaks descendant scripts which parse the environment, notably scripts/bash/mergeEnvForDB.sh.
+
+schedule_preaggregation_job() {
+  {
+    echo "10 13 * * * $tupaia_dir/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt"
+    sudo -Hu ubuntu crontab -l || true # non-zero when ubuntu has no crontab yet
+  } | sudo -Hu ubuntu crontab -
+}
+
+fetch_latest_code() {
+  cd "$tupaia_dir"
+  if sudo -Hu ubuntu git ls-remote --exit-code --heads origin "$branch" &>/dev/null; then
+    echo "Fetching latest code from branch $branch..."
+    local branch_to_use=$branch
+  else
+    echo "Branch $branch doesn’t exist. Fetching latest code from dev..."
+    local branch_to_use=dev
+  fi
+  set -x
+  sudo -Hu ubuntu git remote set-branches --add origin "$branch_to_use"
+  sudo -Hu ubuntu git fetch --all --prune
+  sudo -Hu ubuntu git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
+  sudo -Hu ubuntu git switch "$branch_to_use"
+  sudo -Hu ubuntu git reset --hard origin/"$branch_to_use"
+  set +x
+}
+
 main() {
-  local home_dir=/home/ubuntu
-  local tupaia_dir=$home_dir/tupaia
-  local logs_dir=$home_dir/logs
-  local deployment_scripts=$tupaia_dir/packages/devops/scripts/deployment-aws
-  local deployment_name=$("$deployment_scripts"/../utility/getEC2TagValue.sh DeploymentName)
-  local branch=$("$deployment_scripts"/../utility/getEC2TagValue.sh Branch)
-  local instance_id=$(ec2metadata --instance-id)
-
-  schedule_preaggregation_job() {
-    echo "10 13 * * * $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
-    crontab -l >>tmp.cron || echo >>tmp.cron
-    crontab tmp.cron
-    rm tmp.cron
-  }
-
-  fetch_latest_code() {
-    cd "$tupaia_dir"
-    if git ls-remote --exit-code --heads origin "$branch" &>/dev/null; then
-      echo "Fetching latest code from branch $branch..."
-      local branch_to_use=$branch
-    else
-      echo "Branch $branch doesn’t exist. Fetching latest code from dev..."
-      local branch_to_use=dev
-    fi
-    set -x
-    git remote set-branches --add origin "$branch_to_use"
-    git fetch --all --prune
-    git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
-    git switch "$branch_to_use"
-    git reset --hard origin/"$branch_to_use"
-    set +x
-  }
-
   echo "Starting up $deployment_name ($branch)"
 
   # Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
@@ -115,11 +114,11 @@ main() {
   fi
 
   # central-server and data-table-server need Tailnet access for external database connections
-  DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
+  sudo -Hu ubuntu DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
   # Build each package, including injecting environment variables from Bitwarden
-  "$deployment_scripts"/buildDeployablePackages.sh "$deployment_name"
+  sudo -Hu ubuntu "$deployment_scripts"/buildDeployablePackages.sh "$deployment_name"
   # Deploy each package
-  "$deployment_scripts"/../deployment-common/startBackEnds.sh
+  sudo -Hu ubuntu "$deployment_scripts"/../deployment-common/startBackEnds.sh
   # Set nginx config and start the service running
   sudo -E DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/configureNginx.sh
 
@@ -130,22 +129,7 @@ main() {
   echo "Startup completed in $((duration / 60)) min $((duration % 60)) s"
 }
 
-# Run main() as the ubuntu user.
-#
-# The function is written to a file rather than passed to `bash -c`, because sudo exports its entire
-# command line as SUDO_COMMAND. A function body full of quotes and `$(…)` breaks any descendant
-# process that parses the environment, notably scripts/bash/mergeEnvForDB.sh.
-main_script=$(mktemp /tmp/startupTupaia.XXXXXX)
-chmod 644 "$main_script" # sudo runs it as ubuntu, but mktemp creates it owned by root
-trap 'rm -f "$main_script"' EXIT
-{
-  # sudo’s env_reset drops variables inherited from this shell, so bake in the ones main() needs
-  printf 'declare -i start_time=%d\n' "$start_time"
-  declare -f main
-  printf 'main\n'
-} >"$main_script"
-
-sudo -Hu ubuntu bash -leE "$main_script" |&
+main |&
   while IFS= read -r line; do
     echo "$(date --iso-8601=seconds) │ $line"
   done >>"$logs_dir"/deployment.log
