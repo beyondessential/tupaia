@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { DatatrakWebActivityFeedRequest, Project } from '@tupaia/types';
 import { get } from '../api';
+import { useIsOnline } from '../../utils';
 import { useCurrentUserContext } from '..';
 
 interface UseActivityFeedProps {
@@ -9,6 +10,7 @@ interface UseActivityFeedProps {
 }
 
 export const useActivityFeed = ({ projectId, pageLimit }: UseActivityFeedProps) => {
+  const isOnline = useIsOnline();
   return useInfiniteQuery<DatatrakWebActivityFeedRequest.ResBody>(
     ['activityFeed', projectId, pageLimit],
     async ({ pageParam = 0 }) => {
@@ -24,7 +26,7 @@ export const useActivityFeed = ({ projectId, pageLimit }: UseActivityFeedProps) 
         if (!data) return 0;
         return data?.hasMorePages ? pages.length : undefined;
       },
-      enabled: window.navigator.onLine && Boolean(projectId),
+      enabled: isOnline && Boolean(projectId),
     },
   );
 };

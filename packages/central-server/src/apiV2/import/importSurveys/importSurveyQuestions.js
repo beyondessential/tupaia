@@ -1,21 +1,23 @@
+import { isEqual } from 'es-toolkit/compat';
 import xlsx from 'xlsx';
-import { isEqual } from 'lodash';
+
+import { QuestionType } from '@tupaia/types';
 import {
   DatabaseError,
-  UploadError,
   ImportValidationError,
-  ObjectValidator,
   MultiValidationError,
+  ObjectValidator,
+  UploadError,
 } from '@tupaia/utils';
-import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../../dataAccessors';
+import { deleteOrphanQuestions, deleteScreensForSurvey } from '../../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
-import { splitStringOnComma, splitOnNewLinesOrCommas } from '../../utilities';
+import { splitOnNewLinesOrCommas, splitStringOnComma } from '../../utilities';
 import { ConfigImporter } from './ConfigImporter';
 import { constructQuestionValidators } from './constructQuestionValidators';
 import {
+  SURVEY_METADATA,
   processSurveyMetadataRow,
   validateSurveyMetadataRow,
-  SURVEY_METADATA,
 } from './processSurveyMetadata';
 import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
 
@@ -285,7 +287,10 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
       questionCodes.push(questionObject.code);
 
       // Validate max one date of data/submission date question
-      if (questionObject.type === 'DateOfData' || questionObject.type === 'SubmissionDate') {
+      if (
+        questionObject.type === QuestionType.DateOfData ||
+        questionObject.type === QuestionType.SubmissionDate
+      ) {
         if (hasSeenDateOfDataQuestion) {
           // Previously had another submission date question
           throw new ImportValidationError(

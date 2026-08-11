@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { RECORDS } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';

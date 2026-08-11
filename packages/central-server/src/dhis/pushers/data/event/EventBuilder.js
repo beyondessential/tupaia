@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'es-toolkit/compat';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { enrollTrackedEntityInProgramIfNotEnrolled } from '../../../api';

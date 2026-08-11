@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
@@ -21,8 +21,9 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
 
     let sum = 0;
     const data = Object.entries(dataClasses).map(([dataClass, condition]) => {
-      const count = calculatedValues.filter(value => checkValueSatisfiesCondition(value, condition))
-        .length;
+      const count = calculatedValues.filter(value =>
+        checkValueSatisfiesCondition(value, condition),
+      ).length;
 
       sum += count;
       return {

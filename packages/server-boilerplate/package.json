@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/server-boilerplate",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Generic boilerplate for back end orchestration servers",
   "homepage": "https://github.com/beyondessential/tupaia",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -41,7 +41,7 @@
     "express": "^4.21.2",
     "http-proxy-middleware": "^2.0.1",
     "i18n": "^0.13.3",
-    "morgan": "^1.9.0",
+    "morgan": "^1.11.0",
     "public-ip": "4.0.4",
     "winston": "^3.17.0"
   },

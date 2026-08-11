@@ -1,4 +1,4 @@
-import flatten from 'lodash.flatten';
+import { flatten } from 'es-toolkit/compat';
 
 /**
  * dataPairNames must match the index order of pairs in dataElementPairs
@@ -19,13 +19,8 @@ import flatten from 'lodash.flatten';
  */
 export const compareDataElementPairs = async ({ dataBuilderConfig, query }, aggregator) => {
   const { organisationUnitCode } = query;
-  const {
-    dataElementPairs,
-    leftColumnHeader,
-    rightColumnHeader,
-    dataPairNames,
-    dataServices,
-  } = dataBuilderConfig;
+  const { dataElementPairs, leftColumnHeader, rightColumnHeader, dataPairNames, dataServices } =
+    dataBuilderConfig;
   const dataElementCodes = flatten(dataElementPairs);
 
   const { results } = await aggregator.fetchAnalytics(

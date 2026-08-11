@@ -1,6 +1,7 @@
 import { ValueType, ViewConfig, MatrixEntityCell } from './dashboard-item';
 
-type Transform = string | Record<string, unknown>;
+export type AliasTransform = string;
+export type Transform = AliasTransform | Record<string, unknown>;
 
 type OutputConfig = Record<string, unknown> & {
   type?: string;

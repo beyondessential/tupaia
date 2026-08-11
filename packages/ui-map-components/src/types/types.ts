@@ -1,10 +1,16 @@
-import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
-import { ReactNode } from 'react';
-import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
+import type { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
+import type { ReactNode } from 'react';
+import type { CircleMarkerProps, PolygonProps } from 'react-leaflet';
 
-import { CssColor, IconKey, InlineValue, ReferenceProps, Entity as TupaiaEntity } from '@tupaia/types';
-import { BREWER_PALETTE } from '../constants';
-import { SeriesValue } from './series';
+import type {
+  CssColor,
+  IconKey,
+  InlineValue,
+  ReferenceProps,
+  Entity as TupaiaEntity,
+} from '@tupaia/types';
+import type { BREWER_PALETTE } from '../constants';
+import type { SeriesValue } from './series';
 
 export type ColorKey = keyof typeof BREWER_PALETTE;
 export type Color = ColorKey | 'transparent' | CssColor;

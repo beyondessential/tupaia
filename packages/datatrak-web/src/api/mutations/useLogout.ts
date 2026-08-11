@@ -21,13 +21,17 @@ const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) =
       const currentUserId = await transactingModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
       if (currentUserId) {
         // currentUserId should always be defined here; this is mostly to satisfy TypeScript
-        await transactingModels.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
+        await transactingModels.localSystemFact.set(
+          SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID,
+          currentUserId,
+        );
       }
 
       await transactingModels.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
 
       const permissionsDidChange =
         (await transactingModels.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED)) === 'true';
+
       if (permissionsDidChange) {
         await clearDatabase(transactingModels);
       }
@@ -52,6 +56,15 @@ export const useLogout = () => {
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
     mutationKey: ['logout'],
+    onMutate: async () => {
+      // Drain any in-flight sync (and prevent new ones from starting) before
+      // the logout transaction runs. Otherwise a sync that's mid-pull can
+      // commit its persist step *after* clearDatabase TRUNCATEs the public
+      // tables, silently re-populating them from the snapshot table that
+      // lives in a separate schema and isn't touched by the wipe.
+      // See TUP-3157.
+      await clientSyncManager?.stopSyncService();
+    },
     onSuccess: async () => {
       // Immediately refetch user rather than waiting for cache invalidation to trigger refetch in
       // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
@@ -63,15 +76,17 @@ export const useLogout = () => {
       ]);
       navigate(ROUTES.LOGIN);
 
-      await Promise.all([
-        clientSyncManager?.stopSyncService(),
-        queryClient.invalidateQueries({
-          predicate: q => {
-            const queryKeyHead = q.queryKey?.[0];
-            return queryKeyHead !== 'getUser' && queryKeyHead !== 'isLoggedIn';
-          },
-        }),
-      ]);
+      await queryClient.invalidateQueries({
+        predicate: q => {
+          const queryKeyHead = q.queryKey?.[0];
+          return queryKeyHead !== 'getUser' && queryKeyHead !== 'isLoggedIn';
+        },
+      });
+    },
+    onError: async () => {
+      // Logout failed → the user is still signed in. Bring sync back up so
+      // they can keep working; startSyncService is a no-op if already running.
+      await clientSyncManager?.startSyncService(queryClient);
     },
   });
 };

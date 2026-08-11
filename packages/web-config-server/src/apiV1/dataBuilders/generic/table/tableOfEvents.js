@@ -1,16 +1,14 @@
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
-import pick from 'lodash.pick';
+import { groupBy, keyBy, pick } from 'es-toolkit/compat';
 
 import { utcMoment } from '@tupaia/tsutils';
 import { getSortByKey, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
   addMetadataToEvents,
   isMetadataKey,
   metadataKeysToDataElementMap,
 } from '/apiV1/dataBuilders/helpers';
+import { transformObject } from '/apiV1/dataBuilders/transform';
 
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';

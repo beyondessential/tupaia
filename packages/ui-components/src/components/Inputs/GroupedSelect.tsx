@@ -39,8 +39,10 @@ const MenuItem = styled(MuiMenuItem)`
   padding-bottom: 0.5rem;
 `;
 
+type GroupedOption = { label: string; value?: string };
+
 type GroupedSelectProps = TextFieldProps & {
-  groupedOptions: { [key: string]: { label: string; value?: string }[] };
+  groupedOptions: { [key: string]: GroupedOption[] };
   showPlaceholder?: boolean;
   placeholder?: string;
   defaultValue?: string;
@@ -67,8 +69,8 @@ export const GroupedSelect = ({
   );
 
   // We need to flatten our tree as mui select requires group headings to be adjacent to options, rather than parents
-  const flatSetOfItems = [];
-  for (const [groupLabel, optionsForGroup] of Object.entries(groupedOptions)) {
+  const flatSetOfItems: { type: 'heading' | 'option'; label: string; value?: string }[] = [];
+  for (const [groupLabel, optionsForGroup] of Object.entries<GroupedOption[]>(groupedOptions)) {
     flatSetOfItems.push({ type: 'heading', label: groupLabel });
     for (const option of optionsForGroup) {
       flatSetOfItems.push({ type: 'option', ...option });

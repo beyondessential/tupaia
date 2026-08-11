@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 const getEventOrgUnitName = async (event, cache) => {
   const { orgUnit: code } = event;
   const entity = cache[CACHE_KEYS.entities].find(({ code: currentCode }) => currentCode === code);
@@ -84,7 +86,7 @@ class Cache {
       (result, key) => result.concat(METADATA_KEYS[key].cache),
       [],
     );
-    return [...new Set(cacheKeys)];
+    return uniq(cacheKeys);
   }
 
   async getEntitiesCache() {

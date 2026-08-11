@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';

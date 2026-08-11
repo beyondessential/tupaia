@@ -1,36 +1,43 @@
-import type { TileSet } from '@tupaia/ui-map-components';
-import { DEFAULT_TILESETS, getAutoTileSet } from '@tupaia/ui-map-components';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DEFAULT_TILESETS, getAutoTileSet, type TileSet } from '@tupaia/ui-map-components';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useProject } from '../../../api/queries';
 import { CUSTOM_TILE_SETS } from '../../../constants';
 import { useGAEffect } from '../../../utils';
 
-const defaultTileSets = [DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite];
+const isDefined = <T,>(value: T): value is Exclude<T, undefined> => value !== undefined;
 
-export const useTilesets = () => {
+const defaultTileSets = [
+  DEFAULT_TILESETS.osm,
+  DEFAULT_TILESETS.satellite,
+] as const satisfies TileSet[];
+
+export const useTilesets = (): {
+  activeTileSet: TileSet;
+  availableTileSets: TileSet[];
+  onTileSetChange: (tileSetKey: string) => void;
+} => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode);
   const [initialTileSet] = useState(getAutoTileSet());
   const [activeTileSet, setActiveTileSet] = useState<TileSet>(initialTileSet);
 
-  const availableTileSets = useMemo(() => {
-    const { tileSets = '' } = project?.config || {};
-    const customTilesetNames = tileSets.split(',');
+  const availableTileSets: TileSet[] = useMemo(() => {
+    const customTilesetNames = (project?.config?.tileSets as string | undefined)?.split(',') ?? [];
     const customTileSets = customTilesetNames
-      .map(tileset => CUSTOM_TILE_SETS.find(({ key }) => key === tileset) as TileSet)
-      .filter(item => item);
+      .map(tileSetName => CUSTOM_TILE_SETS.find(({ key }) => key === tileSetName))
+      .filter(isDefined);
     return [...defaultTileSets, ...customTileSets];
-  }, [project?.config]);
+  }, [project?.config?.tileSets]);
 
   useGAEffect('Map', 'Change Tile Set', activeTileSet?.label);
 
   const onTileSetChange = useCallback(
     (tileSetKey: string) => {
       const newActiveTileSet = availableTileSets.find(({ key }) => key === tileSetKey);
-      setActiveTileSet(newActiveTileSet);
+      setActiveTileSet(newActiveTileSet ?? initialTileSet);
     },
-    [availableTileSets],
+    [availableTileSets, initialTileSet],
   );
 
   useEffect(() => {

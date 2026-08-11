@@ -9,6 +9,7 @@ import {
   dropSnapshotTable,
   getModelsForPull,
   getModelsForPush,
+  hasDescendantPermissionChangeInSnapshot,
   hasSyncSnapshotRecords,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
@@ -21,7 +22,7 @@ import { remove, stream } from '../api';
 import type { DatatrakDatabase } from '../database/DatatrakDatabase';
 import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
 import { SYNC_EVENT_ACTIONS } from '../types';
-import { formatFraction } from '../utils';
+import { formatFraction, GA_CATEGORY, GA_EVENT, gaEvent } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
@@ -226,6 +227,11 @@ export class ClientSyncManager {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
       this.errorMessage = error.message;
       log.error('ClientSyncManager.triggerSync()', { error });
+
+      gaEvent(GA_EVENT.SYNC_ERROR, GA_CATEGORY.SYNC, error.message);
+      if (error.message?.includes('latest version') || error.message?.includes('X-Client-Version')) {
+        gaEvent(GA_EVENT.SYNC_COMPAT_ERROR, GA_CATEGORY.SYNC, error.message);
+      }
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
@@ -286,6 +292,11 @@ export class ClientSyncManager {
     this.isRequestingSync = false;
     this.isSyncing = true;
 
+    const syncStartTime = Date.now();
+    const timeSinceLastSync = this.lastSuccessfulSyncTime
+      ? Math.round((syncStartTime - this.lastSuccessfulSyncTime.getTime()) / 1000)
+      : undefined;
+
     const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
 
     this.isInitialSync = pullSince === -1;
@@ -293,6 +304,10 @@ export class ClientSyncManager {
     this.progressMaxByStage = this.isInitialSync
       ? STAGE_MAX_PROGRESS_INITIAL
       : STAGE_MAX_PROGRESS_INCREMENTAL;
+
+    gaEvent(GA_EVENT.SYNC_STARTED, GA_CATEGORY.SYNC, this.isInitialSync ? 'initial' : 'incremental', {
+      ...(timeSinceLastSync !== undefined && { time_since_last_sync: timeSinceLastSync }),
+    });
 
     performance.clearMarks();
     performance.clearMeasures();
@@ -342,24 +357,44 @@ export class ClientSyncManager {
 
     this.lastSuccessfulSyncTime = new Date();
 
+    const syncDurationSeconds = Math.round((Date.now() - syncStartTime) / 1000);
+    gaEvent(GA_EVENT.SYNC_COMPLETED, GA_CATEGORY.SYNC, this.isInitialSync ? 'initial' : 'incremental', {
+      sync_duration: syncDurationSeconds,
+    });
+
+    if (this.isInitialSync) {
+      gaEvent(GA_EVENT.FIRST_SYNC, GA_CATEGORY.SYNC, 'success', {
+        sync_duration: syncDurationSeconds,
+      });
+    }
+
     return { pulledChangesCount };
   }
 
+  /**
+   * User’s access policy changes when:
+   * - a `user_entity_permission` linked to them is added/updated/deleted; or
+   * - a descendant `permission_group` they has access to is added/updated/deleted.
+   */
   async checkForPermissionChanges(sessionId: string) {
     const currentUserId = ensure(
       await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID),
       'Couldn’t check for permission changes. No one is logged in.',
     );
 
-    const hasPermissionChange = await hasSyncSnapshotRecords(
-      this.database,
-      sessionId,
-      undefined,
-      this.models.userEntityPermission.databaseRecord,
-      "data->>'user_id' = :userId",
-      { userId: currentUserId },
-    );
-    if (hasPermissionChange) {
+    const hasUserEntityPermissionChange = async () =>
+      await hasSyncSnapshotRecords(
+        this.database,
+        sessionId,
+        undefined,
+        this.models.userEntityPermission.databaseRecord,
+        "data->>'user_id' = :userId",
+        { userId: currentUserId },
+      );
+    const hasPermissionHierarchyChange = async () =>
+      await hasDescendantPermissionChangeInSnapshot(this.database, sessionId, currentUserId);
+
+    if ((await hasUserEntityPermissionChange()) || (await hasPermissionHierarchyChange())) {
       await this.updatePermissionsChanged(true);
     }
   }

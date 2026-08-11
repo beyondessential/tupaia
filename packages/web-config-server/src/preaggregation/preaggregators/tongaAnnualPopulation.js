@@ -1,6 +1,4 @@
-import get from 'lodash.get';
-import has from 'lodash.has';
-import setWith from 'lodash.setwith';
+import { get, has, setWith } from 'es-toolkit/compat';
 
 import { getDhisApiInstance } from '/dhis';
 import { pushAggregateData } from '/preaggregation/pushAggregateData';

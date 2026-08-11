@@ -1,14 +1,8 @@
 import assert from 'assert';
-import groupBy from 'lodash.groupby';
-import orderBy from 'lodash.orderby';
+import { uniq } from 'es-toolkit';
+import { groupBy, orderBy } from 'es-toolkit/compat';
 
-import {
-  getDateRangeForGranularity,
-  getUniqueEntries,
-  getUniqueObjects,
-  max,
-  min,
-} from '@tupaia/utils';
+import { getDateRangeForGranularity, getUniqueObjects, max, min } from '@tupaia/utils';
 
 const getIdOfMostRecentResponse = surveyResponses => {
   assert.notStrictEqual(surveyResponses.length, 0);
@@ -105,8 +99,8 @@ export class OutdatedResponseFlagger {
    * @private
    */
   async findResponsesAcrossDimensionCombos(combos) {
-    const surveyIds = getUniqueEntries(combos.map(c => c.surveyId));
-    const entityIds = getUniqueEntries(combos.map(c => c.entityId));
+    const surveyIds = uniq(combos.map(c => c.surveyId));
+    const entityIds = uniq(combos.map(c => c.entityId));
     const minStartDate = min(combos.map(c => c.startDate));
     const maxEndDate = max(combos.map(c => c.endDate));
 
@@ -124,6 +118,6 @@ export class OutdatedResponseFlagger {
    * @private
    */
   async setOutdatedStatus(responseIds, outdated) {
-    return this.models.surveyResponse.update({ id: getUniqueEntries(responseIds) }, { outdated });
+    return this.models.surveyResponse.update({ id: uniq(responseIds) }, { outdated });
   }
 }

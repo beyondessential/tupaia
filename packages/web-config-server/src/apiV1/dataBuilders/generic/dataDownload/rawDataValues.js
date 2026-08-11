@@ -1,11 +1,10 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { flatten, keyBy } from 'es-toolkit/compat';
+import moment from 'moment';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { transposeMatrix, mergeTableDataOnKey, sortByColumns } from '/apiV1/utils';
 
-import moment from 'moment';
-import flatten from 'lodash.flatten';
-import keyBy from 'lodash.keyby';
+import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { mergeTableDataOnKey, sortByColumns, transposeMatrix } from '/apiV1/utils';
 
 const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
 const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataElement' for historical reasons

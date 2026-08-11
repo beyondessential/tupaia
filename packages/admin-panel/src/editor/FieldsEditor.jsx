@@ -14,11 +14,11 @@ const EditorWrapper = styled.form`
     color: ${props => props.theme.palette.text.secondary};
   }
   .MuiFormHelperText-root {
-    text-align: right;
-    margin-right: 0;
+    margin-inline-end: 0;
+    text-align: end;
   }
   .MuiFormControl-root:has(.MuiFormHelperText-root) {
-    margin-bottom: 0; // the helper text will be considered the gap between the input and the next field
+    margin-block-end: 0; // the helper text will be considered the gap between the input and the next field
   }
 `;
 

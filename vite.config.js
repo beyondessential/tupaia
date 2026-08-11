@@ -31,7 +31,6 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           manualChunks: function manualChunks(id) {
-            if (id.includes('lodash')) return 'lodash';
             if (id.includes('ace-builds')) return 'ace';
             if (id.includes('react-ace')) return 'reactAce';
             if (id.includes('jsoneditor')) return 'jsonEditor';
@@ -99,6 +98,17 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'mock/winston.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        // The ui component packages are source-only (no build step), so resolve them to their
+        // TypeScript sources and let Vite compile them alongside the app
+        '@tupaia/ui-chart-components': path.resolve(
+          __dirname,
+          './packages/ui-chart-components/src/index.ts',
+        ),
+        '@tupaia/ui-map-components': path.resolve(
+          __dirname,
+          './packages/ui-map-components/src/index.ts',
+        ),
+        '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
         ...(isDatatrakWeb && {
           'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
           pg: path.resolve(__dirname, 'mock/pgMock.js'),
@@ -124,16 +134,6 @@ export default defineConfig(({ command, mode }) => {
         alias: {
           ...baseConfig.resolve.alias,
           '@tupaia/admin-panel': path.resolve(__dirname, './packages/admin-panel/src/library.js'),
-          // this is to allow for hot reloading in dev
-          '@tupaia/ui-chart-components': path.resolve(
-            __dirname,
-            './packages/ui-chart-components/src/index.ts',
-          ),
-          '@tupaia/ui-map-components': path.resolve(
-            __dirname,
-            './packages/ui-map-components/src/index.ts',
-          ),
-          '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           ...(isDatatrakWeb && {
             '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
             '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),

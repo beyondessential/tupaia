@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import { DataBrokerModelRegistry } from '../types';
 
 export const fetchOrgUnitsByCountry = async (

@@ -2,7 +2,7 @@ export * from './date';
 export * from './detectDevice';
 export { isWebApp } from './displayMode';
 export { formatNumberWithTrueMinus, formatFraction } from './formatNumbers';
-export { gaEvent } from './ga';
+export { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './ga';
 export { innerText } from './innerText';
 export {
   useIsDesktopSizeClass as useIsDesktop,
@@ -13,6 +13,7 @@ export { useBeforeUnload } from './useBeforeUnload';
 export { useNavigationBlocker } from './useNavigationBlocker';
 export { NavigationBlockerProvider, useNavigationBlockerContext } from './NavigationBlockerProvider';
 export { useHasVideoInput } from './useHasVideoInput';
+export { useIsOnline } from './useIsOnline';
 export { useFromLocation } from './useLocationState';
 export { formatEntityForResponse, formatEntitiesForResponse } from './formatEntity';
 export type { ExtendedEntityFieldName } from './formatEntity';

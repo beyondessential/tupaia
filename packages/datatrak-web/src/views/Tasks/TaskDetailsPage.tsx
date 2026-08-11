@@ -69,7 +69,9 @@ const ButtonComponent = ({ task }: { task?: SingleTaskResponse }) => {
   const surveyLink = `${surveyUrl}?${PRIMARY_ENTITY_CODE_PARAM}=${entity?.code}`;
 
   if (taskStatus === TaskStatus.completed) {
-    const responseUnavailable = isOfflineFirst ? !surveyResponse : !surveyResponseId;
+    const responseUnavailable = isOfflineFirst
+      ? !surveyResponse || Object.keys(surveyResponse.answers ?? {}).length === 0
+      : !surveyResponseId;
     if (responseUnavailable)
       return (
         <>

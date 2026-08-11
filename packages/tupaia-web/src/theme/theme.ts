@@ -101,6 +101,7 @@ theme.overrides = {
         textWrap: 'balance',
       },
       'button, input, textarea, select': {
+        fontFamily: 'inherit',
         touchAction: 'manipulation',
       },
       'table, time': {
@@ -109,6 +110,17 @@ theme.overrides = {
       '.lucide': {
         height: 'auto', // Use width to set both dimensions
         width: '1em', // Sensible default, mirrors MUI Icon behaviour
+      },
+      /**
+       * WebKit doesn’t apply implicit ‘list’ role from <ol>s and <ul>s when list-style-type is
+       * ‘none’ unless nested in a <nav>. Intentional on WebKit’s part, but usually undesirable for
+       * us.
+       * @see https://bugs.webkit.org/show_bug.cgi?id=170179#c1
+       */
+      "ol[role='list'], ul[role='list']": {
+        listStyleType: 'none',
+        marginBlock: 0,
+        paddingInline: 0,
       },
     },
   },

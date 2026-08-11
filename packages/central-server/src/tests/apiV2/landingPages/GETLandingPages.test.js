@@ -1,11 +1,13 @@
 import { generateId, findOrCreateRecords } from '@tupaia/database';
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { setupProject } from './utils';
+
+const { expect } = chai;
 
 describe('GETLandingPages', async () => {
   const BES_ADMIN_POLICY = {

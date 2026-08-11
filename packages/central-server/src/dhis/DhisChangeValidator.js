@@ -1,4 +1,4 @@
-import { getUniqueEntries } from '@tupaia/utils';
+import { uniq } from 'es-toolkit';
 import { ChangeValidator } from '../externalApiSync';
 
 export class DhisChangeValidator extends ChangeValidator {
@@ -154,7 +154,7 @@ export class DhisChangeValidator extends ChangeValidator {
     const answers = this.getRecordsFromChangesForModel(updateChanges, this.models.answer);
 
     if (answers.length === 0) return [];
-    const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
+    const surveyResponseIds = uniq(answers.map(a => a.survey_response_id));
 
     // check which survey responses are valid
     const validSurveyResponseIds = new Set(

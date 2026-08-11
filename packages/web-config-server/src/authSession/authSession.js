@@ -1,4 +1,5 @@
 import session from 'client-sessions';
+import { uniq } from 'es-toolkit';
 
 import { UnauthenticatedError } from '@tupaia/utils';
 import { configureEnv } from '../configureEnv';
@@ -113,9 +114,8 @@ const addUserAccessHelper = (req, res, next) => {
     if (entity.isProject()) {
       const project = await req.models.project.findOne({ code: entity.code });
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
-      return accessPolicy.getPermissionGroups([
-        ...new Set(projectChildren.map(c => c.country_code)),
-      ]);
+      const childCodes = uniq(projectChildren.map(c => c.country_code));
+      return accessPolicy.getPermissionGroups(childCodes);
     }
 
     return accessPolicy.getPermissionGroups([entity.country_code]);

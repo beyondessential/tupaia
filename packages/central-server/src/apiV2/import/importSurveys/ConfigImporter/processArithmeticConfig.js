@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import {
   splitStringOn,
   splitStringOnComma,
@@ -82,14 +83,12 @@ const translateDefaultValues = async (models, defaultValuesConfig) => {
 const translateValueTranslation = async (models, valueTranslationConfig) => {
   const valueTranslation = splitStringOnComma(valueTranslationConfig);
   const translatedValueTranslation = {};
-  const codes = [
-    ...new Set( // Remove duplicated codes
-      valueTranslation.map(defaultValue => {
-        const [code] = splitStringOn(defaultValue, '.');
-        return code;
-      }),
-    ),
-  ];
+  const codes = uniq(
+    valueTranslation.map(defaultValue => {
+      const [code] = splitStringOn(defaultValue, '.');
+      return code;
+    }),
+  );
   const questionCodeToId = await models.question.findIdByCode(codes);
 
   for (const translation of valueTranslation) {

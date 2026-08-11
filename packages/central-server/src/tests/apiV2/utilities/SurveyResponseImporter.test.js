@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import { flatten } from 'lodash';
+import chai from 'chai';
+import { flatten } from 'es-toolkit/compat';
 import sinon from 'sinon';
 
 import {
@@ -8,6 +8,8 @@ import {
   SurveyResponseModel,
 } from '@tupaia/database';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
+
+const { expect } = chai;
 
 const ENTITY_IDS = {
   1989: generateId(),

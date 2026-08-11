@@ -1,7 +1,7 @@
 import { AccessPolicy } from '@tupaia/access-policy';
-import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
+import { Transform } from '@tupaia/types';
 import { ReportServerAggregator } from '../../../aggregator';
-
 import { buildContext, ReqContext, updateContext } from '../../../reportBuilder/context';
 
 describe('buildContext', () => {
@@ -57,7 +57,7 @@ describe('buildContext', () => {
 
   describe('orgUnits', () => {
     it('adds query to the context', async () => {
-      const transform: unknown = [];
+      const transform: Transform[] = [];
 
       const context = await buildContext(transform, reqContext);
 

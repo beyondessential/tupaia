@@ -174,7 +174,10 @@ export const SurveyResponseModal = () => {
   if (!surveyResponseId) return null;
 
   const responseUnavailable =
-    isOfflineFirst && !isLoadingSurveyResponse && !surveyResponse && !error;
+    isOfflineFirst &&
+    !isLoadingSurveyResponse &&
+    !error &&
+    (!surveyResponse || Object.keys(surveyResponse.answers ?? {}).length === 0);
 
   if (responseUnavailable) {
     return <UnavailableResponseModal isOpen onClose={onClose} />;

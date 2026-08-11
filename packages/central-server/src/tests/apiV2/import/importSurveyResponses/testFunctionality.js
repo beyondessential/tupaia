@@ -1,6 +1,5 @@
-import { expect } from 'chai';
-import groupBy from 'lodash.groupby';
-import pick from 'lodash.pick';
+import chai from 'chai';
+import { groupBy, pick } from 'es-toolkit/compat';
 import moment from 'moment';
 
 import {
@@ -12,14 +11,16 @@ import {
 import { resetTestData, TestableApp } from '../../../testUtilities';
 import { importValidFile } from './helpers';
 import {
-  createSurveyResponses,
   CLINIC_DATA_SURVEY,
+  createSurveyResponses,
   FACILITY_FUNDAMENTALS_SURVEY,
   NON_PERIODIC_RESPONSES_AFTER_UPDATES,
   PERIODIC_RESPONSES_AFTER_UPDATES,
   WEEKLY_SURVEY,
   YEARLY_SURVEY,
 } from './importSurveyResponses.fixtures';
+
+const { expect } = chai;
 
 const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 

@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/meditrak-app",
-  "version": "1.14.144",
+  "version": "1.14.145",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -20,8 +20,6 @@
     "@react-native-community/netinfo": "^9.4.1",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
-    "appcenter": "^5.0.0",
-    "appcenter-analytics": "^5.0.0",
     "babel-polyfill": "^6.9.1",
     "bson-objectid": "^2.0.4",
     "moment": "^2.24.0",

@@ -62,8 +62,12 @@ const getLocal = async ({
       { survey_response_id: surveyResponseId },
       { columns: ['text', 'question_id', 'type'] },
     );
-    if (answerList.length === 0) return null;
 
+    // answerList may be empty as the AnswerModel is PUSH_TO_CENTRAL only, so the
+    // offline DB has no answer rows for responses submitted on other devices. Consumers that
+    // need the answers should treat an empty `answers` map as "submission unavailable on this
+    // device"; consumers that only need response metadata (e.g. the initial-request tile on
+    // the task details page) can render normally.
     const answers = await SurveyResponseModel.formatAnswersForClient(transactingModels, answerList);
 
     return camelcaseKeys({

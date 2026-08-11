@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'es-toolkit/compat';
 import winston from 'winston';
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { fetchWithTimeout, HttpError } from '@tupaia/utils';

@@ -1,14 +1,15 @@
-import keyBy from 'lodash.keyby';
-import groupBy from 'lodash.groupby';
-import { respond, DatabaseError } from '@tupaia/utils';
+import { groupBy, keyBy } from 'es-toolkit/compat';
+
 import { RECORDS } from '@tupaia/database';
-import { getColumnsForMeditrakApp } from './utilities';
+import { DatabaseError, respond } from '@tupaia/utils';
+
+import { allowNoPermissions } from '../../permissions';
 import {
-  supportsPermissionsBasedSync,
   buildMeditrakSyncQuery,
   buildPermissionsBasedMeditrakSyncQuery,
+  supportsPermissionsBasedSync,
 } from './meditrakSync';
-import { allowNoPermissions } from '../../permissions';
+import { getColumnsForMeditrakApp } from './utilities';
 
 const MAX_CHANGES_RETURNED = 100;
 

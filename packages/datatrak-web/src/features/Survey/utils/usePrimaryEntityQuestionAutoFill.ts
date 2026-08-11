@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { useCurrentUserContext, useEntityAncestors } from '../../../api';
 import { getParentQuestionId } from './utils';
 import { SurveyScreenComponent, Entity } from '../../../types';

@@ -1,4 +1,4 @@
-import get from 'lodash.get';
+import { get } from 'es-toolkit/compat';
 // eslint-disable-next-line no-unused-vars
 import { Moment } from 'moment'; // Used in jsdoc
 

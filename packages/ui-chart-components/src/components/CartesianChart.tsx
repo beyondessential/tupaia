@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import get from 'lodash.get';
+import { get } from 'es-toolkit/compat';
 import {
   AreaChart,
   BarChart,

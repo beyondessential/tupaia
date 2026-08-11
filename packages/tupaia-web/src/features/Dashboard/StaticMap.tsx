@@ -6,16 +6,17 @@ import styled from 'styled-components';
 
 import { DEFAULT_BOUNDS, MOBILE_BREAKPOINT } from '../../constants';
 import { Entity } from '../../types';
-import { Media } from './Media';
+import { Image } from './Image';
 
 type EntityBounds = Entity['bounds'];
 
-const Wrapper = styled.div`
+const StyledImage = styled(Image)`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
-const areBoundsValid = (b: EntityBounds) => {
+
+const areBoundsValid = (b: EntityBounds): b is LatLngBoundsLiteral => {
   return Array.isArray(b) && b.length === 2;
 };
 
@@ -40,7 +41,7 @@ const MAPBOX_TOKEN = import.meta.env.REACT_APP_MAPBOX_TOKEN;
 const MAPBOX_BASE_ORIGIN = 'https://api.mapbox.com';
 const MAPBOX_BASE_PATHNAME = '/styles/v1/sussol/cj64gthqq297z2so13qljil5n/static';
 
-const makeStaticMapUrl = (polygonBounds: EntityBounds) => {
+const makeStaticMapUrl = (polygonBounds: LatLngBoundsLiteral) => {
   if (!polygonBounds) return '';
   const polygonPoints: LatLngBoundsLiteral = [
     [polygonBounds[1][0], polygonBounds[1][1]],
@@ -75,21 +76,17 @@ const makeStaticMapUrl = (polygonBounds: EntityBounds) => {
   return url.toString();
 };
 
-interface StaticMapProps {
+interface StaticMapProps extends Omit<React.ComponentPropsWithRef<typeof Image>, 'src'> {
   title?: string;
   bounds: EntityBounds;
 }
 
 // default bounds to be DEFAULT_BOUNDS so that something shows while loading the entity, reducing largest contentful paint speeds
-export const StaticMap = ({ bounds = DEFAULT_BOUNDS, title }: StaticMapProps) => {
+export const StaticMap = ({ bounds = DEFAULT_BOUNDS, title, ...props }: StaticMapProps) => {
   if (!areBoundsValid(bounds)) {
     return null;
   }
 
   const url = makeStaticMapUrl(bounds);
-  return (
-    <Wrapper>
-      <Media $backgroundImage={url} aria-label={`Static map image for ${title}`} />
-    </Wrapper>
-  );
+  return <StyledImage alt={`Static map image for ${title}`} {...props} src={url} />;
 };

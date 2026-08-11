@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
-import pickBy from 'lodash.pickby';
-import { DataElement, DhisAnalyticDimension, DhisAnalytics } from '../types';
+import { groupBy, keyBy, pickBy } from 'es-toolkit/compat';
+
 import { Values } from '../../../types';
+import { DataElement, DhisAnalyticDimension, DhisAnalytics } from '../types';
 import { formatInboundDataElementName } from './formatDataElementName';
 
 const DIMENSIONS: Record<string, DhisAnalyticDimension> = {
