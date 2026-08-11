@@ -39,21 +39,26 @@ for file in $common_files; do
     fi
 done
 
+# Snapshot the environment before reading the .env files, so that variables which are already set
+# (e.g. `DB_PORT=5433 yarn build-analytics-table`) can be given precedence afterwards
+env_snapshot=()
+while IFS= read -r -d '' var; do
+    env_snapshot+=("$var")
+done < <(env -0)
+
 # Load environment variables from .env files
-merged_content="$(cat $common_files)"
+eval "$(cat $common_files)"
 
-# Process command line arguments, overwriting values if present
-for var in $(env); do
-    if [[ "$var" == *=* ]]; then
-        key="${var%%=*}"
-        value="${var#*=}"
-        # Override values from command line
-        merged_content+=" $key=\"$value\""
-    fi
+# Reinstate the pre-existing environment, overwriting anything the .env files set. Values are
+# assigned directly rather than evaluated as shell source, because they can contain quotes,
+# whitespace and other characters that don’t survive a round trip through `eval`.
+for var in "${env_snapshot[@]}"; do
+    key="${var%%=*}"
+    # Skip exported shell functions, and anything else that isn’t a valid variable name
+    [[ $key =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] || continue
+    # Readonly variables can’t be reassigned, but nor could the .env files have changed them
+    printf -v "$key" '%s' "${var#*=}" 2>/dev/null || true
 done
-
-# Evaluate merged content to set variables
-eval "$merged_content"
 
 if [[ $CI = true ]]; then
     echo '::endgroup::'
