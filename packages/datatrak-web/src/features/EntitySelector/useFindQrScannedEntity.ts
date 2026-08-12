@@ -40,6 +40,19 @@ export const useFindQrScannedEntity = (
           user,
           accessPolicy: accessPolicy!,
         });
+
+        // A scanned QR id may belong to a project copy the device hasn't synced, so it
+        // won't be found locally. Fall back to the server, which resolves id → code →
+        // project copy. Requires connectivity; if offline, keep the empty local result.
+        if (!results?.length) {
+          try {
+            results = await get('entityDescendants', {
+              params: { fields: FIELDS, filter: { ...filter, projectCode }, pageSize: 1 },
+            });
+          } catch {
+            // Genuinely offline: surface "no matching entity found" as before.
+          }
+        }
       } else {
         results = await get('entityDescendants', {
           params: { fields: FIELDS, filter: { ...filter, projectCode }, pageSize: 1 },
