@@ -85,7 +85,7 @@
   },
   "scripts": {
     "build:worker": "esbuild --outfile=dist/sw.js --bundle service-worker.ts && workbox injectManifest workbox-config.js",
-    "build": "yarn package:build:types && yarn package:build:vite && yarn build:worker",
+    "build": "yarn package:build:types && NODE_OPTIONS='--max-old-space-size=6144' yarn package:build:vite && yarn build:worker",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
