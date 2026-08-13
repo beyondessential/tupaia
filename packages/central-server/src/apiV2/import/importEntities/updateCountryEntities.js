@@ -1,4 +1,3 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { ImportValidationError } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
@@ -174,13 +173,15 @@ export async function updateCountryEntities(
       },
     );
 
-    // A new copy changes the `duplicate_ids` of every other copy of this code, so
-    // bump their sync tick to force those blobs to recompute and pick up the newcomer.
+    // A new copy changes the `duplicate_ids` of every other copy of this code. Touch
+    // those rows so the updated_at_sync_tick trigger re-stamps them and the incremental
+    // sync_lookup rebuild recomputes their blobs with the newcomer. A change-channel
+    // notification alone wouldn't move the tick the rebuild keys off.
     if (isNewCopy) {
-      await transactingModels.entity.markAsChanged({
-        code,
-        [QUERY_CONJUNCTIONS.RAW]: { sql: 'id != ?', parameters: [entity.id] },
-      });
+      await transactingModels.database.executeSql(
+        `UPDATE entity SET updated_at_sync_tick = updated_at_sync_tick WHERE code = ? AND id <> ?;`,
+        [code, entity.id],
+      );
     }
 
     if (attributes !== undefined) {
