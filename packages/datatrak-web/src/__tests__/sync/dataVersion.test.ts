@@ -75,13 +75,13 @@ describe('dataVersion', () => {
     });
 
     it('returns "none" when stored version equals the required version', async () => {
-      const { models } = createModels({ [SyncFact.DATA_VERSION]: '1' });
+      const { models } = createModels({ [SyncFact.DATA_VERSION]: REQUIRED_DATA_VERSION.toString() });
       expect(await getDataVersionAction(models)).toBe('none');
       expect(mockGetSyncTick).not.toHaveBeenCalled();
     });
 
     it('returns "none" when stored version is ahead of the required version', async () => {
-      const { models } = createModels({ [SyncFact.DATA_VERSION]: '2' });
+      const { models } = createModels({ [SyncFact.DATA_VERSION]: (REQUIRED_DATA_VERSION + 1).toString() });
       expect(await getDataVersionAction(models)).toBe('none');
     });
   });
