@@ -1,3 +1,4 @@
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { ImportValidationError } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
@@ -155,6 +156,10 @@ export async function updateCountryEntities(
       projectId,
     );
 
+    // Existing map is scoped to this project, so a miss means this project had no
+    // copy of the code before — i.e. we're about to create a new per-project copy.
+    const isNewCopy = !existingEntitiesByCode.has(code);
+
     const entity = await transactingModels.entity.updateOrCreate(
       { code, project_id: projectId },
       {
@@ -168,6 +173,15 @@ export async function updateCountryEntities(
         ...(entityPolygonId ? { entity_polygon_id: entityPolygonId } : {}),
       },
     );
+
+    // A new copy changes the `duplicate_ids` of every other copy of this code, so
+    // bump their sync tick to force those blobs to recompute and pick up the newcomer.
+    if (isNewCopy) {
+      await transactingModels.entity.markAsChanged({
+        code,
+        [QUERY_CONJUNCTIONS.RAW]: { sql: 'id != ?', parameters: [entity.id] },
+      });
+    }
 
     if (attributes !== undefined) {
       await transactingModels.entity.updateEntityAttributes(entity.id, attributes);

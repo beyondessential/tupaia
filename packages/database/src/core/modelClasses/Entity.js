@@ -1043,10 +1043,19 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           ELSE
             array_remove(array_agg(DISTINCT entities_to_sync.project_id), NULL)
           END`,
+        extraData: {
+          // Other per-project copies sharing this entity's code. Lets the offline
+          // scanner resolve a scanned id (that belongs to a copy the device didn't
+          // sync) back to the local project copy via code. `array_remove(NULL)`
+          // yields an empty array when there are no siblings — never `[null]`.
+          duplicate_ids: 'array_remove(array_agg(DISTINCT sibling.id), NULL)',
+        },
       }),
       joins: `
         LEFT JOIN entities_to_sync
           ON entities_to_sync.entity_id = entity.id
+        LEFT JOIN entity sibling
+          ON sibling.code = entity.code AND sibling.id <> entity.id
       `,
       where: `entity.updated_at_sync_tick > :since`,
       groupBy: ['entity.id'],
