@@ -10,6 +10,10 @@ export const LARGE_DESKTOP_MEDIA_QUERY =
 
 export const REDIRECT_ERROR_PARAM = 'redirectError';
 
+// Bump when a server data reshape can't be reconciled incrementally. A client whose stored
+// DATA_VERSION is missing or lower does a one-time forced clean re-sync (full wipe + re-pull).
+export const REQUIRED_DATA_VERSION = 1;
+
 export const TABLET_MEDIA_QUERY = `@media screen and (min-width: ${TABLET_BREAKPOINT})`;
 
 export const MOBILE_MEDIA_QUERY = `@media screen and (max-width: ${DESKTOP_BREAKPOINT})`;
