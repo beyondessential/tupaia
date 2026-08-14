@@ -155,6 +155,10 @@ export async function updateCountryEntities(
       projectId,
     );
 
+    // Existing map is scoped to this project, so a miss means this project had no
+    // copy of the code before — i.e. we're about to create a new per-project copy.
+    const isNewCopy = !existingEntitiesByCode.has(code);
+
     const entity = await transactingModels.entity.updateOrCreate(
       { code, project_id: projectId },
       {
@@ -168,6 +172,17 @@ export async function updateCountryEntities(
         ...(entityPolygonId ? { entity_polygon_id: entityPolygonId } : {}),
       },
     );
+
+    // A new copy changes the `duplicate_ids` of every other copy of this code. Touch
+    // those rows so the updated_at_sync_tick trigger re-stamps them and the incremental
+    // sync_lookup rebuild recomputes their blobs with the newcomer. A change-channel
+    // notification alone wouldn't move the tick the rebuild keys off.
+    if (isNewCopy) {
+      await transactingModels.database.executeSql(
+        `UPDATE entity SET updated_at_sync_tick = updated_at_sync_tick WHERE code = ? AND id <> ?;`,
+        [code, entity.id],
+      );
+    }
 
     if (attributes !== undefined) {
       await transactingModels.entity.updateEntityAttributes(entity.id, attributes);

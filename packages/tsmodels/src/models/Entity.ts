@@ -18,6 +18,11 @@ export type ParentFieldsByChildId = Record<
 
 // allow the possibility of passing in own fields
 export interface EntityRecord extends Entity, BaseEntityRecord {
+  // Computed on the server into the entity sync blob (not a central column) and
+  // materialised as a real column on the client replica: other per-project copies'
+  // ids sharing this entity's code. Used by the offline QR scanner.
+  duplicate_ids?: string[] | null;
+
   getChildren: (projectId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
   getParentFromParentChildRelation: (projectId: string) => Promise<EntityRecord | undefined>;
   getChildrenFromParentChildRelation: (

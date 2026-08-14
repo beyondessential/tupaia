@@ -401,6 +401,53 @@ describe('Sync Lookup data', () => {
     spy.mockRestore();
   });
 
+  it('computes entity duplicate_ids and refreshes siblings when a new copy is touched', async () => {
+    const dupIdsFor = async (id: string) => {
+      const row: any = await models.syncLookup.findOne({ record_id: id });
+      const data = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+      return data.duplicate_ids ?? [];
+    };
+
+    // Two per-project copies sharing a code (distinct names → distinct rows).
+    const copyA = await findOrCreateDummyRecord(models.entity, {
+      code: 'dup_scan_code',
+      name: 'Dup Copy A',
+      type: 'household',
+    });
+    const copyB = await findOrCreateDummyRecord(models.entity, {
+      code: 'dup_scan_code',
+      name: 'Dup Copy B',
+      type: 'household',
+    });
+
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
+    await centralSyncManager.updateLookupTable();
+
+    expect(await dupIdsFor(copyA.id)).toEqual([copyB.id]);
+    expect(await dupIdsFor(copyB.id)).toEqual([copyA.id]);
+
+    // A newly-imported copy must propagate into the existing siblings' duplicate_ids.
+    // The importer touches the siblings so their tick advances and the incremental
+    // rebuild recomputes their blobs — replicated here.
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 20);
+    const copyC = await findOrCreateDummyRecord(models.entity, {
+      code: 'dup_scan_code',
+      name: 'Dup Copy C',
+      type: 'household',
+    });
+    await models.database.executeSql(
+      `UPDATE entity SET updated_at_sync_tick = updated_at_sync_tick WHERE code = ? AND id <> ?`,
+      ['dup_scan_code', copyC.id],
+    );
+
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, 4);
+    await centralSyncManager.updateLookupTable();
+
+    expect(await dupIdsFor(copyA.id)).toEqual(expect.arrayContaining([copyB.id, copyC.id]));
+    expect(await dupIdsFor(copyB.id)).toEqual(expect.arrayContaining([copyA.id, copyC.id]));
+    expect(await dupIdsFor(copyC.id)).toEqual(expect.arrayContaining([copyA.id, copyB.id]));
+  });
+
   describe('avoidRepull', () => {
     const snapshotOutgoingRecordsForFacility = async (avoidRepull: boolean) => {
       const deviceId = 'facility-a';
