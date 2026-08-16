@@ -1,6 +1,13 @@
 'use strict';
 
 exports.up = async function (db) {
+  // Unique attributes that should always have been enforced
+  await db.runSql(`
+      ALTER TABLE data_element ADD CONSTRAINT data_element_code_key UNIQUE (code);
+      ALTER TABLE data_group ADD CONSTRAINT data_group_code_key UNIQUE (code);
+      ALTER TABLE map_overlay ADD CONSTRAINT map_overlay_code_key UNIQUE (code);
+    `);
+
   // Hierarchy walks (entity-server, web-config-server, report aggregation) always filter
   // ancestor_descendant_relation by entity_hierarchy_id alongside ancestor_id/descendant_id,
   // and often generational_distance. The existing single-column indexes can't serve
@@ -24,13 +31,6 @@ exports.up = async function (db) {
           ON permissions_based_meditrak_sync_queue (change_time);
       END IF;
     END $$;
-  `);
-
-  // Unique attributes that should always have been enforced
-  await db.runSql(`
-    CREATE UNIQUE INDEX IF NOT EXISTS data_element_code_key ON data_element (code);
-    CREATE UNIQUE INDEX IF NOT EXISTS data_group_code_key ON data_group (code);
-    CREATE UNIQUE INDEX IF NOT EXISTS map_overlay_code_key ON map_overlay (code);
   `);
 
   // The sync-server snapshot query filters updated_at_sync_tick with a btree-unusable
@@ -75,14 +75,15 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   await db.runSql(`
+    ALTER TABLE data_element DROP CONSTRAINT IF EXISTS data_element_code_key;
+    ALTER TABLE data_group DROP CONSTRAINT IF EXISTS data_group_code_key;
+    ALTER TABLE map_overlay DROP CONSTRAINT IF EXISTS map_overlay_code_key;
+
     DROP INDEX IF EXISTS ancestor_descendant_relation_hierarchy_ancestor_idx;
     DROP INDEX IF EXISTS ancestor_descendant_relation_hierarchy_descendant_idx;
 
     DROP INDEX IF EXISTS permissions_based_meditrak_sync_queue_change_time_idx;
 
-    DROP INDEX IF EXISTS data_element_code_key;
-    DROP INDEX IF EXISTS data_group_code_key;
-    DROP INDEX IF EXISTS map_overlay_code_key;
 
     DROP INDEX IF EXISTS sync_lookup_updated_at_sync_tick_idx;
     DROP INDEX IF EXISTS sync_lookup_project_ids_gin_idx;
