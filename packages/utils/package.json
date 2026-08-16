@@ -32,7 +32,6 @@
     "fast-memoize": "^2.5.2",
     "jsonwebtoken": "^9.0.3",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.45",
     "node-fetch": "^1.7.3",
     "numeral": "^2.0.6",
     "omit-deep": "^0.3.0",

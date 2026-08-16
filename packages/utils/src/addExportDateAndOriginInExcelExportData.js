@@ -1,4 +1,5 @@
-import moment from 'moment-timezone';
+import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
 /**
  * @param {Array} exportData The sheet data that are ready to be exported
@@ -13,7 +14,7 @@ export const addExportedDateAndOriginAtTheSheetBottom = (
   startDate,
   endDate,
 ) => {
-  const formatDate = date => moment(date).format('DD/MM/YY');
+  const formatDate = date => format(new Date(date), 'dd/MM/yy');
   // Add export date and origin
   // Add two [] for spacing between the table and the export date
   return [
@@ -22,6 +23,12 @@ export const addExportedDateAndOriginAtTheSheetBottom = (
     startDate && endDate
       ? [`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}`]
       : [],
-    [`Data exported from Tupaia.org on ${moment().tz(timeZone).format('Do MMM YYYY')} ${timeZone}`],
+    [
+      `Data exported from Tupaia.org on ${formatInTimeZone(
+        new Date(),
+        timeZone,
+        'do MMM yyyy',
+      )} ${timeZone}`,
+    ],
   ];
 };
