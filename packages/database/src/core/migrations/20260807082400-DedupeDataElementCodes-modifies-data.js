@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Deduplicate data_element rows that share a code so the unique index in
+ * Deduplicate data_element rows that share a code so the unique constraint in
  * 20260807082500-AddHotPathPerformanceIndexes can be created.
  *
  * Keeps MIN(id) for determinism.
