@@ -12,6 +12,7 @@ export const configureEnv = () => {
     path.resolve(__dirname, '../../../env/external-db-connections.env'),
     /** We hit a character limit in the external-db-connections Bitwarden note */
     path.resolve(__dirname, '../../../env/external-db-connections-2.env'),
+    path.resolve(__dirname, '../../../env/external-db-connections-3.env'),
     path.resolve(__dirname, '../../../env/superset.env'),
     path.resolve(__dirname, '../../../env/weatherbit.env'),
     '../.env',
