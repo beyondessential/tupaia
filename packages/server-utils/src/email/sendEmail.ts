@@ -18,11 +18,11 @@ type TemplateContext = {
   };
 };
 
-type MailOptions = TemplateContext & {
-  subject?: string;
-  attachments?: Mail.Attachment[];
+export interface MailOptions
+  extends TemplateContext,
+    Pick<Mail.Options, 'attachments' | 'headers' | 'subject'> {
   signOff?: string;
-};
+}
 
 const compileHtml = (context: TemplateContext) => {
   const { templateName, templateContext } = context;
@@ -43,7 +43,8 @@ const compileHtml = (context: TemplateContext) => {
 };
 
 export const sendEmail = async (to: string | string[], mailOptions: MailOptions) => {
-  const { subject, templateName, templateContext, attachments, signOff } = mailOptions || {};
+  const { attachments, headers, signOff, subject, templateContext, templateName } =
+    mailOptions || {};
   const SMTP_HOST = getEnvVarOrDefault('SMTP_HOST', undefined);
   const SMTP_USER = getEnvVarOrDefault('SMTP_USER', undefined);
   const SMTP_PASSWORD = getEnvVarOrDefault('SMTP_PASSWORD', undefined);
@@ -69,7 +70,7 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions)
   });
 
   // Make sure it doesn't send real users mail from the dev server
-  const sendTo = getIsProductionEnvironment() ? to : (requireEnv('DEV_EMAIL_ADDRESS') as string);
+  const sendTo = getIsProductionEnvironment() ? to : requireEnv('DEV_EMAIL_ADDRESS');
 
   const fullHtml = compileHtml({ templateName, templateContext, signOff });
 
@@ -77,6 +78,7 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions)
     from: `Tupaia <${SITE_EMAIL_ADDRESS}>`,
     sender: SITE_EMAIL_ADDRESS,
     to: sendTo,
+    headers,
     subject,
     attachments,
     html: fullHtml,
