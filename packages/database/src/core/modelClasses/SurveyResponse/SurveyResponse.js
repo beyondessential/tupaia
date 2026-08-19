@@ -141,9 +141,12 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {ModelRegistry} models
+   * @param {{ resolveEntityId?: Function, projectId?: string }} [options]
+   *   Optional translation layer for MediTrak's canonical-id payloads — see
+   *   upsertEntitiesAndOptions for details.
    */
-  static async upsertEntitiesAndOptions(models, surveyResponses) {
-    return await upsertEntitiesAndOptions(models, surveyResponses);
+  static async upsertEntitiesAndOptions(models, surveyResponses, options) {
+    return await upsertEntitiesAndOptions(models, surveyResponses, options);
   }
 
   /**
