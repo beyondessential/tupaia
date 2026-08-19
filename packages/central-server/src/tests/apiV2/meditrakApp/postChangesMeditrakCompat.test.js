@@ -437,4 +437,94 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     // The response against the deleted canonical was quarantined, not saved.
     expect(await models.surveyResponse.findById(quarantinedResponseId)).to.not.exist;
   });
+
+  it('cascades quarantine to a response that depends on a quarantined response’s new entity', async () => {
+    // A response against a deleted canonical also creates a new entity; a second response
+    // references that entity. Since the first is quarantined the new entity never lands, so the
+    // dependent second response must be quarantined too — otherwise it would reference a
+    // non-existent entity and wedge the batch. A third, independent response still commits.
+    const deletedCode = `meditrak_cascade_${Date.now()}`;
+    const deletedCanonicalId = `00000000${generateId().slice(8)}`;
+    const survivorId = `ffffffff${generateId().slice(8)}`;
+    await models.database.executeSql(
+      `INSERT INTO entity (id, code, name, type, country_code, project_id)
+       VALUES (?, ?, ?, 'village', ?, ?), (?, ?, ?, 'village', ?, ?);`,
+      [
+        deletedCanonicalId,
+        deletedCode,
+        `Name ${deletedCode}`,
+        COUNTRY_CODE,
+        projectA.id,
+        survivorId,
+        deletedCode,
+        `Name ${deletedCode}`,
+        COUNTRY_CODE,
+        projectB.id,
+      ],
+    );
+    await models.entity.deleteById(deletedCanonicalId);
+
+    const newEntityId = generateId();
+    const newEntityCode = `meditrak_cascade_new_${Date.now()}`;
+    const base = id => ({
+      id,
+      survey_id: survey.id,
+      user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
+      start_time: generateValueOfType('date'),
+      end_time: generateValueOfType('date'),
+      timestamp: generateValueOfType('date'),
+      timezone: 'Pacific/Auckland',
+      approval_status: 'not_required',
+      answers: [],
+    });
+
+    // Response 1: against the deleted canonical, and creates a new entity.
+    const creatorResponseId = generateId();
+    const creatorResponse = {
+      ...base(creatorResponseId),
+      entity_id: deletedCanonicalId,
+      entities_upserted: [
+        {
+          id: newEntityId,
+          name: 'New village',
+          code: newEntityCode,
+          type: 'village',
+          country_code: COUNTRY_CODE,
+          parent_id: projectA.entity_id,
+          attributes: {},
+        },
+      ],
+    };
+    // Response 2: depends on the entity created by response 1.
+    const dependentResponseId = generateId();
+    const dependentResponse = { ...base(dependentResponseId), entity_id: newEntityId, entities_upserted: [] };
+    // Response 3: independent and valid.
+    const independentResponseId = generateId();
+    const independentEntityId = await insertEntity(models.database, {
+      code: `meditrak_cascade_ok_${Date.now()}`,
+      projectId: projectA.id,
+    });
+    const independentResponse = {
+      ...base(independentResponseId),
+      entity_id: independentEntityId,
+      entities_upserted: [],
+    };
+
+    const response = await app.post('changes', {
+      body: [
+        { action: 'SubmitSurveyResponse', payload: creatorResponse },
+        { action: 'SubmitSurveyResponse', payload: dependentResponse },
+        { action: 'SubmitSurveyResponse', payload: independentResponse },
+      ],
+    });
+
+    expect(response.statusCode).to.equal(200);
+    // Both the creator and its dependent were quarantined; the new entity never landed.
+    expect(await models.surveyResponse.findById(creatorResponseId)).to.not.exist;
+    expect(await models.surveyResponse.findById(dependentResponseId)).to.not.exist;
+    expect(await models.entity.findById(newEntityId)).to.not.exist;
+    // The independent response still committed.
+    expect(await models.surveyResponse.findById(independentResponseId)).to.exist;
+  });
 });

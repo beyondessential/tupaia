@@ -105,49 +105,63 @@ export async function postChanges(req, res) {
   respond(res, { message: 'Successfully integrated changes into server database' });
 }
 
+const getSurveyResponse = change => change.translatedPayload.survey_response || change.translatedPayload;
+
 /**
- * Splits SubmitSurveyResponse changes whose referenced entity no longer exists out of the
- * batch, so a single orphaned reference can't roll back everyone else's changes.
+ * Splits SubmitSurveyResponse changes whose referenced entity can't be resolved out of the
+ * batch, so a single orphaned reference can't roll back everyone else's changes. Existence is
+ * looked up once per model (not once per response). A quarantined response's entities_upserted
+ * never land, so dropping one can cascade to responses that depend on it — resolvability is
+ * settled to a fixed point.
  */
 async function partitionResolvableChanges(models, translatedChanges) {
-  const surveyResponsesInBatch = translatedChanges
-    .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
-    .map(c => c.translatedPayload.survey_response || c.translatedPayload);
-  // entities_upserted are created for the whole batch, so a response may reference an entity
-  // created by another response in the same batch — mirror assertCanSubmit's batch-wide view.
-  const upsertedEntityIds = new Set(
-    surveyResponsesInBatch.flatMap(sr => (sr.entities_upserted || []).map(e => e.id)),
+  const responseChanges = translatedChanges.filter(c => c.action === ACTIONS.SubmitSurveyResponse);
+  const entityIds = uniqueTruthy(responseChanges.map(c => getSurveyResponse(c).entity_id));
+  const clinicIds = uniqueTruthy(responseChanges.map(c => getSurveyResponse(c).clinic_id));
+  const existingEntityIds = new Set(
+    entityIds.length ? (await models.entity.findManyById(entityIds)).map(e => e.id) : [],
+  );
+  const existingClinicIds = new Set(
+    clinicIds.length ? (await models.facility.findManyById(clinicIds)).map(f => f.id) : [],
   );
 
-  const processableChanges = [];
-  const quarantinedResponses = [];
-  for (const change of translatedChanges) {
-    if (change.action !== ACTIONS.SubmitSurveyResponse) {
-      processableChanges.push(change);
-      continue;
-    }
-    const surveyResponse = change.translatedPayload.survey_response || change.translatedPayload;
-    if (await responseEntityExists(models, surveyResponse, upsertedEntityIds)) {
-      processableChanges.push(change);
-    } else {
-      quarantinedResponses.push(surveyResponse);
+  const processable = new Set(responseChanges);
+  let settled = false;
+  while (!settled) {
+    settled = true;
+    // Only entities created by responses that are still in the batch are guaranteed to land.
+    const createdEntityIds = new Set(
+      [...processable].flatMap(c => (getSurveyResponse(c).entities_upserted || []).map(e => e.id)),
+    );
+    for (const change of [...processable]) {
+      if (!resolvesEntity(getSurveyResponse(change), existingEntityIds, existingClinicIds, createdEntityIds)) {
+        processable.delete(change);
+        settled = false;
+      }
     }
   }
+
+  const quarantinedResponses = responseChanges
+    .filter(c => !processable.has(c))
+    .map(getSurveyResponse);
+  const processableChanges = translatedChanges.filter(
+    c => c.action !== ACTIONS.SubmitSurveyResponse || processable.has(c),
+  );
   return { processableChanges, quarantinedResponses };
 }
 
-// Mirrors how SurveyResponse.assertCanSubmit resolves a response's entity: an entity created
-// anywhere in the batch is fine even before it exists in the db; otherwise the referenced
-// entity (or legacy clinic) must exist.
-async function responseEntityExists(models, surveyResponse, upsertedEntityIds) {
+// Mirrors how SurveyResponse.assertCanSubmit resolves a response's entity: an entity created by
+// a response still in the batch is fine even before it exists in the db; otherwise the
+// referenced entity (or legacy clinic) must exist.
+const resolvesEntity = (surveyResponse, existingEntityIds, existingClinicIds, createdEntityIds) => {
   const { entity_code: entityCode, entity_id: entityId, clinic_id: clinicId } = surveyResponse;
   if (entityCode) return true;
-  if (entityId) {
-    return upsertedEntityIds.has(entityId) || (await models.entity.exists({ id: entityId }));
-  }
-  if (clinicId) return await models.facility.exists({ id: clinicId });
+  if (entityId) return createdEntityIds.has(entityId) || existingEntityIds.has(entityId);
+  if (clinicId) return existingClinicIds.has(clinicId);
   return true;
-}
+};
+
+const uniqueTruthy = values => [...new Set(values.filter(Boolean))];
 
 /**
  * Contains functions that accept the database and payload, and handle the relevant change action
