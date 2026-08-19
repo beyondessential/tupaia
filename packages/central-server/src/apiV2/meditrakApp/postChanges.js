@@ -1,4 +1,5 @@
 import { cloneDeep } from 'es-toolkit/compat';
+import winston from 'winston';
 
 import { AnalyticsRefresher } from '@tupaia/database';
 import {
@@ -54,8 +55,25 @@ export async function postChanges(req, res) {
       translatedChanges.push({ action, translatedPayload, ...rest });
     }
 
+    // A response can reference an entity that has since been hard-deleted on central (e.g. a
+    // device that submitted against a canonical entity before pulling the delete-swap). Both
+    // the permission check and the resolver throw on the missing id, and as the whole batch
+    // commits in one transaction that would roll back every other change and wedge the sync.
+    // Quarantine those responses so the rest of the batch still commits.
+    const { processableChanges, quarantinedResponses } = await partitionResolvableChanges(
+      transactingModels,
+      translatedChanges,
+    );
+    for (const surveyResponse of quarantinedResponses) {
+      winston.warn(
+        `Skipping MediTrak survey response ${surveyResponse.id}: referenced entity ` +
+          `${surveyResponse.entity_id ?? surveyResponse.clinic_id} no longer exists ` +
+          `(likely a deleted canonical entity). Committing the rest of the sync batch.`,
+      );
+    }
+
     // Check permissions for survey responses
-    const surveyResponsePayloads = translatedChanges
+    const surveyResponsePayloads = processableChanges
       .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
       .map(c => c.translatedPayload.survey_response || c.translatedPayload);
     const surveyResponsePermissionsChecker = async accessPolicy => {
@@ -69,7 +87,7 @@ export async function postChanges(req, res) {
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
     );
 
-    for (const { action, translatedPayload, ...rest } of translatedChanges) {
+    for (const { action, translatedPayload, ...rest } of processableChanges) {
       await ACTION_HANDLERS[action](transactingModels, translatedPayload);
 
       if (action === ACTIONS.SubmitSurveyResponse) {
@@ -85,6 +103,50 @@ export async function postChanges(req, res) {
   });
 
   respond(res, { message: 'Successfully integrated changes into server database' });
+}
+
+/**
+ * Splits SubmitSurveyResponse changes whose referenced entity no longer exists out of the
+ * batch, so a single orphaned reference can't roll back everyone else's changes.
+ */
+async function partitionResolvableChanges(models, translatedChanges) {
+  const surveyResponsesInBatch = translatedChanges
+    .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
+    .map(c => c.translatedPayload.survey_response || c.translatedPayload);
+  // entities_upserted are created for the whole batch, so a response may reference an entity
+  // created by another response in the same batch — mirror assertCanSubmit's batch-wide view.
+  const upsertedEntityIds = new Set(
+    surveyResponsesInBatch.flatMap(sr => (sr.entities_upserted || []).map(e => e.id)),
+  );
+
+  const processableChanges = [];
+  const quarantinedResponses = [];
+  for (const change of translatedChanges) {
+    if (change.action !== ACTIONS.SubmitSurveyResponse) {
+      processableChanges.push(change);
+      continue;
+    }
+    const surveyResponse = change.translatedPayload.survey_response || change.translatedPayload;
+    if (await responseEntityExists(models, surveyResponse, upsertedEntityIds)) {
+      processableChanges.push(change);
+    } else {
+      quarantinedResponses.push(surveyResponse);
+    }
+  }
+  return { processableChanges, quarantinedResponses };
+}
+
+// Mirrors how SurveyResponse.assertCanSubmit resolves a response's entity: an entity created
+// anywhere in the batch is fine even before it exists in the db; otherwise the referenced
+// entity (or legacy clinic) must exist.
+async function responseEntityExists(models, surveyResponse, upsertedEntityIds) {
+  const { entity_code: entityCode, entity_id: entityId, clinic_id: clinicId } = surveyResponse;
+  if (entityCode) return true;
+  if (entityId) {
+    return upsertedEntityIds.has(entityId) || (await models.entity.exists({ id: entityId }));
+  }
+  if (clinicId) return await models.facility.exists({ id: clinicId });
+  return true;
 }
 
 /**
