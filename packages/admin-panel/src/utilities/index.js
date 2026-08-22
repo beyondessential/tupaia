@@ -7,7 +7,6 @@ export { labelToId } from './labelToId';
 export { makeSubstitutionsInString } from './makeSubstitutionsInString';
 export * from './persistSearch';
 export * from './pretty';
-export { usePortalWithCallback } from './usePortalWithCallback';
 export {
   useHasBesAdminAccess,
   useHasPermissionGroup,

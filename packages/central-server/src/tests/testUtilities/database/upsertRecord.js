@@ -39,10 +39,6 @@ export const upsertQuestion = async (data = {}) => {
   });
 };
 
-export const upsertDataElement = async data => {
-  return upsertDummyRecord(models.dataElement, data);
-};
-
 export const upsertDataGroup = async data => {
   return upsertDummyRecord(models.dataGroup, data);
 };

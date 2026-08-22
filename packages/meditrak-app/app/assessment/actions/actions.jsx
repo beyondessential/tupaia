@@ -14,14 +14,13 @@ import {
   SURVEY_SCREEN_SELECT,
   SURVEY_SELECT,
   UPDATE_SURVEYS,
-  WIPE_CURRENT_SURVEY,
   VALIDATION_ERROR_CHANGE,
   SURVEY_SCREEN_ERROR_MESSAGE_CHANGE,
   SCROLL_CONTROL_ATTACH,
   SCROLL_CONTROL_RELEASE,
 } from '../constants';
 import { openSurvey, openSurveyGroup } from '../../navigation/actions';
-import { watchUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
+import { watchUserLocation } from '../../utilities/userLocation';
 import { validateAnswer } from '../validation';
 import { doesScreenHaveValidationErrors, getEntityCreationQuestions } from '../helpers';
 
@@ -78,16 +77,6 @@ export const takeScrollControl = () => ({
 export const releaseScrollControl = () => ({
   type: SCROLL_CONTROL_RELEASE,
 });
-
-export const continueUnfinishedSurvey = () => dispatch => {
-  dispatch(openSurvey());
-  dispatch(watchUserLocation());
-};
-
-export const wipeCurrentSurvey = () => dispatch => {
-  dispatch({ type: WIPE_CURRENT_SURVEY });
-  dispatch(stopWatchingUserLocation());
-};
 
 const findPrimaryEntityQuestion = questions =>
   questions.find(question => question.type === 'PrimaryEntity');

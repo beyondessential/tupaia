@@ -19,7 +19,6 @@ import { zipMultipleFiles } from '../../utilities';
 const FILE_PREFIX = 'survey_response_export';
 const MAX_RESPONSES_PER_FILE = 10000; // exporting too many responses in one file ends up out of memory
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
-export const API_DATE_FORMAT = 'YYYY-MM-DD';
 const INFO_COLUMNS = {
   id: 'Id',
   type: 'Type',

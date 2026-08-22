@@ -5,7 +5,6 @@ export * from './datetime';
 export * from './getSyncQueueChangeTime';
 export * from './hashStringToInt';
 export { isValidHttpUrl } from './isValidHttpUrl';
-export * from './object';
 export { OBJECT_ID_PATTERN, isObjectId } from './objectId';
 export * from './period';
 export * from './task';

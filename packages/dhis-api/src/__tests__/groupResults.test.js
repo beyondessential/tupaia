@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import { PERIOD_TYPES } from '@tupaia/tsutils';
-import { groupAnalyticsByPeriod, groupEventsByOrgUnit, groupEventsByPeriod } from '../groupResults';
+import { groupAnalyticsByPeriod, groupEventsByPeriod } from '../groupResults';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
 
@@ -126,24 +126,6 @@ describe('groupResults', () => {
         20170102: [d20170102],
         20171231: [d20171231],
         20180101: [d20180101],
-      });
-    });
-  });
-
-  describe('groupEventsByOrgUnit()', () => {
-    it('should return an empty object for no events', () => {
-      expect(groupEventsByOrgUnit()).toStrictEqual({});
-      expect(groupEventsByOrgUnit([])).toStrictEqual({});
-    });
-
-    it('should group events by org unit', () => {
-      const nukunuku1 = { orgUnit: 'TO_Nukuhc', dataValues: { POP01: '1' } };
-      const kolonga = { orgUnit: 'TO_KlongaHC', dataValues: { POP01: '2' } };
-      const nukunuku2 = { orgUnit: 'TO_Nukuhc', dataValues: { POP01: '3' } };
-
-      expect(groupEventsByOrgUnit([nukunuku1, kolonga, nukunuku2])).toStrictEqual({
-        TO_Nukuhc: [nukunuku1, nukunuku2],
-        TO_KlongaHC: [kolonga],
       });
     });
   });

@@ -14,9 +14,6 @@ export const getScreens = state => state.assessment.screens || [];
 
 export const getTotalNumberOfScreens = state => getScreens(state).length;
 
-export const getEntityQuestionState = (state, questionId) =>
-  state.entity.questions[questionId] || {};
-
 export const getErrorMessageForScreen = (state, screenIndex) => {
   // If the screen index is past the end of the screens array, get the submit screen error
   if (screenIndex === getTotalNumberOfScreens(state)) {

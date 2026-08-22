@@ -249,31 +249,6 @@ export const replaceEnum = (db, enumName, enumValues) => {
 };
 
 /**
- * Use to calculate "bounds" for all entities with a region
- * Will only calculate for entities with NULL bounds, i.e. use this for newly
- * added entities, not for updating entities with existing bounds.
- *
- * NOTE: Keep in mind if you change this function, it WILL alter past migrations.
- */
-export function populateEntityBounds(db) {
-  return db.runSql(`
-    UPDATE "entity"
-    SET
-      "bounds" = ST_Expand(ST_Envelope("point"::geometry), 1)
-    WHERE
-      "bounds" IS NULL
-      AND "point" IS NOT NULL;
-
-    UPDATE "entity"
-    SET
-      "bounds" = ST_Envelope("region"::geometry)
-    WHERE
-      "bounds" IS NULL
-      AND "region" IS NOT NULL;
-  `);
-}
-
-/**
  * ~~~~Utility Templates~~~~~
  * !DO NOT EXPORT AND IMPORT!
  * These represent the currently accepted way of performing common database migration functions
