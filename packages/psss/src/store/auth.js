@@ -67,7 +67,6 @@ export const updateProfile = payload => async dispatch => {
 // selectors
 export const getCurrentUser = ({ auth }) => auth && auth.user;
 export const checkIsLoading = ({ auth }) => auth.status === 'loading';
-export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
 export const getError = ({ auth }) => auth.error;
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.isLoggedIn;

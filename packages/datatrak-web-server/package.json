@@ -22,7 +22,7 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9998 -ts -i",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test"
+    "test": "yarn package:test --passWithNoTests"
   },
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",

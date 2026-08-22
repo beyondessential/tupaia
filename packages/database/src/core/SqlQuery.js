@@ -89,15 +89,4 @@ export class SqlQuery {
   async executeOnDatabase(database) {
     return database.executeSql(this.query, this.parameters);
   }
-
-  /**
-   * @public
-   * @returns query string with all parameter replacements made, in SQL queryable format
-   */
-  loggableQuery() {
-    const replacementIterator = this.parameters
-      .map(param => (typeof param === 'string' ? param.replace(/'/g, "''") : param))
-      [Symbol.iterator]();
-    return this.query.replace(/\?/g, () => `'${replacementIterator.next().value}'`);
-  }
 }

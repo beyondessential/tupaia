@@ -173,22 +173,6 @@ export const constructIsOneOfType = types => {
   };
 };
 
-export const constructIsSubSetOf = options => arrayValue => {
-  if (!Array.isArray(arrayValue)) {
-    throw new Error('constructIsSubSetOf expects an array of values');
-  }
-
-  if (!Array.isArray(options)) {
-    throw new Error('constructIsSubSetOf expects an array of options');
-  }
-
-  const isSubSet = arrayValue.every(v => options.includes(v));
-
-  if (!isSubSet) {
-    throw new Error(`Some values of '${arrayValue.toString}' are not included in '${options}'`);
-  }
-};
-
 export const constructIsArrayOf = type => value => {
   isArray(value);
   Object.values(value).forEach(item => {
@@ -295,14 +279,6 @@ export const constructIsShorterThan = maxLength => value => {
   }
 };
 
-export const constructIsValidJson = () => value => {
-  try {
-    JSON.parse(value);
-  } catch {
-    throw new ValidationError(`${value} is not valid JSON`);
-  }
-};
-
 export const constructEveryItem = validatorFunction => async value => {
   if (!Array.isArray(value)) {
     throw new Error('Must be an array');
@@ -338,14 +314,6 @@ export const constructAtMostOneItem = booleanTest => async value => {
     }
   }
 
-  return true;
-};
-
-export const constructThisOrThatHasContent = otherFieldKey => (value, object) => {
-  if (checkIsEmpty(value) && checkIsEmpty(object[otherFieldKey])) {
-    // neither have content, throw error
-    throw new Error(`Either this field or ${otherFieldKey} must be defined`);
-  }
   return true;
 };
 

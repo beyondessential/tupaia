@@ -8,11 +8,6 @@ export type AnalyticsFetchOptions = {
   endDate?: string;
 };
 
-export type AnalyticsFetchResult = {
-  analytics: Analytic[];
-  numAggregationsProcessed: number;
-};
-
 export type Analytic = {
   period: string;
   entityCode: string;

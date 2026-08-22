@@ -90,8 +90,6 @@ export const GRANULARITIES_WITH_ONE_DATE = [
   SINGLE_YEAR,
 ];
 
-export const GRANULARITIES_WITH_MULTIPLE_DATES = [DAY, WEEK, MONTH, QUARTER, YEAR];
-
 export const GRANULARITY_SHAPE = PropTypes.oneOf([
   DAY,
   SINGLE_DAY,
@@ -330,27 +328,6 @@ export function getDefaultDates(viewConfig) {
   return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod, dateOffset);
 }
 
-export const getDefaultDrillDownDates = (drillDownViewConfig, previousStartDate) => {
-  const { periodGranularity } = drillDownViewConfig;
-
-  let defaultStartDate = null;
-  let defaultEndDate = null;
-  // If the second layer has periodGranularity set,
-  // constrain the fetch by 1st layer date range
-  if (periodGranularity) {
-    defaultStartDate = previousStartDate;
-
-    // set the endDate to be end of the startDate period
-    const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
-    defaultEndDate = moment(previousStartDate).clone().endOf(momentUnit);
-  }
-
-  return {
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
-  };
-};
-
 /**
  * @param {*} periodGranularity
  * @param {*} limits - same as defaultTimePeriod
@@ -389,19 +366,6 @@ export function getLimits(periodGranularity, limits) {
 
   return roundStartEndDates(periodGranularity, startDate, endDate);
 }
-
-/**
- * @param {Moment} date
- * @param {Moment} min
- * @param {Moment} max
- * @returns {Moment}
- */
-export const constrainDate = (date, min, max) => {
-  let d = date.clone();
-  if (d < min) d = min;
-  if (d > max) d = max;
-  return d;
-};
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 

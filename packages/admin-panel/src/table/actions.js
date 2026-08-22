@@ -7,7 +7,6 @@ import {
   ACTION_CANCEL,
   ACTION_CONFIRM,
   ACTION_REQUEST,
-  CLEAR_ERROR,
   DATA_CHANGE_ERROR,
   DATA_CHANGE_REQUEST,
   DATA_CHANGE_SUCCESS,
@@ -169,13 +168,6 @@ export const requestDeleteRecord = (reduxId, endpoint, id, confirmMessage) => ({
   actionCreator: () => deleteRecordFromTable(reduxId, endpoint, id),
 });
 
-export const requestArchiveSurveyResponse = (reduxId, endpoint, id, confirmMessage) => ({
-  type: ACTION_REQUEST,
-  reduxId,
-  confirmMessage: confirmMessage || 'Are you sure you want to archive this record?',
-  actionCreator: () => archiveSurveyResponse(reduxId, endpoint, id),
-});
-
 export const deleteRecordFromTable =
   (reduxId, endpoint, id) =>
   async (dispatch, getState, { api }) => {
@@ -202,10 +194,6 @@ export const deleteRecordFromTable =
       });
     }
   };
-
-export const clearError = () => ({
-  type: CLEAR_ERROR,
-});
 
 export const archiveSurveyResponse =
   (reduxId, endpoint, id) =>

@@ -33,15 +33,6 @@ export class GeographicalAreaRecord extends DatabaseRecord {
       `Couldn’t find parent for geographical area ${this.id} (expected geographical area with ID ${this.parent_id})`,
     );
   }
-
-  async getParents() {
-    const geographicalAreaTree = await this.model.getAncestorsPath(this.id);
-
-    // Remove first item (this item).
-    geographicalAreaTree.shift();
-
-    return geographicalAreaTree;
-  }
 }
 
 export class GeographicalAreaModel extends DatabaseModel {
@@ -49,15 +40,5 @@ export class GeographicalAreaModel extends DatabaseModel {
 
   get DatabaseRecordClass() {
     return GeographicalAreaRecord;
-  }
-
-  async getAncestorsPath(geographicalAreaId) {
-    const geographicalAreaTree = await this.database.findWithParents(
-      RECORDS.GEOGRAPHICAL_AREA,
-      geographicalAreaId,
-    );
-    return Promise.all(
-      geographicalAreaTree.map(treeItemFields => this.generateInstance(treeItemFields)),
-    );
   }
 }
