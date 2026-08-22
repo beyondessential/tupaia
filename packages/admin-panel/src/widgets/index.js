@@ -1,5 +1,5 @@
 export { IconButton } from './IconButton';
-export { InputField, JsonEditorInputField } from './InputField';
+export { InputField } from './InputField';
 export { Tabs } from './Tabs';
 export { PageHeader } from './PageHeader';
 export { PageBody, Footer } from '../layout';

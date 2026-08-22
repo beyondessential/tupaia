@@ -194,12 +194,6 @@ export class FormValidationError extends ValidationError {
   }
 }
 
-export class UnsupportedApiVersionError extends RespondingError {
-  constructor() {
-    super('This version of Tupaia is no longer supported. Please update to the latest.', 410);
-  }
-}
-
 export class Dhis2Error extends RespondingError {
   constructor(error, requestedResource) {
     super(`DHIS2 responded with the error "${error.message}" for ${requestedResource}`, 500);

@@ -1,6 +1,6 @@
 import { uniq } from 'es-toolkit';
 
-import { getSortByKey, getSortByExtractedValue } from '@tupaia/utils';
+import { getSortByKey } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from '/apiV1/dataBuilders/transform';
 import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
@@ -168,9 +168,6 @@ export class DataBuilder {
   };
 
   sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));
-
-  sortEventsByDataValue = (events, dataValue) =>
-    events.sort(getSortByExtractedValue(e => e.dataValues[dataValue]));
 
   sortDataByName = data => data.sort(getSortByKey('name'));
 

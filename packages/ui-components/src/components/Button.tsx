@@ -75,11 +75,6 @@ export const LightPrimaryButton = styled(Button)`
   }
 `;
 
-export const GreyButton = styled(Button)<OverrideableComponentProps<ButtonProps>>`
-  background-color: #6f7b82;
-  color: ${props => props.theme.palette.common.white};
-`;
-
 /*
  * Text Button
  */

@@ -23,8 +23,6 @@ export type LegacyReport = {
   dataServices: { isDataRegional: boolean }[];
 };
 
-export type ReportRecord = CamelKeysToSnake<Report> & { id: string };
-
 type CamelToSnake<T extends string> = T extends `${infer Char}${infer Rest}`
   ? `${Char extends Uppercase<Char> ? '_' : ''}${Lowercase<Char>}${CamelToSnake<Rest>}`
   : '';

@@ -29,7 +29,6 @@
     "rimraf": "^6.0.1"
   },
   "dependencies": {
-    "@tupaia/constants": "workspace:*",
-    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/constants": "workspace:*"
   }
 }

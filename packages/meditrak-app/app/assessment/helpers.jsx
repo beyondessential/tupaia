@@ -72,19 +72,6 @@ export const getUpsertEntityQuestions = questions =>
     return false;
   });
 
-export const getEntityUpdateQuestions = questions => {
-  const relevantQuestions = questions.filter(({ config }) => {
-    if (config.entity && !config.entity.createNew) {
-      const hasFieldsConfig = config.entity.fields
-        ? Object.keys(config.entity.fields).length > 0
-        : false;
-      return hasFieldsConfig;
-    }
-    return false;
-  });
-  return relevantQuestions;
-};
-
 export const getQrCodeGenerationQuestions = questions =>
   getEntityCreationQuestions(questions).filter(({ config }) => config.entity?.generateQrCode);
 

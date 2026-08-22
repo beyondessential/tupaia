@@ -2,7 +2,6 @@ import React from 'react';
 import {
   TouchableOpacity as rnTouchableOpacity,
   TouchableHighlight as rnTouchableHighlight,
-  TouchableWithoutFeedback as rnTouchableWithoutFeedback,
 } from 'react-native';
 import { analytics } from '../utilities/analytics';
 
@@ -25,4 +24,3 @@ const withAnalytics = WrappedComponent => props => {
 
 export const TouchableOpacity = withAnalytics(rnTouchableOpacity);
 export const TouchableHighlight = withAnalytics(rnTouchableHighlight);
-export const TouchableWithoutFeedback = withAnalytics(rnTouchableWithoutFeedback);

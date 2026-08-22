@@ -1,4 +1,3 @@
-import type { Response } from 'express';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 // +---------+---------+---------+----------------+
@@ -8,13 +7,6 @@ import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 // +---------+---------+---------+----------------+
 //
 // See datatrak-web/src/api/stream.ts for the full description
-
-export function startStream(res: Response) {
-  res.writeHead(200, {
-    'Content-Type': 'application/json+frame',
-    'Transfer-Encoding': 'chunked',
-  });
-}
 
 function shape(kind: number, data: unknown = undefined) {
   const dataBytes =

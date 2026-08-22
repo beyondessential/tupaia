@@ -43,10 +43,6 @@ export class DhisApi {
     this.deleteEvent = this.deleteEvent.bind(this);
   }
 
-  getResourceTypes() {
-    return DHIS2_RESOURCE_TYPES;
-  }
-
   /**
    * Constructs a new error, subclasses may override to customise error behaviour
    * @param {string} message    The error message
@@ -304,29 +300,6 @@ export class DhisApi {
 
     const response = await this.postData(EVENT, { events }, queryParameters);
     return getDiagnosticsFromResponse(response);
-  }
-
-  async updateEvent(eventId, event) {
-    const response = await this.put(`events/${eventId}`, event);
-    return getDiagnosticsFromResponse(response);
-  }
-
-  async updateEvents(events) {
-    const errors = [];
-    let totalUpdatedCount = 0;
-
-    for (let i = 0; i < events.length; i++) {
-      const eventId = events[i].event;
-
-      try {
-        const { counts } = await this.updateEvent(eventId, events[i]);
-        totalUpdatedCount += counts.updated;
-      } catch (error) {
-        errors.push(error.message);
-      }
-    }
-
-    return { counts: { updated: totalUpdatedCount }, errors };
   }
 
   async updateRecord(resourceType, record) {

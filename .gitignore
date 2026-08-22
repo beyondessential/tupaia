@@ -18,6 +18,7 @@ dump.sql
 *.todo
 **/cypress/screenshots
 **/cypress/videos
+**/cypress/__generatedConfig.json
 /snapshots.js
 .idea
 dockercfg

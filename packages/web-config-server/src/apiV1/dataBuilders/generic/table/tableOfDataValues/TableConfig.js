@@ -122,10 +122,6 @@ export class TableConfig {
     return this.baseConfig.columns && isMetadataTranslator(this.baseConfig.columns);
   }
 
-  hasMetadataCategories() {
-    return this.hasMetadataRowCategories() || this.hasMetadataColumnCategories();
-  }
-
   hasRowDataElements() {
     return (
       this.baseConfig.rows[0].hasOwnProperty('code') ||

@@ -74,7 +74,6 @@
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
     "@types/react": "^18.0.24",
-    "babel-jest": "^29.2.1",
     "eslint": "^7.32.0",
     "metro-react-native-babel-preset": "0.76.8",
     "prettier": "^3.5.1",

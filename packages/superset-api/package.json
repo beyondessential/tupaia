@@ -15,7 +15,7 @@
     "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn package:test"
+    "test": "yarn package:test --passWithNoTests"
   },
   "dependencies": {
     "@tupaia/utils": "workspace:*",
