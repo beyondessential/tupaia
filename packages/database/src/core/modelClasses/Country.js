@@ -6,10 +6,6 @@ import { RECORDS } from '../records';
 
 export class CountryRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.COUNTRY;
-
-  async geographicalAreas() {
-    return this.otherModels.geographicalArea.find({ country_id: this.id });
-  }
 }
 
 export class CountryModel extends DatabaseModel {

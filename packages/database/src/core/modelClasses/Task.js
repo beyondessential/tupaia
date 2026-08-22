@@ -193,28 +193,6 @@ export class TaskRecord extends DatabaseRecord {
   }
 
   /**
-   * @description Get all user comments for the task
-   * @returns {Promise<TaskCommentRecord[]>}
-   */
-  async userComments() {
-    return this.otherModels.taskComment.find({
-      task_id: this.id,
-      type: this.otherModels.taskComment.types.User,
-    });
-  }
-
-  /**
-   * @description Get all system comments for the task
-   * @returns {Promise<TaskCommentRecord[]>}
-   */
-  async systemComments() {
-    return this.otherModels.taskComment.find({
-      task_id: this.id,
-      type: this.otherModels.taskComment.types.System,
-    });
-  }
-
-  /**
    * @description Add a comment to the task. Handles linking the comment to the task and user, and setting the comment type
    *
    * @param {string} message

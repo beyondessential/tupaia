@@ -20,24 +20,6 @@ export const getAdminPanelAllowedCountryCodes = accessPolicy => {
   return accessibleAdminPanelCountryCodes;
 };
 
-/*
- * Get a list of country ids this user has tupaia admin panel access to, or throw an error if they have none
- *
- * @param {AccessPolicy}  accessPolicy
- * @param {ModelRegistry} models
- *
- * @returns string[] The entity ids
- */
-
-export const getAdminPanelAllowedCountryIds = async (accessPolicy, models) => {
-  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
-  const entities = await models.entity.find({
-    code: accessibleCountryCodes,
-  });
-
-  return entities.map(e => e.id);
-};
-
 /**
  * Get a mapping of countryIds to permissionGroupIds for countries that the user has Tupaia Admin Panel access to
  */

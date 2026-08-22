@@ -85,17 +85,6 @@ export function getPerformanceHeatmapColor(
   return `hsl(${Math.floor(value * 100)}, 100%, 50%)`;
 }
 
-/**
- * Takes a value and return a hsl color string for use as a style
- */
-export function getTimeHeatmapColor(
-  value: number | null, // Number in range [0..1] representing percentage
-  noDataColour?: string,
-): string {
-  if (value === null || isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
-  return `hsl(${100 - Math.floor(value * 100)}, 100%, 50%)`;
-}
-
 const HEATMAP_DEFAULT_RGB_SET = [
   'rgb(255, 255, 204)',
   'rgb(255, 237, 160)',

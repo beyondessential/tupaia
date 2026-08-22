@@ -15,7 +15,6 @@ export { useCurrentUserRecentSurveys, useRecentSurveys } from './useRecentSurvey
 export { useLeaderboard } from './useLeaderboard';
 export { useUserRewards } from './useUserRewards';
 export { useActivityFeed, useCurrentProjectActivityFeed } from './useActivityFeed';
-export { useProjectSurveys } from './useProjectSurveys';
 export { useEntities } from './useEntities';
 export { useTaskMetrics } from './useTaskMetrics';
 export { useTasks } from './useTasks';

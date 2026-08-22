@@ -6,7 +6,6 @@ export const YELLOW = '#FFCC24';
 export const RED = '#F76853';
 export const ORANGE = '#EF5A06';
 export const GREEN = '#02B851';
-export const DARKGREY = '#283238'; // dark background
 export const LIGHTGREY = '#F9F9F9'; // page background
 export const TEXT_DARKGREY = '#414D55';
 export const TEXT_MIDGREY = '#898989';
@@ -17,10 +16,8 @@ export const DARK_GREEN = '#00972E';
 
 export const LIGHT_BLUE = '#99D6FF';
 export const LIGHT_RED = '#F76853';
-export const LIGHT_ORANGE = '#FFECE1';
 
 // Greys (based on first 2 letters of hex code)
-export const GREY_72 = '#727D84';
 export const GREY_9F = '#9FA6AA';
 export const GREY_B8 = '#B8B8B8';
 export const GREY_DE = '#DEDEDE';

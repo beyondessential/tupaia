@@ -47,11 +47,6 @@ export const MAP_COLORS = {
 };
 
 export const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
-export const DEFAULT_COLOR_SCHEME = 'default';
-export const REVERSE_DEFAULT_COLOR_SCHEME = 'default-reverse';
-export const PERFORMANCE_COLOR_SCHEME = 'performance';
-export const TIME_COLOR_SCHEME = 'time';
-export const GPI_COLOR_SCHEME = 'gpi';
 
 export const BREWER_AUTO = [
   BREWER_PALETTE.navy,

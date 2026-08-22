@@ -54,16 +54,6 @@ export class TransformTable {
     return index > -1 && index < this.length();
   }
 
-  public getColumnValues(columnName: string) {
-    if (!this.hasColumn(columnName)) {
-      throw new Error(
-        `Cannot get values for column name: ${columnName}, it does not exist in the table`,
-      );
-    }
-
-    return this.rows.map(row => row[columnName]);
-  }
-
   /**
    *
    * @returns A new TransformTable with the rows inserted

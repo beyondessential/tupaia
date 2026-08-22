@@ -1,12 +1,7 @@
-import {
-  getDiagnosticsFromResponse,
-  checkIsImportResponse,
-  RESPONSE_TYPES,
-  STATUS_TYPES,
-} from '../responseUtils';
+import { getDiagnosticsFromResponse, checkIsImportResponse, RESPONSE_TYPES } from '../responseUtils';
 
 const { IMPORT_SUMMARY, IMPORT_SUMMARIES, OBJECT_REPORT } = RESPONSE_TYPES;
-const { ERROR } = STATUS_TYPES;
+const ERROR = 'ERROR';
 
 const DHIS_REFERENCE = 'dhisReference';
 const ERROR_MESSAGE = 'Test error';
