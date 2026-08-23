@@ -19,20 +19,6 @@ exports.up = async function (db) {
       ON ancestor_descendant_relation (entity_hierarchy_id, descendant_id, generational_distance);
   `);
 
-  // Every MediTrak sync poll (GET /changes, /changes/count) filters the
-  // permissions_based_meditrak_sync_queue materialized view on change_time and orders by it,
-  // but the view only has the UNIQUE (id) index required for REFRESH CONCURRENTLY.
-  // Guarded because the matview is created outside the migration chain.
-  await db.runSql(`
-    DO $$
-    BEGIN
-      IF to_regclass('public.permissions_based_meditrak_sync_queue') IS NOT NULL THEN
-        CREATE INDEX IF NOT EXISTS permissions_based_meditrak_sync_queue_change_time_idx
-          ON permissions_based_meditrak_sync_queue (change_time);
-      END IF;
-    END $$;
-  `);
-
   // The sync-server snapshot query filters updated_at_sync_tick with a btree-unusable
   // array-overlap (&&) on project_ids. Replace the composite (whose second column is dead
   // weight) with a plain tick btree, plus a GIN for initial syncs where the tick filter
@@ -81,9 +67,6 @@ exports.down = async function (db) {
 
     DROP INDEX IF EXISTS ancestor_descendant_relation_hierarchy_ancestor_idx;
     DROP INDEX IF EXISTS ancestor_descendant_relation_hierarchy_descendant_idx;
-
-    DROP INDEX IF EXISTS permissions_based_meditrak_sync_queue_change_time_idx;
-
 
     DROP INDEX IF EXISTS sync_lookup_updated_at_sync_tick_idx;
     DROP INDEX IF EXISTS sync_lookup_project_ids_gin_idx;
