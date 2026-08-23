@@ -30,7 +30,7 @@ export class ProjectRecord extends DatabaseRecord {
     /** @type {EntityRelationRecord[]} */
     const entityRelations = await this.otherModels.entityRelation.find(
       { parent_id: this.entity_id },
-      { columns: ['child_id'] },
+      { columns: ['child_id'], distinct: true },
     );
     return await Promise.all(
       entityRelations.map(async entityRelation =>
