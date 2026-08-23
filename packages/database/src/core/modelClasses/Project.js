@@ -5,7 +5,6 @@
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('./Entity').EntityRecord} EntityRecord
- * @typedef {import('./EntityRelation').EntityRelationRecord} EntityRelationRecord
  */
 
 import { SyncDirections } from '@tupaia/constants';
@@ -27,18 +26,15 @@ export class ProjectRecord extends DatabaseRecord {
    * @returns {Promise<EntityRecord[]>}
    */
   async countries() {
-    /** @type {EntityRelationRecord[]} */
-    const entityRelations = await this.otherModels.entityRelation.find(
-      { parent_id: this.entity_id },
-      { columns: ['child_id'], distinct: true },
-    );
-    return await Promise.all(
-      entityRelations.map(async entityRelation =>
-        this.otherModels.entity.findOne({
-          id: entityRelation.child_id,
-          type: EntityTypeEnum.country,
-        }),
-      ),
+    return await this.otherModels.entity.find(
+      {
+        type: EntityTypeEnum.country,
+        'entity_relation.parent_id': this.entity_id,
+      },
+      {
+        joinWith: RECORDS.ENTITY_RELATION,
+        joinCondition: ['entity.id', 'entity_relation.child_id'],
+      },
     );
   }
 
@@ -138,7 +134,7 @@ export class ProjectModel extends DatabaseModel {
               entity_relation er
             WHERE
               -- optimisation: limit subquery to only relations that link to project entities
-              er.parent_id IN (SELECT entity_id FROM project) 
+              er.parent_id IN (SELECT entity_id FROM project)
             GROUP BY
               parent_id) sub ON p.entity_id = sub.parent_id
         WHERE ?;
