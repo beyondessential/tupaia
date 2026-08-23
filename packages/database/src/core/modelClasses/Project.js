@@ -32,6 +32,7 @@ export class ProjectRecord extends DatabaseRecord {
         'entity_relation.parent_id': this.entity_id,
       },
       {
+        distinct: true,
         joinWith: RECORDS.ENTITY_RELATION,
         joinCondition: ['entity.id', 'entity_relation.child_id'],
       },
