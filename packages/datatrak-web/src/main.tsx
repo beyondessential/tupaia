@@ -58,9 +58,8 @@ if (useIsOfflineFirst()) {
     log.info('Checking for updates...');
     await wb.update();
 
-    if (registration.waiting && registration.active) {
-      promptUserToUpdate(registration);
-    }
+    // promptUserToUpdate no-ops unless a worker is waiting behind an active controller.
+    promptUserToUpdate(registration);
   });
 
   // Add periodic update checks for PWAs (every 1 minute)
@@ -77,10 +76,8 @@ if (useIsOfflineFirst()) {
     log.info('Periodic update check...');
     await workboxInstance.update();
 
-    // Catch any waiting worker that the update check may have surfaced
-    if (registration.waiting && registration.active) {
-      promptUserToUpdate(registration);
-    }
+    // Catch any waiting worker the update check surfaced (promptUserToUpdate self-guards).
+    promptUserToUpdate(registration);
   }, UPDATE_CHECK_INTERVAL);
 }
 

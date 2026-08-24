@@ -56,18 +56,24 @@ export const UpdateNotification = () => {
       return;
     }
 
-    // Following the workbox-window recipe: register controllerchange listener
-    // *before* messaging the worker, so it's guaranteed to be in place.
-    // Do not use a timed fallback reload: if skipWaiting never takes effect, a blind
-    // reload still runs under the old controller and serves the same cached bundle.
-    const onControllerChange = () => {
+    // Reload as soon as the new worker takes control. `controllerchange` is the usual
+    // signal, but it's unreliable in standalone PWAs on iOS Safari, so also watch the
+    // waiting worker's own state — it reaches 'activated' after skipWaiting even when
+    // controllerchange never fires. We deliberately avoid a blind timed reload: that
+    // would run under the OLD controller and re-serve the same cached bundle.
+    const reloadOnce = () => {
       if (controllerChangeReloadScheduled) {
         return;
       }
       controllerChangeReloadScheduled = true;
       window.location.reload();
     };
-    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
+    navigator.serviceWorker.addEventListener('controllerchange', reloadOnce);
+    waiting.addEventListener('statechange', () => {
+      if (waiting.state === 'activated') {
+        reloadOnce();
+      }
+    });
 
     waiting.postMessage({ type: 'SKIP_WAITING' });
   };
