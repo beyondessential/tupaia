@@ -63,13 +63,14 @@ const StyledButton = styled(Button)`
     }
   }
 `;
-export const ChangePasswordForm = () => {
-  const emptyFormState: ResetPasswordParams = {
-    oldPassword: '',
-    newPassword: '',
-    newPasswordConfirm: '',
-  };
 
+const emptyFormState = {
+  oldPassword: '',
+  newPassword: '',
+  newPasswordConfirm: '',
+} as const satisfies ResetPasswordParams;
+
+export const ChangePasswordForm = () => {
   const formContext = useForm<ResetPasswordParams>({
     defaultValues: emptyFormState,
     mode: 'onChange',
@@ -80,7 +81,7 @@ export const ChangePasswordForm = () => {
     reset,
   } = formContext;
 
-  const { mutate: attemptPasswordChange } = useResetPassword({
+  const { mutateAsync: attemptPasswordChange } = useResetPassword({
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t update your password. Please try again'),
     onSettled: () => reset(emptyFormState),

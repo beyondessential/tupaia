@@ -24,11 +24,10 @@ export const useResetPassword = (options?: {
   const oneTimeLoginToken = urlSearchParams.get(PASSWORD_RESET_TOKEN_PARAM);
 
   return useMutation<any, Error, ResetPasswordParams, unknown>(
-    ({ oldPassword, newPassword, newPasswordConfirm }: ResetPasswordParams) => {
-      return post('me/changePassword', {
+    async ({ oldPassword, newPassword, newPasswordConfirm }: ResetPasswordParams) =>
+      await post('me/changePassword', {
         data: { oldPassword, newPassword, newPasswordConfirm, oneTimeLoginToken },
-      });
-    },
+      }),
     {
       onError: (error: Error) => {
         if (options?.onError) options.onError(error);
@@ -39,10 +38,13 @@ export const useResetPassword = (options?: {
       onSuccess: (response: ResBody) => {
         // manually navigate to the removed token - using setUrlParams seems to remove the hash as well in this one case
         urlSearchParams.delete(PASSWORD_RESET_TOKEN_PARAM);
-        navigate({
-          ...location,
-          search: urlSearchParams.toString(),
-        }, { replace: true });
+        navigate(
+          {
+            ...location,
+            search: urlSearchParams.toString(),
+          },
+          { replace: true },
+        );
 
         if (options?.onSuccess) options.onSuccess(response);
       },
