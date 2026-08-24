@@ -3,10 +3,9 @@
 exports.up = async function (db) {
   // Unique attributes that should always have been enforced
   await db.runSql(`
-      ALTER TABLE data_element ADD CONSTRAINT data_element_code_key UNIQUE (code);
-      ALTER TABLE data_group ADD CONSTRAINT data_group_code_key UNIQUE (code);
-      ALTER TABLE map_overlay ADD CONSTRAINT map_overlay_code_key UNIQUE (code);
-    `);
+    ALTER TABLE data_element ADD CONSTRAINT data_element_code_key UNIQUE (code);
+    ALTER TABLE data_group ADD CONSTRAINT data_group_code_key UNIQUE (code);
+  `);
 
   // Hierarchy walks (entity-server, web-config-server, report aggregation) always filter
   // ancestor_descendant_relation by entity_hierarchy_id alongside ancestor_id/descendant_id,
