@@ -11,3 +11,8 @@ declare module 'pglite-dist/pglite.data?url' {
   const url: string;
   export default url;
 }
+
+declare module 'pglite-dist/initdb.wasm?url' {
+  const url: string;
+  export default url;
+}

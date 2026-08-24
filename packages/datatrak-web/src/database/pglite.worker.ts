@@ -1,10 +1,15 @@
 /// <reference lib="webworker" />
 import { PGlite, types } from '@electric-sql/pglite';
 import { worker } from '@electric-sql/pglite/worker';
-// PGlite locates these two files itself with `new URL('pglite.wasm', import.meta.url)`, but that
+// PGlite locates these files itself with `new URL('pglite.wasm', import.meta.url)`, but that
 // happens at runtime where Vite can't rewrite it, so after bundling it would request an asset
 // that doesn't exist. Import them explicitly instead ('pglite-dist' is an alias in vite.config.js)
 // so they get hashed, cache-safe URLs, and hand them to PGlite below.
+//
+// `initdb.wasm` is separate from `pglite.wasm` as of PGlite 0.4 — it is only used on a first run
+// (when there is no data directory to resume) but must still be supplied, or that first run fails
+// while creating the cluster.
+import initdbWasmUrl from 'pglite-dist/initdb.wasm?url';
 import fsBundleUrl from 'pglite-dist/pglite.data?url';
 import wasmUrl from 'pglite-dist/pglite.wasm?url';
 
@@ -71,18 +76,31 @@ worker({
      */
     // WebAssembly.compile rather than compileStreaming, so a misconfigured `Content-Type` on the
     // .wasm file can't break startup
-    const [wasmModule, fsBundle] = await Promise.all([
-      fetch(wasmUrl)
+    const compileWasm = (url: string) =>
+      fetch(url)
         .then(response => response.arrayBuffer())
-        .then(bytes => WebAssembly.compile(bytes)),
+        .then(bytes => WebAssembly.compile(bytes));
+
+    const [pgliteWasmModule, initdbWasmModule, fsBundle] = await Promise.all([
+      compileWasm(wasmUrl),
+      compileWasm(initdbWasmUrl),
       fetch(fsBundleUrl).then(response => response.blob()),
     ]);
 
     const db = new PGlite({
       dataDir: options.dataDir,
       debug: options.debug,
-      wasmModule,
+      // Renamed from `wasmModule` in PGlite 0.4; `initdbWasmModule` is new in the same release
+      pgliteWasmModule,
+      initdbWasmModule,
       fsBundle,
+      /*
+       * Default parser for TIMESTAMP (without time zone) is the `Date` constructor, but that
+       * interprets the input string in UTC. We want to treat these as floating times. Must be set
+       * here rather than on the main thread: rows are parsed in this worker before being cloned
+       * across, so parsers set on the PGliteWorker side would never run.
+       */
+      parsers: { [types.TIMESTAMP]: (value: string) => value },
       // Fire-and-forget IndexedDB writes — a large speed-up, especially for bulk writes like
       // sync. Only enabled once a first startup has fully completed (see getConnectionConfig),
       // because during first-run setup it is dangerous: PGlite persists the freshly created data
@@ -93,12 +111,6 @@ worker({
       relaxedDurability: true,
     });
     await db.waitReady;
-
-    // Default parser for TIMESTAMP (without time zone) is the `Date` constructor, but that
-    // interprets the input string in UTC. We want to treat these as floating times. Must be set
-    // here rather than on the main thread: rows are parsed in this worker before being cloned
-    // across, so parsers set on the PGliteWorker side would never run.
-    db.parsers[types.TIMESTAMP] = (value: string) => value;
 
     return db;
   },
