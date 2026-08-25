@@ -63,13 +63,14 @@ const StyledButton = styled(Button)`
     }
   }
 `;
-export const ChangePasswordForm = () => {
-  const emptyFormState: ResetPasswordParams = {
-    oldPassword: '',
-    newPassword: '',
-    newPasswordConfirm: '',
-  };
 
+const emptyFormState = {
+  oldPassword: '',
+  newPassword: '',
+  newPasswordConfirm: '',
+} as const satisfies ResetPasswordParams;
+
+export const ChangePasswordForm = () => {
   const formContext = useForm<ResetPasswordParams>({
     defaultValues: emptyFormState,
     mode: 'onChange',
@@ -80,18 +81,20 @@ export const ChangePasswordForm = () => {
     reset,
   } = formContext;
 
-  const { mutateAsync: attemptPasswordChange } = useResetPassword({
+  const { mutateAsync: attemptPasswordChange, isLoading } = useResetPassword({
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t update your password. Please try again'),
-    onSettled: () => reset(emptyFormState),
-    onSuccess: response => successToast(response.message),
+    onSuccess: response => {
+      successToast(response.message);
+      reset(emptyFormState);
+    },
   });
 
-  const formIsInsubmissible = isValidating || !isValid || isSubmitting;
+  const formIsInsubmissible = isValidating || !isValid || isSubmitting || isLoading;
 
   return (
     <StyledForm onSubmit={attemptPasswordChange} formContext={formContext}>
-      <StyledFieldset>
+      <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="password"
           Input={StyledTextField}

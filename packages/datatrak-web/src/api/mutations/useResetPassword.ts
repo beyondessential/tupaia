@@ -16,6 +16,8 @@ interface ResBody {
 export const useResetPassword = (
   options?: UseMutationOptions<ResBody, Error, ResetPasswordParams, unknown>,
 ) => {
+  const { meta, onSuccess, ...delegated } = options ?? {};
+
   const [urlSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,8 +29,8 @@ export const useResetPassword = (
         data: { oldPassword, newPassword, newPasswordConfirm, oneTimeLoginToken },
       }),
     {
-      meta: { applyCustomErrorHandling: true },
-      ...options,
+      ...delegated,
+      meta: { ...meta, applyCustomErrorHandling: true },
       onSuccess: (data: ResBody, variables, context) => {
         // manually navigate to the removed token - using setUrlParams seems to remove the hash as well in this one case
         urlSearchParams.delete(PASSWORD_RESET_TOKEN_PARAM);
@@ -39,7 +41,7 @@ export const useResetPassword = (
           },
           { replace: true },
         );
-        options?.onSuccess?.(data, variables, context);
+        onSuccess?.(data, variables, context);
       },
     },
   );
