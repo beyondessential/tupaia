@@ -92,8 +92,16 @@ export const ChangePasswordForm = () => {
 
   const formIsInsubmissible = isValidating || !isValid || isSubmitting || isLoading;
 
+  const onSubmit = async (data: ResetPasswordParams) => {
+    try {
+      await attemptPasswordChange(data);
+    } catch {
+      // Handled by useMutation’s onError
+    }
+  };
+
   return (
-    <StyledForm onSubmit={attemptPasswordChange} formContext={formContext}>
+    <StyledForm onSubmit={onSubmit} formContext={formContext}>
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="password"
