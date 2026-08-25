@@ -270,6 +270,10 @@ export class CentralSyncManager {
     accessPolicy: AccessPolicy,
   ): Promise<PullInitiationResult | void> {
     try {
+      log.info('[PROJECTIDS] server initiatePull received', {
+        sessionId,
+        projectIds: params.projectIds,
+      });
       if (params.projectIds?.length === 0) {
         throw new Error('No project IDs provided');
       }
@@ -358,6 +362,11 @@ export class CentralSyncManager {
     let transactionTimeout;
     try {
       await this.connectToSession(sessionId);
+
+      log.info('[PROJECTIDS] server setupSnapshotForPull received', {
+        sessionId,
+        projectIds: snapshotParams.projectIds,
+      });
 
       if (!snapshotParams.projectIds?.length) {
         throw new Error('Project IDs are required');

@@ -202,6 +202,7 @@ export class ClientSyncManager {
   async getProjectsInSync(): Promise<Project['id'][]> {
     const syncedProjectsFact = await this.models.localSystemFact.get(SyncFact.PROJECTS_IN_SYNC);
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
+    log.info('[PROJECTIDS] getProjectsInSync', { rawFact: syncedProjectsFact, syncedProjectIds });
     return syncedProjectIds;
   }
 
@@ -283,6 +284,8 @@ export class ClientSyncManager {
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
 
     const projectIds = await this.getProjectsInSync();
+
+    log.info('[PROJECTIDS] runSync', { projectIds, length: projectIds.length, urgent });
 
     if (projectIds.length === 0) {
       log.warn('ClientSyncManager.runSync(): No projects in sync');

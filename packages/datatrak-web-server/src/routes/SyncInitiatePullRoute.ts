@@ -17,6 +17,12 @@ export class SyncInitiatePullRoute extends Route<SyncInitiatePullRequest> {
     const { ctx } = this.req;
     const { sessionId } = this.req.params;
     const { since: sinceString, projectIds, userId, deviceId } = this.req.body;
+    // eslint-disable-next-line no-console
+    console.log('[PROJECTIDS] datatrak-web-server SyncInitiatePullRoute body', {
+      sessionId,
+      projectIds,
+      since: sinceString,
+    });
     const since = parseInt(sinceString, 10);
     if (isNaN(since)) {
       throw new Error('Must provide "since" when creating a pull filter, even if it is 0');
