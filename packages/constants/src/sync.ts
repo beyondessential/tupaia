@@ -33,6 +33,7 @@ export const SYNC_STREAM_MESSAGE_KIND = {
 export enum SyncFact {
   CURRENT_SYNC_TICK = 'currentSyncTick',
   CURRENT_USER_ID = 'currentUserId',
+  DATA_VERSION = 'dataVersion',
   DEVICE_ID = 'deviceId',
   LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull',
   LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush',

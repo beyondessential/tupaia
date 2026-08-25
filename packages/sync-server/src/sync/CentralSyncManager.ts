@@ -19,6 +19,7 @@ import {
   withDeferredSyncSafeguards,
   findLastSuccessfulSyncedProjects,
   incomingSyncHook,
+  scopeIncomingEntitiesToProject,
   bumpSyncTickForRepull,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
@@ -645,6 +646,15 @@ export class CentralSyncManager {
           // run any side effects that updates the pushed records and requires repull
           // eg: uploading images and files answers to S3, and update the answer text to the new S3 URL
           await incomingSyncHook(transactingModels.database, transactingModels, sessionId);
+
+          // Project-scope pushed entities that arrive with project_id null (e.g. from a pre-epic
+          // client mid-upgrade), so they satisfy entity_project_id_check instead of failing the
+          // whole batch and wedging the sync.
+          await scopeIncomingEntitiesToProject(
+            transactingModels.database,
+            transactingModels,
+            sessionId,
+          );
 
           await withDeferredSyncSafeguards(transactingModels.database, () =>
             saveIncomingSnapshotChanges(modelsToInclude, sessionId, true),

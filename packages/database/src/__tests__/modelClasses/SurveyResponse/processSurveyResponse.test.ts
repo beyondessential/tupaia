@@ -15,9 +15,13 @@ const optionSetId = 'optionSetId';
 const mockModels = {
   entity: {
     findById: mockFindEntityById,
+    count: async (_criteria: Record<string, unknown>) => 1, // treat as existing → update path
   },
   option: {
     findOne: async ({ value }: { value: any }) => (value === '2' ? { value } : null),
+  },
+  survey: {
+    findById: async (_id: string) => ({ id: 'theSurveyId', project_id: 'theProjectId' }),
   },
 };
 

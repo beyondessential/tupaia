@@ -34,8 +34,6 @@ describe('Sync Lookup data', () => {
   let sessionId: string;
   let project: any;
   let entity1: any;
-  let entity2: any;
-  let entityHierarchy: any;
   let optionSet: any;
   let permissionGroup: any;
   let survey: any;
@@ -54,29 +52,20 @@ describe('Sync Lookup data', () => {
       last_name: 'User Account',
     });
     await findOrCreateDummyRecord(models.country, { code: 'test_country' });
-    entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
-      name: 'test_entity_hierarchy',
-      canonical_types: '{country}',
-    });
     project = await findOrCreateDummyRecord(models.project, {
       code: 'test_project',
       description: 'Test Project',
-      entity_hierarchy_id: entityHierarchy.id,
     });
     entity1 = await findOrCreateDummyRecord(models.entity, {
       code: 'test_entity',
       name: 'Test Entity',
       type: 'village',
     });
-    entity2 = await findOrCreateDummyRecord(models.entity, {
+    await findOrCreateDummyRecord(models.entity, {
       code: 'test_entity2',
       name: 'Test Entity 2',
       type: 'facility',
-    });
-    await findOrCreateDummyRecord(models.entityParentChildRelation, {
-      entity_hierarchy_id: entityHierarchy.id,
       parent_id: entity1.id,
-      child_id: entity2.id,
     });
     optionSet = await findOrCreateDummyRecord(models.optionSet, { name: 'test_option_set' });
     await findOrCreateDummyRecord(models.option, {
@@ -95,7 +84,7 @@ describe('Sync Lookup data', () => {
       project_id: project.id,
       survey_group_id: surveyGroup.id,
     });
-      
+
     await findOrCreateDummyRecord(models.surveyResponseDraft, {
       survey_id: survey.id,
       user_id: userAccount.id,
@@ -145,6 +134,15 @@ describe('Sync Lookup data', () => {
       user_id: userAccount.id,
       entity_id: entity1.id,
       permission_group_id: permissionGroup.id,
+    });
+    const countryEntity = await findOrCreateDummyRecord(models.entity, {
+      code: 'test_country_entity',
+      name: 'Test Country Entity',
+      type: 'country',
+    });
+    await findOrCreateDummyRecord(models.projectCountry, {
+      project_id: project.id,
+      country_id: countryEntity.id,
     });
   };
 
@@ -401,6 +399,53 @@ describe('Sync Lookup data', () => {
     });
 
     spy.mockRestore();
+  });
+
+  it('computes entity duplicate_ids and refreshes siblings when a new copy is touched', async () => {
+    const dupIdsFor = async (id: string) => {
+      const row: any = await models.syncLookup.findOne({ record_id: id });
+      const data = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+      return data.duplicate_ids ?? [];
+    };
+
+    // Two per-project copies sharing a code (distinct names → distinct rows).
+    const copyA = await findOrCreateDummyRecord(models.entity, {
+      code: 'dup_scan_code',
+      name: 'Dup Copy A',
+      type: 'household',
+    });
+    const copyB = await findOrCreateDummyRecord(models.entity, {
+      code: 'dup_scan_code',
+      name: 'Dup Copy B',
+      type: 'household',
+    });
+
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
+    await centralSyncManager.updateLookupTable();
+
+    expect(await dupIdsFor(copyA.id)).toEqual([copyB.id]);
+    expect(await dupIdsFor(copyB.id)).toEqual([copyA.id]);
+
+    // A newly-imported copy must propagate into the existing siblings' duplicate_ids.
+    // The importer touches the siblings so their tick advances and the incremental
+    // rebuild recomputes their blobs — replicated here.
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 20);
+    const copyC = await findOrCreateDummyRecord(models.entity, {
+      code: 'dup_scan_code',
+      name: 'Dup Copy C',
+      type: 'household',
+    });
+    await models.database.executeSql(
+      `UPDATE entity SET updated_at_sync_tick = updated_at_sync_tick WHERE code = ? AND id <> ?`,
+      ['dup_scan_code', copyC.id],
+    );
+
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, 4);
+    await centralSyncManager.updateLookupTable();
+
+    expect(await dupIdsFor(copyA.id)).toEqual(expect.arrayContaining([copyB.id, copyC.id]));
+    expect(await dupIdsFor(copyB.id)).toEqual(expect.arrayContaining([copyA.id, copyC.id]));
+    expect(await dupIdsFor(copyC.id)).toEqual(expect.arrayContaining([copyA.id, copyB.id]));
   });
 
   describe('avoidRepull', () => {
