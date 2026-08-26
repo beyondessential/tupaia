@@ -9,12 +9,15 @@
 
 set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 
-declare -i start_time="$SECONDS"
+declare -i start_time=$(date +%s)
 
 home_dir=/home/ubuntu
 tupaia_dir=$home_dir/tupaia
 logs_dir=$home_dir/logs
 deployment_scripts=$tupaia_dir/packages/devops/scripts/deployment-aws
+
+# Create a directory for logs to go
+mkdir -m 777 -p "$logs_dir"
 
 # Add tag for CI/CD to use as a health check
 instance_id=$(ec2metadata --instance-id)
@@ -25,8 +28,10 @@ tag_errored() {
   aws ec2 create-tags --resources "$instance_id" --tags Key=StartupBuildProgress,Value=errored
   service nginx stop # stop nginx as an obvious sign the build has failed
 
-  declare -i duration=$((SECONDS - start_time))
-  echo "Startup failed after $((duration / 60)) min $((duration % 60)) s"
+  declare -i duration=$(($(date +%s) - start_time))
+  local message="Startup failed after $((duration / 60)) min $((duration % 60)) s"
+  echo "$message" # to cloud-init output log
+  echo "$(date --iso-8601=seconds) │ $message" >>"$logs_dir"/deployment.log
 }
 trap tag_errored ERR
 
@@ -63,15 +68,11 @@ set_prompt() {
 }
 set_prompt
 
-# Create a directory for logs to go
-mkdir -m 777 -p "$logs_dir"
-
 schedule_preaggregation_job() {
-  \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
-  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
-  sudo -u ubuntu crontab -l >>tmp.cron || echo >>tmp.cron
-  sudo -u ubuntu crontab tmp.cron
-  rm tmp.cron
+  {
+    echo "10 13 * * * $tupaia_dir/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt"
+    sudo -Hu ubuntu crontab -l || true # non-zero when ubuntu has no crontab yet
+  } | sudo -Hu ubuntu crontab -
 }
 
 fetch_latest_code() {
@@ -101,11 +102,11 @@ main() {
   #   $deployment_scripts/startCloudwatchAgent.sh
   # fi
 
+  fetch_latest_code
+
   if [[ $deployment_name = production ]]; then
     schedule_preaggregation_job
   fi
-
-  fetch_latest_code
 
   # central-server and data-table-server need Tailnet access for external database connections
   sudo -Hu ubuntu DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
@@ -119,7 +120,7 @@ main() {
   # Tag as complete so CI/CD system can use the tag as a health check
   aws ec2 create-tags --resources "$instance_id" --tags Key=StartupBuildProgress,Value=complete
 
-  local -i duration=$((SECONDS - start_time))
+  declare -i duration=$(($(date +%s) - start_time))
   echo "Startup completed in $((duration / 60)) min $((duration % 60)) s"
 }
 

@@ -16,14 +16,30 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
 
       - name: Install Java
+        id: java
         uses: actions/setup-java@v5
+        background: true
         with:
           java-version: '11'
           distribution: 'adopt'
           cache: 'gradle'
 
       - name: Validate Gradle wrapper
+        id: gradle-wrapper
         uses: gradle/actions/wrapper-validation@v6
+        background: true
+
+      - name: Fetch environment variables
+        id: fetch-env
+        # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
+        # See https://github.com/bitwarden/sm-action/issues/264
+        uses: bitwarden/sm-action@v3.0.0
+        background: true
+        with:
+          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
+          # Access via https://vault.bitwarden.com/#/sm
+          secrets: 682237eb-edea-4dac-a4f7-b325003d2120 > MEDITRAK_APP_ENV
 
       - uses: ./.github/actions/setup-yarn
 
@@ -39,15 +55,7 @@ jobs:
       - name: Build dependencies
         run: yarn run build:from meditrak-app
 
-      - name: Fetch environment variables
-        # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
-        # See https://github.com/bitwarden/sm-action/issues/264
-        uses: bitwarden/sm-action@v3.0.0
-        with:
-          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
-          # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
-          # Access via https://vault.bitwarden.com/#/sm
-          secrets: 682237eb-edea-4dac-a4f7-b325003d2120 > MEDITRAK_APP_ENV
+      - wait: fetch-env
 
       - name: Write .env file
         # Register the secret with ::add-mask:: so GitHub Actions masks it in the logs
@@ -59,6 +67,8 @@ jobs:
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
         run: echo -e "BETA_BRANCH=\"${{ github.head_ref }}\"" >>packages/meditrak-app/.env
+
+      - wait: [java, gradle-wrapper]
 
       - name: Build release
         working-directory: packages/meditrak-app/android

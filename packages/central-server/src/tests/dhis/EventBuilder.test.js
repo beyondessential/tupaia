@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 
 import {
@@ -12,6 +12,8 @@ import * as Enrollments from '../../dhis/api/enrollments';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
 import { getModels, upsertEntity } from '../testUtilities';
 import { DHIS_RESOURCES, ENTITIES, SURVEYS } from './EventBuilder.fixtures';
+
+const { expect } = chai;
 
 const models = getModels();
 

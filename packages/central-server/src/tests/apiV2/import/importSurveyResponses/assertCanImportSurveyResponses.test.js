@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   addBaselineTestCountries,

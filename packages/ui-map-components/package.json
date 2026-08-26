@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/ui-map-components",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "description": "A library of map components for the tupaia monorepo",
   "repository": {
@@ -9,12 +9,10 @@
     "directory": "packages/ui-map-components"
   },
   "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
-  "source": "src/index.js",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false,
   "scripts": {
-    "build": "rimraf dist && yarn package:build:ts",
-    "build-dev": "yarn run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --env=jsdom",
@@ -43,7 +41,6 @@
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",
     "@types/styled-components": "^5.1.26",
-    "jest": "^29.7.0",
-    "rimraf": "^6.0.1"
+    "jest": "^29.7.0"
   }
 }

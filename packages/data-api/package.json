@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/data-api",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "description": "Fetches data from the Tupaia database, in the form of events or analytics",
   "repository": {
@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/node": "^20.11.1",
+    "@types/node": "^26.1.2",
     "db-migrate": "^0.11.5",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1",

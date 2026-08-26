@@ -48,6 +48,20 @@ const config: StorybookConfig = {
       resolve: {
         preserveSymlinks: true, // use the yarn workspace symlinks
         alias: {
+          // The ui component packages are source-only (no build step), so resolve them to their
+          // TypeScript sources and let Vite compile them alongside the stories
+          '@tupaia/ui-chart-components': path.resolve(
+            __dirname,
+            '../packages/ui-chart-components/src/index.ts',
+          ),
+          '@tupaia/ui-map-components': path.resolve(
+            __dirname,
+            '../packages/ui-map-components/src/index.ts',
+          ),
+          '@tupaia/ui-components': path.resolve(
+            __dirname,
+            '../packages/ui-components/src/index.ts',
+          ),
           http: path.resolve(__dirname, '../mock/moduleMock.js'),
           winston: path.resolve(__dirname, '../mock/moduleMock.js'),
           jsonwebtoken: path.resolve(__dirname, '../mock/moduleMock.js'),

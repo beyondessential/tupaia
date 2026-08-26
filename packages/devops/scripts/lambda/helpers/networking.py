@@ -23,6 +23,10 @@ def get_cert(type_tag):
 
 elbv2 = boto3.client("elbv2")
 
+# New gateways default to a 60s connection idle timeout, which drops long-running
+# sync pulls mid-apply and forces clients to retry from scratch.
+GATEWAY_IDLE_TIMEOUT_SECONDS = 300
+
 
 class GatewayNotFoundError(Exception):
     """Raised when no gateway ELB or target group matches the given deployment tags."""
@@ -115,7 +119,17 @@ def create_gateway_elb(deployment_type, deployment_name, config):
         Type=config["Type"],
         IpAddressType=config["IpAddressType"],
     )
-    return response["LoadBalancers"][0]
+    elb = response["LoadBalancers"][0]
+    elbv2.modify_load_balancer_attributes(
+        LoadBalancerArn=elb["LoadBalancerArn"],
+        Attributes=[
+            {
+                "Key": "idle_timeout.timeout_seconds",
+                "Value": str(GATEWAY_IDLE_TIMEOUT_SECONDS),
+            },
+        ],
+    )
+    return elb
 
 
 def create_gateway_target_group(deployment_type, deployment_name, config):
