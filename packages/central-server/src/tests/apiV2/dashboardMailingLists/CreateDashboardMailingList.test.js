@@ -1,10 +1,12 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { buildAndInsertProjectsAndHierarchies, clearTestData } from '@tupaia/database';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('Permissions checker for CreateDashboardMailingList', async () => {
   const DEFAULT_POLICY = {

@@ -103,7 +103,7 @@ export const Footer = () => {
       <ContentContainer>
         <AttributionText>
           ©&nbsp;{new Date().getFullYear()}{' '}
-          <Link href="https://bes.au">Beyond Essential Systems</Link>
+          <Link href="https://bes.au">BES International</Link>
         </AttributionText>
         <AttributionText>
           Map used on this site: ©&nbsp;

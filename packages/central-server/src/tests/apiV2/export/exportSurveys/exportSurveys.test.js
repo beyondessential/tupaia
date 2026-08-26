@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 import xlsx from 'xlsx';
 import {
@@ -8,6 +8,8 @@ import {
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
 import { TestableApp } from '../../../testUtilities';
+
+const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

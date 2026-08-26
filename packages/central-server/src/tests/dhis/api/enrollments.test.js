@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 
 import { DhisApi } from '@tupaia/dhis-api';
@@ -8,6 +8,8 @@ import {
   getEnrollmentsByTrackedEntityId,
   checkIsTrackedEntityEnrolledToProgram,
 } from '../../../dhis/api/enrollments';
+
+const { expect } = chai;
 
 const ORG_UNIT_ID = 'testOrgUnitId';
 const PROGRAM_ID = 'testProgramId';

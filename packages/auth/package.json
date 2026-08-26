@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/auth",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Back-end authentication used internally by web-config-server and central-server to authenticate a user's credentials against the database, and build their access policy.",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/auth"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -26,7 +26,7 @@
     "@node-rs/argon2": "^2.0.2",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^9.0.3",
     "rand-token": "^1.0.1",
     "randomatic": "^3.1.1",
     "semver-compare": "^1.0.0",

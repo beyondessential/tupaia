@@ -11,7 +11,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git"
   },
   "license": "GPL-3.0-or-later",
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "workspaces": {
     "packages": [
       "packages/*"
@@ -56,7 +56,15 @@
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@babel/types": "7.25.6",
-    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
+    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
+    "@types/react@*": "16.9.17",
+    "on-headers": "1.1.0",
+    "react-smooth/lodash": "^4.18.0"
+  },
+  "dependenciesMeta": {
+    "puppeteer": {
+      "built": true
+    }
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
@@ -74,12 +82,12 @@
     "@beyondessential/eslint-config-jest": "^1.0.0",
     "@beyondessential/eslint-config-js": "^1.1.1",
     "@beyondessential/eslint-config-ts": "^2.0.0",
-    "@bitwarden/cli": "2025.4.0",
+    "@bitwarden/cli": "2026.7.0",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/builder-vite": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",
-    "@types/node": "^20.11.1",
+    "@types/node": "^26.1.2",
     "@vitejs/plugin-react": "^4.0.4",
     "babel-jest": "^29.7.0",
     "babel-preset-react-app": "^10.0.0",
@@ -93,7 +101,7 @@
     "jest-when": "^3.6.0",
     "nodemon": "^2.0.4",
     "npm-package-json-lint": "5.1.0",
-    "pm2": "^6.0.8",
+    "pm2": "^7.0.3",
     "prettier": "^3.5.1",
     "react-docgen-typescript-plugin": "^1.0.8",
     "storybook": "^8.2.9",
@@ -105,7 +113,7 @@
     "vite-plugin-ejs": "^1.6.4"
   },
   "engines": {
-    "node": "^20.11.1"
+    "node": "26.7.0"
   },
-  "packageManager": "yarn@4.13.0+sha256.730e0619753d39754c9e7613c7e57f084ea18b3244f5ba9a5a60bd3da048450b"
+  "packageManager": "yarn@4.18.0+sha512.fcb8716fe7cd0eece141ffc18b92193a9df9204c1ba83189c288835223fc0bbe64af473bab0d5e9927a7daeb5caf2bb07eb2787cc9338ca040ea125f2a1f2f7e"
 }

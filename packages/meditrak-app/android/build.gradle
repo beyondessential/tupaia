@@ -20,3 +20,19 @@ buildscript {
         classpath("com.bugsnag:bugsnag-android-gradle-plugin:8.+")
     }
 }
+
+// The React Native Gradle plugin adds https://oss.sonatype.org/content/repositories/snapshots/
+// as the first repository (so users on nightly/-SNAPSHOT builds could resolve them).
+// OSSRH shut down in 2025 and now returns 504s, which aborts dependency resolution and breaks
+// build.
+// MediTrak depends only on released builds, so we make Gradle short-circuit the dead host.
+allprojects {
+    repositories {
+        all { repo ->
+            if (repo instanceof MavenArtifactRepository
+                    && repo.url.toString().contains('oss.sonatype.org/content/repositories/snapshots')) {
+                repo.mavenContent { snapshotsOnly() }
+            }
+        }
+    }
+}

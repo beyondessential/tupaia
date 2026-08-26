@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useCurrentProjectActivityFeed } from '../../../api/queries';
+import { useIsOnline } from '../../../utils';
 import { InfiniteScroll } from './InfiniteScroll';
 import { SkeletonFeed } from './SkeletonFeed';
 import { ActivityFeedList } from './ActivityFeedList';
@@ -24,7 +25,12 @@ export const InfiniteActivityFeed = React.forwardRef<HTMLDivElement, {}>((_props
     hasNextPage,
     isFetching,
   } = useCurrentProjectActivityFeed();
+  const isOnline = useIsOnline();
   const isInitialLoad = !activityFeed;
+  // `fetchNextPage` bypasses the query's `enabled` guard, so without this the infinite scroll would
+  // keep requesting pages while offline and spam network errors. Hiding the loader stops it, and it
+  // resumes automatically once connectivity returns.
+  const canFetchNextPage = hasNextPage && isOnline;
   return (
     <Body>
       {isInitialLoad ? (
@@ -33,7 +39,7 @@ export const InfiniteActivityFeed = React.forwardRef<HTMLDivElement, {}>((_props
         <InfiniteScroll
           ref={ref}
           onScroll={fetchNextPage}
-          hasNextPage={hasNextPage}
+          hasNextPage={canFetchNextPage}
           isFetchingNextPage={isFetching}
         >
           <ActivityFeedList items={activityFeed?.pages.flatMap(page => page.items)} />

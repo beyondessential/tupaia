@@ -15,7 +15,7 @@
     "version-type": "error",
     "version-format": "error",
     "valid-values-author": ["error", [
-      "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)"
+      "BES International Limited <admin@tupaia.org> (https://bes.au)"
     ]],
     "valid-values-private": ["error", [
       true

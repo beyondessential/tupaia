@@ -1,10 +1,12 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { findOrCreateDummyRecord, generateId } from '@tupaia/database';
 import { TestableApp } from '../../testUtilities';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
+
+const { expect } = chai;
 
 const getFilterString = filter => `filter=${JSON.stringify(filter)}`;
 // remove test data after the test is finished

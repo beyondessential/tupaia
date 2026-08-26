@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
@@ -9,6 +9,8 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('Permissions checker for DeleteDashboardMailingList', async () => {
   const DEFAULT_POLICY = {

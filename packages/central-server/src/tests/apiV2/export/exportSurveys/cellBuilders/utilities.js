@@ -1,8 +1,10 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
+import chai from 'chai';
 import { ConfigImporter } from '../../../../../apiV2/import/importSurveys/ConfigImporter';
 import { ConfigValidator } from '../../../../../apiV2/import/importSurveys/Validator/ConfigValidator';
 import { QuestionConfigCellBuilder } from '../../../../../apiV2/export/exportSurveys/cellBuilders';
+
+const { expect } = chai;
 
 const addConfigToQuestion = (questions, questionCode, config) =>
   questions.map(question => (question.code === questionCode ? { ...question, config } : question));
@@ -28,13 +30,11 @@ export const cellBuilderModelsStub = questions => {
     .callsFake(({ code: searchCode }) => questions.find(({ code }) => searchCode === code));
 
   const findOneOrThrowStub = sinon.stub().returns(null);
-  findOneOrThrowStub
-    .withArgs(sinon.match(sinon.match.any))
-    .callsFake(({ code: searchCode }) => {
-      const result = questions.find(({ code }) => searchCode === code);
-      if (!result) throw new Error(`No question found with code ${searchCode}`);
-      return result;
-    });
+  findOneOrThrowStub.withArgs(sinon.match(sinon.match.any)).callsFake(({ code: searchCode }) => {
+    const result = questions.find(({ code }) => searchCode === code);
+    if (!result) throw new Error(`No question found with code ${searchCode}`);
+    return result;
+  });
 
   return {
     question: {

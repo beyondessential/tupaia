@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,
@@ -7,6 +7,8 @@ import {
 } from '@tupaia/database';
 import { getModels } from '../testUtilities';
 import { DhisChangeValidator } from '../../dhis/DhisChangeValidator';
+
+const { expect } = chai;
 
 const models = getModels();
 describe('DhisChangeValidator', async () => {

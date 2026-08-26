@@ -1,4 +1,4 @@
-import generateId from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 import {
   AUTOCOMPLETE_INPUT_CHANGE,
@@ -29,7 +29,7 @@ export const changeSearchTerm =
     columns = null,
   ) =>
   async (dispatch, getState, { api }) => {
-    const fetchId = generateId();
+    const fetchId = uuidv1();
     dispatch({
       type: AUTOCOMPLETE_INPUT_CHANGE,
       searchTerm,
