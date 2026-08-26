@@ -1,1 +1,0 @@
-export { projectsTabRoutes } from './projectsTabRoutes';

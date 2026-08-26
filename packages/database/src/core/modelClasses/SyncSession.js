@@ -50,17 +50,6 @@ export class SyncSessionModel extends DatabaseModel {
     ]);
   }
 
-  /**
-   * @param {SyncSession['id']} id
-   * @param {{
-   *   pullSince: SyncSession['pull_since'],
-   *   pullUntil: SyncSession['pull_until']
-   * }} metadata
-   */
-  async updatePullMetadata(id, { pullSince, pullUntil }) {
-    await this.updateById(id, { pull_since: pullSince, pull_until: pullUntil });
-  }
-
   async markAsStartedAt(id, tick) {
     await this.updateById(id, { started_at_tick: tick });
   }

@@ -149,18 +149,6 @@ export class UserRecord extends DatabaseRecord {
   /**
    * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {Promise<(Entity & { isRecent: true })[]>}
-   */
-  async getRecentEntities(countryCode, type, options) {
-    const entityIds = this.getRecentEntityIds(countryCode, type);
-    const entityRecords = await this.otherModels.entity.find({ id: { entityIds } }, options);
-    for (const entity of entityRecords) entity.isRecent = true;
-    return entityRecords;
-  }
-
-  /**
-   * @param {Entity['code'] | undefined} [countryCode]
-   * @param {string | undefined} [type] comma-separated list of entity types
    * @returns {Entity['id'][]}
    */
   getRecentEntityIds(countryCode, type) {

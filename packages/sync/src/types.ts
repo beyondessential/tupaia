@@ -22,8 +22,3 @@ export interface SyncSnapshotAttributes {
   syncLookupId?: number; // no syncLookupId if it is an incoming record
   requiresRepull?: boolean;
 }
-
-export type UninsertedSyncSnapshotAttributes = Omit<
-  SyncSnapshotAttributes,
-  'id' | 'savedAtSyncTick'
->;

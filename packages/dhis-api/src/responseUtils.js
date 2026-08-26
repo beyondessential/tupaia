@@ -18,14 +18,6 @@ const IMPORT_SUMMARY_RESPONSE_TYPES = {
 };
 
 const ERROR = 'ERROR';
-const SUCCESS = 'SUCCESS';
-const WARNING = 'WARNING';
-
-export const STATUS_TYPES = {
-  ERROR,
-  SUCCESS,
-  WARNING,
-};
 
 const conflictToErrorString = conflict => `Error pushing ${conflict.object}: ${conflict.value}`;
 

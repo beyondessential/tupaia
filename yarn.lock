@@ -7252,7 +7252,6 @@ __metadata:
     "@babel/core": "npm:^7.26.10"
     "@babel/eslint-parser": "npm:^7.27.5"
     "@tupaia/constants": "workspace:*"
-    "@tupaia/tsutils": "workspace:*"
     eslint: "npm:^7.32.0"
     npm-run-all: "npm:^4.1.5"
     rimraf: "npm:^6.0.1"
@@ -7415,7 +7414,6 @@ __metadata:
     "@tupaia/expression-parser": "workspace:*"
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
-    "@tupaia/sync": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -7586,7 +7584,6 @@ __metadata:
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
     npm-run-all: "npm:^4.1.5"
-    os: "npm:0.1.1"
     pg: "npm:8.5.1"
     pg-pubsub: "npm:^0.8.1"
     pluralize: "npm:^8.0.0"
@@ -7926,7 +7923,6 @@ __metadata:
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
     "@types/react": "npm:^18.0.24"
-    babel-jest: "npm:^29.2.1"
     babel-polyfill: "npm:^6.9.1"
     bson-objectid: "npm:^2.0.4"
     eslint: "npm:^7.32.0"
@@ -10684,7 +10680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-jest@npm:^29.2.1, babel-jest@npm:^29.7.0":
+"babel-jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "babel-jest@npm:29.7.0"
   dependencies:
@@ -23244,13 +23240,6 @@ __metadata:
   version: 1.0.2
   resolution: "os-tmpdir@npm:1.0.2"
   checksum: 10c0/f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
-  languageName: node
-  linkType: hard
-
-"os@npm:0.1.1":
-  version: 0.1.1
-  resolution: "os@npm:0.1.1"
-  checksum: 10c0/8b9bcca91d9f7d063b8fa3cc5735b1e250e64bfe7474e04478007e20ef98eb11c9e7548008b999c310c0068f00edbf973f1f1dffabd8a33fff04150a61171732
   languageName: node
   linkType: hard
 
