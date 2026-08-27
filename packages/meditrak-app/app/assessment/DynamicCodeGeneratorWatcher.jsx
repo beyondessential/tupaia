@@ -27,7 +27,10 @@ const resolveDynamicPrefix = (dynamicPrefix, isEntitySource, sourceAnswer) => {
   if (!sourceAnswer) return undefined;
   if (isEntitySource) {
     const entity = getEntityRecord(sourceAnswer);
-    return entity ? resolvePrefix(entity, dynamicPrefix) : undefined;
+    const prefix = entity ? resolvePrefix(entity, dynamicPrefix) : undefined;
+    // Realm optional fields (e.g. entity.code) and empty attribute values come back as null/'';
+    // treat those as "no prefix" (shows the warning) rather than crashing in generateShortId.
+    return prefix || undefined;
   }
   return sourceAnswer;
 };
