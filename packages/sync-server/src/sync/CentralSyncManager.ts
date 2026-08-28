@@ -357,26 +357,33 @@ export class CentralSyncManager {
   ): Promise<void> {
     const { since, projectIds, deviceId } = snapshotParams;
     let transactionTimeout;
+    const trace = (step: string) => process.stderr.write(`[SNAP-TRACE ${sessionId}] setup:${step}\n`);
     try {
+      trace('connectToSession');
       await this.connectToSession(sessionId);
 
       if (!snapshotParams.projectIds?.length) {
         throw new Error('Project IDs are required');
       }
 
+      trace('addInfo');
       await this.models.syncSession.addInfo(sessionId, { projectIds });
 
+      trace('startSnapshotWhenCapacityAvailable');
       // will wait for concurrent snapshots to complete if we are currently at capacity, then
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
       await startSnapshotWhenCapacityAvailable(this.models.database, sessionId);
 
+      trace('tickTockGlobalClock');
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
       // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
       const { tick } = await this.tickTockGlobalClock(this.models);
 
+      trace('waitForPendingEdits');
       await this.waitForPendingEdits(tick);
 
+      trace('updateById pull range');
       await this.models.syncSession.updateById(sessionId, { pull_since: since, pull_until: tick });
 
       // snapshot inside a "repeatable read" transaction, so that other changes made while this
@@ -384,8 +391,10 @@ export class CentralSyncManager {
       // the child in the snapshot and its parent missing)
       // as the snapshot only contains read queries plus writes to the specific sync snapshot table
       // that it controls, there should be no concurrent update issues :)
+      trace('open repeatable-read txn');
       await this.models.wrapInRepeatableReadTransaction(
         async (transactingModels: SyncServerModelRegistry) => {
+          trace('inside txn: findLastSuccessfulSyncedProjects');
           const { snapshotTransactionTimeoutMs } = this.config;
           if (snapshotTransactionTimeoutMs) {
             transactionTimeout = setTimeout(() => {
@@ -406,6 +415,7 @@ export class CentralSyncManager {
 
           // regular changes for already synced projects
           if (existingProjectIds.length > 0) {
+            trace('snapshotOutgoingChanges existing');
             log.info('Snapshotting existing projects', {
               existingProjectIds,
             });
@@ -422,6 +432,7 @@ export class CentralSyncManager {
 
           // full changes if there are new projects selected from the client
           if (newProjectIds.length > 0) {
+            trace('snapshotOutgoingChanges new');
             log.info('Snapshotting new projects', {
               newProjectIds,
             });
@@ -437,6 +448,7 @@ export class CentralSyncManager {
             );
           }
 
+          trace('removeSnapshotDataByPermissions');
           await removeSnapshotDataByPermissions(
             sessionId,
             transactingModels.database,
@@ -445,6 +457,7 @@ export class CentralSyncManager {
           );
         },
       );
+      trace('txn done');
       // this update to the session needs to happen outside of the transaction, as the repeatable
       // read isolation level can suffer serialization failures if a record is updated inside and
       // outside the transaction, and the session is being updated to show the last connection
@@ -498,6 +511,10 @@ export class CentralSyncManager {
       (t: number) => t < tick,
     );
 
+    process.stderr.write(
+      `[SNAP-TRACE] waitForPendingEdits tick=${tick} pending=${JSON.stringify(pendingSyncTicks)}\n`,
+    );
+
     // wait for any in-flight transactions of pending edits
     // so that we don't miss any changes that are in progress
     await Promise.all(
@@ -505,9 +522,11 @@ export class CentralSyncManager {
         waitForPendingEditsUsingSyncTick(this.models.database, t),
       ),
     );
+    process.stderr.write(`[SNAP-TRACE] waitForPendingEdits done tick=${tick}\n`);
   }
 
   async updateLookupTable(): Promise<void> {
+    process.stderr.write(`[SNAP-TRACE] updateLookupTable start\n`);
     const debugObject = await this.models.debugLog.create({
       type: DEBUG_LOG_TYPES.SYNC_LOOKUP_UPDATE,
       info: {
@@ -607,6 +626,7 @@ export class CentralSyncManager {
       await debugObject.addInfo({
         completedAt: new Date(),
       });
+      process.stderr.write(`[SNAP-TRACE] updateLookupTable done\n`);
     }
   }
 
