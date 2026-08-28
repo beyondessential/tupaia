@@ -71,6 +71,26 @@ export async function clearTestData(db) {
 
   const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
 
-  await db.executeSql(sql);
+  // Fail fast rather than block forever if a leaked transaction (e.g. an async sync snapshot
+  // that outlived its test) still holds a lock on one of these tables — otherwise the DELETE
+  // waits indefinitely and the whole test run hangs until the CI job timeout. On timeout, dump
+  // the other active backends so the blocking query is visible in the logs.
+  await db.executeSql(`SET lock_timeout = '30s';`);
+  try {
+    await db.executeSql(sql);
+  } catch (error) {
+    const blockers = await db.executeSql(`
+      SELECT pid, state, wait_event_type, wait_event,
+             now() - query_start AS query_age, left(query, 500) AS query
+      FROM pg_stat_activity
+      WHERE datname = current_database() AND pid <> pg_backend_pid() AND state <> 'idle'
+      ORDER BY query_start;
+    `);
+    // eslint-disable-next-line no-console
+    console.error('clearTestData was blocked. Active backends holding locks:', blockers);
+    throw error;
+  } finally {
+    await db.executeSql(`SET lock_timeout = 0;`);
+  }
   await AnalyticsRefresher.refreshAnalytics(db);
 }
