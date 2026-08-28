@@ -24,8 +24,13 @@ const TABLES_TO_CLEAR = [
   'legacy_report',
   'ancestor_descendant_relation',
   'project_country',
-  'entity',
+  // entity and project have a circular pair of ON DELETE RESTRICT foreign keys
+  // (entity.project_id -> project, project.entity_id -> entity), so no single delete order
+  // clears both. Remove the project-scoped entity copies first (never targets of
+  // project.entity_id), then projects, then the remaining shared (null project_id) entities.
+  'entity WHERE project_id IS NOT NULL',
   'project',
+  'entity',
   'data_group',
   'indicator',
   'comment',
