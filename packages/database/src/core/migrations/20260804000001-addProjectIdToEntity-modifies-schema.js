@@ -28,18 +28,29 @@ exports.up = async function (db) {
   `);
   await db.runSql(`CREATE INDEX entity_project_id_idx ON entity(project_id);`);
 
-  // Drop the global UNIQUE(code) — sub-country codes will repeat across projects, so
-  // it's superseded by UNIQUE(code, project_id) below. The dashboard FK that depends
-  // on entity_code_key has to go first; after this migration dashboard.root_entity_code
-  // is a soft text reference (no longer enforced). The DataTrak PWA's PGlite schema has
-  // no `dashboard` table, so guard the FK drop on the table's existence to keep this
-  // migration runnable on both the server and browser targets.
+  // Drop the global UNIQUE(code) — sub-country codes will repeat across projects, so it's
+  // superseded by UNIQUE(code, project_id) below. entity.code can no longer be the target of
+  // a single-column foreign key, so every FK that references entity(code) has to go first;
+  // those columns become soft text references (no longer enforced). Databases carry different
+  // drift here — dashboard.root_entity_code, the legacy data_element_data_service.country_code,
+  // possibly others — so drop them dynamically rather than by name. Browser (PGlite) targets
+  // have none of these tables, so the loop is a no-op there.
   await db.runSql(`
     DO $$
+    DECLARE
+      fk RECORD;
     BEGIN
-      IF to_regclass('dashboard') IS NOT NULL THEN
-        ALTER TABLE dashboard DROP CONSTRAINT IF EXISTS dashboard_root_entity_code_fkey;
-      END IF;
+      FOR fk IN
+        SELECT c.conrelid::regclass AS tbl, c.conname
+        FROM pg_constraint c
+        WHERE c.contype = 'f'
+          AND c.confrelid = 'entity'::regclass
+          AND (SELECT attnum FROM pg_attribute
+               WHERE attrelid = 'entity'::regclass AND attname = 'code') = ANY (c.confkey)
+      LOOP
+        EXECUTE format('ALTER TABLE %s DROP CONSTRAINT %I', fk.tbl, fk.conname);
+        RAISE NOTICE 'Dropped FK % on % (referenced entity(code))', fk.conname, fk.tbl;
+      END LOOP;
     END $$;
   `);
   await db.runSql(`ALTER TABLE entity DROP CONSTRAINT IF EXISTS entity_code_key;`);
