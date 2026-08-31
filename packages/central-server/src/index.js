@@ -41,10 +41,12 @@ configureEnv();
    * Start the HTTP server first so the port is open (and auth works) while the
    * migrations and closure-cache rebuild below run — otherwise a boot that has
    * to rebuild ancestor_descendant_relation from scratch leaves the whole site
-   * unreachable for minutes. Safe to start early: the server itself doesn't
-   * touch ancestor_descendant_relation.
+   * unreachable for minutes. Writes are gated (503) via `serverReady` until the
+   * change-listeners are wired up below, so mutations can't slip through before
+   * their handlers exist; auth and reads are served immediately.
    */
-  const app = createApp(database, models);
+  let serverReady = false;
+  const app = createApp(database, models, () => serverReady);
   const port = process.env.PORT || 8090;
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
@@ -116,6 +118,10 @@ configureEnv();
   // Add listener to handle survey response entity changes for tasks
   const taskUpdateHandler = new TaskUpdateHandler(models);
   taskUpdateHandler.listenForChanges();
+
+  // All change-listeners are registered — writes are now safe to accept.
+  serverReady = true;
+  winston.info('Change-listeners registered; now accepting writes');
 
   /**
    * Scheduled tasks
