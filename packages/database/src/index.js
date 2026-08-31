@@ -4,7 +4,12 @@ export * from './server/changeHandlers';
 export { DataTableDatabase } from './server/DataTableDatabase';
 export { TupaiaDatabase } from './server/TupaiaDatabase';
 export { getConnectionConfig } from './server/getConnectionConfig';
-export { getDbMigrator } from './server/getDbMigrator';
+export {
+  getDbMigrator,
+  runServerMigrations,
+  isMigrationInProgress,
+  DB_MIGRATION_ADVISORY_LOCK_KEY,
+} from './server/getDbMigrator';
 export {
   generateId,
   getHighestPossibleIdForGivenTime,

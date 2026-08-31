@@ -6,7 +6,12 @@ export * from './testUtilities';
 export * from './testFixtures';
 export { DataTableDatabase } from './DataTableDatabase';
 export { TupaiaDatabase } from './TupaiaDatabase';
-export { getDbMigrator } from './getDbMigrator';
+export {
+  getDbMigrator,
+  runServerMigrations,
+  isMigrationInProgress,
+  DB_MIGRATION_ADVISORY_LOCK_KEY,
+} from './getDbMigrator';
 export { getConnectionConfig } from './getConnectionConfig';
 export { DatabaseChangeChannel } from './DatabaseChangeChannel';
 export { runPostMigration } from './runPostMigration';

@@ -122,3 +122,35 @@ export const getDbMigrator = (forCli = false) => {
 
   return instance;
 };
+
+/**
+ * Advisory-lock key held for the duration of a server migration run. Other services probe it
+ * (see isMigrationInProgress) to defer work that would otherwise error against a half-migrated
+ * schema or block the migration's DDL — e.g. sync-server's SyncLookupPopulator reading `entity`
+ * while a migration needs to ALTER it.
+ */
+export const DB_MIGRATION_ADVISORY_LOCK_KEY = 'tupaia-db-migration';
+
+/**
+ * Runs pending server migrations while holding DB_MIGRATION_ADVISORY_LOCK_KEY. The lock lets
+ * other services detect that a migration is in progress, and serialises concurrent migrators
+ * (a second caller blocks until the first finishes, then finds nothing pending). The migrations
+ * themselves run on db-migrate's own connection; the wrapping transaction only holds the lock.
+ *
+ * @param {import('../server/TupaiaDatabase').TupaiaDatabase} database
+ */
+export const runServerMigrations = async database => {
+  await database.wrapInTransaction(async transactingDatabase => {
+    await transactingDatabase.acquireAdvisoryLock(DB_MIGRATION_ADVISORY_LOCK_KEY);
+    await getDbMigrator().up();
+  });
+};
+
+/**
+ * Non-blocking probe: is a server migration currently running?
+ *
+ * @param {import('../core/BaseDatabase').BaseDatabase} database
+ * @returns {Promise<boolean>}
+ */
+export const isMigrationInProgress = database =>
+  database.isAdvisoryLockTaken(DB_MIGRATION_ADVISORY_LOCK_KEY);

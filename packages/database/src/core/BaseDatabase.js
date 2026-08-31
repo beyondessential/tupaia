@@ -252,6 +252,24 @@ export class BaseDatabase {
   }
 
   /**
+   * Non-blocking probe: is the given advisory lock currently held by another session?
+   * Attempts to grab it; pg_try_advisory_xact_lock returns false when another session holds it.
+   * When run outside an explicit transaction the lock is acquired and released within the
+   * statement, so this never holds the lock itself.
+   *
+   * @param {string} lockKey unique identifier key for the lock
+   * @returns {Promise<boolean>} true if another session currently holds the lock
+   */
+  async isAdvisoryLockTaken(lockKey) {
+    const lockKeyInt = hashStringToInt(lockKey);
+    const [{ pg_try_advisory_xact_lock: acquired }] = await this.executeSql(
+      'SELECT pg_try_advisory_xact_lock(?)',
+      [lockKeyInt],
+    );
+    return !acquired;
+  }
+
+  /**
    * Builds a query on the database, which can be awaited to reveal the result.
    * Implementation notes: If the connection is available, it will return the knex built query
    * without a wrapping Promise. This is necessary for nested queries to function correctly. If the

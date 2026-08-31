@@ -6,7 +6,7 @@ import {
   AnalyticsRefresher,
   buildAncestorDescendantRelationIfEmpty,
   EntityHierarchyCacher,
-  getDbMigrator,
+  runServerMigrations,
   ModelRegistry,
   SurveyResponseOutdater,
   TaskAssigneeEmailer,
@@ -65,8 +65,9 @@ configureEnv();
     if (process.send) {
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
-      const dbMigrator = getDbMigrator();
-      await dbMigrator.up();
+      // Holds a migration advisory lock for the duration so sync-server defers its
+      // lookup-table work while the schema is changing (see isMigrationInProgress).
+      await runServerMigrations(database);
       winston.info('Database migrations complete');
 
       await buildAncestorDescendantRelationIfEmpty(models);
