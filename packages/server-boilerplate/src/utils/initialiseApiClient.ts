@@ -126,6 +126,14 @@ const upsertPermissions = async ({
  * The permissions set defines a set of given permissions for all requests, to be
  * added to the permissions the user has, e.g. Public access to Demo Land.
  */
+// Orchestration servers call this on boot. During a deploy the database can still be
+// mid-migration (schema in flux, tables locked), which makes these upserts throw. Without a
+// retry the process crashes; pm2 restarts it and it burns through its restart budget before
+// the migration finishes, leaving the server down until a manual restart. So retry for long
+// enough to outlast an upgrade migration, then fail loudly if it still can't initialise.
+const RETRY_INTERVAL_MS = 10_000;
+const MAX_RETRY_DURATION_MS = 45 * 60_000;
+
 export const initialiseApiClient = async (
   models: ServerBoilerplateModelRegistry,
   permissions: { entityCode: string; permissionGroupName: string }[],
@@ -133,23 +141,44 @@ export const initialiseApiClient = async (
   const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
   const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
 
-  await models.wrapInTransaction(async (transactingModels: ServerBoilerplateModelRegistry) => {
-    const userAccountId = await upsertUserAccount({
-      models: transactingModels,
-      email: API_CLIENT_NAME,
-      password: API_CLIENT_PASSWORD,
-    });
-    await upsertApiClient({
-      models: transactingModels,
-      userAccountId,
-      username: API_CLIENT_NAME,
-      password: API_CLIENT_PASSWORD,
-    });
-    await upsertPermissions({
-      models: transactingModels,
-      userAccountId,
-      permissions,
-    });
-    winston.info(`Initialised API client: ${API_CLIENT_NAME}`);
-  });
+  const deadline = Date.now() + MAX_RETRY_DURATION_MS;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await models.wrapInTransaction(async (transactingModels: ServerBoilerplateModelRegistry) => {
+        const userAccountId = await upsertUserAccount({
+          models: transactingModels,
+          email: API_CLIENT_NAME,
+          password: API_CLIENT_PASSWORD,
+        });
+        await upsertApiClient({
+          models: transactingModels,
+          userAccountId,
+          username: API_CLIENT_NAME,
+          password: API_CLIENT_PASSWORD,
+        });
+        await upsertPermissions({
+          models: transactingModels,
+          userAccountId,
+          permissions,
+        });
+      });
+      winston.info(`Initialised API client: ${API_CLIENT_NAME}`);
+      return;
+    } catch (error) {
+      if (Date.now() >= deadline) {
+        winston.error(
+          `Failed to initialise API client after ${attempt} attempts: ${(error as Error).message}`,
+        );
+        throw error;
+      }
+      winston.warn(
+        `Initialise API client attempt ${attempt} failed: ${
+          (error as Error).message
+        }. Retrying in ${RETRY_INTERVAL_MS / 1000}s (database may be mid-migration).`,
+      );
+      await new Promise(resolve => {
+        setTimeout(resolve, RETRY_INTERVAL_MS);
+      });
+    }
+  }
 };
