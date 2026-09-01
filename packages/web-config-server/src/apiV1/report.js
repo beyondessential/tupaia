@@ -51,8 +51,8 @@ export class ReportHandler extends DataAggregatingRouteHandler {
 
   async buildReportData(reportCode) {
     const reportConnection = new ReportConnection(this.req);
-    const hierarchyId = await this.fetchHierarchyId();
-    const hierarchyName = (await this.models.entityHierarchy.findById(hierarchyId)).name;
+    const projectId = await this.fetchProjectId();
+    const hierarchyName = (await this.models.project.findById(projectId)).code;
 
     const requestQuery = {
       organisationUnitCodes: [this.entity.code],
