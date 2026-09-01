@@ -32811,6 +32811,7 @@ export const MeasureConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -33132,6 +33133,7 @@ export const DisplayedValueTypeSchema = {
 export const EntityLevelSchema = {
 	"enum": [
 		"Asset",
+		"AssistiveDevice",
 		"BesAsset",
 		"BesOffice",
 		"Business",
@@ -33593,6 +33595,7 @@ export const BaseMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -33864,6 +33867,7 @@ export const BaseMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -34133,6 +34137,7 @@ export const BaseMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -34678,6 +34683,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -34949,6 +34955,7 @@ export const SpectrumMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -35218,6 +35225,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -35869,6 +35877,7 @@ export const IconMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -36140,6 +36149,7 @@ export const IconMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -36409,6 +36419,7 @@ export const IconMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -36985,6 +36996,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -37256,6 +37268,7 @@ export const RadiusMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -37525,6 +37538,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -38075,6 +38089,7 @@ export const ColorMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -38346,6 +38361,7 @@ export const ColorMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -38615,6 +38631,7 @@ export const ColorMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -39179,6 +39196,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -39450,6 +39468,7 @@ export const ShadingMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -39719,6 +39738,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -40275,6 +40295,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -40546,6 +40567,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -40815,6 +40837,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -41466,6 +41489,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -41737,6 +41761,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -42006,6 +42031,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -42582,6 +42608,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -42853,6 +42880,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -43122,6 +43150,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -43672,6 +43701,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -43943,6 +43973,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -44212,6 +44243,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -44776,6 +44808,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -45047,6 +45080,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -45316,6 +45350,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -80712,6 +80747,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -80983,6 +81019,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -81252,6 +81289,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -81903,6 +81941,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -82174,6 +82213,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -82443,6 +82483,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -83019,6 +83060,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -83290,6 +83332,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -83559,6 +83602,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -84109,6 +84153,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -84380,6 +84425,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -84649,6 +84695,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -85213,6 +85260,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -85484,6 +85532,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -85753,6 +85802,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -86370,6 +86420,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -86641,6 +86692,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -86910,6 +86962,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -87561,6 +87614,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -87832,6 +87886,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -88101,6 +88156,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -88677,6 +88733,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -88948,6 +89005,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -89217,6 +89275,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -89767,6 +89826,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -90038,6 +90098,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -90307,6 +90368,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -90871,6 +90933,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -91142,6 +91205,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -91411,6 +91475,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -92021,6 +92086,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -92292,6 +92358,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -92561,6 +92628,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -93212,6 +93280,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -93483,6 +93552,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -93752,6 +93822,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -94328,6 +94399,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -94599,6 +94671,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -94868,6 +94941,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -95418,6 +95492,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -95689,6 +95764,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -95958,6 +96034,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -96522,6 +96599,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -96793,6 +96871,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -97062,6 +97141,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -113658,6 +113738,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -113929,6 +114010,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -114198,6 +114280,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -114875,6 +114958,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -115146,6 +115230,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -115415,6 +115500,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -116017,6 +116103,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -116288,6 +116375,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -116557,6 +116645,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -117133,6 +117222,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -117404,6 +117494,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -117673,6 +117764,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -118263,6 +118355,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -118534,6 +118627,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -118803,6 +118897,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
