@@ -38,28 +38,7 @@ configureEnv();
   const models = new ModelRegistry(database, modelClasses, true);
 
   /**
-   * Start the HTTP server first so the port is open (and auth works) while the
-   * migrations and closure-cache rebuild below run — otherwise a boot that has
-   * to rebuild ancestor_descendant_relation from scratch leaves the whole site
-   * unreachable for minutes. Writes are gated (503) via `serverReady` until the
-   * change-listeners are wired up below, so mutations can't slip through before
-   * their handlers exist; auth and reads are served immediately.
-   */
-  let serverReady = false;
-  const app = createApp(database, models, () => serverReady);
-  const port = process.env.PORT || 8090;
-  http.createServer(app).listen(port);
-  winston.info(`Running on port ${port}`);
-  winston.info(`Logging at ${winston.level} level`);
-  winston.debug(`Time zone is ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
-  const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
-  winston.info(`Connected to ${aggregationDescription} aggregation`);
-
-  /**
-   * Run migrations before wiring up the change-listeners below. The
-   * entity-hierarchy migration truncates and rewrites
-   * ancestor_descendant_relation; if EntityHierarchyCacher is listening first
-   * it rebuilds that table concurrently and deadlocks the migration on boot.
+   * Run migrations before wiring up change-listeners or the HTTP server.
    */
   try {
     if (process.send) {
@@ -119,15 +98,27 @@ configureEnv();
   const taskUpdateHandler = new TaskUpdateHandler(models);
   taskUpdateHandler.listenForChanges();
 
-  // All change-listeners are registered — writes are now safe to accept.
-  serverReady = true;
-  winston.info('Change-listeners registered; now accepting writes');
-
   /**
    * Scheduled tasks
    */
   new TaskOverdueChecker(models).init();
   new RepeatingTaskDueDateHandler(models).init();
+
+  /**
+   * Set up actual app with routes etc.
+   */
+  const app = createApp(database, models);
+
+  /**
+   * Start the server
+   */
+  const port = process.env.PORT || 8090;
+  http.createServer(app).listen(port);
+  winston.info(`Running on port ${port}`);
+  winston.info(`Logging at ${winston.level} level`);
+  winston.debug(`Time zone is ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
+  const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
+  winston.info(`Connected to ${aggregationDescription} aggregation`);
 
   /**
    * Regularly sync data to the aggregation servers

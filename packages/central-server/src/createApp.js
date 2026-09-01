@@ -32,7 +32,7 @@ function setTrustedProxies(app) {
 /**
  * Set up express server with middleware,
  */
-export function createApp(database, models, isReady = () => true) {
+export function createApp(database, models) {
   const app = express();
 
   /**
@@ -46,26 +46,6 @@ export function createApp(database, models, isReady = () => true) {
    * Add middleware
    */
   app.use(cors());
-
-  /**
-   * Readiness gate. The HTTP server starts listening before migrations and the
-   * change-listeners are wired up (see index.js), so the port is open for auth and
-   * reads during a long boot. Reject mutations until the listeners are registered —
-   * otherwise their change-handler side effects (task creation, sync queue, hierarchy
-   * cache rebuilds) fire against an empty handler map and are silently dropped. Auth
-   * routes stay open so login keeps working.
-   */
-  const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
-  app.use((req, res, next) => {
-    if (isReady() || SAFE_METHODS.has(req.method) || req.path.startsWith('/v2/auth')) {
-      return next();
-    }
-    return res
-      .status(503)
-      .set('Retry-After', '30')
-      .json({ error: 'Server is starting up and not yet ready to accept writes. Please retry shortly.' });
-  });
-
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(errorHandler());
 
