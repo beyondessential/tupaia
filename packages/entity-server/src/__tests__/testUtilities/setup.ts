@@ -1,7 +1,7 @@
 import { encryptPassword } from '@tupaia/auth';
 import {
   buildAndInsertProjectsAndHierarchies,
-  EntityHierarchyCacher,
+  AncestorDescendantCacheBuilder,
   findOrCreateDummyRecord,
   getTestDatabase,
   getTestModels,
@@ -14,8 +14,6 @@ import { ENTITIES, ENTITY_RELATIONS, PROJECTS } from '../__integration__/fixture
 import { TestModelRegistry } from '../types';
 
 const models = getTestModels() as TestModelRegistry;
-const hierarchyCacher = new EntityHierarchyCacher(models);
-hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
 
 const userAccountEmail = 'ash-ketchum@pokemon.org';
 const userAccountPassword = 'test';
@@ -32,10 +30,11 @@ export const setupTestData = async () => {
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
   });
 
-  hierarchyCacher.listenForChanges();
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await models.database.waitForAllChangeHandlers();
-  hierarchyCacher.stopListeningForChanges();
+
+  const ancestorDescendantCacheBuilder = new AncestorDescendantCacheBuilder(models);
+  await ancestorDescendantCacheBuilder.rebuildAll();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 

@@ -7,5 +7,5 @@ export async function entityCoordinates({ answer, surveyResponse, models }) {
   }
 
   const coordinates = parseCoordinates(answer.text);
-  await models.entity.updatePointCoordinates(entity.code, coordinates);
+  await models.entity.updatePointCoordinates(entity.id, coordinates);
 }

@@ -5,28 +5,28 @@ import { calculateOuterBounds } from '@tupaia/utils';
 const getParentCode = async (
   entity: EntityRecord,
   context: {
-    hierarchyId: string;
+    projectId: string;
   },
 ) => {
-  const { hierarchyId } = context;
-  return (await entity.getParent(hierarchyId))?.code;
+  const { projectId } = context;
+  return (await entity.getParent(projectId))?.code;
 };
 
 const getChildrenCodes = async (
   entity: EntityRecord,
   context: {
-    hierarchyId: string;
+    projectId: string;
     allowedCountries: string[];
   },
 ) => {
-  const { hierarchyId, allowedCountries } = context;
-  return (await entity.getChildren(hierarchyId, { country_code: allowedCountries })).map(
+  const { projectId, allowedCountries } = context;
+  return (await entity.getChildren(projectId, { country_code: allowedCountries })).map(
     child => child.code,
   );
 };
 
 const getLocationType = (entity: EntityRecord) => {
-  if (entity.region) return 'area';
+  if (entity.entity_polygon_id) return 'area';
   if (entity.point) return 'point';
   return 'no-coordinates';
 };
@@ -34,11 +34,11 @@ const getLocationType = (entity: EntityRecord) => {
 const getParentName = async (
   entity: EntityRecord,
   context: {
-    hierarchyId: string;
+    projectId: string;
   },
 ) => {
-  const { hierarchyId } = context;
-  return (await entity.getParent(hierarchyId))?.name;
+  const { projectId } = context;
+  return (await entity.getParent(projectId))?.name;
 };
 
 const getPoint = (entity: EntityRecord) => {
@@ -46,16 +46,16 @@ const getPoint = (entity: EntityRecord) => {
 };
 
 const getRegion = (entity: EntityRecord) => {
-  return entity.getRegion();
+  return entity.getPolygon();
 };
 
 const getBounds = async (
   entity: EntityRecord,
-  context: { hierarchyId: string; allowedCountries: string[] },
+  context: { projectId: string; allowedCountries: string[] },
 ) => {
   if (entity.isProject()) {
-    const { hierarchyId, allowedCountries } = context;
-    const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
+    const { projectId, allowedCountries } = context;
+    const children = await entity.getChildren(projectId, { country_code: allowedCountries });
     if (children.length > 0) {
       return calculateOuterBounds(children.map(child => child.bounds).filter(isNotNullish));
     }
@@ -67,11 +67,11 @@ const getBounds = async (
 const getQualifiedName = async (
   entity: EntityRecord,
   context: {
-    hierarchyId: string;
+    projectId: string;
   },
 ) => {
   // Qualified name is a comma separated list of the entity's parent tree
-  const ancestors = await entity.getAncestors(context.hierarchyId);
+  const ancestors = await entity.getAncestors(context.projectId);
   return [entity, ...ancestors]
     .filter(e => e.type !== 'project') // Don't include the project name
     .map(e => e.name)

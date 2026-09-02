@@ -20,7 +20,7 @@ const dataServices = [{ isDataRegional: true }];
 const entity = {};
 const query = { organisationUnitCode: 'PG' };
 const models = {
-  project: { findOne: async () => ({ entity_hierarchy_id: 'xxx' }) },
+  project: { findOne: async () => ({ id: 'xxx' }) },
 };
 
 const fetchEvents = async () => MOCK_EVENTS;

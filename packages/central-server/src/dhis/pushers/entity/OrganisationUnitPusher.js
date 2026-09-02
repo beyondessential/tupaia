@@ -50,7 +50,6 @@ export class OrganisationUnitPusher extends EntityPusher {
     const typeCollectionName = getFacilityTypeCollectionName(typeName);
     const organisationUnitGroupCode = `FacilityType_${countryCode}_${type}_${typeCollectionName}`;
     const constructDetails = async () => {
-      // No existing group; create an organisation unit group for this facility type/country combo
       const country = await this.models.entity.findOne({ code: countryCode });
       const organisationUnitGroupName = `${country.name} Facility Type: ${typeCollectionName}`;
       return {
@@ -83,8 +82,10 @@ export class OrganisationUnitPusher extends EntityPusher {
     const organisationUnitId = await this.api.getIdFromCode(ORGANISATION_UNIT, entity.code);
     // Add to an organisation unit group of facilities for every ancestor
     const constructGroupDetails = async code => {
-      // No existing group; create an organisation unit group for this facility type/country combo
-      const ancestor = await this.models.entity.findOne({ code });
+      const ancestor = await this.models.entity.findOneByCodeInProject(
+        code,
+        entity.project_id ?? null,
+      );
       const organisationUnitGroupName = `${ancestor.name} Facilities`;
       return {
         code,
