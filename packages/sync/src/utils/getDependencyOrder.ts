@@ -48,7 +48,6 @@ export async function getDependencyOrder(
   ) as Map<PublicSchemaRecordName, PublicSchemaRecordName[]>;
 
   while (groupedDependencies.size > 0) {
-    let progressed = false;
     for (const [modelName, dependsOn] of groupedDependencies) {
       const dependenciesStillToSort = dependsOn.filter(
         d => groupedDependencies.has(d) && d !== modelName,
@@ -56,17 +55,7 @@ export async function getDependencyOrder(
       if (dependenciesStillToSort.length === 0) {
         sorted.push(modelName);
         groupedDependencies.delete(modelName);
-        progressed = true;
       }
-    }
-    if (!progressed) {
-      // The remaining tables form a foreign-key cycle (e.g. entity.project_id -> project and
-      // project.entity_id -> entity), so no acyclic order exists. Emit them as-is rather than
-      // looping forever; sync writes within a cycle rely on deferred/nullable FKs anyway.
-      for (const modelName of groupedDependencies.keys()) {
-        sorted.push(modelName);
-      }
-      break;
     }
   }
 
