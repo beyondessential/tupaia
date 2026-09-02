@@ -46,13 +46,23 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
+  // Restore the pre-migration state: the entity<->project cycle present and both FKs DEFERRABLE
+  // INITIALLY DEFERRED (the makeEntityProjectFksDeferrable state this migration superseded), so the
+  // cycle is survivable via deferral rather than reintroduced with an immediate check.
   await db.runSql(`
     DO $$
     BEGIN
+      IF EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'entity_project_id_fkey' AND NOT condeferrable
+      ) THEN
+        ALTER TABLE entity
+          ALTER CONSTRAINT entity_project_id_fkey DEFERRABLE INITIALLY DEFERRED;
+      END IF;
       IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'project_entity_id_fkey') THEN
         ALTER TABLE project
           ADD CONSTRAINT project_entity_id_fkey
-          FOREIGN KEY (entity_id) REFERENCES entity(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+          FOREIGN KEY (entity_id) REFERENCES entity(id) ON UPDATE CASCADE ON DELETE RESTRICT
+          DEFERRABLE INITIALLY DEFERRED;
       END IF;
     END $$;
   `);
