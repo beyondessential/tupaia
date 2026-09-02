@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
+import log from 'winston';
 
 import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
@@ -108,57 +109,69 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
-      return await models.wrapInRepeatableReadTransaction(async transactingModels => {
-        const submitterId = user.isLoggedIn
-          ? ensure(user.id)
-          : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
+      const { processedResponse, qrCodesToCreate, recentEntities, submitterId, surveyResponseId } =
+        await models.wrapInRepeatableReadTransaction(async transactingModels => {
+          const userId = user.isLoggedIn
+            ? ensure(user.id)
+            : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
 
-        const data = {
-          ...surveyResponseData,
-          answers,
-          userId: submitterId,
-        };
+          const data = {
+            ...surveyResponseData,
+            answers,
+            userId,
+          };
 
-        // Mirroring datatrak-web-server logic
-        const { qr_codes_to_create, recent_entities, ...processedResponse } =
-          await SurveyResponseModel.processSurveyResponse(
+          // Mirroring datatrak-web-server logic
+          const { qr_codes_to_create, recent_entities, ...response } =
+            await SurveyResponseModel.processSurveyResponse(
+              transactingModels,
+              data as DatatrakWebSubmitSurveyResponseRequest.ReqBody,
+            );
+
+          // Mirroring central-server logic
+          await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [response]);
+
+          // On central, EntityHierarchyCacher rebuilds entity_parent_child_relation when an entity
+          // changes. That change handler doesn't run locally, so insert the parent-child link here
+          // so the new entity is immediately visible in descendant queries.
+          const entityHierarchyId = user.project?.entityHierarchyId;
+          const entitiesUpserted = response.entities_upserted ?? [];
+          if (entityHierarchyId && entitiesUpserted.length > 0) {
+            await createEntityParentChildRelation(transactingModels, entityHierarchyId, entitiesUpserted);
+          }
+
+          await SurveyResponseModel.validateSurveyResponses(transactingModels, [response]);
+          const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
             transactingModels,
-            data as DatatrakWebSubmitSurveyResponseRequest.ReqBody,
+            userId,
+            [response],
           );
 
-        // Mirroring central-server logic
-        await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
+          return {
+            processedResponse: response,
+            qrCodesToCreate: qr_codes_to_create,
+            recentEntities: recent_entities,
+            submitterId: userId,
+            surveyResponseId: idsCreated[0].surveyResponseId,
+          };
+        });
 
-        // On central, EntityHierarchyCacher rebuilds entity_parent_child_relation when an entity
-        // changes. That change handler doesn't run locally, so insert the parent-child link here
-        // so the new entity is immediately visible in descendant queries.
-        const entityHierarchyId = user.project?.entityHierarchyId;
-        const entitiesUpserted = processedResponse.entities_upserted ?? [];
-        if (entityHierarchyId && entitiesUpserted.length > 0) {
-          await createEntityParentChildRelation(transactingModels, entityHierarchyId, entitiesUpserted);
-        }
-
-        await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
-        const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
-          transactingModels,
-          submitterId,
-          [processedResponse],
-        );
-
+      // Bookkeeping that the user shouldn't have to wait on to see the success screen. Central
+      // server redoes both authoritatively when the response is pushed, so a failure here only
+      // affects local state until the next sync.
+      void (async () => {
         if (user.isLoggedIn) {
-          await UserModel.addRecentEntities(transactingModels, submitterId, recent_entities);
+          await UserModel.addRecentEntities(models, submitterId, recentEntities);
         }
-
-        const [{ surveyResponseId }] = idsCreated;
-        await transactingModels.task.completeTaskForSurveyResponse({
+        await models.task.completeTaskForSurveyResponse({
           ...processedResponse,
           id: surveyResponseId,
         });
-
-        // Marking any corresponding task as complete is delegated to central-server
-
-        return { qrCodeEntitiesCreated: qr_codes_to_create };
+      })().catch((error: unknown) => {
+        log.error('useSubmitSurveyResponse: post-submission bookkeeping failed', { error });
       });
+
+      return { qrCodeEntitiesCreated: qrCodesToCreate };
     },
     remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
       if (!answers) return;
@@ -178,13 +191,17 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         gaEvent(GA_EVENT.SUBMIT_SURVEY_BY_USER, user.id!);
       },
       onSuccess: data => {
-        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
-        queryClient.invalidateQueries(['leaderboard']);
-        queryClient.invalidateQueries(['recentSurveys']);
-        queryClient.invalidateQueries(['rewards']);
-        queryClient.invalidateQueries(['surveyResponses']);
-        queryClient.invalidateQueries(['taskMetric', user.projectId]);
-        queryClient.invalidateQueries(['tasks']);
+        // Mark these stale without refetching immediately: none of them are rendered on the
+        // success screen, and eager refetches compete with navigation for the local database
+        // connection and (offline-first) the main thread. Invalidated queries refetch on their
+        // next mount regardless of staleTime.
+        queryClient.invalidateQueries(['entityDescendants'], { refetchType: 'none' }); // Refresh recent entities
+        queryClient.invalidateQueries(['leaderboard'], { refetchType: 'none' });
+        queryClient.invalidateQueries(['recentSurveys'], { refetchType: 'none' });
+        queryClient.invalidateQueries(['rewards'], { refetchType: 'none' });
+        queryClient.invalidateQueries(['surveyResponses'], { refetchType: 'none' });
+        queryClient.invalidateQueries(['taskMetric', user.projectId], { refetchType: 'none' });
+        queryClient.invalidateQueries(['tasks'], { refetchType: 'none' });
         // Delete the draft if one was being resumed
         if (draftId) {
           deleteDraft.mutate();

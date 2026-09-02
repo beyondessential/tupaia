@@ -26,6 +26,14 @@ export default defineConfig(({ command, mode }) => {
 
   const isDatatrakWeb = packageName === DATATRAK_WEB_NAME;
 
+  // Node-only modules imported (but never executed in the browser) by @electric-sql/pglite
+  const datatrakExternals = [
+    '@node-rs/argon2-wasm32-wasi',
+    'fs/promises',
+    'memfs/promises',
+    'stream/promises',
+  ];
+
   const baseConfig = {
     build: {
       rollupOptions: {
@@ -43,15 +51,22 @@ export default defineConfig(({ command, mode }) => {
           },
         },
         ...(isDatatrakWeb && {
-          external: [
-            '@node-rs/argon2-wasm32-wasi',
-            'fs/promises',
-            'memfs/promises',
-            'stream/promises',
-          ],
+          external: datatrakExternals,
         }),
       },
     },
+    ...(isDatatrakWeb && {
+      // The PGlite worker (datatrak-web/src/database/pglite.worker.ts) is bundled in its own
+      // rollup pass, which doesn't inherit build.rollupOptions — so the externals must be
+      // repeated here. ES format so PGlite's lazy dynamic imports of the externals stay lazy
+      // (they only execute under Node); iife would try to inline them.
+      worker: {
+        format: 'es',
+        rollupOptions: {
+          external: datatrakExternals,
+        },
+      },
+    }),
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
@@ -114,6 +129,22 @@ export default defineConfig(({ command, mode }) => {
           pg: path.resolve(__dirname, 'mock/pgMock.js'),
           'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
           '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
+          // The PGlite wasm/data assets aren't reachable through the package's exports map, but
+          // the worker (datatrak-web/src/database/pglite.worker.ts) imports them with `?url` so
+          // they get hashed filenames and cache-safe references like every other bundled asset
+          'pglite-dist': path.resolve(__dirname, 'node_modules/@electric-sql/pglite/dist'),
+          // Pin PGlite to its ESM builds. The worker bundling pass otherwise resolves the
+          // package's `require` condition, and the CJS builds reference Node globals
+          // (`__filename`) that throw in a browser worker, killing the database at startup.
+          // Order matters: the more specific subpath must come before the package root.
+          '@electric-sql/pglite/worker': path.resolve(
+            __dirname,
+            'node_modules/@electric-sql/pglite/dist/worker/index.js',
+          ),
+          '@electric-sql/pglite': path.resolve(
+            __dirname,
+            'node_modules/@electric-sql/pglite/dist/index.js',
+          ),
         }),
       },
     },
