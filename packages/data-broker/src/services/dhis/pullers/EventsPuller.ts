@@ -88,10 +88,14 @@ export class EventsPuller {
         throw new Error('Must specify hierarchy when pulling events for tracked entity instances');
       }
 
-      const hierarchyId = (await this.models.entityHierarchy.findOne({ name: hierarchy })).id;
+      // The "hierarchy" name here is the project code — each project has one hierarchy.
+      const project = await this.models.project.findOne({ code: hierarchy });
+      if (!project) {
+        throw new Error(`Cannot find project for hierarchy: ${hierarchy}`);
+      }
       const parentsOfTrackedEntities = await Promise.all(
         trackedEntities.map(
-          trackedEntity => trackedEntity.getParent(hierarchyId) as Promise<Entity & EntityRecord>,
+          trackedEntity => trackedEntity.getParent(project.id) as Promise<Entity & EntityRecord>,
         ),
       );
       const parentEvents = await this.pullEventsForOrganisationUnits(api, programCode, {

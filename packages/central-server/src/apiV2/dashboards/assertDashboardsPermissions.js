@@ -31,7 +31,7 @@ export const assertDashboardCreatePermissions = async (
   models,
   { root_entity_code: rootEntityCode },
 ) => {
-  const entity = await models.entity.findOne({ code: rootEntityCode });
+  const entity = await models.entity.findOneByCodeInProject(rootEntityCode, null);
 
   if (!(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
     throw new Error(`Requires Viz Builder access to the entity code: '${rootEntityCode}'`);

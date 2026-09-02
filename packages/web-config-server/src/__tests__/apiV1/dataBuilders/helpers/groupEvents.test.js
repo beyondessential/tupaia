@@ -102,24 +102,27 @@ const PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES = {
       : [],
 };
 
+const findParentOrgUnitByCode = code => {
+  switch (code) {
+    case PARENT_ORG_UNIT.code:
+      return PARENT_ORG_UNIT;
+    case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES.code:
+      return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES;
+    case PARENT_ORG_UNIT_WITH_CHILDREN.code:
+      return PARENT_ORG_UNIT_WITH_CHILDREN;
+    case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN.code:
+      return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN;
+    case PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES.code:
+      return PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES;
+    default:
+      return null;
+  }
+};
+
 const models = {
   entity: {
-    findOne: ({ code }) => {
-      switch (code) {
-        case PARENT_ORG_UNIT.code:
-          return PARENT_ORG_UNIT;
-        case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES.code:
-          return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES;
-        case PARENT_ORG_UNIT_WITH_CHILDREN.code:
-          return PARENT_ORG_UNIT_WITH_CHILDREN;
-        case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN.code:
-          return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN;
-        case PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES.code:
-          return PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES;
-        default:
-          return null;
-      }
-    },
+    findOne: ({ code }) => findParentOrgUnitByCode(code),
+    findOneByCodeInProject: code => findParentOrgUnitByCode(code),
   },
 };
 

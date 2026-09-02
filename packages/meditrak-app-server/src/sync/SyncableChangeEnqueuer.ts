@@ -23,6 +23,11 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
 
     // Keep all the data for surveys, as we want to check if the permissions have changed
     this.changeTranslators.survey = (change: Change) => [change];
+
+    // Keep all the data for entities so the sync-record updater can read a deleted entity's
+    // code and decide whether the delete should reach MediTrak (a code can have multiple
+    // project-specific rows post entity-hierarchy epic; MediTrak only sees one per code).
+    this.changeTranslators.entity = (change: Change) => [change];
   }
 
   private async refreshPermissionsBasedView(database: TupaiaDatabase) {
