@@ -11,7 +11,6 @@ import { useLogout } from '../../api/mutations';
 import { logout as logoutAction } from '../../authentication';
 
 const Wrapper = styled.div`
-  padding-inline: 1.25rem;
   display: flex;
   flex-direction: column;
 `;
@@ -22,9 +21,10 @@ const UserName = styled(Typography)`
 `;
 
 const UserEmail = styled(Typography)`
+  color: ${props => props.theme.palette.text.hint};
   font-size: 0.6875rem;
   margin-block-start: 0.25rem;
-  margin-block-end: 0.9rem;
+  margin-block-end: 0.4rem;
 `;
 
 const UserProfileInfoComponent = ({ profileLink, isFullWidth, onLogout }) => {
@@ -57,7 +57,6 @@ const UserProfileInfoComponent = ({ profileLink, isFullWidth, onLogout }) => {
     <Wrapper>
       {name && <UserName>{name}</UserName>}
       <UserEmail>{user.email}</UserEmail>
-      <Divider />
       {profileLink && (
         <UserButton key={profileLink.to} to={profileLink.to} component={Link}>
           {profileLink.label}

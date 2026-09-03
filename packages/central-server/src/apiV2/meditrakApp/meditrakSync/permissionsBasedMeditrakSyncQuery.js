@@ -1,6 +1,7 @@
 import { SqlQuery } from '@tupaia/database';
 import { getCountriesAndPermissionsToSync } from './getCountriesAndPermissionsToSync';
 import {
+  canonicalEntityFilter,
   extractSinceValue,
   deletesSinceLastSync,
   getModifiers,
@@ -152,6 +153,10 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
        AND `);
     query.append(filter);
   }
+
+  query.append(`
+       AND `);
+  query.append(canonicalEntityFilter());
 
   query.append(getModifiers(sort, limit, offset));
 
