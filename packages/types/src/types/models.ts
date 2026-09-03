@@ -2060,6 +2060,7 @@ export enum EntityTypeEnum {
   'srh_sub_district' = 'srh_sub_district',
   'pacmossi_consumable_batch' = 'pacmossi_consumable_batch',
   'state' = 'state',
+  'assistive_device' = 'assistive_device',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
