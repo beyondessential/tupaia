@@ -1,12 +1,13 @@
+import fs from 'node:fs/promises';
 import xlsx from 'xlsx';
-import fs from 'fs';
-import { getExportDatesString, respondWithDownload } from '@tupaia/utils';
+
 import { getExportPathForUser } from '@tupaia/server-utils';
+import { getExportDatesString, respondWithDownload } from '@tupaia/utils';
+import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
-import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
 import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
-import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
+import { USER_SESSION_CONFIG } from '/authSession';
 
 const EXPORT_FILE_TITLE = 'survey_response_export';
 
@@ -104,10 +105,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
     };
 
     const exportDirectory = getExportPathForUser(this.req.user.id);
-
-    if (!(await fs.existsSync(exportDirectory))) {
-      await fs.mkdirSync(exportDirectory);
-    }
+    await fs.mkdir(exportDirectory, { recursive: true });
 
     const filePath = `${exportDirectory}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
 
