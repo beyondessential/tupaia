@@ -14,21 +14,18 @@ const findNestedGroupedMapOverlays = async (
   mapOverlayItemRelations,
   accessibleMapOverlays,
 ) => {
+  if (!mapOverlayItemRelations || !mapOverlayItemRelations.length) return [];
+
   let mapOverlayResults = [];
   const mapOverlayGroupResults = [];
-
-  if (!mapOverlayItemRelations || !mapOverlayItemRelations.length) {
-    return [];
-  }
 
   const mapOverlayRelations = mapOverlayItemRelations.filter(m => m.child_type === 'mapOverlay');
 
   // If there are map overlay relations, add them to the results
   if (mapOverlayRelations.length) {
-    const mapOverlayIds = mapOverlayRelations.map(m => m.child_id);
-
+    const mapOverlayIds = new Set(mapOverlayRelations.map(m => m.child_id));
     const mapOverlays = Object.values(accessibleMapOverlays).filter(mapOverlay =>
-      mapOverlayIds.includes(mapOverlay.id),
+      mapOverlayIds.has(mapOverlay.id),
     );
 
     mapOverlayResults = translateOverlaysForResponse(mapOverlays);
