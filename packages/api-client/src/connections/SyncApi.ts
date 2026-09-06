@@ -101,6 +101,11 @@ export class SyncApi extends BaseApi {
     return this.connection.post(`sync/${sessionId}/push`, {}, { changes });
   }
 
+  async pushStream(sessionId: string, body: NodeJS.ReadableStream) {
+    // Forward the framed push stream straight through to the micro server without buffering it.
+    return this.connection.postStream(`sync/${sessionId}/push/stream`, body);
+  }
+
   async completePush(res: ExpressResponse, sessionId: string, deviceId: string) {
     // first off, mark the push as complete on central
     await this.connection.put(`sync/${sessionId}/push/complete`, {}, { deviceId });

@@ -18,6 +18,11 @@ interface FetchConfig extends RequestInit {
 
 const DEFAULT_MAX_WAIT_TIME = 120_000; // 120 seconds
 
+// A streamed push is only answered once the whole body has been consumed server-side, so a
+// photo-heavy submission can legitimately take far longer than the default. Match the 3600s nginx
+// proxy timeout so this hop doesn't abort before the server responds.
+const STREAM_MAX_WAIT_TIME = 3600_000; // 1 hour, matching the nginx proxy_send_timeout
+
 export interface ApiConnectionOptions {
   /** Optional headers to send with every API request */
   headers?: { 'X-Client-Version'?: string };
@@ -71,6 +76,40 @@ export class ApiConnection {
   ) {
     const fetchedResponse = await this.fetchResponse('GET', endpoint, queryParameters);
     return fetchedResponse.body.pipe(response);
+  }
+
+  /**
+   * Forward a readable stream as the request body (the inverse of pipeStream). Used to forward a
+   * framed streaming sync push from an orchestration server to a micro server without buffering or
+   * re-serialising the whole body. The body is sent with `Content-Type: application/json+frame` so
+   * the receiving server's JSON body parser leaves the request body as an unconsumed stream.
+   */
+  public async postStream(
+    endpoint: string,
+    body: NodeJS.ReadableStream,
+    queryParameters?: QueryParameters | null,
+  ) {
+    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters || {});
+    const fetchConfig: FetchConfig = {
+      method: 'POST',
+      headers: {
+        Authorization: await this.authHandler.getAuthHeader(),
+        'Content-Type': 'application/json+frame',
+        ...this.headerOverrides,
+      },
+      body: body as unknown as RequestInit['body'],
+    };
+
+    const response = await this.fetchWithTimeout(queryUrl, fetchConfig, STREAM_MAX_WAIT_TIME);
+
+    await this.verifyResponse(response);
+
+    const contentType = response.headers.get('content-type');
+    if (contentType?.startsWith('application/json')) {
+      return response.json();
+    }
+
+    return response;
   }
 
   private async fetchResponse(
