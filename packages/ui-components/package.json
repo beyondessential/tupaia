@@ -46,8 +46,8 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^6.15.1",
     "react-is": "^16.13.1",
-    "react-router-dom": "^5.1.2",
-    "react-router-dom-v6": "npm:react-router-dom@6.3.0",
+    "react-router-dom": "^5.3.4",
+    "react-router-dom-v6": "npm:react-router-dom@^6.30.4",
     "react-table": "^7.7.0",
     "styled-components": "^5.0.1",
     "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"

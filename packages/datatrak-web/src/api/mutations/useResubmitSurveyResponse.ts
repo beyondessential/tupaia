@@ -35,7 +35,13 @@ export const useResubmitSurveyResponse = () => {
     {
       onSuccess: () => {
         resetForm();
-        navigate(generatePath(ROUTES.SURVEY_RESUBMIT_SUCCESS, params));
+        navigate(
+          generatePath(ROUTES.SURVEY_RESUBMIT_SUCCESS, {
+            countryCode: params.countryCode ?? null,
+            surveyCode: params.surveyCode ?? null,
+            surveyResponseId: params.surveyResponseId ?? null,
+          }),
+        );
       },
     },
   );
