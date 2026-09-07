@@ -27,7 +27,7 @@ const validateEntitiesAndBuildContext = async (
     return { entities: [], allowedCountries: [] };
   }
 
-  const { hierarchyId } = req.ctx;
+  const { projectId } = req.ctx;
   const { hierarchyName } = req.params;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
   const rootEntity = await req.models.entity.findOneOrThrow(
@@ -39,7 +39,7 @@ const validateEntitiesAndBuildContext = async (
     `Cannot find root entity for hierarchy: ${req.params.hierarchyName}`,
   );
 
-  const entities = await rootEntity.getDescendants(hierarchyId, {
+  const entities = await rootEntity.getDescendants(projectId, {
     code: entityCodes,
   });
 
@@ -74,7 +74,7 @@ const getFilterInfo = async (
 ) => {
   const isPublic = req.query.isPublic?.toLowerCase() === 'true';
 
-  const countryEntities = await rootEntity.getChildren(req.ctx.hierarchyId);
+  const countryEntities = await rootEntity.getChildren(req.ctx.projectId);
   const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
   let allowedCountries = [...new Set(childCodes)];
 

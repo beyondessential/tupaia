@@ -11,13 +11,15 @@ const { expect } = chai;
 const getFilterString = filter => `filter=${JSON.stringify(filter)}`;
 // remove test data after the test is finished
 const removeTestData = async (models, projectCode) => {
+  const project = await models.project.findOne({ code: projectCode });
+  if (project) {
+    await models.projectCountry.delete({ project_id: project.id });
+  }
   await models.project.delete({ code: projectCode });
   const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });
   if (projectEntity !== null) {
-    await models.entityRelation.delete({ parent_id: projectEntity.id });
     await models.entity.delete({ id: projectEntity.id });
   }
-  await models.entityHierarchy.delete({ name: projectCode });
 };
 
 // generate the test data for the provided project code
@@ -26,27 +28,22 @@ const createTestData = async (models, projectCode, permissionGroup, countryEntit
     code: projectCode,
     type: 'project',
   });
-  const { id: entityHierarchyId } = await findOrCreateDummyRecord(models.entityHierarchy, {
-    name: projectCode,
-    canonical_types: '{country}',
-  });
-  await findOrCreateDummyRecord(models.entityRelation, {
-    parent_id: projectEntityId,
-    child_id: countryEntityId,
-    entity_hierarchy_id: entityHierarchyId,
-  });
-  return findOrCreateDummyRecord(
+  const project = await findOrCreateDummyRecord(
     models.project,
     {
       id: generateId(),
       code: projectCode,
       entity_id: projectEntityId,
-      entity_hierarchy_id: entityHierarchyId,
     },
     {
       permission_groups: [permissionGroup],
     },
   );
+  await findOrCreateDummyRecord(models.projectCountry, {
+    project_id: project.id,
+    country_id: countryEntityId,
+  });
+  return project;
 };
 
 describe('Permissions checker for GETProjects', async () => {
@@ -71,10 +68,28 @@ describe('Permissions checker for GETProjects', async () => {
     {
       code: 'test_project_1',
       permissionGroupName: TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      countryCode: 'DL',
     },
     {
       code: 'test_project_2',
       permissionGroupName: 'Admin',
+      countryCode: 'DL',
+    },
+    // Only country is TO, where DEFAULT_POLICY has no Tupaia Admin Panel access —
+    // so it's visible without the admin-panel flag but hidden with it.
+    {
+      code: 'test_project_3',
+      permissionGroupName: 'Admin',
+      countryCode: 'TO',
+    },
+    // In DL (where DEFAULT_POLICY does have Tupaia Admin Panel), but its
+    // permission group isn't one DEFAULT_POLICY holds — so the user has no
+    // project access. Must be hidden both with and without the flag (admin-panel
+    // access to a country isn't enough without project access).
+    {
+      code: 'test_project_4',
+      permissionGroupName: 'UNFPA',
+      countryCode: 'DL',
     },
   ];
 
@@ -91,15 +106,19 @@ describe('Permissions checker for GETProjects', async () => {
       name: 'Admin',
     });
 
-    const { id: countryEntityId } = await findOrCreateDummyRecord(models.entity, {
-      code: 'DL',
-      country_code: 'DL',
-      type: 'country',
-    });
+    const countryEntityIdsByCode = {};
+    for (const countryCode of ['DL', 'TO']) {
+      const { id } = await findOrCreateDummyRecord(models.entity, {
+        code: countryCode,
+        country_code: countryCode,
+        type: 'country',
+      });
+      countryEntityIdsByCode[countryCode] = id;
+    }
     // Set up test projects in the database
     projects = await Promise.all(
-      PROJECT_CODES.map(({ code, permissionGroupName }) =>
-        createTestData(models, code, permissionGroupName, countryEntityId),
+      PROJECT_CODES.map(({ code, permissionGroupName, countryCode }) =>
+        createTestData(models, code, permissionGroupName, countryEntityIdsByCode[countryCode]),
       ),
     );
 
@@ -148,19 +167,59 @@ describe('Permissions checker for GETProjects', async () => {
       });
     });
 
-    it('Sufficient permissions: returns projects when user has permissions', async () => {
+    it('Sufficient permissions: returns projects the user has project access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`projects?${filterString}`);
-      expect(results.length).to.equal(projects.length);
+      const resultIds = results.map(r => r.id);
+      // Access via a held permission group on a member country.
+      expect(resultIds).to.include(projects[0].id);
+      expect(resultIds).to.include(projects[1].id);
+      expect(resultIds).to.include(projects[2].id);
+      // test_project_4's permission group (UNFPA) isn't held by this user, so no
+      // project access — excluded even without the admin-panel flag.
+      expect(resultIds).to.not.include(projects[3].id);
+    });
+
+    it('Insufficient permissions: returns an empty array if users do not have access to any project', async () => {
+      await app.grantAccess(PUBLIC_POLICY);
+      const { body: results } = await app.get(`projects?${filterString}`);
+
+      expect(results).to.be.empty;
+    });
+  });
+
+  describe('GET /projects?requireAdminPanelCountryAccess=true', async () => {
+    it('requires both project access AND Tupaia Admin Panel access to a member country', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: results } = await app.get(
+        `projects?${filterString}&requireAdminPanelCountryAccess=true`,
+      );
+      const resultIds = results.map(r => r.id);
+      // 1 & 2: in DL, where the user has both project access and Tupaia Admin Panel.
+      expect(resultIds).to.include(projects[0].id);
+      expect(resultIds).to.include(projects[1].id);
+      // 3: project access via Admin@TO, but no Tupaia Admin Panel on TO → excluded.
+      expect(resultIds).to.not.include(projects[2].id);
+      // 4: Tupaia Admin Panel on DL, but no project access (UNFPA not held) → excluded.
+      expect(resultIds).to.not.include(projects[3].id);
+    });
+
+    it('returns all accessible projects for a BES admin', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: results } = await app.get(
+        `projects?${filterString}&requireAdminPanelCountryAccess=true`,
+      );
       const resultIds = results.map(r => r.id);
       projects.forEach(project => {
         expect(resultIds.includes(project.id)).to.equal(true);
       });
     });
 
-    it('Insufficient permissions: returns an empty array if users do not have access to any project', async () => {
+    it('returns an empty array when the user has no Tupaia Admin Panel country access', async () => {
       await app.grantAccess(PUBLIC_POLICY);
-      const { body: results } = await app.get(`projects?${filterString}`);
+      const { body: results } = await app.get(
+        `projects?${filterString}&requireAdminPanelCountryAccess=true`,
+      );
 
       expect(results).to.be.empty;
     });

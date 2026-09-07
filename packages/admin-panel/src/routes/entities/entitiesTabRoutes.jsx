@@ -1,13 +1,19 @@
 import React from 'react';
-import { entities } from './entities';
 import { countries } from './countries';
+import { entities } from './entities';
 import { entityTypes } from './entityTypes';
-import { entityHierarchies } from './entityHierarchies';
+import { gisData } from '../gisData';
 import { EntitiesIcon } from '../../icons';
+import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
 
 export const entitiesTabRoutes = {
   label: 'Entities',
   path: '/entities',
   icon: <EntitiesIcon />,
-  childViews: [entities, countries, entityTypes, entityHierarchies],
+  childViews: [
+    { ...entities, scope: SINGLE_PROJECT_SCOPE },
+    { ...countries, scope: ALL_PROJECTS_SCOPE },
+    { ...entityTypes, scope: ALL_PROJECTS_SCOPE },
+    { ...gisData, scope: ALL_PROJECTS_SCOPE },
+  ],
 };

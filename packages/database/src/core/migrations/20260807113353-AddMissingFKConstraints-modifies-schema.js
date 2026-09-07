@@ -37,11 +37,10 @@ exports.setup = function (options, seedLink) {
  * discarding the referencing configuration.
  */
 exports.up = async function (db) {
+  // data_element_data_service.country_code -> entity(code) is omitted: entity.code is no
+  // longer unique on its own (the per-project model makes it unique per (code, project_id)),
+  // so it can't be the target of a single-column foreign key.
   await db.runSql(`
-    ALTER TABLE data_element_data_service
-      ADD CONSTRAINT data_element_data_service_country_code_fkey
-      FOREIGN KEY (country_code) REFERENCES entity(code)
-      ON UPDATE CASCADE ON DELETE RESTRICT;
     ALTER TABLE data_element_data_service
       ADD CONSTRAINT data_element_data_service_data_element_code_fkey
       FOREIGN KEY (data_element_code) REFERENCES data_element(code)
@@ -63,8 +62,6 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   await db.runSql(`
-    ALTER TABLE data_element_data_service
-      DROP CONSTRAINT IF EXISTS data_element_data_service_country_code_fkey;
     ALTER TABLE data_element_data_service
       DROP CONSTRAINT IF EXISTS data_element_data_service_data_element_code_fkey;
     ALTER TABLE data_service_sync_group

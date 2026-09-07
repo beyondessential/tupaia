@@ -9,15 +9,13 @@ import {
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
-import { upload } from '../middleware';
+import { applyProjectScope, upload } from '../middleware';
 import { AdminPanelSessionModel } from '../models';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
   ExportDataTableRequest,
   ExportDataTableRoute,
-  ExportEntityHierarchiesRequest,
-  ExportEntityHierarchiesRoute,
   ExportMapOverlayVisualisationRequest,
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
@@ -73,6 +71,7 @@ export async function createApp(promptManager: PromptManager) {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .useMiddleware(addPromptManagerToContext(promptManager))
+    .useMiddleware(applyProjectScope)
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
@@ -118,10 +117,6 @@ export async function createApp(promptManager: PromptManager) {
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
-    )
-    .get<ExportEntityHierarchiesRequest>(
-      'export/hierarchies',
-      handleWith(ExportEntityHierarchiesRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',

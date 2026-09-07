@@ -1,1 +1,0 @@
-export { GETEntityRelations } from './GETEntityRelations';

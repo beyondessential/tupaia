@@ -219,7 +219,7 @@ export class SurveyRecord extends DatabaseRecord {
         component_id: ssc.id,
         config: config ? JSON.parse(config) : null,
         detail_label,
-        options: question.options.map(OptionRecord.parseForClient),
+        options: (question.options ?? []).map(OptionRecord.parseForClient),
         question_id: question.id,
         text: question_text,
         validation_criteria: validation_criteria ? JSON.parse(validation_criteria) : null,

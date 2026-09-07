@@ -12,6 +12,7 @@ export * from './logMemory';
 export * from './manageSnapshotTable';
 export * from './sanitizeRecord';
 export * from './saveIncomingChanges';
+export * from './scopeIncomingEntitiesToProject';
 export * from './startSnapshotWhenCapacityAvailable';
 export * from './waitForPendingEditsUsingSyncTick';
 export * from './withDeferredSyncSafeguards';

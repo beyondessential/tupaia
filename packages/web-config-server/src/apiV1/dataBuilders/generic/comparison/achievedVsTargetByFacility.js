@@ -2,7 +2,7 @@ import { keyBy } from 'es-toolkit/compat';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
 export const achievedVsTargetByFacility = async (
-  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
+  { models, dataBuilderConfig, query, entity, fetchProjectId },
   aggregator,
 ) => {
   const { achievedDataElementCodes, targetDataElementCodes, dataServices } = dataBuilderConfig;
@@ -20,8 +20,8 @@ export const achievedVsTargetByFacility = async (
     { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
-  const hierarchyId = await fetchHierarchyId();
-  const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
+  const projectId = await fetchProjectId();
+  const facilities = await entity.getDescendantsOfType(projectId, models.entity.types.FACILITY);
   const facilitiesByCode = keyBy(facilities, 'code');
 
   // Set up achieved to be aggregated (potentially acrosss multiple facilities)

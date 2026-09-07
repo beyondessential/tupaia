@@ -5,7 +5,8 @@ import { emailAfterTimeout } from '@tupaia/server-boilerplate';
 import { catchAsyncErrors } from '../middleware';
 
 import { importOptionSets } from './importOptionSets';
-import { importEntities } from './importEntities';
+import { importEntities, constructEntityImportEmail } from './importEntities';
+import { importEntityPolygons } from './importEntityPolygons';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importUsers } from './importUsers';
 import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
@@ -25,7 +26,17 @@ const upload = multer({
 
 const importRoutes = express.Router();
 
-importRoutes.post('/entities', upload.single('entities'), catchAsyncErrors(importEntities));
+importRoutes.post(
+  '/entities',
+  emailAfterTimeout(constructEntityImportEmail),
+  upload.single('entities'),
+  catchAsyncErrors(importEntities),
+);
+importRoutes.post(
+  '/entityPolygons',
+  upload.single('entityPolygons'),
+  catchAsyncErrors(importEntityPolygons),
+);
 importRoutes.post(
   '/dataElements',
   upload.single('dataElements'),

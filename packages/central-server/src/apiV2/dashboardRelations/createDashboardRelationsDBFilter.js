@@ -37,18 +37,18 @@ export const createDashboardRelationsDBFilter = (accessPolicy, criteria) => {
                 FROM dashboard_relation subdr1
                 WHERE subdr1.id = "dashboard_relation".id) dr2
         )
-      -- for projects, pull the country codes from the child entities and check that there is overlap
-      -- with the user's list of countries for the appropriate permission group (i.e., they have
-      -- access to at least one country within the project)
+      -- for projects, pull the country codes from the project's countries (TUP-3065:
+      -- via project_country instead of entity_relation) and check that there is overlap
+      -- with the user's list of countries for the appropriate permission group (i.e.,
+      -- they have access to at least one country within the project)
       OR (
         ARRAY(
-          SELECT DISTINCT e3.country_code
+          SELECT DISTINCT e3.code
           FROM entity e3
-          INNER JOIN entity_relation er3
-            ON e3.id = er3.child_id
+          INNER JOIN project_country pc3
+            ON e3.id = pc3.country_id
           INNER JOIN project p3
-            ON  er3.parent_id = p3.entity_id
-            AND er3.entity_hierarchy_id = p3.entity_hierarchy_id
+            ON pc3.project_id = p3.id
           INNER JOIN dashboard d3
             ON p3.code = d3.root_entity_code
           INNER JOIN dashboard_relation dr3

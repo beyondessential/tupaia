@@ -31,8 +31,6 @@ import {
   attachEntityFilterContext,
 } from '../routes/hierarchy/middleware';
 import { attachRelationshipsContext } from '../routes/hierarchy/relationships/middleware';
-import { HierarchyRequest, HierarchyRoute } from '../routes/hierarchies';
-import { attachHierarchyContext } from '../routes/hierarchies/middleware';
 
 /**
  * Set up express server with middleware,
@@ -40,9 +38,6 @@ import { attachHierarchyContext } from '../routes/hierarchies/middleware';
 export function createApp(db = new TupaiaDatabase()) {
   const builder = new MicroServiceApiBuilder(db, 'entity')
     .useBasicBearerAuth()
-
-    // Hierarchy routes
-    .get<HierarchyRequest>('hierarchies', attachHierarchyContext, handleWith(HierarchyRoute))
 
     // MultiEntity routes
     .post<MultiEntityRequest>(

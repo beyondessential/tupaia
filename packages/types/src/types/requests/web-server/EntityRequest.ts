@@ -14,4 +14,5 @@ export interface ReqQuery {
     string,
     string | { comparator: string; comparisonValue: string | number | string[] | number[] }
   >;
+  projectId?: string;
 }

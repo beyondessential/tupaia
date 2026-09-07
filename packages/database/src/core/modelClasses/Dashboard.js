@@ -15,8 +15,8 @@ export class DashboardModel extends DatabaseModel {
     return DashboardRecord;
   }
 
-  async getDashboards(entity, hierarchyId, params) {
-    const ancestorCodes = await entity.getAncestorCodes(hierarchyId);
+  async getDashboards(entity, projectId, params) {
+    const ancestorCodes = await entity.getAncestorCodes(projectId);
     const entityCodes = [...ancestorCodes, entity.code];
     return this.find({
       root_entity_code: entityCodes,

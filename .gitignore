@@ -3,6 +3,9 @@
 !*.env.*.example*
 !*.env.encrypted*
 .DS_Store
+
+# local scratch / throwaway analysis artifacts
+/scratch/
 **/node_modules
 **/coverage
 **/builds
@@ -15,6 +18,7 @@
 *.code-workspace
 *.pem
 dump.sql
+packages/database/src/core/server-migrations-*
 *.todo
 **/cypress/screenshots
 **/cypress/videos

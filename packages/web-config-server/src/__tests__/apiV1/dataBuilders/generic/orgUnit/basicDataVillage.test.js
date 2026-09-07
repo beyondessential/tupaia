@@ -3,12 +3,12 @@ import { basicDataVillage } from '/apiV1/dataBuilders/generic/orgUnit/basicDataV
 
 const createEntity = parents =>
   createJestMockInstance('@tupaia/database', 'EntityRecord', {
-    getParent: async hierarchyId => parents.find(parent => parent?.hierarchy === hierarchyId),
+    getParent: async projectId => parents.find(parent => parent?.hierarchy === projectId),
   });
 
 const projects = {
-  explore: { entity_hierarchy_id: 'explore_hierarchy' },
-  lily: { entity_hierarchy_id: 'lily_hierarchy' },
+  explore: { id: 'explore_hierarchy' },
+  lily: { id: 'lily_hierarchy' },
 };
 const projectModel = createJestMockInstance('@tupaia/database', 'DatabaseModel', {
   findOne: ({ code: projectCode }) => projects[projectCode],

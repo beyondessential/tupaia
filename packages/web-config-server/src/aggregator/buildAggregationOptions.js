@@ -9,7 +9,7 @@ export const buildAggregationOptions = async (
   initialAggregationOptions,
   dataSourceEntities = [],
   entityAggregationOptions,
-  hierarchyId,
+  projectId,
 ) => {
   const {
     aggregations: multiAggregations,
@@ -42,7 +42,7 @@ export const buildAggregationOptions = async (
     aggregationEntityType,
     entityAggregationType,
     entityAggregationConfig,
-    hierarchyId,
+    projectId,
   );
 
   return {
@@ -70,11 +70,11 @@ const fetchEntityAggregationConfig = async (
   aggregationEntityType,
   entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
   entityAggregationConfig,
-  hierarchyId,
+  projectId,
 ) => {
   const entityToAncestorMap = await models.entity.fetchAncestorDetailsByDescendantCode(
     dataSourceEntities.map(e => e.code),
-    hierarchyId,
+    projectId,
     aggregationEntityType,
   );
   return {

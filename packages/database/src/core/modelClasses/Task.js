@@ -694,7 +694,7 @@ export class TaskModel extends DatabaseModel {
         },
       },
       {
-        columns: ['due_date', 'data_time', 'timezone', 'project_id'],
+        columns: ['due_date', 'data_time', 'timezone', { project_id: 'survey.project_id' }],
       },
     );
   }

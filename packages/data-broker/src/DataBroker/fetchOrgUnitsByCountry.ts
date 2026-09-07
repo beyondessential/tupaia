@@ -9,7 +9,8 @@ export const fetchOrgUnitsByCountry = async (
   const orgUnitsByCountryCodes = Object.fromEntries(
     Object.entries(groupBy(orgUnits, 'country_code')).map(([countryCode, orgUnitsInCountry]) => [
       countryCode,
-      orgUnitsInCountry.map(({ code }) => code),
+      // De-duplicate codes
+      [...new Set(orgUnitsInCountry.map(({ code }) => code))],
     ]),
   );
   return orgUnitsByCountryCodes;

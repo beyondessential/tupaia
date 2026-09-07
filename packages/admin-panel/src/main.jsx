@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
 import styled, { ThemeProvider } from 'styled-components';
@@ -10,7 +10,7 @@ import AdminPanel from './App';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { StoreProvider } from './utilities/StoreProvider';
 import { Footer } from './widgets';
-import { TupaiaApi } from './api';
+import { TupaiaApi, queryClient } from './api';
 import { theme } from './theme';
 import { VizBuilderPrivateRoute } from './authentication';
 
@@ -54,7 +54,6 @@ if (import.meta.env.PROD) {
 }
 
 const api = new TupaiaApi();
-const queryClient = new QueryClient();
 
 renderReactApp(
   <Router>

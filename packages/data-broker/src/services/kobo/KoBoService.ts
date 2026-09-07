@@ -9,6 +9,7 @@ type PullSyncGroupResultsOptions = {
   dataServiceMapping: DataServiceMapping;
   organisationUnitCodes?: string[];
   startSubmissionTime?: string;
+  projectId?: string;
 };
 
 export class KoBoService extends Service {
@@ -67,6 +68,7 @@ export class KoBoService extends Service {
         results,
         questionMapping,
         entityQuestionCode,
+        options.projectId,
       );
     }
 

@@ -21,6 +21,7 @@ import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
 import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
+import { CreateCountry } from './CreateCountry';
 import { GETClinics } from './GETClinics';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
@@ -48,7 +49,6 @@ import {
   CreateDashboardVisualisation,
   EditDashboardVisualisation,
 } from './dashboardVisualisations';
-import { GETEntityRelations } from './entityRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import {
@@ -90,6 +90,7 @@ import {
   GETUserEntityPermissions,
 } from './userEntityPermissions';
 import { EditEntity, GETEntities, DeleteEntity } from './entities';
+import { CreateEntityPolygon, EditEntityPolygon, GETEntityPolygons } from './entityPolygons';
 import { GetEntityTypes } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { changePassword } from './changePassword';
@@ -139,7 +140,6 @@ import {
   EditDashboardMailingListEntry,
   GETDashboardMailingListEntries,
 } from './dashboardMailingListEntries';
-import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 import { CreateTask, EditTask, GETTasks } from './tasks';
 import { CreateTaskComment, GETTaskComments } from './taskComments';
 import { GetDataTableTypes } from './dataTableTypes';
@@ -244,7 +244,7 @@ apiV2.get('/dataTableTypes/:recordId?', useRouteHandler(GetDataTableTypes));
 apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
-apiV2.get('/entityRelations/:recordId?', useRouteHandler(GETEntityRelations));
+apiV2.get('/entityPolygons/:recordId?', useRouteHandler(GETEntityPolygons));
 apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
 apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
@@ -264,7 +264,6 @@ apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
 );
-apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
@@ -297,7 +296,7 @@ apiV2.post(
   multipartJson(false),
   useRouteHandler(ResubmitSurveyResponse),
 );
-apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/countries', useRouteHandler(CreateCountry));
 apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(CreateDataTables));
@@ -321,6 +320,7 @@ apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/entityPolygons', useRouteHandler(CreateEntityPolygon));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
 apiV2.post('/tasks/:parentRecordId/taskComments', useRouteHandler(CreateTaskComment));
@@ -352,11 +352,11 @@ apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayG
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
+apiV2.put('/entityPolygons/:recordId', useRouteHandler(EditEntityPolygon));
 apiV2.put('/me', useRouteHandler(EditUserForMe));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/entityHierarchy/:recordId', useRouteHandler(EditEntityHierarchy));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
@@ -375,6 +375,7 @@ apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
+apiV2.delete('/entityPolygons/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
 apiV2.delete('/optionSets/:recordId', useRouteHandler(DeleteOptionSets));

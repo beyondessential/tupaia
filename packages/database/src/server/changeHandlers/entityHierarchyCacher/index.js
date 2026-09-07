@@ -1,2 +1,3 @@
 export { EntityHierarchyCacher } from './EntityHierarchyCacher';
-export { buildEntityParentChildRelationIfEmpty } from './buildEntityParentChildRelationIfEmpty';
+export { AncestorDescendantCacheBuilder } from './AncestorDescendantCacheBuilder';
+export { buildAncestorDescendantRelationIfEmpty } from './buildAncestorDescendantRelationIfEmpty';

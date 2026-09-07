@@ -25,7 +25,6 @@ describe('CentralSyncManager.pull', () => {
     let models: any;
     let country: any;
     let userAccount: any;
-    let entityHierarchy: any;
     let project: any;
 
     const prepareSnapshotBlocking = async () => {
@@ -64,20 +63,14 @@ describe('CentralSyncManager.pull', () => {
         last_name: 'User Account',
       });
       country = await findOrCreateDummyRecord(models.country, { code: 'test_country' });
-      entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
-        name: 'test_entity_hierarchy',
-        canonical_types: '{country}',
-      });
       project = await findOrCreateDummyRecord(models.project, {
         code: 'test_project',
         description: 'Test Project',
-        entity_hierarchy_id: entityHierarchy.id,
       });
 
       return {
         country,
         userAccount,
-        entityHierarchy,
         project,
       };
     };
@@ -96,7 +89,7 @@ describe('CentralSyncManager.pull', () => {
     it('excludes manually inserted records when main snapshot transaction already started', async () => {
       await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
       await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
-      const { country, userAccount, entityHierarchy, project } = await prepareData();
+      const { country, userAccount, project } = await prepareData();
 
       // Build the fakeModelPromise so that it can block the snapshotting process,
       // then we can insert some new records while snapshotting is happening
@@ -160,16 +153,16 @@ describe('CentralSyncManager.pull', () => {
         SYNC_SESSION_DIRECTION.OUTGOING,
       );
 
-      expect(snapshotRecords.length).toBe(4);
+      expect(snapshotRecords.length).toBe(3);
       expect(snapshotRecords.map(r => r.recordId).sort()).toEqual(
-        [country, userAccount, entityHierarchy, project].map(r => r.id).sort(),
+        [country, userAccount, project].map(r => r.id).sort(),
       );
     });
 
     it("excludes inserted records from another sync session when the current' session's snapshot transaction already started", async () => {
       await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
       await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
-      const { country, userAccount, entityHierarchy, project } = await prepareData();
+      const { country, userAccount, project } = await prepareData();
 
       // Build the fakeModelPromise so that it can block the snapshotting process,
       // then we can insert some new records while snapshotting is happening
@@ -269,9 +262,9 @@ describe('CentralSyncManager.pull', () => {
         SYNC_SESSION_DIRECTION.OUTGOING,
       );
 
-      expect(snapshotRecords.length).toBe(4);
+      expect(snapshotRecords.length).toBe(3);
       expect(snapshotRecords.map(r => r.recordId).sort()).toEqual(
-        [country, userAccount, entityHierarchy, project].map(r => r.id).sort(),
+        [country, userAccount, project].map(r => r.id).sort(),
       );
     });
   });
