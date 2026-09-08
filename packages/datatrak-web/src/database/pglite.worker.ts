@@ -94,6 +94,21 @@ worker({
     });
     await db.waitReady;
 
+    /*
+     * TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts
+     *
+     * PGlite holds the whole Postgres data directory in this worker's WASM linear memory
+     * (`idb://` mounts Emscripten's IDBFS, which is MEMFS plus IndexedDB writeback), and that
+     * memory only ever grows — `memory.grow` cannot shrink. It is charged to the same renderer
+     * process as the page but is invisible to `performance.memory`, which reports the V8 heap
+     * only, so it has to be sampled here. Rides the console forwarding set up above.
+     */
+    setInterval(() => {
+      const bytes = (db as unknown as { Module?: { HEAP8?: Uint8Array } }).Module?.HEAP8
+        ?.byteLength;
+      if (bytes) console.debug(`wasmHeapMb ${Math.round(bytes / 1024 / 1024)}`);
+    }, 2_000);
+
     // Default parser for TIMESTAMP (without time zone) is the `Date` constructor, but that
     // interprets the input string in UTC. We want to treat these as floating times. Must be set
     // here rather than on the main thread: rows are parsed in this worker before being cloned
