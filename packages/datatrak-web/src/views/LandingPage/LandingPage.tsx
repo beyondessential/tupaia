@@ -5,6 +5,7 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
+import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { DraftSurveysSection } from './DraftSurveysSection';
 import { LeaderboardSection } from './LeaderboardSection';
@@ -131,6 +132,11 @@ export const LandingPage = () => {
   } = useSurveyResponseDrafts();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
   const hasDrafts = drafts.length > 0;
+
+  /* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
+  React.useEffect(() => {
+    sampleRuntime({ at: 'landing:mounted' });
+  }, []);
 
   return (
     <PageContainer>
