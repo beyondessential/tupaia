@@ -8,7 +8,7 @@ import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
 import { ActivityFeedSection } from './ActivityFeedSection';
 // TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
-import { LeaderboardSection } from './LeaderboardSection';
+// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
 // TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
 import { SurveyResponsesSection } from './SurveyResponsesSection';
 // TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
@@ -130,9 +130,10 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
  * are the liveliest: Leaderboard carries the infinite --wiggle animation, ActivityFeed runs an
  * IntersectionObserver plus an infinite query, and SurveyResponses is the other data-heavy one.
  *
- *   empty page fine, this crashes -> the cause is one of these three; halve again
- *   both fine                     -> the cause is in the four removed here, or in the shell
- *   both crash                    -> the shell, since it is the only thing they share
+ *   Round 1 result: empty page did not crash, these three did -> cause is among them.
+ *   Round 2 splits them: this build keeps SurveyResponses + ActivityFeed, while
+ *   tup-3193-test keeps LeaderboardSection alone (which carries the infinite --wiggle
+ *   animation, the only thing in the app that runs with no input at all).
  */
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
@@ -147,7 +148,6 @@ export const LandingPage = () => {
     <PageContainer>
       <PageBody>
         <Grid $hasMultiple={hasMoreThanOneSurvey}>
-          <LeaderboardSection />
           <SurveyResponsesSection />
           <ActivityFeedSection />
         </Grid>
