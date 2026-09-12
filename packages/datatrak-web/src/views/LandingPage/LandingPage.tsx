@@ -3,16 +3,16 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
+import { useCurrentUserRecentSurveys } from '../../api'; // TUP-3193: useSurveyResponseDrafts unused in this variant
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
 import { ActivityFeedSection } from './ActivityFeedSection';
-import { DraftSurveysSection } from './DraftSurveysSection';
+// TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
 import { LeaderboardSection } from './LeaderboardSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
+// TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
 import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { SurveySelectSection } from './SurveySelectSection';
-import { TasksSection } from './TasksSection';
+// TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
+// TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
@@ -122,16 +122,21 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
   }}
 `;
 
+/*
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — variant C of the idle-then-crash bisect. Restore from git.
+ *
+ * MainPageLayout is untouched, so the shell is identical to the "empty page" build on
+ * tup-3193-test. The only difference between the two is these three sections, chosen because they
+ * are the liveliest: Leaderboard carries the infinite --wiggle animation, ActivityFeed runs an
+ * IntersectionObserver plus an infinite query, and SurveyResponses is the other data-heavy one.
+ *
+ *   empty page fine, this crashes -> the cause is one of these three; halve again
+ *   both fine                     -> the cause is in the four removed here, or in the shell
+ *   both crash                    -> the shell, since it is the only thing they share
+ */
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
-  const {
-    data: drafts,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useSurveyResponseDrafts();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
-  const hasDrafts = drafts.length > 0;
 
   /* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
   React.useEffect(() => {
@@ -141,19 +146,8 @@ export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMultiple={hasMoreThanOneSurvey} $hasDrafts={hasDrafts}>
-          <SurveySelectSection />
-          <TasksSection />
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <LeaderboardSection />
-          {hasDrafts && (
-            <DraftSurveysSection
-              drafts={drafts}
-              fetchNextPage={fetchNextPage}
-              hasNextPage={hasNextPage}
-              isFetching={isFetching}
-            />
-          )}
-          <RecentSurveysSection />
           <SurveyResponsesSection />
           <ActivityFeedSection />
         </Grid>
