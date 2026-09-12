@@ -3,15 +3,16 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
+// TUP-3193 diagnostic: import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { DraftSurveysSection } from './DraftSurveysSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { SurveySelectSection } from './SurveySelectSection';
-import { TasksSection } from './TasksSection';
+import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
+// TUP-3193 diagnostic: import { ActivityFeedSection } from './ActivityFeedSection';
+// TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
+// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
+// TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
+// TUP-3193 diagnostic: import { SurveyResponsesSection } from './SurveyResponsesSection';
+// TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
+// TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
@@ -121,36 +122,28 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
   }}
 `;
 
+/*
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — step 0 of bisecting the idle-then-crash. Restore from git.
+ *
+ * Every section and both data hooks are removed, leaving only the page chrome. MainPageLayout is
+ * untouched, so the Header and BottomNavigation still render exactly as before — this isolates the
+ * landing page's *content* and nothing else.
+ *
+ *   Still crashes  -> content is exonerated; the cause is in the shell (Header,
+ *                     BannerNotifications, UnsyncedDataGuard, BottomNavigation,
+ *                     SurveyResponseModal) or the providers.
+ *   Stops crashing -> it is one of the seven sections; restore the livelier half first
+ *                     (LeaderboardSection, ActivityFeedSection, SurveyResponsesSection).
+ */
 export const LandingPage = () => {
-  const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
-  const {
-    data: drafts,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useSurveyResponseDrafts();
-  const hasMoreThanOneSurvey = recentSurveys.length > 1;
-  const hasDrafts = drafts.length > 0;
+  React.useEffect(() => {
+    sampleRuntime({ at: 'landing:mounted' });
+  }, []);
 
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMultiple={hasMoreThanOneSurvey} $hasDrafts={hasDrafts}>
-          <SurveySelectSection />
-          <TasksSection />
-          <LeaderboardSection />
-          {hasDrafts && (
-            <DraftSurveysSection
-              drafts={drafts}
-              fetchNextPage={fetchNextPage}
-              hasNextPage={hasNextPage}
-              isFetching={isFetching}
-            />
-          )}
-          <RecentSurveysSection />
-          <SurveyResponsesSection />
-          <ActivityFeedSection />
-        </Grid>
+        <Grid />
       </PageBody>
     </PageContainer>
   );
