@@ -13,10 +13,18 @@ import {
 import { AnswerModel } from '../Answer';
 import { SurveyModel } from '../Survey';
 
-const constructAnswerValidators = models => ({
+// Membership check against a prefetched set of question IDs, so validating N answers costs one
+// query rather than one query per answer. Mirrors constructRecordExistsWithId's error message.
+const constructQuestionExistsInSet = existingQuestionIds => async value => {
+  if (!existingQuestionIds.has(value)) {
+    throw new ValidationError(`No question with id ${value}`);
+  }
+};
+
+const constructAnswerValidators = existingQuestionIds => ({
   id: [constructIsNotPresentOr(takesIdForm)],
   type: [hasContent],
-  question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
+  question_id: [hasContent, takesIdForm, constructQuestionExistsInSet(existingQuestionIds)],
   body: [hasContent],
 });
 
@@ -41,13 +49,20 @@ export const validateSurveyResponse = async (models, body) => {
     throw new Error('Must provide one of entity_id or entity_code');
   }
 
-  const surveyQuestions = await SurveyModel.findQuestionsInSurvey(models, body.survey_id);
-
   const { answers } = body;
 
   // answers format: ReturnType<constructAnswerValidators>
   if (Array.isArray(answers)) {
-    const answerObjectValidator = new ObjectValidator(constructAnswerValidators(models));
+    const questionIds = [...new Set(answers.map(a => a.question_id).filter(Boolean))];
+    const existingQuestions =
+      questionIds.length > 0
+        ? await models.question.find({ id: questionIds }, { columns: ['id'] })
+        : [];
+    const existingQuestionIds = new Set(existingQuestions.map(q => q.id));
+
+    const answerObjectValidator = new ObjectValidator(
+      constructAnswerValidators(existingQuestionIds),
+    );
     for (let i = 0; i < answers.length; i++) {
       await answerObjectValidator.validate(
         answers[i],
@@ -59,6 +74,7 @@ export const validateSurveyResponse = async (models, body) => {
     }
   } else {
     // answers format: { [$questionCode]: [$answerValue] }
+    const surveyQuestions = await SurveyModel.findQuestionsInSurvey(models, body.survey_id);
     const answerValidations = Object.entries(answers).map(async ([questionCode, value]) => {
       if (value === null || value === undefined) {
         throw new ValidationError(`Answer for ${questionCode} is missing value`);
