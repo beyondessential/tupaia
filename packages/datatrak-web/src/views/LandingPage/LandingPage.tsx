@@ -3,14 +3,14 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-// TUP-3193 diagnostic: import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
+import { useCurrentUserRecentSurveys } from '../../api'; // TUP-3193: useSurveyResponseDrafts unused in this variant
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
 // TUP-3193 diagnostic: import { ActivityFeedSection } from './ActivityFeedSection';
 // TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
-// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
+import { LeaderboardSection } from './LeaderboardSection';
 // TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
-// TUP-3193 diagnostic: import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
 // TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
 // TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
@@ -123,19 +123,23 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
 `;
 
 /*
- * TEMPORARY DIAGNOSTIC (TUP-3193) — step 0 of bisecting the idle-then-crash. Restore from git.
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — variant C of the idle-then-crash bisect. Restore from git.
  *
- * Every section and both data hooks are removed, leaving only the page chrome. MainPageLayout is
- * untouched, so the Header and BottomNavigation still render exactly as before — this isolates the
- * landing page's *content* and nothing else.
+ * MainPageLayout is untouched, so the shell is identical to the "empty page" build on
+ * tup-3193-test. The only difference between the two is these three sections, chosen because they
+ * are the liveliest: Leaderboard carries the infinite --wiggle animation, ActivityFeed runs an
+ * IntersectionObserver plus an infinite query, and SurveyResponses is the other data-heavy one.
  *
- *   Still crashes  -> content is exonerated; the cause is in the shell (Header,
- *                     BannerNotifications, UnsyncedDataGuard, BottomNavigation,
- *                     SurveyResponseModal) or the providers.
- *   Stops crashing -> it is one of the seven sections; restore the livelier half first
- *                     (LeaderboardSection, ActivityFeedSection, SurveyResponsesSection).
+ *   Round 1 result: empty page did not crash, these three did -> cause is among them.
+ *   Round 2 uses overlapping groups so two deployments resolve all three at once. This build
+ *   keeps Leaderboard + SurveyResponses; tup-3193-test-2 keeps SurveyResponses + ActivityFeed.
+ *   Crashes here only -> Leaderboard. There only -> ActivityFeed. Both -> SurveyResponses.
  */
 export const LandingPage = () => {
+  const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
+  const hasMoreThanOneSurvey = recentSurveys.length > 1;
+
+  /* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
   React.useEffect(() => {
     sampleRuntime({ at: 'landing:mounted' });
   }, []);
@@ -143,7 +147,10 @@ export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
-        <Grid />
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
+          <LeaderboardSection />
+          <SurveyResponsesSection />
+        </Grid>
       </PageBody>
     </PageContainer>
   );
