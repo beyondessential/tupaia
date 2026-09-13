@@ -3,15 +3,15 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
+// TUP-3193 diagnostic: import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { DraftSurveysSection } from './DraftSurveysSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { SurveySelectSection } from './SurveySelectSection';
-import { TasksSection } from './TasksSection';
+// TUP-3193 diagnostic: import { ActivityFeedSection } from './ActivityFeedSection';
+// TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
+// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
+// TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
+// TUP-3193 diagnostic: import { SurveyResponsesSection } from './SurveyResponsesSection';
+// TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
+// TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
@@ -121,36 +121,25 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
   }}
 `;
 
+/*
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — restore from git.
+ *
+ * Empty landing page, on the deployment where the unmodified app crashed on STRIVE PNG. This is
+ * the control that was never actually run: same deployment, same database, same project, with the
+ * page content as the only difference. Every previous "empty page didn't crash" result was on
+ * tup-3193-test, which has its own lighter database, so it never tested this.
+ *
+ * Nothing else on this branch is modified, so the diff against the crashing build is exactly the
+ * seven sections.
+ *
+ *   still crashes -> page content is irrelevant; the cause is the data or the environment
+ *   clean over several full-length runs -> the content matters, and bisecting it is worthwhile
+ */
 export const LandingPage = () => {
-  const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
-  const {
-    data: drafts,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useSurveyResponseDrafts();
-  const hasMoreThanOneSurvey = recentSurveys.length > 1;
-  const hasDrafts = drafts.length > 0;
-
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMultiple={hasMoreThanOneSurvey} $hasDrafts={hasDrafts}>
-          <SurveySelectSection />
-          <TasksSection />
-          <LeaderboardSection />
-          {hasDrafts && (
-            <DraftSurveysSection
-              drafts={drafts}
-              fetchNextPage={fetchNextPage}
-              hasNextPage={hasNextPage}
-              isFetching={isFetching}
-            />
-          )}
-          <RecentSurveysSection />
-          <SurveyResponsesSection />
-          <ActivityFeedSection />
-        </Grid>
+        <Grid />
       </PageBody>
     </PageContainer>
   );
