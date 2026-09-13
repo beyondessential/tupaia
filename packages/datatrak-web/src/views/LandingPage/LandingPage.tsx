@@ -6,7 +6,7 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 import { useCurrentUserRecentSurveys } from '../../api'; // TUP-3193: useSurveyResponseDrafts unused in this variant
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
-import { ActivityFeedSection } from './ActivityFeedSection';
+// TUP-3193 diagnostic: import { ActivityFeedSection } from './ActivityFeedSection';
 // TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
 // TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
 // TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
@@ -131,9 +131,16 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
  * IntersectionObserver plus an infinite query, and SurveyResponses is the other data-heavy one.
  *
  *   Round 1 result: empty page did not crash, these three did -> cause is among them.
- *   Round 2 splits them: this build keeps SurveyResponses + ActivityFeed, while
- *   tup-3193-test keeps LeaderboardSection alone (which carries the infinite --wiggle
- *   animation, the only thing in the app that runs with no input at all).
+ *   Variant B: SurveyResponsesSection alone.
+ *
+ *   ActivityFeedSection has turned out to be present in every crash so far, and absent from
+ *   every clean run that was properly timed. It is also the only section with an infinite
+ *   query driven by an IntersectionObserver (InfiniteActivityFeed / InfiniteScroll), so it
+ *   keeps fetching pages — unbounded growth on a project with a lot of activity, which fits
+ *   a crash that needs idle time.
+ *
+ *   Run on tup-3193-test-2 (prod-cloned data), STRIVE PNG, full-length waits, three times.
+ *   Compare against variant A (ActivityFeedSection alone). A crashes and B doesn't -> the feed.
  */
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
@@ -149,7 +156,6 @@ export const LandingPage = () => {
       <PageBody>
         <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <SurveyResponsesSection />
-          <ActivityFeedSection />
         </Grid>
       </PageBody>
     </PageContainer>
