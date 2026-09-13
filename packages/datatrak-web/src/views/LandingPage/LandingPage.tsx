@@ -6,11 +6,11 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 import { useCurrentUserRecentSurveys } from '../../api'; // TUP-3193: useSurveyResponseDrafts unused in this variant
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
-// TUP-3193 diagnostic: import { ActivityFeedSection } from './ActivityFeedSection';
+import { ActivityFeedSection } from './ActivityFeedSection';
 // TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
-import { LeaderboardSection } from './LeaderboardSection';
+// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
 // TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
+// TUP-3193 diagnostic: import { SurveyResponsesSection } from './SurveyResponsesSection';
 // TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
 // TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
@@ -123,17 +123,20 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
 `;
 
 /*
- * TEMPORARY DIAGNOSTIC (TUP-3193) — variant C of the idle-then-crash bisect. Restore from git.
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — variant A of the idle-then-crash bisect. Restore from git.
  *
- * MainPageLayout is untouched, so the shell is identical to the "empty page" build on
- * tup-3193-test. The only difference between the two is these three sections, chosen because they
- * are the liveliest: Leaderboard carries the infinite --wiggle animation, ActivityFeed runs an
- * IntersectionObserver plus an infinite query, and SurveyResponses is the other data-heavy one.
+ * ActivityFeedSection alone. It is present in every crash recorded so far and absent from every
+ * clean run that was properly timed, and it is the only section with an infinite query driven by
+ * an IntersectionObserver (InfiniteActivityFeed / InfiniteScroll), so it keeps fetching pages —
+ * unbounded growth on a project with a lot of activity, which fits a crash that needs idle time.
  *
- *   Round 1 result: empty page did not crash, these three did -> cause is among them.
- *   Round 2 uses overlapping groups so two deployments resolve all three at once. This build
- *   keeps Leaderboard + SurveyResponses; tup-3193-test-2 keeps SurveyResponses + ActivityFeed.
- *   Crashes here only -> Leaderboard. There only -> ActivityFeed. Both -> SurveyResponses.
+ * Pairs with variant B on tup-3193-test-2 (SurveyResponsesSection alone). Run on STRIVE PNG with
+ * full-length waits, three times each.
+ *
+ * CAVEAT: this branch has its own database while tup-3193-test-2 is cloned from production, and
+ * that difference has confounded every cross-deployment comparison in this exercise. A clean run
+ * here may mean lighter data rather than an innocent component. Re-running variant A on
+ * tup-3193-test-2 is what would settle it.
  */
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
@@ -148,8 +151,7 @@ export const LandingPage = () => {
     <PageContainer>
       <PageBody>
         <Grid $hasMultiple={hasMoreThanOneSurvey}>
-          <LeaderboardSection />
-          <SurveyResponsesSection />
+          <ActivityFeedSection />
         </Grid>
       </PageBody>
     </PageContainer>
