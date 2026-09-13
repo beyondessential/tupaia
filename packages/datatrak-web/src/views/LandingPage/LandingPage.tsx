@@ -3,15 +3,16 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
+import { useCurrentUserRecentSurveys } from '../../api'; // TUP-3193: useSurveyResponseDrafts unused in this variant
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { DraftSurveysSection } from './DraftSurveysSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
+import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
+// TUP-3193 diagnostic: import { ActivityFeedSection } from './ActivityFeedSection';
+// TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
+// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
+// TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
 import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { SurveySelectSection } from './SurveySelectSection';
-import { TasksSection } from './TasksSection';
+// TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
+// TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
@@ -121,35 +122,40 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
   }}
 `;
 
+/*
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — variant C of the idle-then-crash bisect. Restore from git.
+ *
+ * MainPageLayout is untouched, so the shell is identical to the "empty page" build on
+ * tup-3193-test. The only difference between the two is these three sections, chosen because they
+ * are the liveliest: Leaderboard carries the infinite --wiggle animation, ActivityFeed runs an
+ * IntersectionObserver plus an infinite query, and SurveyResponses is the other data-heavy one.
+ *
+ *   Round 1 result: empty page did not crash, these three did -> cause is among them.
+ *   Variant B: SurveyResponsesSection alone.
+ *
+ *   ActivityFeedSection has turned out to be present in every crash so far, and absent from
+ *   every clean run that was properly timed. It is also the only section with an infinite
+ *   query driven by an IntersectionObserver (InfiniteActivityFeed / InfiniteScroll), so it
+ *   keeps fetching pages — unbounded growth on a project with a lot of activity, which fits
+ *   a crash that needs idle time.
+ *
+ *   Run on tup-3193-test-2 (prod-cloned data), STRIVE PNG, full-length waits, three times.
+ *   Compare against variant A (ActivityFeedSection alone). A crashes and B doesn't -> the feed.
+ */
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
-  const {
-    data: drafts,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useSurveyResponseDrafts();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
-  const hasDrafts = drafts.length > 0;
+
+  /* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
+  React.useEffect(() => {
+    sampleRuntime({ at: 'landing:mounted' });
+  }, []);
 
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMultiple={hasMoreThanOneSurvey} $hasDrafts={hasDrafts}>
-          <SurveySelectSection />
-          <TasksSection />
-          <LeaderboardSection />
-          {hasDrafts && (
-            <DraftSurveysSection
-              drafts={drafts}
-              fetchNextPage={fetchNextPage}
-              hasNextPage={hasNextPage}
-              isFetching={isFetching}
-            />
-          )}
-          <RecentSurveysSection />
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <SurveyResponsesSection />
-          <ActivityFeedSection />
         </Grid>
       </PageBody>
     </PageContainer>
