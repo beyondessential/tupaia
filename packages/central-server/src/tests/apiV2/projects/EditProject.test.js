@@ -8,14 +8,16 @@ import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 const { expect } = chai;
 
 const rollbackRecords = async (models, projectCode) => {
+  const project = await models.project.findOne({ code: projectCode });
+  if (project) {
+    await models.projectCountry.delete({ project_id: project.id });
+  }
   await models.project.delete({ code: projectCode });
   await models.dashboard.delete({ root_entity_code: projectCode });
   const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });
   if (projectEntity !== null) {
-    await models.entityRelation.delete({ parent_id: projectEntity.id });
     await models.entity.delete({ id: projectEntity.id });
   }
-  await models.entityHierarchy.delete({ name: projectCode });
 };
 
 describe('Editing a project', async () => {
@@ -146,6 +148,50 @@ describe('Editing a project', async () => {
       expect(result.length).to.equal(1);
       expect(result[0].image_url).to.equal(TEST_PROJECT_INPUT.image_url);
       expect(result[0].logo_url).to.equal(TEST_PROJECT_INPUT.logo_url);
+    });
+  });
+
+  describe('PUT /projects — country reconciliation (TUP-3181)', () => {
+    let kiCountryId;
+    let vuCountryId;
+
+    const countryEntityId = async code =>
+      (await models.entity.findOne({ code, type: 'country' })).id;
+
+    before(async () => {
+      const ki = await findOrCreateDummyRecord(models.country, { code: 'KI', name: 'Kiribati' });
+      const vu = await findOrCreateDummyRecord(models.country, { code: 'VU', name: 'Vanuatu' });
+      kiCountryId = ki.id;
+      vuCountryId = vu.id;
+      await findOrCreateDummyRecord(models.entity, { code: 'KI', type: 'country', country_code: 'KI' });
+      await findOrCreateDummyRecord(models.entity, { code: 'VU', type: 'country', country_code: 'VU' });
+    });
+
+    it('adds project_country links for newly selected countries', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: { description: 'with countries', countries: [kiCountryId, vuCountryId] },
+      });
+
+      const links = await models.projectCountry.find({ project_id: TEST_PROJECT_INPUT.id });
+      const linkedEntityIds = links.map(link => link.country_id);
+      expect(linkedEntityIds).to.include(await countryEntityId('KI'));
+      expect(linkedEntityIds).to.include(await countryEntityId('VU'));
+    });
+
+    it('removes deselected countries', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: { description: 'both', countries: [kiCountryId, vuCountryId] },
+      });
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: { description: 'just KI', countries: [kiCountryId] },
+      });
+
+      const links = await models.projectCountry.find({ project_id: TEST_PROJECT_INPUT.id });
+      const linkedEntityIds = links.map(link => link.country_id);
+      expect(linkedEntityIds).to.include(await countryEntityId('KI'));
+      expect(linkedEntityIds).to.not.include(await countryEntityId('VU'));
     });
   });
 });

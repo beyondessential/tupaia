@@ -20,8 +20,9 @@ function appendTimezoneToDateString(dateString, timezone) {
  * @param {import('@tupaia/types').Question['id']} questionId
  * @param {import('@tupaia/types').DatatrakWebSubmitSurveyResponseRequest.ReqBody['answers']} answers
  * @param {import('@tupaia/types').Entity['id']} countryId
+ * @param {import('@tupaia/types').Project['id']} projectId
  */
-async function buildUpsertEntity(models, config, questionId, answers, countryId) {
+async function buildUpsertEntity(models, config, questionId, answers, countryId, projectId) {
   const entityId = answers[questionId] || generateId();
   if (typeof entityId !== 'string') {
     throw new Error(`Entity ID must be a string, but received ${entityId}`);
@@ -68,6 +69,10 @@ async function buildUpsertEntity(models, config, questionId, answers, countryId)
   entity.country_code ??= selectedCountry.code;
   entity.parent_id ??= selectedCountry.id;
   entity.code ??= entityId;
+  // Sub-country entities need a project_id (entity_project_id_check) — set
+  // it from the survey's project so the new row joins the same project as
+  // the survey response that created it.
+  entity.project_id = projectId;
 
   return ajvValidate(EntityUpdateSchema, entity);
 }
@@ -85,6 +90,15 @@ export async function processSurveyResponse(models, surveyResponseData) {
     userId,
   } = surveyResponseData;
   const timestamp = new Date().toISOString();
+
+  // Resolve the survey's project up-front so any entity that this submission
+  // upserts can be stamped with it (CHECK constraint entity_project_id_check
+  // rejects sub-country rows without a project_id).
+  const survey = ensure(
+    await models.survey.findById(surveyId),
+    `No survey exists with ID ${surveyId}`,
+  );
+  const projectId = survey.project_id;
 
   /**
    * Fields to be used in the survey response
@@ -124,7 +138,14 @@ export async function processSurveyResponse(models, surveyResponseData) {
       // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
       if (SurveyScreenComponentModel.isUpsertEntityQuestion(config)) {
         /** @type {import('@tupaia/types').Entity} */
-        const entityObj = await buildUpsertEntity(models, config, questionId, answers, countryId);
+        const entityObj = await buildUpsertEntity(
+          models,
+          config,
+          questionId,
+          answers,
+          countryId,
+          projectId,
+        );
         if (entityObj) surveyResponse.entities_upserted.push(entityObj);
         answer = entityObj?.id;
         if (config.entity?.generateQrCode) surveyResponse.qr_codes_to_create.push(entityObj);

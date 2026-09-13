@@ -15,9 +15,10 @@ export class ReportServerBuilder extends DataBuilder {
   }
 
   async build() {
-    const hierarchyName = (
-      await this.models.entityHierarchy.findById(await this.fetchEntityHierarchyId())
-    ).name;
+    // Each project has exactly one hierarchy and they share a code — use the project's
+    // code as the "hierarchy" name passed downstream.
+    const project = await this.models.project.findById(await this.fetchProjectId());
+    const hierarchyName = project.code;
 
     const requestQuery = {
       organisationUnitCodes: this.entity.code,
