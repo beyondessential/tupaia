@@ -448,6 +448,14 @@ export const constructForSingle = (models, recordType) => {
         due_date: [hasContent],
         status: [hasContent],
       };
+    case RECORDS.ENTITY_POLYGON:
+      // CreateEntityPolygon enforces the deeper checks (geometry coercion,
+      // required fields). Keep these minimal so the model-level validator
+      // doesn't reject the GeoJSON object before the handler can coerce it.
+      return {
+        name: [hasContent],
+        data_source: [hasContent],
+      };
 
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

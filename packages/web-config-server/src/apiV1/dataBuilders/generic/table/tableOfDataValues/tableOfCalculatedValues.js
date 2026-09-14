@@ -26,7 +26,7 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   }
 
   async buildValuesByCell() {
-    const hierarchyId = await this.fetchEntityHierarchyId();
+    const projectId = await this.fetchProjectId();
     const noDataValue = this.config.noDataValue ?? NO_DATA_AVAILABLE;
 
     // Add `key` to each cell if columns are programmatically generated
@@ -44,7 +44,7 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
     }
 
     return getCalculatedValuesByCell(this.models, flatten(this.tableConfig.cells), this.results, {
-      hierarchyId,
+      projectId,
       noDataValue,
       filterKeys,
     });

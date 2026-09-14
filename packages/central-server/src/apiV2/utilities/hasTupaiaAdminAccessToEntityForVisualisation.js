@@ -1,6 +1,4 @@
-import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../permissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 export const hasTupaiaAdminAccessToEntityForVisualisation = async (
   accessPolicy,
@@ -9,9 +7,10 @@ export const hasTupaiaAdminAccessToEntityForVisualisation = async (
 ) => {
   if (entity.isProject()) {
     const project = await models.project.findOne({ code: entity.code });
-    const projectChildren = await entity.getChildrenViaHierarchy(project.entity_hierarchy_id);
+    if (!project) return false;
+    const countries = await project.countries();
     return accessPolicy.allowsAll(
-      projectChildren.map(c => c.country_code),
+      countries.map(c => c.code),
       TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
     );
   }

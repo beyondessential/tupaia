@@ -11,7 +11,7 @@ import {
   DATA_GROUPS,
   ENTITIES,
   SERVER_NAME,
-  ENTITY_HIERARCHIES,
+  PROJECTS,
 } from './DhisService.fixtures';
 
 type MockDhisApiData = Partial<{
@@ -78,8 +78,8 @@ export const createModelsStub = (): DataBrokerModelRegistry => {
     entity: {
       records: Object.values(ENTITIES),
     },
-    entityHierarchy: {
-      records: Object.values(ENTITY_HIERARCHIES),
+    project: {
+      records: Object.values(PROJECTS),
     },
   });
 };

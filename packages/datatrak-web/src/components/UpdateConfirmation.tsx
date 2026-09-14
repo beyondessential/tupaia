@@ -15,6 +15,8 @@ const StyledLink = styled(Link)`
 
 let pendingRegistration: ServiceWorkerRegistration | null = null;
 let notifyComponent: (() => void) | null = null;
+/** Prevents double reload if controllerchange fires more than once (see workbox-window recipe). */
+let controllerChangeReloadScheduled = false;
 
 export function setUpdateReady(registration: ServiceWorkerRegistration) {
   pendingRegistration = registration;
@@ -54,16 +56,26 @@ export const UpdateNotification = () => {
       return;
     }
 
-    // Following the workbox-window recipe: register controllerchange listener
-    // *before* messaging the worker, so it's guaranteed to be in place.
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // Reload as soon as the new worker takes control. `controllerchange` is the usual
+    // signal, but it's unreliable in standalone PWAs on iOS Safari, so also watch the
+    // waiting worker's own state — it reaches 'activated' after skipWaiting even when
+    // controllerchange never fires. We deliberately avoid a blind timed reload: that
+    // would run under the OLD controller and re-serve the same cached bundle.
+    const reloadOnce = () => {
+      if (controllerChangeReloadScheduled) {
+        return;
+      }
+      controllerChangeReloadScheduled = true;
       window.location.reload();
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', reloadOnce);
+    waiting.addEventListener('statechange', () => {
+      if (waiting.state === 'activated') {
+        reloadOnce();
+      }
     });
 
     waiting.postMessage({ type: 'SKIP_WAITING' });
-
-    // Fallback: if controllerchange never fires, reload after 3 seconds
-    setTimeout(() => window.location.reload(), 3000);
   };
 
   return (

@@ -1,6 +1,7 @@
 import momentTimezone from 'moment-timezone';
 
 import { SurveyResponseModel } from '@tupaia/database';
+import { QuestionType } from '@tupaia/types';
 import {
   DatabaseError,
   reformatDateStringWithoutTz,
@@ -9,6 +10,24 @@ import {
 } from '@tupaia/utils';
 import { ANSWER_BODY_PARSERS } from '../../../dataAccessors';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
+import { createCachedEntityResolver } from './resolveCanonicalEntityForProject';
+
+// Answer types that carry an entity id in their `body` / `text`. MediTrak
+// holds canonical ids; we translate to project-specific ids before saving so
+// downstream consumers (analytics, datatrak) see the right row.
+const ENTITY_ANSWER_TYPES = new Set([QuestionType.Entity, QuestionType.PrimaryEntity]);
+
+const translateEntityAnswerBodies = async (answers, resolveEntityId, projectId) => {
+  if (!answers || answers.length === 0 || !resolveEntityId) return answers;
+
+  return Promise.all(
+    answers.map(async answer => {
+      if (!ENTITY_ANSWER_TYPES.has(answer.type) || !answer.body) return answer;
+      const projectSpecificId = await resolveEntityId({ canonicalEntityId: answer.body, projectId });
+      return { ...answer, body: projectSpecificId };
+    }),
+  );
+};
 
 /**
  * Creates or updates survey responses from passed changes
@@ -23,14 +42,37 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 
   try {
     await models.wrapInTransaction(async transactingModels => {
-      await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [surveyResponseObject]);
-
       const survey = await transactingModels.survey.findById(surveyResponseObject.survey_id);
+      const projectId = survey?.project_id ?? null;
 
-      // Ensure entity_id is populated, supporting legacy versions of MediTrak
+      // For MediTrak payloads the entity ids in entities_upserted (and their
+      // parent_ids), the answer bodies, and the response's own entity_id are
+      // canonical. Translate them to project-specific row ids via the survey's
+      // project, lazy-duplicating where no project-specific row exists. One
+      // cached resolver is shared across all of these so each canonical id is
+      // resolved (and lazy-duplicated) at most once per submission. Skipping
+      // the resolver entirely when projectId is null preserves pre-epic
+      // behaviour for any survey without a project.
+      const resolveEntityId = projectId ? createCachedEntityResolver(transactingModels) : null;
+      const upsertOptions = resolveEntityId ? { projectId, resolveEntityId } : undefined;
+      await SurveyResponseModel.upsertEntitiesAndOptions(
+        transactingModels,
+        [surveyResponseObject],
+        upsertOptions,
+      );
+
+      // Ensure entity_id is populated, supporting legacy versions of MediTrak.
+      // The clinic_id path is the legacy one and is already project-aware;
+      // modern clients send entity_id directly (canonical), so translate it to
+      // the project-specific row the same way as answers and entities_upserted.
       if (clinicId) {
-        const entityId = await getEntityIdFromClinicId(transactingModels, clinicId);
+        const entityId = await getEntityIdFromClinicId(transactingModels, clinicId, projectId);
         surveyResponseProperties.entity_id = entityId;
+      } else if (resolveEntityId && surveyResponseProperties.entity_id) {
+        surveyResponseProperties.entity_id = await resolveEntityId({
+          canonicalEntityId: surveyResponseProperties.entity_id,
+          projectId,
+        });
       }
 
       // Ensure data_time is populated, supporting legacy versions of MediTrak
@@ -50,9 +92,17 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         },
       );
 
+      // Entity/PrimaryEntity question answers carry canonical entity ids in
+      // their body — translate to project-specific ids before saving.
+      const translatedAnswers = await translateEntityAnswerBodies(
+        answers,
+        resolveEntityId,
+        projectId,
+      );
+
       await SurveyResponseModel.upsertAnswers(
         transactingModels,
-        answers,
+        translatedAnswers,
         surveyResponse.id,
         ANSWER_BODY_PARSERS,
       );
