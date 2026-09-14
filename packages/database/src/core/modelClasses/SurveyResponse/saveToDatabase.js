@@ -4,10 +4,9 @@
  */
 
 import { keyBy } from 'es-toolkit/compat';
-import momentTimezone from 'moment-timezone';
 
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
-import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
+import { ValidationError, formatDateInTimezone, stripTimezoneFromDate } from '@tupaia/utils';
 import { generateId } from '../../utilities';
 import { upsertAnswers } from './upsertAnswers';
 
@@ -83,14 +82,8 @@ function buildResponseRecord(user, entitiesByCode, body) {
   }
 
   const defaultToTimestampOrThrow = (value, parameterName) => {
-    if (value)
-      return momentTimezone(value)
-        .tz(timezone || 'Etc/UTC')
-        .format();
-    if (timestamp)
-      return momentTimezone(timestamp)
-        .tz(timezone || 'Etc/UTC')
-        .format();
+    if (value) return formatDateInTimezone(value, timezone || 'Etc/UTC');
+    if (timestamp) return formatDateInTimezone(timestamp, timezone || 'Etc/UTC');
 
     throw new ValidationError(`Must provide ${parameterName} or timestamp`);
   };

@@ -7,7 +7,7 @@
  * @typedef {import('./PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  */
 
-import moment from 'moment';
+import { format } from 'date-fns';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
@@ -27,7 +27,7 @@ export class FeedItemRecord extends DatabaseRecord {
     // Reformat the creation_date string to include the timezone. By default Knex
     // parses the date as stored in the database with the server timezone then strips
     // out the timezone when producing a string for the creation date.
-    this.creation_date = moment(this.creation_date).format('Y-MM-DD HH:mm:ss.SSSZZ');
+    this.creation_date = format(new Date(this.creation_date), 'yyyy-MM-dd HH:mm:ss.SSSxx');
   }
 }
 

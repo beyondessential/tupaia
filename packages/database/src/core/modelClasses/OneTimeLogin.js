@@ -1,5 +1,5 @@
 import randomToken from 'rand-token';
-import moment from 'moment';
+import { isAfter, subHours } from 'date-fns';
 
 import { UnauthenticatedError } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
@@ -12,7 +12,7 @@ export class OneTimeLoginRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ONE_TIME_LOGIN;
 
   get isExpired() {
-    return moment().subtract(1, 'h').isAfter(moment(this.creation_date));
+    return isAfter(subHours(new Date(), 1), new Date(this.creation_date));
   }
 
   get isUsed() {
