@@ -2,15 +2,16 @@ import React from 'react';
 import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { RoutePath, ROUTES } from '../constants';
+import { ErrorPage } from '../views/ErrorPage';
+import { SurveyPage } from '../views/SurveyPage';
 import {
-  ErrorPage,
-  SurveyPage,
+  SurveyLayout,
   SurveyReviewScreen,
   SurveyScreen,
   SurveySuccessScreen,
   SurveyResubmitSuccessScreen,
-} from '../views';
-import { SurveyLayout, useSurveyForm } from '../features';
+  useSurveyForm,
+} from '../features';
 import { useCurrentUserContext, useSurvey } from '../api';
 import { SurveyResubmitRoute } from './SurveyResponseRoute';
 
