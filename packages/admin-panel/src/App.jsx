@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import React, { useCallback, useMemo } from 'react';
+import { Navigate, Outlet, Route, Routes, useParams } from 'react-router-dom';
 
 import { PrivateRoute } from './authentication';
 import { AppPageLayout, AuthLayout, Footer } from './layout';
@@ -9,17 +9,31 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { AUTH_ROUTES, ROUTES } from './routes';
-import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
+import {
+  ALL_DATA_BASE_PATH,
+  ALL_PROJECTS_SCOPE,
+  SINGLE_PROJECT_PATH_PARAM,
+  SINGLE_PROJECT_ROUTE_BASE,
+  SINGLE_PROJECT_SCOPE,
+  filterRoutesByScope,
+} from './routes/scopes';
+import { DefaultRedirect, useSelectedProjectCode } from './projects';
+import { useProjects } from './api/queries';
+import {
+  substituteRouteParams,
+  useHasBesAdminAccess,
+  useUserPermissionGroups,
+} from './utilities';
 
-export const getFlattenedChildViews = (route, basePath = '') => {
+export const getFlattenedChildViews = (route, basePath = '', pathPrefix = '') => {
   return route.childViews.reduce((acc, childView) => {
     const { nestedViews } = childView;
 
     const childViewWithRoute = {
       ...childView,
       basePath,
-      path: `${route.path}${childView.path}`,
-      to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
+      path: `${pathPrefix}${route.path}${childView.path}`,
+      to: `${basePath}${pathPrefix}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
     if (!nestedViews) {
@@ -29,7 +43,7 @@ export const getFlattenedChildViews = (route, basePath = '') => {
 
     const updatedNestedViews = nestedViews.map(nestedView => ({
       ...nestedView,
-      path: `${route.path}${childView.path}${nestedView.path}`,
+      path: `${pathPrefix}${route.path}${childView.path}${nestedView.path}`,
       parent: childViewWithRoute,
     }));
 
@@ -44,8 +58,67 @@ export const getFlattenedChildViews = (route, basePath = '') => {
   }, []);
 };
 
+// Substitutes live `useParams()` values into a parameterised target URL
+// before navigating. Used by route catch-alls where the target carries
+// React Router param tokens (e.g. `/:projectCode/...`).
+const ParamAwareNavigate = ({ to }) => {
+  const params = useParams();
+  return <Navigate to={substituteRouteParams(to, params)} replace />;
+};
+
+// Guards the `/:projectCode/...` routes: if the code in the URL isn't a project
+// the current user can access (a stale URL after switching accounts, or a
+// non-project first segment that fell through to this catch-all route), send
+// them back to `/` so DefaultRedirect lands them on an accessible page rather
+// than rendering a blank, permission-denied view.
+const SingleProjectRouteGuard = () => {
+  const { [SINGLE_PROJECT_PATH_PARAM]: projectCode } = useParams();
+  const { data: projects, isLoading } = useProjects();
+  if (isLoading) return null;
+  if (!projects?.some(project => project.code === projectCode)) {
+    return <Navigate to="/" replace />;
+  }
+  return <Outlet />;
+};
+
+const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
+  sectionRoutes.map(route => {
+    const sectionRoutePath = `${pathPrefix}${route.path}`;
+    const firstChild = route.childViews[0];
+    const firstChildPath = `${sectionRoutePath}${firstChild?.path ?? ''}`;
+    return (
+      <Route
+        key={sectionRoutePath}
+        path={sectionRoutePath}
+        element={
+          <TabPageLayout
+            routes={route.childViews}
+            basePath={sectionRoutePath}
+            Footer={<Footer />}
+          />
+        }
+      >
+        {getFlattenedChildViews(route, '', pathPrefix).map(childRoute => (
+          <Route
+            key={childRoute.path || childRoute.title}
+            path={childRoute.path}
+            element={
+              childRoute.Component ? (
+                <childRoute.Component {...childRoute} />
+              ) : (
+                <ResourcePage {...childRoute} hasBESAdminAccess={hasBESAdminAccess} />
+              )
+            }
+          />
+        ))}
+        <Route path="*" element={<ParamAwareNavigate to={firstChildPath} />} />
+      </Route>
+    );
+  });
+
 const App = () => {
   const hasBESAdminAccess = useHasBesAdminAccess();
+  const selectedProjectCode = useSelectedProjectCode();
 
   const userPermissionGroups = useUserPermissionGroups();
   const userHasPermissionGroup = useCallback(
@@ -53,35 +126,50 @@ const App = () => {
     [userPermissionGroups],
   );
 
-  const userHasAccessToTab = tab => {
-    if (
-      Array.isArray(tab.requiresSomePermissionGroup) &&
-      tab.requiresSomePermissionGroup.length > 0
-    ) {
-      return tab.requiresSomePermissionGroup.some(userHasPermissionGroup);
-    }
-    return true;
-  };
+  const userHasAccessToTab = useCallback(
+    tab => {
+      if (
+        Array.isArray(tab.requiresSomePermissionGroup) &&
+        tab.requiresSomePermissionGroup.length > 0
+      ) {
+        if (!tab.requiresSomePermissionGroup.some(userHasPermissionGroup)) return false;
+      }
+      if (tab.requiresProjectCode && tab.requiresProjectCode !== selectedProjectCode) {
+        return false;
+      }
+      return true;
+    },
+    [userHasPermissionGroup, selectedProjectCode],
+  );
 
-  // Filter out tabs that the user does not have access to, and hide routes that have no accessible tabs
-  const getAccessibleRoutes = () => {
-    return ROUTES.map(route => {
-      return {
+  // Filter out tabs that the user does not have access to, and hide top-level
+  // routes that have no accessible tabs
+  const accessibleRoutes = useMemo(
+    () =>
+      ROUTES.map(route => ({
         ...route,
         childViews: route.childViews.filter(childView => userHasAccessToTab(childView)),
-      };
-    }).filter(route => {
-      if (
-        Array.isArray(route.requiresSomePermissionGroup) &&
-        route.requiresSomePermissionGroup.length > 0
-      ) {
-        return route.requiresSomePermissionGroup.some(userHasPermissionGroup);
-      }
-      return route.childViews.length > 0;
-    });
-  };
+      })).filter(route => {
+        if (
+          Array.isArray(route.requiresSomePermissionGroup) &&
+          route.requiresSomePermissionGroup.length > 0
+        ) {
+          return route.requiresSomePermissionGroup.some(userHasPermissionGroup);
+        }
+        return route.childViews.length > 0;
+      }),
+    [userHasAccessToTab, userHasPermissionGroup],
+  );
 
-  const accessibleRoutes = getAccessibleRoutes();
+  const allDataRoutes = useMemo(
+    () => filterRoutesByScope(accessibleRoutes, ALL_PROJECTS_SCOPE),
+    [accessibleRoutes],
+  );
+  const singleProjectRoutes = useMemo(
+    () => filterRoutesByScope(accessibleRoutes, SINGLE_PROJECT_SCOPE),
+    [accessibleRoutes],
+  );
+
   return (
     <Routes>
       <Route element={<AuthLayout />}>
@@ -93,14 +181,27 @@ const App = () => {
         <Route
           element={
             <AppPageLayout
-              routes={accessibleRoutes}
-              profileLink={{ label: 'Profile', to: '/profile' }}
+              allDataRoutes={allDataRoutes}
+              singleProjectRoutes={singleProjectRoutes}
+              profileLink={{ label: 'Edit profile', to: '/profile' }}
             />
           }
         >
-          <Route index element={<Navigate to="/surveys" replace />} />
-          <Route path="*" element={<Navigate to="/surveys" replace />} />
-          {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
+          <Route
+            index
+            element={
+              <DefaultRedirect
+                allDataRoutes={allDataRoutes}
+                singleProjectRoutes={singleProjectRoutes}
+              />
+            }
+          />
+          {renderSectionRoutes(allDataRoutes, ALL_DATA_BASE_PATH, hasBESAdminAccess)}
+          <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<SingleProjectRouteGuard />}>
+            {renderSectionRoutes(singleProjectRoutes, SINGLE_PROJECT_ROUTE_BASE, hasBESAdminAccess)}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+          {PROFILE_ROUTES.map(route => (
             <Route
               key={route.path || route.label}
               path={route.path}
@@ -128,6 +229,15 @@ const App = () => {
               <Route path="*" element={<Navigate to={route.childViews[0].path} replace />} />
             </Route>
           ))}
+          <Route
+            path="*"
+            element={
+              <DefaultRedirect
+                allDataRoutes={allDataRoutes}
+                singleProjectRoutes={singleProjectRoutes}
+              />
+            }
+          />
         </Route>
       </Route>
     </Routes>

@@ -1,0 +1,1 @@
+export { gisData } from './gisData';
