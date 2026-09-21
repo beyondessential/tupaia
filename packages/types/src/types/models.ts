@@ -125,22 +125,22 @@ export interface AnalyticsUpdate {
 export interface AncestorDescendantRelation {
   'ancestor_id': string;
   'descendant_id': string;
-  'entity_hierarchy_id': string;
   'generational_distance': number;
   'id': string;
+  'project_id': string;
 }
 export interface AncestorDescendantRelationCreate {
   'ancestor_id': string;
   'descendant_id': string;
-  'entity_hierarchy_id': string;
   'generational_distance': number;
+  'project_id': string;
 }
 export interface AncestorDescendantRelationUpdate {
   'ancestor_id'?: string;
   'descendant_id'?: string;
-  'entity_hierarchy_id'?: string;
   'generational_distance'?: number;
   'id'?: string;
+  'project_id'?: string;
 }
 export interface Answer {
   'id': string;
@@ -640,13 +640,14 @@ export interface Entity {
   'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
+  'entity_polygon_id'?: string | null;
   'id': string;
   'image_url'?: string | null;
   'metadata': EntityMetadata;
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
-  'region'?: string | null;
+  'project_id'?: string | null;
   'type': EntityType;
   'updated_at_sync_tick': string;
 }
@@ -655,12 +656,13 @@ export interface EntityCreate {
   'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
+  'entity_polygon_id'?: string | null;
   'image_url'?: string | null;
   'metadata'?: EntityMetadata;
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
-  'region'?: string | null;
+  'project_id'?: string | null;
   'type': EntityType;
 }
 export interface EntityUpdate {
@@ -668,64 +670,41 @@ export interface EntityUpdate {
   'bounds'?: string | null;
   'code'?: string;
   'country_code'?: string | null;
+  'entity_polygon_id'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
   'metadata'?: EntityMetadata;
   'name'?: string;
   'parent_id'?: string | null;
   'point'?: string | null;
-  'region'?: string | null;
+  'project_id'?: string | null;
   'type'?: EntityType;
 }
-export interface EntityHierarchy {
-  'canonical_types'?: string[] | null;
+export interface EntityPolygon {
+  'code'?: string | null;
+  'created_at': Date;
+  'data_source': string;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
+  'polygon': string;
+  'updated_at': Date;
 }
-export interface EntityHierarchyCreate {
-  'canonical_types'?: string[] | null;
+export interface EntityPolygonCreate {
+  'code'?: string | null;
+  'created_at'?: Date;
+  'data_source': string;
   'name': string;
+  'polygon': string;
+  'updated_at'?: Date;
 }
-export interface EntityHierarchyUpdate {
-  'canonical_types'?: string[] | null;
+export interface EntityPolygonUpdate {
+  'code'?: string | null;
+  'created_at'?: Date;
+  'data_source'?: string;
   'id'?: string;
   'name'?: string;
-}
-export interface EntityParentChildRelation {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'id': string;
-  'parent_id': string;
-  'updated_at_sync_tick': string;
-}
-export interface EntityParentChildRelationCreate {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'parent_id': string;
-}
-export interface EntityParentChildRelationUpdate {
-  'child_id'?: string;
-  'entity_hierarchy_id'?: string;
-  'id'?: string;
-  'parent_id'?: string;
-}
-export interface EntityRelation {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'id': string;
-  'parent_id': string;
-}
-export interface EntityRelationCreate {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'parent_id': string;
-}
-export interface EntityRelationUpdate {
-  'child_id'?: string;
-  'entity_hierarchy_id'?: string;
-  'id'?: string;
-  'parent_id'?: string;
+  'polygon'?: string;
+  'updated_at'?: Date;
 }
 export interface ErrorLog {
   'api_request_log_id'?: string | null;
@@ -1252,7 +1231,6 @@ export interface Project {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'id': string;
   'image_url'?: string | null;
@@ -1267,7 +1245,6 @@ export interface ProjectCreate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'image_url'?: string | null;
   'logo_url'?: string | null;
@@ -1280,13 +1257,27 @@ export interface ProjectUpdate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
   'logo_url'?: string | null;
   'permission_groups'?: string[];
   'sort_order'?: number | null;
+}
+export interface ProjectCountry {
+  'country_id': string;
+  'id': string;
+  'project_id': string;
+  'updated_at_sync_tick': string;
+}
+export interface ProjectCountryCreate {
+  'country_id': string;
+  'project_id': string;
+}
+export interface ProjectCountryUpdate {
+  'country_id'?: string;
+  'id'?: string;
+  'project_id'?: string;
 }
 export interface PsssSession {
   'access_policy': {};

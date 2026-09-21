@@ -173,7 +173,19 @@ export class WeatherService extends Service {
       throw new Error('No entities selected');
     }
 
-    return entities;
+    // Since the entity-hierarchy epic, a single code can resolve to multiple
+    // rows (one per project), all sharing the same point. Without de-duping, the
+    // translator concatenates each code's weather data once per copy, multiplying
+    // the overlay values (TUP-3165 issue 5). Keep one entity per code — the point
+    // is identical across copies, so the weather fetched is the same.
+    const entityByCode = new Map<string, EntityRecord>();
+    for (const entity of entities) {
+      if (!entityByCode.has(entity.code)) {
+        entityByCode.set(entity.code, entity);
+      }
+    }
+
+    return [...entityByCode.values()];
   }
 
   /**

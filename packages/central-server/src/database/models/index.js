@@ -9,8 +9,6 @@ export { DataGroupModel as DataGroup } from './DataGroup';
 export { FacilityModel as Facility } from './Facility';
 export { GeographicalAreaModel as GeographicalArea } from './GeographicalArea';
 export { MeditrakDeviceModel as MeditrakDevice } from './MeditrakDevice';
-export { Ms1SyncLogModel as Ms1SyncLog } from './Ms1SyncLog';
-export { Ms1SyncQueueModel as Ms1SyncQueue } from './Ms1SyncQueue';
 export { OptionModel as Option } from './Option';
 export { OptionSetModel as OptionSet } from './OptionSet';
 export { PermissionGroupModel as PermissionGroup } from './PermissionGroup';
