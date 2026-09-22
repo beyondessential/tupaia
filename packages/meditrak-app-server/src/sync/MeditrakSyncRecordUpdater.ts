@@ -108,7 +108,37 @@ export class MeditrakSyncRecordUpdater {
       return this.processSurveyChange(change);
     }
 
+    if (change.record_type === 'entity') {
+      return this.processEntityChange(change);
+    }
+
     return this.addToSyncQueue(change);
+  }
+
+  /**
+   * Post entity-hierarchy epic, a code can have multiple entity rows (one per project), but
+   * MediTrak sees entities as canonical (one row per code). So a delete should only be sent to
+   * MediTrak when the code is *fully* gone — never for a duplicate-only deletion, which would
+   * make MediTrak drop an entity that still exists in another project.
+   */
+  private async processEntityChange(change: Change) {
+    const { new_record: newRecord, old_record: oldRecord, ...entityChange } = change;
+
+    if (entityChange.type !== 'delete') {
+      return this.addToSyncQueue(entityChange);
+    }
+
+    const code = oldRecord?.code as string | undefined;
+    if (code) {
+      const remainingForCode = await this.models.entity.count({ code });
+      if (remainingForCode > 0) {
+        // Duplicate-only deletion: other project rows still hold this code, so MediTrak keeps it.
+        return undefined;
+      }
+    }
+
+    // True full deletion (no rows remain for the code, or code unknown): tell MediTrak to remove it.
+    return this.addToSyncQueue(entityChange);
   }
 
   private addToSyncQueue(change: Change) {

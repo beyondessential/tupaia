@@ -1,12 +1,15 @@
-@hostname = localhost
-@port = 8050
-@host = {{hostname}}:{{port}}
+@host = {{hostname}}
+@scheme = {{scheme}}
 @version = v1
 @contentType = application/json
+@baseUrl = {{scheme}}://{{hostname}}/{{version}}
 
-# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
-# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
-@authorization  = Basic {{email}}:{{password}}
+# Authorization + host come from http-client.env.json (gitignored). Pick the
+# `dev` or `staging` env via WebStorm's run-gutter env picker.
+#
+# `basicAuth` is pre-encoded `email:password` as base64. To rotate, run:
+#   printf 'EMAIL:PASSWORD' | base64
+@authorization = Basic {{basicAuth}}
 
 ### Test
 GET http://{{host}}/{{version}}/test HTTP/1.1
@@ -148,3 +151,23 @@ Authorization: {{authorization}}
 {
     "entities":["TO_Tongatapu_Haatafu","PG_Sau_ASP"]
 }
+
+### Test 7a — FJ descendants via supplychain_fiji
+GET {{baseUrl}}/hierarchy/supplychain_fiji/FJ/descendants?fields=id,code,type HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Test 7b — FJ descendants via fj_srhd
+GET {{baseUrl}}/hierarchy/fj_srhd/FJ/descendants?fields=id,code,type HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Test 7c — single facility lookup in supplychain_fiji
+GET {{baseUrl}}/hierarchy/supplychain_fiji/FJ_003?fields=id,code,name,type HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Test 7d — same facility code in fj_srhd (must return a different `id`)
+GET {{baseUrl}}/hierarchy/fj_srhd/FJ_003?fields=id,code,name,type HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}

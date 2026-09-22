@@ -7,6 +7,7 @@ import {
 } from '../../permissions';
 import { EditHandler } from '../EditHandler';
 import { uploadImage } from '../utilities';
+import { getCountryEntityId } from './getCountryEntityId';
 
 const assertCanEditProject = async (accessPolicy, models, recordId) => {
   assertAdminPanelAccess(accessPolicy);
@@ -49,7 +50,9 @@ export class EditProject extends EditHandler {
       code: updatedCode,
       sort_order: updatedSortOrder,
     } = this.updatedFields;
-    const updatedFields = { ...this.updatedFields };
+    // `countries` is a relation (project_country), not a project column, so keep
+    // it out of the record update and reconcile it separately.
+    const { countries, ...updatedFields } = this.updatedFields;
 
     const {
       image_url: existingBackgroundImage,
@@ -81,6 +84,34 @@ export class EditProject extends EditHandler {
     if (updatedSortOrder === '') {
       updatedFields.sort_order = null;
     }
-    await this.models.project.updateById(this.recordId, updatedFields);
+
+    await this.models.wrapInTransaction(async transactingModels => {
+      await transactingModels.project.updateById(this.recordId, updatedFields);
+      if (countries !== undefined) {
+        await this.reconcileProjectCountries(transactingModels, countries);
+      }
+    });
+  }
+
+  // Bring project_country into line with the selected `country` table ids:
+  // add links for newly-selected countries, remove deselected ones.
+  async reconcileProjectCountries(models, countryIds) {
+    const desiredEntityIds = [];
+    for (const countryId of countryIds) {
+      desiredEntityIds.push(await getCountryEntityId(models, countryId));
+    }
+
+    const existingLinks = await models.projectCountry.find({ project_id: this.recordId });
+    const existingEntityIds = existingLinks.map(link => link.country_id);
+
+    const toAdd = desiredEntityIds.filter(id => !existingEntityIds.includes(id));
+    const toRemove = existingEntityIds.filter(id => !desiredEntityIds.includes(id));
+
+    for (const countryId of toAdd) {
+      await models.projectCountry.create({ project_id: this.recordId, country_id: countryId });
+    }
+    if (toRemove.length > 0) {
+      await models.projectCountry.delete({ project_id: this.recordId, country_id: toRemove });
+    }
   }
 }

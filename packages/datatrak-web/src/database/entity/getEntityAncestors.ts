@@ -18,20 +18,15 @@ export const getEntityAncestors = async ({
     'getEntityAncestors query function called with undefined entityCode',
   );
 
-  const { entity_hierarchy_id: hierarchyId } = await models.project.findOneOrThrow(
+  const { id: projectId } = await models.project.findOneOrThrow(
     { code: projectCode },
-    { columns: ['entity_hierarchy_id'] },
+    { columns: ['id'] },
     `No project exists with code ${projectCode}`,
   );
 
-  // This should never happen, but just in case
-  if (!hierarchyId) {
-    throw new Error('Project entity hierarchy ID is not set');
-  }
-
   const entity = await models.entity.findOneOrThrow({ code: entityCode });
   const ancestors = await models.entity.getAncestorsFromParentChildRelation(
-    hierarchyId,
+    projectId,
     [entity.id],
     {
       fields: ENTITY_ANCESTORS_DEFAULT_FIELDS.filter(field => !isExtendedField(field)),
@@ -42,7 +37,7 @@ export const getEntityAncestors = async ({
   const entities = [entity, ...ancestors];
 
   const formattedEntities = await formatEntitiesForResponse(
-    { hierarchyId: hierarchyId },
+    { projectId },
     entities,
     ENTITY_ANCESTORS_DEFAULT_FIELDS,
   );
