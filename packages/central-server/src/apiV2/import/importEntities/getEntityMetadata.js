@@ -1,4 +1,10 @@
-export const getEntityMetadata = async (transactingModels, defaultMetadata, code, pushToDhis) => {
+export const getEntityMetadata = async (
+  transactingModels,
+  defaultMetadata,
+  code,
+  pushToDhis,
+  projectId = null,
+) => {
   const newDefaultMetadata = {
     ...defaultMetadata,
   };
@@ -8,7 +14,7 @@ export const getEntityMetadata = async (transactingModels, defaultMetadata, code
     newDefaultMetadata.dhis.push = pushToDhis;
   }
 
-  const entity = await transactingModels.entity.findOne({ code });
+  const entity = await transactingModels.entity.findOneByCodeInProject(code, projectId);
   return entity && entity.metadata
     ? entity.metadata // we don't want to override the metadata if the entity already exists
     : newDefaultMetadata;

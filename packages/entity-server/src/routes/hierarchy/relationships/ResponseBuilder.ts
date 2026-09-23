@@ -51,7 +51,7 @@ export class ResponseBuilder {
   private async buildAncestorCodesAndPairs(
     descendants: EntityRecord[],
   ): Promise<[string[], Pair[]]> {
-    const { hierarchyId, entities } = this.ctx;
+    const { projectId, entities } = this.ctx;
     const { type: ancestorType } = this.ctx.ancestor;
     const { type: descendantType } = this.ctx.descendant;
 
@@ -66,7 +66,7 @@ export class ResponseBuilder {
 
     const descendantAncestorMapping = await this.models.entity.fetchAncestorDetailsByDescendantCode(
       descendantCodes,
-      hierarchyId,
+      projectId,
       ancestorType,
     );
 
@@ -91,7 +91,7 @@ export class ResponseBuilder {
   }
 
   private async getAncestorTypeRelatives(ancestorsWithDescendantsCodes: string[]) {
-    const { entities, hierarchyId } = this.ctx;
+    const { entities, projectId } = this.ctx;
     const { type: ancestorType, filter } = this.ctx.ancestor;
     const { code: filterCode } = filter;
     let codesToUse: string[];
@@ -104,7 +104,7 @@ export class ResponseBuilder {
     }
 
     return this.models.entity.getRelativesOfEntities(
-      hierarchyId,
+      projectId,
       entities.map(entity => entity.id),
       {
         ...filter,
@@ -158,11 +158,11 @@ export class ResponseBuilder {
   }
 
   public async build() {
-    const { entities, hierarchyId } = this.ctx;
+    const { entities, projectId } = this.ctx;
     const { type: descendantType, filter } = this.ctx.descendant;
 
     const descendants = await this.models.entity.getRelativesOfEntities(
-      hierarchyId,
+      projectId,
       entities.map(entity => entity.id),
       {
         ...filter,

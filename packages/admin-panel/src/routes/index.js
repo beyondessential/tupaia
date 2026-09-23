@@ -20,3 +20,4 @@ export {
 } from './visualisations';
 export { entities, entitiesTabRoutes, QRCodeColumn } from './entities';
 export { externalDatabaseConnections, externalDataTabRoutes } from './externalData';
+export { gisData } from './gisData';

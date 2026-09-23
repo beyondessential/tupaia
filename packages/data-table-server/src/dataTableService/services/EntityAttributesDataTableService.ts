@@ -31,7 +31,19 @@ export class EntityAttributesDataTableService extends DataTableService<
       return [];
     }
 
-    const entities = await this.ctx.models.entity.find({ code: entityCodes });
+    const allEntities = await this.ctx.models.entity.find({ code: entityCodes });
+
+    // After the per-project duplication migration, each shared
+    // sub-country code can have multiple `entity` rows — one per project. All
+    // copies share identical `attributes` because the duplication INSERT copied
+    // them verbatim, so picking the first row per code is safe and avoids the
+    // downstream fetchData join fanning rows out by N (one per project copy).
+    const seenCodes = new Set<string>();
+    const entities = allEntities.filter(entity => {
+      if (seenCodes.has(entity.code)) return false;
+      seenCodes.add(entity.code);
+      return true;
+    });
 
     const rows = [];
     for (const entity of entities) {
