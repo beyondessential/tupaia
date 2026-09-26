@@ -818,10 +818,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @returns {Promise<EntityRecord[]>}
    */
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
-    // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
-    const ancestors = (
-      await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria)
-    ).toReversed();
+    // getAncestors() comes sorted closest -> furthest, we want furthest -> closest.
+    // slice().reverse() rather than toReversed(): DataTrak runs this in the browser, and
+    // toReversed() needs Chrome 110 / Safari 16, newer than the Android WebViews we support
+    const ancestors = (await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria))
+      .slice()
+      .reverse();
 
     const self = await this.find({
       ...criteria,
