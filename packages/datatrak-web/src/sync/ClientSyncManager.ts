@@ -604,7 +604,15 @@ export class ClientSyncManager {
         });
       };
 
-      const batchSize = 10000;
+      /*
+       * TUP-3193: 10,000 records take ~9s to save on a fast machine and plausibly 45-90s on a
+       * Snapdragon 662. The client stops reading the pull stream for that whole time, and nginx's
+       * write timeout to the client is 60s (its default; `send_timeout` isn't set in
+       * servers.template.conf), so a long save can have the stream killed under it. The saves
+       * themselves are already chunked at SAVE_BATCH_SIZE = 1000 internally, and the server
+       * streams in record-type order, so a smaller pull batch doesn't fragment the inserts.
+       */
+      const batchSize = 1000;
       await withDeferredSyncSafeguards(transactingModels.database, () =>
         pullIncomingChanges(transactingModels, sessionId, batchSize, processStreamedDataFunction),
       );
@@ -641,7 +649,8 @@ export class ClientSyncManager {
       pullProgressCallback(records.length);
     };
 
-    const batchSize = 10000;
+    // TUP-3193: see the note on the initial-sync batch size above
+    const batchSize = 1000;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
