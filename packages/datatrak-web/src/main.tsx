@@ -49,6 +49,22 @@ if (useIsOfflineFirst()) {
       });
     });
 
+    // The service worker calls skipWaiting() on install (see service-worker.ts), so an updated build
+    // activates without ever entering the "waiting" state — the `waiting` handler above never fires.
+    // Surface the same prompt when an updated worker activates instead. isUpdate/isExternal exclude
+    // the very first install (nothing to update to). Without this the banner never appears and, once
+    // the version gate blocks the stale bundle's sync, the user is stuck until they manually reopen.
+    wb.addEventListener('activated', event => {
+      if (!event.isUpdate && !event.isExternal) {
+        return;
+      }
+      void navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration) {
+          setUpdateReady(registration);
+        }
+      });
+    });
+
     const registration = await wb.register();
     if (!registration) {
       return;
