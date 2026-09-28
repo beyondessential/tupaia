@@ -1,6 +1,5 @@
 import winston from 'winston';
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import fetch, { RequestInit, Response } from 'node-fetch';
+import { ProxyAgent } from 'undici';
 import {
   ChartDataResponseSchema,
   SecurityLoginRequestBodySchema,
@@ -9,11 +8,14 @@ import {
 
 const MAX_RETRIES = 1;
 
+/** `dispatcher` is supported by Node's native fetch, but missing from the DOM `RequestInit` type */
+type SupersetRequestInit = RequestInit & { dispatcher?: ProxyAgent };
+
 export class SupersetApi {
   protected serverName: string;
   protected baseUrl: string;
   protected accessToken: string | null = null;
-  protected proxyAgent?: HttpsProxyAgent<string>;
+  protected proxyAgent?: ProxyAgent;
 
   public constructor(serverName: string, baseUrl: string) {
     if (!serverName) throw new Error('Argument serverName required');
@@ -23,7 +25,7 @@ export class SupersetApi {
     const proxyUrl = this.getServerVariable('SUPERSET_API_PROXY_URL');
     if (proxyUrl) {
       winston.info(`Superset using proxy`);
-      this.proxyAgent = new HttpsProxyAgent(proxyUrl);
+      this.proxyAgent = new ProxyAgent(proxyUrl);
     }
   }
 
@@ -114,8 +116,8 @@ export class SupersetApi {
     }
   }
 
-  protected async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
-    if (this.proxyAgent) options.agent = this.proxyAgent;
+  protected async apiRequest(url: string, options: SupersetRequestInit = {}): Promise<Response> {
+    if (this.proxyAgent) options.dispatcher = this.proxyAgent;
     winston.info(`Superset request ${options.method} ${url}`);
     return fetch(url, options);
   }
