@@ -8323,14 +8323,14 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
-    "@types/recharts": "npm:^1.8.24"
+    "@types/recharts": "npm:^1.8.29"
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     moment: "npm:^2.24.0"
     react: "npm:^16.14.0"
     react-dom: "npm:^16.13.1"
     react-is: "npm:^16.13.1"
-    recharts: "npm:^1.8.5"
+    recharts: "npm:^1.8.6"
     styled-components: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
@@ -9248,13 +9248,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/recharts@npm:^1.8.24":
-  version: 1.8.24
-  resolution: "@types/recharts@npm:1.8.24"
+"@types/recharts@npm:^1.8.29":
+  version: 1.8.29
+  resolution: "@types/recharts@npm:1.8.29"
   dependencies:
     "@types/d3-shape": "npm:^1"
     "@types/react": "npm:*"
-  checksum: 10c0/dbbc539415b34dc9e8ef1cb352083ef5c9af1b2753b4de2bc24070a61dc5031a9aab11de4bf472d239d45cb4535ac18306ae4f3452aca51b992b0f86adedefd3
+  checksum: 10c0/5cd99285425d6099206899f0f181d192c6168cc4f0dd8b63fc760b410a10248fcfce88ad089cc284d20bf4ae186ffddbc5ccafc1ab0cb16c8ac64b9a74184840
   languageName: node
   linkType: hard
 
@@ -12823,17 +12823,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:3.49.0, core-js@npm:^3.30.2":
+"core-js@npm:3.49.0":
   version: 3.49.0
   resolution: "core-js@npm:3.49.0"
   checksum: 10c0/2e42edb47eda38fd5368380131623c8aa5d4a6b42164125b17744bdc08fa5ebbbdd06b4b4aa6ca3663470a560b0f2fba48e18f142dfe264b0039df85bc625694
   languageName: node
   linkType: hard
 
-"core-js@npm:^2.4.0, core-js@npm:^2.5.0, core-js@npm:^2.6.10, core-js@npm:^2.6.5":
+"core-js@npm:^2.4.0, core-js@npm:^2.5.0, core-js@npm:^2.6.5":
   version: 2.6.12
   resolution: "core-js@npm:2.6.12"
   checksum: 10c0/00128efe427789120a06b819adc94cc72b96955acb331cb71d09287baf9bd37bebd191d91f1ee4939c893a050307ead4faea08876f09115112612b6a05684b63
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.30.2, core-js@npm:^3.4.2":
+  version: 3.50.0
+  resolution: "core-js@npm:3.50.0"
+  checksum: 10c0/1bfcfb1dbdf45b0b1428a9fdcb03697d1fc52c7e9bc336f804a86ff2c2705a301dca7d9d6636d09d49d60298183273b9321681baeaf330c78db5393bc73f3f6a
   languageName: node
   linkType: hard
 
@@ -24677,16 +24684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.12.0, qs@npm:^6.12.3, qs@npm:^6.5.1, qs@npm:^6.5.2":
-  version: 6.15.2
-  resolution: "qs@npm:6.15.2"
-  dependencies:
-    side-channel: "npm:^1.1.0"
-  checksum: 10c0/e6fd5f6f0aab06d480fe9ab15cebfc4ce4235303e2f91dc69a8f7f4df1e668a61c11d1cfbabacf4295cbbeb7b670ed23db45307480726259761f98e5695e93a7
-  languageName: node
-  linkType: hard
-
-"qs@npm:~6.16.0":
+"qs@npm:^6.12.0, qs@npm:^6.12.3, qs@npm:^6.5.1, qs@npm:^6.5.2, qs@npm:~6.16.0":
   version: 6.16.0
   resolution: "qs@npm:6.16.0"
   dependencies:
@@ -24833,7 +24831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raw-body@npm:2.5.2, raw-body@npm:^2.3.3":
+"raw-body@npm:2.5.2":
   version: 2.5.2
   resolution: "raw-body@npm:2.5.2"
   dependencies:
@@ -24845,7 +24843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raw-body@npm:~2.5.3":
+"raw-body@npm:^2.3.3, raw-body@npm:~2.5.3":
   version: 2.5.3
   resolution: "raw-body@npm:2.5.3"
   dependencies:
@@ -26051,12 +26049,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recharts@npm:^1.8.5":
-  version: 1.8.5
-  resolution: "recharts@npm:1.8.5"
+"recharts@npm:^1.8.6":
+  version: 1.8.6
+  resolution: "recharts@npm:1.8.6"
   dependencies:
     classnames: "npm:^2.2.5"
-    core-js: "npm:^2.6.10"
+    core-js: "npm:^3.4.2"
     d3-interpolate: "npm:^1.3.0"
     d3-scale: "npm:^2.1.0"
     d3-shape: "npm:^1.2.0"
@@ -26069,7 +26067,7 @@ __metadata:
   peerDependencies:
     react: ^15.0.0 || ^16.0.0
     react-dom: ^15.0.0 || ^16.0.0
-  checksum: 10c0/975d71ab887abe5bf82bc1d6d64d1c078ed0fb38fc0243bf32019793d828f5ecc550e1748391b43a09bc902680b6a77e5b55e7aebfdd3b50a269f10d1b34281c
+  checksum: 10c0/f82a98cb98949809e58214590758c0177e4043a326e6a29201e4f4ba1a7c547f47eb9d1cc5d04a0aaba53af8563887009a09f356688d73cfa746b4807e2b3e0b
   languageName: node
   linkType: hard
 
@@ -27275,16 +27273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"side-channel-list@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "side-channel-list@npm:1.0.0"
-  dependencies:
-    es-errors: "npm:^1.3.0"
-    object-inspect: "npm:^1.13.3"
-  checksum: 10c0/644f4ac893456c9490ff388bf78aea9d333d5e5bfc64cfb84be8f04bf31ddc111a8d4b83b85d7e7e8a7b845bc185a9ad02c052d20e086983cf59f0be517d9b3d
-  languageName: node
-  linkType: hard
-
 "side-channel-list@npm:^1.0.1":
   version: 1.0.1
   resolution: "side-channel-list@npm:1.0.1"
@@ -27320,20 +27308,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"side-channel@npm:^1.0.4, side-channel@npm:^1.0.6, side-channel@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "side-channel@npm:1.1.0"
-  dependencies:
-    es-errors: "npm:^1.3.0"
-    object-inspect: "npm:^1.13.3"
-    side-channel-list: "npm:^1.0.0"
-    side-channel-map: "npm:^1.0.1"
-    side-channel-weakmap: "npm:^1.0.2"
-  checksum: 10c0/cb20dad41eb032e6c24c0982e1e5a24963a28aa6122b4f05b3f3d6bf8ae7fd5474ef382c8f54a6a3ab86e0cac4d41a23bd64ede3970e5bfb50326ba02a7996e6
-  languageName: node
-  linkType: hard
-
-"side-channel@npm:^1.1.1":
+"side-channel@npm:^1.0.4, side-channel@npm:^1.0.6, side-channel@npm:^1.1.1":
   version: 1.1.1
   resolution: "side-channel@npm:1.1.1"
   dependencies:
