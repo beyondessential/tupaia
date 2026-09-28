@@ -39,7 +39,7 @@
     "react-native-menu": "^0.23.0",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-qrcode-svg": "^6.2.0",
-    "react-native-safe-area-context": "^4.7.2",
+    "react-native-safe-area-context": "^4.14.1",
     "react-native-screens": "3.3.x",
     "react-native-share": "^9.4.1",
     "react-native-side-menu": "^1.1.3",

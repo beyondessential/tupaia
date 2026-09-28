@@ -7951,7 +7951,7 @@ __metadata:
     react-native-menu: "npm:^0.23.0"
     react-native-modal-datetime-picker: "npm:^17.1.0"
     react-native-qrcode-svg: "npm:^6.2.0"
-    react-native-safe-area-context: "npm:^4.7.2"
+    react-native-safe-area-context: "npm:^4.14.1"
     react-native-screens: "npm:3.3.x"
     react-native-share: "npm:^9.4.1"
     react-native-side-menu: "npm:^1.1.3"
@@ -25312,13 +25312,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:^4.7.2":
-  version: 4.7.2
-  resolution: "react-native-safe-area-context@npm:4.7.2"
+"react-native-safe-area-context@npm:^4.14.1":
+  version: 4.14.1
+  resolution: "react-native-safe-area-context@npm:4.14.1"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/2ff7c52245a357d8790081de8289188fbd51c88ba9d5a5435c577b1682e701666ea610f2af9da7d0431fbdbbf5e50dbf0203d0ee233dbb96585e30e1484bd17d
+  checksum: 10c0/c34c6fe9002a89c80ddb206fc68db99f1e432e19c7cf5aaa93b430584051b7e7caf889093224029437dc5b66fe434b09e9950d755aa40b58e1e3a1f976c2fec1
   languageName: node
   linkType: hard
 
