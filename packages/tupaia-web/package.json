@@ -21,7 +21,7 @@
     "build-storybook": "yarn package:storybook:build"
   },
   "dependencies": {
-    "@mapbox/polyline": "^1.2.0",
+    "@mapbox/polyline": "^1.2.1",
     "@material-ui/core": "^4.12.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -58,7 +58,7 @@
     "@types/downloadjs": "^1.4.6",
     "@types/geojson": "^7946.0.10",
     "@types/leaflet": "^1.7.1",
-    "@types/mapbox__polyline": "^1.0.2",
+    "@types/mapbox__polyline": "^1.0.5",
     "@types/react": "16.9.17",
     "msw": "^2.0.9",
     "storybook": "^8.2.9",
