@@ -1,9 +1,9 @@
 import { getLoggerInstance, writeJsonFile } from '@tupaia/utils';
 import config from '../../config.json';
 import { E2E_CONFIG_PATH } from '../../constants';
+import { configSchema } from './configSchema';
 import { generateOverlayConfig } from './generateOverlayConfig';
 import { generateReportConfig } from './generateReportConfig';
-import { configSchema } from './configSchema';
 
 const INPUT_CONFIG_PATH = 'cypress/config.json';
 

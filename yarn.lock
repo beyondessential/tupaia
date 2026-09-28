@@ -7746,7 +7746,6 @@ __metadata:
     eslint-plugin-cypress: "npm:^2.11.1"
     js-beautify: "npm:^1.13.0"
     moment: "npm:^2.24.0"
-    node-fetch: "npm:^1.7.3"
     react: "npm:^16.14.0"
   languageName: unknown
   linkType: soft
