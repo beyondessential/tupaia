@@ -7172,16 +7172,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:12.1.2":
-  version: 12.1.2
-  resolution: "@testing-library/react@npm:12.1.2"
+"@testing-library/react@npm:12.1.5":
+  version: 12.1.5
+  resolution: "@testing-library/react@npm:12.1.5"
   dependencies:
     "@babel/runtime": "npm:^7.12.5"
     "@testing-library/dom": "npm:^8.0.0"
+    "@types/react-dom": "npm:<18.0.0"
   peerDependencies:
-    react: "*"
-    react-dom: "*"
-  checksum: 10c0/c8579252f5f0a23df368253108bbe5b4f26abb9ed5f514746ba6b2ce1a6d09592900526ef6284466af959b50fbb7afa1f37eb2ff629fc91abe70dade3da6cc9a
+    react: <18.0.0
+    react-dom: <18.0.0
+  checksum: 10c0/3c2433d2fdb6535261f62cd85d79657989cebd96f9072da03c098a1cfa56dec4dfec83d7c2e93633a3ccebdb178ea8578261533d11551600966edab77af00c8b
   languageName: node
   linkType: hard
 
@@ -7635,7 +7636,7 @@ __metadata:
     "@tanstack/react-query": "npm:4.36.1"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.2.0"
-    "@testing-library/react": "npm:12.1.2"
+    "@testing-library/react": "npm:12.1.5"
     "@testing-library/react-hooks": "npm:^8.0.1"
     "@testing-library/user-event": "npm:^13.5.0"
     "@tupaia/access-policy": "workspace:*"
@@ -8008,7 +8009,7 @@ __metadata:
     "@tanstack/react-query": "npm:4.36.1"
     "@tanstack/react-query-devtools": "npm:4.36.1"
     "@testing-library/jest-dom": "npm:^6.2.0"
-    "@testing-library/react": "npm:12.1.2"
+    "@testing-library/react": "npm:12.1.5"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
     axios: "npm:^1.18.1"
@@ -8347,7 +8348,7 @@ __metadata:
     "@mui/x-data-grid": "npm:^4.0.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.2.0"
-    "@testing-library/react": "npm:12.1.2"
+    "@testing-library/react": "npm:12.1.5"
     "@testing-library/user-event": "npm:^13.5.0"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -9126,6 +9127,15 @@ __metadata:
   version: 1.2.3
   resolution: "@types/range-parser@npm:1.2.3"
   checksum: 10c0/5c2a5797e63dd119c68832ebf0b5236836d70f0a834d7d7161f3d09db456be52821b2b27dafdd58b4bc4ec2241a2abc1537413cf2f6a0ecc5db2c3ac1a07253a
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:<18.0.0":
+  version: 17.0.26
+  resolution: "@types/react-dom@npm:17.0.26"
+  peerDependencies:
+    "@types/react": ^17.0.0
+  checksum: 10c0/8363921f08afe3f2ef82fe293301a0809ec646975fe9f5bfeb2e823f7237b97e47d27e1c6c2ffff27d15c12ab3cad1de6c77a737e37499fcc52793b0fd674f3f
   languageName: node
   linkType: hard
 
