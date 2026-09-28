@@ -1,6 +1,6 @@
 import type { Response as ExpressResponse } from 'express';
-import type { HeadersInit, RequestInit, Response } from 'node-fetch';
-import nodeFetch from 'node-fetch';
+import { Readable } from 'node:stream';
+import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { stringify } from 'qs';
 
 import { CustomError } from '@tupaia/utils';
@@ -70,7 +70,10 @@ export class ApiConnection {
     queryParameters?: QueryParameters | null,
   ) {
     const fetchedResponse = await this.fetchResponse('GET', endpoint, queryParameters);
-    return fetchedResponse.body.pipe(response);
+    if (!fetchedResponse.body) {
+      throw new Error(`No response body to stream from ${endpoint}`);
+    }
+    return Readable.fromWeb(fetchedResponse.body as NodeReadableStream).pipe(response);
   }
 
   private async fetchResponse(
@@ -119,7 +122,7 @@ export class ApiConnection {
     config: RequestInit,
     timeout: number = DEFAULT_MAX_WAIT_TIME,
   ): Promise<Response> {
-    return nodeFetch(url, { ...config, timeout });
+    return fetch(url, { ...config, signal: AbortSignal.timeout(timeout) });
   }
 
   private async verifyResponse(response: Response): Promise<void> {
