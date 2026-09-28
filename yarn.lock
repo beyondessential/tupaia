@@ -8145,7 +8145,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
     rimraf: "npm:^6.0.1"
-    undici: "npm:^8.5.0"
+    undici: "npm:^8.10.2"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -29582,7 +29582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^8.4.1, undici@npm:^8.5.0":
+"undici@npm:^8.10.2, undici@npm:^8.4.1":
   version: 8.10.2
   resolution: "undici@npm:8.10.2"
   checksum: 10c0/66d7fc69149207cab570d6abbc9e965b6afe1ae889a7d46945b431165c973d6a56f3dd8b70a856e7ae1e550b6366a1cde6f06e68640587f0dadca38de72995ee
