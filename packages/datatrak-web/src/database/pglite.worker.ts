@@ -83,14 +83,17 @@ worker({
       debug: options.debug,
       wasmModule,
       fsBundle,
-      // Fire-and-forget IndexedDB writes — a large speed-up, especially for bulk writes like
-      // sync. Only enabled once a first startup has fully completed (see getConnectionConfig),
-      // because during first-run setup it is dangerous: PGlite persists the freshly created data
-      // directory with `await syncToFs()`, and under relaxed durability that await returns before
-      // the write lands — anything closing the page at the wrong moment leaves IndexedDB holding
-      // a partial data directory, which PGlite then "resumes" on every later launch, permanently
-      // broken (e.g. `language "plpgsql" does not exist`) until storage is cleared.
-      relaxedDurability: true,
+      /*
+       * TUP-3193: turned off to test the renderer's memory. `dumpsys meminfo` showed ~1 GB in the
+       * renderer of which 981 MB is anonymous ("Unknown"), while the V8 heap is 78 MB and PGlite's
+       * WASM heap 174 MB — so ~730 MB is ArrayBuffers. IDBFS persists by copying whole file
+       * contents out of WASM memory into JS ArrayBuffers, and with relaxed durability those writes
+       * are fire-and-forget, so several copies of the Postgres data files can be in flight at once
+       * with nothing throttling them. Awaiting each flush serialises them.
+       *
+       * Expect sync to be slower. If the memory spikes flatten, this is the mechanism.
+       */
+      relaxedDurability: false,
     });
     await db.waitReady;
 

@@ -52,7 +52,7 @@ export const getConnectionConfig = () => {
 
     sharedPGliteInstance = new PGliteWorker(workerInstance, {
       dataDir: connectionString,
-      relaxedDurability: true,
+      relaxedDurability: false, // TUP-3193: see the note in pglite.worker.ts
     });
   }
 
