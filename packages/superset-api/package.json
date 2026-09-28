@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@tupaia/utils": "workspace:*",
-    "undici": "^8.5.0",
+    "undici": "^8.10.2",
     "winston": "^3.17.0"
   },
   "devDependencies": {
