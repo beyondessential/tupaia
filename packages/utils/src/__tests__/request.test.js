@@ -1,19 +1,28 @@
 import { fetchWithTimeout, stringifyQuery } from '../request';
 
-jest.mock('node-fetch', () =>
-  jest.fn().mockImplementation(
-    () =>
-      new Promise(resolve => {
-        setTimeout(() => resolve('success'), 20); // mock fetch takes 20 ms to resolve
-      }),
-  ),
-);
-
 describe('request', () => {
   const BASE_URL = 'https://test-api.org';
   const ENDPOINT = 'reports';
 
   describe('fetchWithTimeout()', () => {
+    beforeEach(() => {
+      // mock fetch takes 20 ms to resolve, and rejects if aborted before then
+      jest.spyOn(global, 'fetch').mockImplementation(
+        (_url, { signal }) =>
+          new Promise((resolve, reject) => {
+            const id = setTimeout(() => resolve('success'), 20);
+            signal.addEventListener('abort', () => {
+              clearTimeout(id);
+              reject(signal.reason);
+            });
+          }),
+      );
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     it('resolves with request response if request is fast enough', async () => {
       return expect(fetchWithTimeout(BASE_URL, {}, 40)).resolves.toEqual('success');
     });

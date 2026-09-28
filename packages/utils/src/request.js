@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-import nodeFetch from 'node-fetch';
 import { CustomError } from './errors';
 
 const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
@@ -22,36 +20,19 @@ export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
 };
 
 /**
- * Wrapper around node-fetch that adds timeout
- */
-const createTimeoutPromise = maxWaitTime => {
-  let cleanup;
-  const promise = new Promise((resolve, reject) => {
-    const id = setTimeout(() => {
-      clearTimeout(id);
-      reject(new Error('Network request timed out'));
-    }, maxWaitTime);
-    cleanup = () => {
-      clearTimeout(id);
-      resolve();
-    };
-  });
-  return { promise, cleanup };
-};
-
-/**
  * @param {string} url
- * @param {} [config]
+ * @param {RequestInit} [config]
  * @param {number} [maxWaitTime]
- * @return {Promise<NodeFetchResponse>}
+ * @return {Promise<Response>}
  */
 export const fetchWithTimeout = async (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) => {
-  const { cleanup, promise: timeoutPromise } = createTimeoutPromise(maxWaitTime);
+  const timeoutSignal = AbortSignal.timeout(maxWaitTime);
+  const signal = config?.signal ? AbortSignal.any([config.signal, timeoutSignal]) : timeoutSignal;
   try {
-    const response = await Promise.race([nodeFetch(url, config), timeoutPromise]);
-    return response;
-  } finally {
-    cleanup();
+    return await fetch(url, { ...config, signal });
+  } catch (error) {
+    if (error.name === 'TimeoutError') throw new Error('Network request timed out');
+    throw error;
   }
 };
 

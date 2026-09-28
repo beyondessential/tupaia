@@ -1,3 +1,5 @@
+import { Readable } from 'node:stream';
+
 import { ensure } from '@tupaia/tsutils';
 import { ValidationError } from '@tupaia/utils';
 import { RouteHandler } from '/apiV1/RouteHandler';
@@ -62,5 +64,5 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
 function pipeSurveyResponseToClient(response, res) {
   res.setHeader('Content-Disposition', response.headers.get('Content-Disposition'));
   res.setHeader('Content-Type', response.headers.get('Content-Type'));
-  response.body.pipe(res);
+  Readable.fromWeb(response.body).pipe(res);
 }
