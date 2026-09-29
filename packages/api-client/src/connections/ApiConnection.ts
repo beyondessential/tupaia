@@ -1,5 +1,5 @@
 import type { Response as ExpressResponse } from 'express';
-import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { stringify } from 'qs';
 
@@ -73,7 +73,7 @@ export class ApiConnection {
     if (!fetchedResponse.body) {
       throw new Error(`No response body to stream from ${endpoint}`);
     }
-    return Readable.fromWeb(fetchedResponse.body as NodeReadableStream).pipe(response);
+    await pipeline(fetchedResponse.body as NodeReadableStream, response);
   }
 
   private async fetchResponse(
@@ -122,7 +122,22 @@ export class ApiConnection {
     config: RequestInit,
     timeout: number = DEFAULT_MAX_WAIT_TIME,
   ): Promise<Response> {
-    return await fetch(url, { ...config, signal: AbortSignal.timeout(timeout) });
+    // Not simply passing `signal: AbortSignal.timeout(timeout)` to `fetch`. Only time out waiting
+    // for response headers. Once headers arrive, let the body take as long as it needs.
+    // (e.g. Streamed sync pulls, large exports.)
+    const controller = new AbortController();
+    const timer = setTimeout(
+      () =>
+        controller.abort(
+          new DOMException(`Request to ${url} timed out after ${timeout}ms`, 'TimeoutError'),
+        ),
+      timeout,
+    );
+    try {
+      return await fetch(url, { ...config, signal: controller.signal });
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   private async verifyResponse(response: Response): Promise<void> {
