@@ -122,7 +122,7 @@ export class ApiConnection {
     config: RequestInit,
     timeout: number = DEFAULT_MAX_WAIT_TIME,
   ): Promise<Response> {
-    return fetch(url, { ...config, signal: AbortSignal.timeout(timeout) });
+    return await fetch(url, { ...config, signal: AbortSignal.timeout(timeout) });
   }
 
   private async verifyResponse(response: Response): Promise<void> {
