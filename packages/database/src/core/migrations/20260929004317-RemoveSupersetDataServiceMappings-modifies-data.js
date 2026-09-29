@@ -15,7 +15,11 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  /** As of comitting, this is expected to be a no-op */
+  await db.runSql("DELETE FROM data_element WHERE service_type = 'superset';");
   await db.runSql("DELETE FROM data_element_data_service WHERE service_type = 'superset';");
+  /** As of comitting, this is expected to be a no-op */
+  await db.runSql("DELETE FROM data_group WHERE service_type = 'superset';");
 };
 
 /** Irreversible: deleted mappings are not reconstructed. */
