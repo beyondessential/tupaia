@@ -16,7 +16,6 @@ import { OptionAttributes } from './models-extra';
 import { ProjectConfig } from './models-extra';
 import { TaskCommentTemplateVariables } from './models-extra';
 import { RepeatSchedule } from './models-extra';
-import { SupersetInstanceConfig } from './models-extra';
 import { SyncSessionInfo } from './models-extra';
 
 export interface AccessRequest {
@@ -1403,20 +1402,6 @@ export interface SettingUpdate {
   'id'?: string;
   'key'?: string;
   'value'?: string | null;
-}
-export interface SupersetInstance {
-  'code': string;
-  'config': SupersetInstanceConfig;
-  'id': string;
-}
-export interface SupersetInstanceCreate {
-  'code': string;
-  'config': SupersetInstanceConfig;
-}
-export interface SupersetInstanceUpdate {
-  'code'?: string;
-  'config'?: SupersetInstanceConfig;
-  'id'?: string;
 }
 export interface Survey {
   'can_repeat'?: boolean | null;

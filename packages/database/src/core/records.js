@@ -51,7 +51,6 @@ export const RECORDS = /** @type {const} */ ({
   QUESTION: 'question',
   REFRESH_TOKEN: 'refresh_token',
   REPORT: 'report',
-  SUPERSET_INSTANCE: 'superset_instance',
   SETTING: 'setting',
   SURVEY_GROUP: 'survey_group',
   SURVEY_RESPONSE: 'survey_response',
