@@ -30,9 +30,7 @@ export const SERVICE_TYPE_OPTIONS = [
 export const getDataElementFieldEditConfig = translate => ({
   type: 'json',
   default: '{}',
-  visibilityCriteria: {
-    service_type: values => values.service_type === 'dhis',
-  },
+  visibilityCriteria: { service_type: 'dhis' },
   getJsonFieldSchema: () => [
     {
       label: 'DHIS Server',

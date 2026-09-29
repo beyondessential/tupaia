@@ -27,12 +27,10 @@ export const SERVICE_TYPE_OPTIONS = [
   },
 ];
 
-export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
+export const DATA_ELEMENT_FIELD_EDIT_CONFIG = /** @type {const} */ ({
   type: 'json',
   default: '{}',
-  visibilityCriteria: {
-    service_type: values => values.service_type === 'dhis',
-  },
+  visibilityCriteria: { service_type: 'dhis' },
   getJsonFieldSchema: () => [
     {
       label: 'DHIS Server',
@@ -54,7 +52,7 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
       visibilityCriteria: { service_type: 'dhis' },
     },
   ],
-};
+});
 
 export const DataSourceConfigView = row => {
   const localStyles = {
