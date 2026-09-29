@@ -430,24 +430,6 @@ export const OptionAttributesSchema = {
 	},
 	"additionalProperties": false
 }
-export const SupersetInstanceConfigSchema = {
-	"type": "object",
-	"properties": {
-		"serverName": {
-			"type": "string"
-		},
-		"baseUrl": {
-			"type": "string"
-		},
-		"insecure": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"baseUrl"
-	]
-}
 export const DatePickerOffsetSpecSchema = {
 	"type": "object",
 	"properties": {
@@ -99635,102 +99617,6 @@ export const SettingUpdateSchema = {
 			"type": "string"
 		},
 		"value": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const SupersetInstanceSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"serverName": {
-					"type": "string"
-				},
-				"baseUrl": {
-					"type": "string"
-				},
-				"insecure": {
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"baseUrl"
-			]
-		},
-		"id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"id"
-	]
-}
-export const SupersetInstanceCreateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"serverName": {
-					"type": "string"
-				},
-				"baseUrl": {
-					"type": "string"
-				},
-				"insecure": {
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"baseUrl"
-			]
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config"
-	]
-}
-export const SupersetInstanceUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"serverName": {
-					"type": "string"
-				},
-				"baseUrl": {
-					"type": "string"
-				},
-				"insecure": {
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"baseUrl"
-			]
-		},
-		"id": {
 			"type": "string"
 		}
 	},

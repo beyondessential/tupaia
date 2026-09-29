@@ -127,9 +127,3 @@ export interface OptionAttributes {
   parent_category?: string;
   grandparent_category?: string;
 }
-
-export interface SupersetInstanceConfig {
-  serverName?: string;
-  baseUrl: string;
-  insecure?: boolean;
-}
