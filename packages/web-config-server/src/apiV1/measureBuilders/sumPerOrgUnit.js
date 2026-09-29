@@ -1,9 +1,9 @@
-import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
+import { SumBuilder } from '../dataBuilders/generic/sum/sum';
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 import {
   fetchAggregatedAnalyticsByDhisIds,
   checkAllDataElementsAreDhisIndicators,
-} from '/apiV1/utils';
+} from '../utils';
 
 export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;

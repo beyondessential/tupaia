@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import { configureEnv } from '../src/configureEnv';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import winston from '../src/log';
@@ -13,13 +12,13 @@ const SCHEDULED_TASK_MODULES = {
 configureEnv();
 
 const getTaskArg = argv => {
-  const taskAgr = argv[4];
+  const taskAgr = argv[2];
   if (!taskAgr || !Object.keys(SCHEDULED_TASK_MODULES).find(t => t === taskAgr)) {
     const availableOptions = Object.keys(SCHEDULED_TASK_MODULES).join(', ');
     throw new Error(`You need to specify one of the following tasks to run: ${availableOptions}`);
   }
 
-  return argv[4];
+  return taskAgr;
 };
 
 (async () => {

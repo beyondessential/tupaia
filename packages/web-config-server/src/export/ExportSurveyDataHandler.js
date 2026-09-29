@@ -3,9 +3,9 @@ import fs from 'fs';
 import { getExportDatesString, respondWithDownload } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
-import { USER_SESSION_CONFIG } from '/authSession';
-import { RouteHandler } from '/apiV1/RouteHandler';
-import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
+import { USER_SESSION_CONFIG } from '../authSession';
+import { RouteHandler } from '../apiV1/RouteHandler';
+import { ExportSurveyResponsesPermissionsChecker } from '../apiV1/permissions';
 import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
 
 const EXPORT_FILE_TITLE = 'survey_response_export';

@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import http from 'http';
 import nodeSchedule from 'node-schedule';
 

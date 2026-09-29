@@ -7,7 +7,7 @@
  * for retrieving answers from FreeText question types.
  */
 
-import { getDataElementsInGroup } from '/apiV1/utils';
+import { getDataElementsInGroup } from '../../../utils';
 
 export const latestDataValuesInGroup = async (
   { dataBuilderConfig, entity },

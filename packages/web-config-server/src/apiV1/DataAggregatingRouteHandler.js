@@ -3,7 +3,7 @@ import { uniq } from 'es-toolkit';
 import { filterEntities } from '@tupaia/utils';
 import { DataBroker } from '@tupaia/data-broker';
 import { RouteHandler } from './RouteHandler';
-import { Aggregator } from '/aggregator';
+import { Aggregator } from '../aggregator';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator

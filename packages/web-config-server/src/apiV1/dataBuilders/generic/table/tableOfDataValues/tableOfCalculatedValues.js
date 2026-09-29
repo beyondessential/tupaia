@@ -2,8 +2,8 @@ import { flatten, flattenDeep } from 'es-toolkit/compat';
 
 import { getCalculatedValuesByCell } from './helpers/getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
-import { NO_DATA_AVAILABLE, ORG_UNIT_COLUMNS_KEYS_SET } from '/apiV1/dataBuilders/constants';
-import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
+import { NO_DATA_AVAILABLE, ORG_UNIT_COLUMNS_KEYS_SET } from '../../../constants';
+import { getDataElementsFromCalculateOperationConfig } from '../../../helpers';
 import { uniq } from 'es-toolkit';
 
 class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {

@@ -1,4 +1,4 @@
-import { buildExportUrl } from '/export';
+import { buildExportUrl } from '../../../../export';
 
 export const rawDataDownload = ({ dataBuilderConfig, query, req }) => {
   const { surveys } = dataBuilderConfig;

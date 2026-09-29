@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
+import { aggregateOperationalFacilityValues, getFacilityStatuses } from '../../../utils';
 
 // Example use: % clinics surveyed in last 6 months
 export const percentOperationalFacilitiesWithData = async (

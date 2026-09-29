@@ -1,5 +1,5 @@
-import { divideValues } from '/apiV1/dataBuilders/helpers/divideValues';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { divideValues } from '../../../../apiV1/dataBuilders/helpers/divideValues';
+import { NO_DATA_AVAILABLE } from '../../../../apiV1/dataBuilders/constants';
 
 describe('divideValues()', () => {
   it('numerator: defined, denominator: defined', () => {

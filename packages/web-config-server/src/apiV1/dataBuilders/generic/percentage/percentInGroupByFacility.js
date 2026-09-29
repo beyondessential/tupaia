@@ -5,8 +5,8 @@ import {
   getFacilityStatuses,
   getPacificFacilityStatuses,
   limitRange,
-} from '/apiV1/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+} from '../../../utils';
+import { DataBuilder } from '../../DataBuilder';
 
 // Medicines available by Clinic
 // Medicines available by Country

@@ -1,5 +1,5 @@
 import { getSortByKey } from '@tupaia/utils';
-import { getDataElementsInGroupSet } from '/apiV1/utils';
+import { getDataElementsInGroupSet } from '../../../utils';
 
 export const countValuesByDataElementGroup = async (
   { dataBuilderConfig, query },

@@ -1,9 +1,9 @@
 import { CustomError, replaceValues, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { ReportPermissionsChecker } from './permissions';
-import { ReportConnection } from '/connections';
-import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
-import { getDhisApiInstance } from '/dhis';
+import { ReportConnection } from '../connections';
+import { getDataBuilder } from './dataBuilders/getDataBuilder';
+import { getDhisApiInstance } from '../dhis';
 
 const reportFail = {
   type: 'Report Error',

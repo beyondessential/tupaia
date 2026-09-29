@@ -1,9 +1,9 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import {
   fetchOperationalFacilityCodes,
   translateCategoryCodeToFacilityType,
   pluraliseFacilityType,
-} from '/apiV1/utils';
+} from '../../../utils';
 
 class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
   async build() {

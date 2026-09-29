@@ -1,5 +1,5 @@
 import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
-import { getDefaultPeriod } from '/utils';
+import { getDefaultPeriod } from '../utils';
 
 export class QueryBuilder {
   constructor(originalQuery, replacementValues = {}, routeHandler) {

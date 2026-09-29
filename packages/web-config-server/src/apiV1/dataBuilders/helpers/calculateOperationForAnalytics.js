@@ -11,7 +11,7 @@ import {
 
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { NO_DATA_AVAILABLE } from '../constants';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });

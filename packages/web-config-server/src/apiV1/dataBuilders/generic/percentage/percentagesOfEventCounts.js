@@ -1,5 +1,5 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues, countEventsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
+import { DataBuilder } from '../../DataBuilder';
+import { divideValues, countEventsThatSatisfyConditions } from '../../helpers';
 
 /**
  * Configuration schema

@@ -1,4 +1,4 @@
-import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
+import { aggregateOperationalFacilityValues, getFacilityStatuses } from '../../../utils';
 
 // Average Availability of Medicines across All Facilities
 // Current Stock on Hand across All Facilities

@@ -1,11 +1,11 @@
 import { groupBy } from 'es-toolkit/compat';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import {
   calculateOperationForAnalytics,
   getDataElementsFromCalculateOperationConfig,
   divideValues,
-} from '/apiV1/dataBuilders/helpers';
+} from '../../helpers';
 
 class CountCalculatedValuesPerOrgUnit extends DataBuilder {
   async build() {

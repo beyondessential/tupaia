@@ -1,5 +1,5 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
+import { DataBuilder } from '../../DataBuilder';
+import { DataPerPeriodBuilder } from '../../DataPerPeriodBuilder';
 import { groupEventsByPeriod } from '@tupaia/dhis-api';
 
 /**

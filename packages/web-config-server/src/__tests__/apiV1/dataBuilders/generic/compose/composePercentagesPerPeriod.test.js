@@ -1,5 +1,5 @@
-import { composePercentagesPerPeriod } from '/apiV1/dataBuilders';
-import * as ComposeDataPerPeriod from '/apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
+import { composePercentagesPerPeriod } from '../../../../../apiV1/dataBuilders';
+import * as ComposeDataPerPeriod from '../../../../../apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
 
 const stubComposeDataPerPeriod = expectedData =>
   jest.spyOn(ComposeDataPerPeriod, 'composeDataPerPeriod').mockResolvedValue(expectedData);

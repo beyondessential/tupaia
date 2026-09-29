@@ -2,7 +2,7 @@ import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
   getFacilityStatusCounts,
-} from '/apiV1/utils';
+} from '../../../utils';
 
 export const dataElementsOverTotalOperational = async (
   { dataBuilderConfig, query },
