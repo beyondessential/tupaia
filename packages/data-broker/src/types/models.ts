@@ -58,8 +58,7 @@ export type ServiceType =
   | 'indicator'
   | 'kobo'
   | 'tupaia'
-  | 'weather'
-  | 'superset';
+  | 'weather';
 
 export type DataSource = {
   code: string;
@@ -115,15 +114,6 @@ export type DataElementDataService = {
   };
 };
 
-export type SupersetInstance = {
-  code: string;
-  config: {
-    serverName: string;
-    baseUrl: string;
-    insecure?: boolean;
-  };
-};
-
 export type DhisInstance = {
   code: string;
   readonly: boolean;
@@ -174,7 +164,6 @@ export type DataServiceSyncGroupModel = DatabaseModel<
 >;
 type DataServiceEntityModel = DatabaseModel<DataServiceEntity>;
 type EntityModel = DatabaseModel<Entity, EntityRecord, BaseEntityModel>;
-type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;
 type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
@@ -183,7 +172,6 @@ export interface DataBrokerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
   readonly dataElementDataService: DataElementDataServiceModel;
-  readonly supersetInstance: SupersetInstanceModel;
   readonly dataElement: DataElementModel;
   readonly dataGroup: DataGroupModel;
   readonly dataServiceEntity: DataServiceEntityModel;
