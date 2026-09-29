@@ -1,8 +1,4 @@
-import { formatInTimeZone, getTimezoneOffset } from 'date-fns-tz';
-
-export const formatDateInTimezone = (date, timezone, format = "yyyy-MM-dd'T'HH:mm:ssXXX") => {
-  return formatInTimeZone(date, timezone, format);
-};
+import { getTimezoneOffset } from 'date-fns-tz';
 
 export const getOffsetForTimezone = (timezone, date) => {
   // the offset is given in ms, so we need to convert it to hours

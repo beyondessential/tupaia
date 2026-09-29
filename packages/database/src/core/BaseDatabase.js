@@ -607,10 +607,6 @@ export class BaseDatabase {
     return this.updateOrCreate('setting', { key }, { value });
   }
 
-  clearSetting(key) {
-    return this.delete('setting', { key });
-  }
-
   /**
    * Runs an arbitrary SQL query against the database.
    *

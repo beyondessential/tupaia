@@ -30,11 +30,6 @@ export const getFormattedEndByPeriod = (period, f) => {
   return format(new Date(dates[1]), f);
 };
 
-export const getCurrentIsoWeekNumber = () => {
-  const period = getCurrentPeriod();
-  return getWeekNumberByPeriod(period);
-};
-
 export const getWeekNumberByPeriod = period => period.split('W').pop();
 
 export const getDateByPeriod = period => {

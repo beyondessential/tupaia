@@ -1,16 +1,7 @@
 import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
 import { DataLakeDatabase } from '../../DataLakeDatabase';
-import { getConnectionConfig } from '../../getConnectionConfig';
 
-let readDatabase: DataLakeDatabase | null = null;
 let writeDatabase: DataLakeDatabase | null = null;
-
-export function getTestDatabase() {
-  if (!readDatabase) {
-    readDatabase = new DataLakeDatabase(getConnectionConfig());
-  }
-  return readDatabase;
-}
 
 export function getTestWriteDatabase() {
   if (!writeDatabase) {

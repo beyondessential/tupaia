@@ -176,35 +176,6 @@ const clampValue = (
   return clampedValue;
 };
 
-type Measure = {
-  children?: object[];
-};
-
-interface MapOverlayHierarchyItem {
-  children: Measure[] | MapOverlayHierarchyItem[];
-}
-export function flattenMeasureHierarchy(mapOverlayHierarchy: MapOverlayHierarchyItem[]) {
-  const results = [] as object[];
-  const flattenGroupedMeasure = ({ children }: MapOverlayHierarchyItem) => {
-    children.forEach(childObject => {
-      if (childObject.children && childObject.children.length) {
-        flattenGroupedMeasure(childObject as MapOverlayHierarchyItem);
-      } else {
-        results.push(childObject);
-      }
-    });
-  };
-  mapOverlayHierarchy.forEach(measure => {
-    if (measure.children) {
-      flattenGroupedMeasure(measure);
-    } else {
-      results.push(measure);
-    }
-  });
-
-  return results;
-}
-
 const getIsHidden = (
   measureData: MeasureData = {} as MeasureData,
   serieses: Series[],

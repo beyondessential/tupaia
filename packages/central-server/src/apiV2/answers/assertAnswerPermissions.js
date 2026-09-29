@@ -6,22 +6,6 @@ export const assertAnswerPermissions = async (accessPolicy, models, answerId) =>
   return await models.surveyResponse.assertCanRead(models, accessPolicy, answer.survey_response_id);
 };
 
-export const assertAnswerEditPermissions = async (
-  accessPolicy,
-  models,
-  answerId,
-  updatedFields,
-) => {
-  // Forbid editing the survey response id into a survey response we don't have permission to access
-  if (updatedFields.survey_response_id) {
-    const answer = await models.answer.findByIdOrThrow(answerId, {
-      columns: ['survey_response_id'],
-    });
-    await models.surveyResponse.assertCanRead(models, accessPolicy, answer.survey_response_id);
-  }
-  return true;
-};
-
 export const createAnswerViaSurveyResponseDBFilter = async (
   criteria,
   options,

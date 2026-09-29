@@ -34,10 +34,6 @@ export interface WeatherResult {
 }
 
 export class WeatherApi {
-  public async current(lat: string, lon: string) {
-    return this.fetch('/v2.0/current', { lat, lon });
-  }
-
   public async historicDaily(lat: string, lon: string, startDate: string, endDate: string) {
     return this.fetch('/v2.0/history/daily', {
       lat,
