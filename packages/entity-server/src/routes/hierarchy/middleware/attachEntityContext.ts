@@ -74,7 +74,9 @@ const getFilterInfo = async (
 ) => {
   const isPublic = req.query.isPublic?.toLowerCase() === 'true';
 
-  const countryEntities = await rootEntity.getChildren(req.ctx.hierarchyId);
+  const countryEntities = await rootEntity.getChildren(req.ctx.hierarchyId, undefined, {
+    fields: ['country_code'],
+  });
   const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
   let allowedCountries = [...new Set(childCodes)];
 
