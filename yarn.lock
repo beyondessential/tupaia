@@ -9793,7 +9793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"accepts@npm:^1.3.7, accepts@npm:^1.3.8, accepts@npm:~1.3.5, accepts@npm:~1.3.7, accepts@npm:~1.3.8":
+"accepts@npm:^1.3.7, accepts@npm:^1.3.8, accepts@npm:~1.3.7, accepts@npm:~1.3.8":
   version: 1.3.8
   resolution: "accepts@npm:1.3.8"
   dependencies:
@@ -11569,13 +11569,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bytes@npm:3.0.0":
-  version: 3.0.0
-  resolution: "bytes@npm:3.0.0"
-  checksum: 10c0/91d42c38601c76460519ffef88371caacaea483a354c8e4b8808e7b027574436a5713337c003ea3de63ee4991c2a9a637884fdfe7f761760d746929d9e8fec60
-  languageName: node
-  linkType: hard
-
 "bytes@npm:3.1.2, bytes@npm:~3.1.2":
   version: 3.1.2
   resolution: "bytes@npm:3.1.2"
@@ -12482,15 +12475,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compressible@npm:~2.0.16":
-  version: 2.0.17
-  resolution: "compressible@npm:2.0.17"
-  dependencies:
-    mime-db: "npm:>= 1.40.0 < 2"
-  checksum: 10c0/f3f016fb5be912f6990e504582665f36883a2aa845866653e789aaab421bc82438a020cf5e96ab7763ace22231a6e07e2f205073713942959bf5f07e3fb927b3
-  languageName: node
-  linkType: hard
-
 "compressible@npm:~2.0.18":
   version: 2.0.18
   resolution: "compressible@npm:2.0.18"
@@ -12500,22 +12484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compression@npm:^1.7.1":
-  version: 1.7.4
-  resolution: "compression@npm:1.7.4"
-  dependencies:
-    accepts: "npm:~1.3.5"
-    bytes: "npm:3.0.0"
-    compressible: "npm:~2.0.16"
-    debug: "npm:2.6.9"
-    on-headers: "npm:~1.0.2"
-    safe-buffer: "npm:5.1.2"
-    vary: "npm:~1.1.2"
-  checksum: 10c0/138db836202a406d8a14156a5564fb1700632a76b6e7d1546939472895a5304f2b23c80d7a22bf44c767e87a26e070dbc342ea63bb45ee9c863354fa5556bbbc
-  languageName: node
-  linkType: hard
-
-"compression@npm:^1.8.2":
+"compression@npm:^1.7.1, compression@npm:^1.8.2":
   version: 1.8.2
   resolution: "compression@npm:1.8.2"
   dependencies:
@@ -21908,7 +21877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-db@npm:>= 1.40.0 < 2, mime-db@npm:>= 1.43.0 < 2, mime-db@npm:^1.54.0":
+"mime-db@npm:>= 1.43.0 < 2, mime-db@npm:^1.54.0":
   version: 1.54.0
   resolution: "mime-db@npm:1.54.0"
   checksum: 10c0/8d907917bc2a90fa2df842cdf5dfeaf509adc15fe0531e07bb2f6ab15992416479015828d6a74200041c492e42cce3ebf78e5ce714388a0a538ea9c53eece284
