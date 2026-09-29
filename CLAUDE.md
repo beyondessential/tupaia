@@ -103,7 +103,7 @@ Tupaia is a **yarn workspaces monorepo** with 30+ packages in three categories:
 - `database` – PostgreSQL models, migrations (db-migrate + knex). Models live in `src/modelClasses/`
 - `server-boilerplate` – Base `Route` class, orchestration/micro-server scaffolding, shared model TypeScript types
 - `types` – Auto-generated TypeScript types from DB schema + hand-written request/response types
-- `data-broker` – Gateway to external data sources (DHIS2, KoBoToolbox, Superset, weather, etc.)
+- `data-broker` – Gateway to external data sources (DHIS2, KoBoToolbox, weather, etc.)
 - `data-api` – Analytics table and data fetching
 - `ui-components`, `ui-chart-components`, `ui-map-components` – Shared React component libraries
 - `utils`, `tsutils` – Common utilities
