@@ -125,7 +125,6 @@ Centralised gateway supporting multiple external data sources:
 - `indicator` - Calculated indicators
 - `data-lake` - Data lake API (data lake in turn has integrations with Tamanu, mSupply, etc.)
 - `kobo` - KoBoToolbox integration
-- `superset` - Apache Superset integration
 - `weather` - Weather API data
 
 ## Important Conventions

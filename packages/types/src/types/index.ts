@@ -88,7 +88,6 @@ export {
   SingleValueViewConfig,
   SpectrumMapOverlayConfig,
   StandardReportConfig,
-  SupersetInstanceConfig,
   SurveyResponseTemplateVariables,
   SurveyScreenComponentConfig,
   SyncSessionInfo,

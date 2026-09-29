@@ -7500,7 +7500,6 @@ __metadata:
     "@tupaia/dhis-api": "workspace:*"
     "@tupaia/indicators": "workspace:*"
     "@tupaia/kobo-api": "workspace:*"
-    "@tupaia/superset-api": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -8134,20 +8133,6 @@ __metadata:
     rimraf: "npm:^6.0.1"
     sha256: "npm:^0.2.0"
     sharp: "npm:~0.35.4"
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/superset-api@workspace:*, @tupaia/superset-api@workspace:packages/superset-api":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/superset-api@workspace:packages/superset-api"
-  dependencies:
-    "@tupaia/utils": "workspace:*"
-    "@types/jest": "npm:^29.5.14"
-    https-proxy-agent: "npm:^7.0.6"
-    jest: "npm:^29.7.0"
-    node-fetch: "npm:^1.7.3"
-    rimraf: "npm:^6.0.1"
-    winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
 

@@ -129,10 +129,6 @@
       "path": "packages/server-utils",
     },
     {
-      "name": "superset-api",
-      "path": "packages/superset-api",
-    },
-    {
       "name": "sync",
       "path": "packages/sync",
     },
