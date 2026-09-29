@@ -18,10 +18,6 @@ export const SERVICE_TYPE_OPTIONS = [
     value: 'kobo',
   },
   {
-    label: 'Superset',
-    value: 'superset',
-  },
-  {
     label: 'Tupaia',
     value: 'tupaia',
   },
@@ -35,7 +31,7 @@ export const getDataElementFieldEditConfig = translate => ({
   type: 'json',
   default: '{}',
   visibilityCriteria: {
-    service_type: values => ['dhis', 'superset'].includes(values.service_type),
+    service_type: values => values.service_type === 'dhis',
   },
   getJsonFieldSchema: () => [
     {

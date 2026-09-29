@@ -18,10 +18,6 @@ export const SERVICE_TYPE_OPTIONS = [
     value: 'kobo',
   },
   {
-    label: 'Superset',
-    value: 'superset',
-  },
-  {
     label: 'Tupaia',
     value: 'tupaia',
   },
@@ -35,7 +31,7 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
   type: 'json',
   default: '{}',
   visibilityCriteria: {
-    service_type: values => ['dhis', 'superset'].includes(values.service_type),
+    service_type: values => values.service_type === 'dhis',
   },
   getJsonFieldSchema: () => [
     {
@@ -56,23 +52,6 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
       label: 'Category option combo code',
       fieldName: 'categoryOptionCombo',
       visibilityCriteria: { service_type: 'dhis' },
-    },
-    {
-      label: 'Superset Instance',
-      fieldName: 'supersetInstanceCode',
-      required: true,
-      visibilityCriteria: { service_type: 'superset' },
-    },
-    {
-      label: 'Superset Chart ID',
-      fieldName: 'supersetChartId',
-      required: true,
-      visibilityCriteria: { service_type: 'superset' },
-    },
-    {
-      label: 'Superset Item Code (optional)',
-      fieldName: 'supersetItemCode',
-      visibilityCriteria: { service_type: 'superset' },
     },
   ],
 };
