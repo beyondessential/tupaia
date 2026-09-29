@@ -51,9 +51,9 @@ configureEnv();
       await buildAncestorDescendantRelationIfEmpty(models);
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
-        winston.info('Creating permissions based meditrak sync queue');
+        winston.info('Ensuring permissions based meditrak sync queue exists');
         // don't await this as it's not critical, and will hold up the process if it fails
-        createPermissionsBasedMeditrakSyncQueue(database);
+        createPermissionsBasedMeditrakSyncQueue(database, { skipIfPopulated: true });
       }
     } else {
       await buildAncestorDescendantRelationIfEmpty(models);
