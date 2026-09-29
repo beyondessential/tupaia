@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const SERVICE_TYPE_OPTIONS = [
+export const SERVICE_TYPE_OPTIONS = /** @type {const} */ ([
   {
     label: 'Data Lake',
     value: 'data-lake',
@@ -25,7 +25,7 @@ export const SERVICE_TYPE_OPTIONS = [
     label: 'Weather',
     value: 'weather',
   },
-];
+]);
 
 export const DATA_ELEMENT_FIELD_EDIT_CONFIG = /** @type {const} */ ({
   type: 'json',
