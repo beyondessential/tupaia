@@ -3212,17 +3212,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bitwarden/cli@npm:2026.7.0":
-  version: 2026.7.0
-  resolution: "@bitwarden/cli@npm:2026.7.0"
+"@bitwarden/cli@npm:2026.9.0":
+  version: 2026.9.0
+  resolution: "@bitwarden/cli@npm:2026.9.0"
   dependencies:
     "@koa/multer": "npm:4.0.0"
-    "@koa/router": "npm:15.6.0"
+    "@koa/router": "npm:15.7.0"
     big-integer: "npm:1.6.52"
     browser-hrtime: "npm:1.1.8"
     chalk: "npm:4.1.2"
     commander: "npm:14.0.0"
-    core-js: "npm:3.49.0"
+    core-js: "npm:3.50.0"
     form-data: "npm:4.0.6"
     https-proxy-agent: "npm:9.1.0"
     inquirer: "npm:8.2.6"
@@ -3245,7 +3245,7 @@ __metadata:
     zxcvbn: "npm:4.4.2"
   bin:
     bw: build/bw.js
-  checksum: 10c0/f618a1fb53678952da86a2ff46fb2185b334cd4d9d20e37495e2d5e94ab31d9ba3a58bb1f9286e17b56732fc45fe2476365347f8a9cfc8d7253cda7a2c1a3262
+  checksum: 10c0/ba0956795a895c0651b0a777e9c11a1197ae85a4c69e134e6cb4032bca86c420ca18a3a75d3b364514a5c362df0d1afcf339d447e40f438619e168476de3d23b
   languageName: node
   linkType: hard
 
@@ -5119,9 +5119,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/router@npm:15.6.0":
-  version: 15.6.0
-  resolution: "@koa/router@npm:15.6.0"
+"@koa/router@npm:15.7.0":
+  version: 15.7.0
+  resolution: "@koa/router@npm:15.7.0"
   dependencies:
     debug: "npm:^4.4.3"
     http-errors: "npm:^2.0.1"
@@ -5132,7 +5132,7 @@ __metadata:
   peerDependenciesMeta:
     koa:
       optional: false
-  checksum: 10c0/23a2aefedaa40a636be4b99a00997c82e6a1895badcc03ab18ba6f3d51dcab10aa705a7ddc829952fe5be6941397110c91be435130d5e4e0923ee8caa40d26c8
+  checksum: 10c0/da1f23f07684f5b39db5536cd6d4b77f7e38930786c2c0c13cf27d84ab90b6c9eea5ecf17f8f4c1b87ccc822a874f64c351b6e9b4c2e6c9324765564fce689cb
   languageName: node
   linkType: hard
 
@@ -12816,10 +12816,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:3.49.0":
-  version: 3.49.0
-  resolution: "core-js@npm:3.49.0"
-  checksum: 10c0/2e42edb47eda38fd5368380131623c8aa5d4a6b42164125b17744bdc08fa5ebbbdd06b4b4aa6ca3663470a560b0f2fba48e18f142dfe264b0039df85bc625694
+"core-js@npm:3.50.0, core-js@npm:^3.30.2, core-js@npm:^3.4.2":
+  version: 3.50.0
+  resolution: "core-js@npm:3.50.0"
+  checksum: 10c0/1bfcfb1dbdf45b0b1428a9fdcb03697d1fc52c7e9bc336f804a86ff2c2705a301dca7d9d6636d09d49d60298183273b9321681baeaf330c78db5393bc73f3f6a
   languageName: node
   linkType: hard
 
@@ -12827,13 +12827,6 @@ __metadata:
   version: 2.6.12
   resolution: "core-js@npm:2.6.12"
   checksum: 10c0/00128efe427789120a06b819adc94cc72b96955acb331cb71d09287baf9bd37bebd191d91f1ee4939c893a050307ead4faea08876f09115112612b6a05684b63
-  languageName: node
-  linkType: hard
-
-"core-js@npm:^3.30.2, core-js@npm:^3.4.2":
-  version: 3.50.0
-  resolution: "core-js@npm:3.50.0"
-  checksum: 10c0/1bfcfb1dbdf45b0b1428a9fdcb03697d1fc52c7e9bc336f804a86ff2c2705a301dca7d9d6636d09d49d60298183273b9321681baeaf330c78db5393bc73f3f6a
   languageName: node
   linkType: hard
 
@@ -29255,7 +29248,7 @@ __metadata:
     "@beyondessential/eslint-config-jest": "npm:^1.0.0"
     "@beyondessential/eslint-config-js": "npm:^1.1.1"
     "@beyondessential/eslint-config-ts": "npm:^2.0.0"
-    "@bitwarden/cli": "npm:2026.7.0"
+    "@bitwarden/cli": "npm:2026.9.0"
     "@storybook/addon-essentials": "npm:^8.2.9"
     "@storybook/builder-vite": "npm:^8.2.9"
     "@storybook/react": "npm:^8.2.9"
