@@ -136,7 +136,7 @@ export class DhisFetcher {
         return responseObject;
       }
       if (message) errorMessage = message;
-    } catch (e) {
+    } catch {
       // Ignore json parse errors in bad responses
     }
     throw this.constructError(errorMessage, url);
