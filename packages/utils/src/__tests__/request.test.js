@@ -1,3 +1,4 @@
+import { createServer } from 'node:http';
 import { fetchWithTimeout, stringifyQuery } from '../request';
 
 describe('request', () => {
@@ -29,6 +30,63 @@ describe('request', () => {
 
     it('throws an error if request is too slow', () => {
       return expect(fetchWithTimeout(BASE_URL, {}, 10)).rejects.toThrow(/request timed out/);
+    });
+  });
+
+  describe('fetchWithTimeout() against a real server', () => {
+    const TIMEOUT = 100;
+    const CHUNKS = ['chunk0\n', 'chunk1\n', 'chunk2\n', 'chunk3\n', 'chunk4\n'];
+    let server;
+    let baseUrl;
+
+    beforeAll(async () => {
+      server = createServer((req, res) => {
+        if (req.url === '/slow-headers') {
+          const timeout = setTimeout(() => {
+            res.writeHead(200);
+            res.end('too late');
+          }, TIMEOUT * 3);
+          res.on('close', () => clearTimeout(timeout)); // client aborted
+          return;
+        }
+        // '/slow-body': headers straight away, then a body that takes well over TIMEOUT
+        res.writeHead(200, { 'content-type': 'text/plain' });
+        let i = 0;
+        const interval = setInterval(() => {
+          res.write(CHUNKS[i]);
+          i += 1;
+          if (i === CHUNKS.length) {
+            clearInterval(interval);
+            res.end();
+          }
+        }, TIMEOUT * 0.6);
+      });
+      await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+      baseUrl = `http://127.0.0.1:${server.address().port}`;
+    });
+
+    afterAll(async () => {
+      server.closeAllConnections();
+      await new Promise(resolve => server.close(resolve));
+    });
+
+    it('times out waiting for response headers', () => {
+      return expect(fetchWithTimeout(`${baseUrl}/slow-headers`, {}, TIMEOUT)).rejects.toThrow(
+        /request timed out/,
+      );
+    });
+
+    it('does not time out a response body that takes longer than the timeout', async () => {
+      const response = await fetchWithTimeout(`${baseUrl}/slow-body`, {}, TIMEOUT);
+      expect(await response.text()).toBe(CHUNKS.join(''));
+    });
+
+    it('still honours an abort signal passed by the caller', () => {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), TIMEOUT / 4);
+      return expect(
+        fetchWithTimeout(`${baseUrl}/slow-headers`, { signal: controller.signal }, TIMEOUT),
+      ).rejects.toMatchObject({ name: 'AbortError' });
     });
   });
 

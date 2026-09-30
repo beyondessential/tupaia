@@ -26,13 +26,24 @@ export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
  * @return {Promise<Response>}
  */
 export const fetchWithTimeout = async (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) => {
-  const timeoutSignal = AbortSignal.timeout(maxWaitTime);
-  const signal = config?.signal ? AbortSignal.any([config.signal, timeoutSignal]) : timeoutSignal;
+  // Not simply using `AbortSignal.timeout(maxWaitTime)`, which would also abort the response body
+  // mid-read. Only time out waiting for response headers; once they arrive, let the body take as
+  // long as it needs (e.g. streamed exports, large DHIS2 responses).
+  const timeoutController = new AbortController();
+  const timer = setTimeout(
+    () => timeoutController.abort(new DOMException('Network request timed out', 'TimeoutError')),
+    maxWaitTime,
+  );
+  const signal = config?.signal
+    ? AbortSignal.any([config.signal, timeoutController.signal])
+    : timeoutController.signal;
   try {
     return await fetch(url, { ...config, signal });
   } catch (error) {
     if (error.name === 'TimeoutError') throw new Error('Network request timed out');
     throw error;
+  } finally {
+    clearTimeout(timer);
   }
 };
 
