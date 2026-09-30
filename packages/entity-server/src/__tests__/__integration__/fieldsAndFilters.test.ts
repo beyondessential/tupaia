@@ -218,8 +218,8 @@ describe('fieldsAndFilters', () => {
       expect(entity).toEqual({
         code: 'goldsilver',
         bounds: [
-          [125, 30],
-          [135, 38],
+          [30, 125],
+          [38, 135],
         ],
       });
     });
