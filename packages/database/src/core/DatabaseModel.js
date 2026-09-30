@@ -187,7 +187,6 @@ export class DatabaseModel {
   }
 
   /**
-   * @protected
    * @template {string} T
    * @param {T} fieldName
    * @returns {string | { [key in T]: string }} column spec for use in the `columns` query option
