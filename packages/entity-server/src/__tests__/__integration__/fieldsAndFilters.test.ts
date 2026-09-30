@@ -1,12 +1,12 @@
 import { getTestModels } from '@tupaia/database';
-import { TestableServer } from '@tupaia/server-boilerplate';
+import type { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
-import { TestModelRegistry } from '../types';
+import type { TestModelRegistry } from '../types';
 import {
-  getEntityWithFields,
-  getEntitiesWithFields,
-  ENTITIES,
   COUNTRIES,
+  ENTITIES,
+  getEntitiesWithFields,
+  getEntityWithFields,
   getHierarchiesWithFields,
 } from './fixtures';
 
