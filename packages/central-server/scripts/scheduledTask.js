@@ -26,20 +26,21 @@ const getTaskArg = () => {
 };
 
 (async () => {
+  const profiler = winston.startTimer();
   const database = new TupaiaDatabase();
   try {
     winston.info('Starting scheduled task script');
-    const profiler = winston.startTimer();
     const taskArg = getTaskArg();
     const TaskModule = SCHEDULED_TASK_MODULES[taskArg];
     winston.info(`Running ${taskArg} module`);
     const models = new ModelRegistry(database, modelClasses, true);
     const taskInstance = new TaskModule(models);
     await taskInstance.run();
-    profiler.done({ message: 'Completed' });
+    profiler.done({ message: 'Done' });
   } catch (error) {
     winston.error(error.message);
     winston.error(error.stack);
+    profiler.done({ message: 'Failed' });
   } finally {
     await database.closeConnections();
   }
