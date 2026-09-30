@@ -34,9 +34,10 @@ export const fetchWithTimeout = async (url, requestInit, timeout = DEFAULT_MAX_W
     () => timeoutController.abort(new DOMException('Network request timed out', 'TimeoutError')),
     timeout,
   );
-  const signal = requestInit?.signal
-    ? AbortSignal.any([requestInit.signal, timeoutController.signal])
-    : timeoutController.signal;
+  const signal =
+    requestInit?.signal != null
+      ? AbortSignal.any([requestInit.signal, timeoutController.signal])
+      : timeoutController.signal;
   try {
     return await fetch(url, { ...requestInit, signal });
   } catch (error) {
