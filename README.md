@@ -30,9 +30,6 @@ You can also run `build-watch` on these internal dependencies to watch changes a
 
 Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example, `yarn start-stack tupaia-web`.
 
-> [!TIP]
-> The easiest way to open the packages in VS Code is to open the [tupaia-packages.code-workspace](/tupaia-packages.code-workspace) file. This opens all packages as roots in the workspace, and means linting et al will work correctly.
-
 ### Package structure
 
 The Tupaia monorepo has three types of packages:
