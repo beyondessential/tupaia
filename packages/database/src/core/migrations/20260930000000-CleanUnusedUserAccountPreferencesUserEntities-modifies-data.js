@@ -14,6 +14,10 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+/**
+ * `db-migrate` passes `?` operator through to PostgreSQL, but Knex will try to interpret it as a
+ * binding! Run this migration server-side only and let update sync to DataTrak clients.
+ */
 exports.up = async function (db) {
   await db.runSql(`
     UPDATE user_account
@@ -28,5 +32,5 @@ exports.down = function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['browser', 'server'],
+  targets: ['server'],
 };
