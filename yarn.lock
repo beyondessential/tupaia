@@ -7716,7 +7716,7 @@ __metadata:
     jest-when: "npm:^3.6.0"
     npm-run-all: "npm:^4.1.5"
     rimraf: "npm:^6.0.1"
-    simple-oauth2: "npm:^1.5.0"
+    simple-oauth2: "npm:^1.6.0"
     urlencode: "npm:^1.1.0"
     winston: "npm:^3.17.0"
   languageName: unknown
@@ -16954,7 +16954,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"har-validator@npm:~5.1.0, har-validator@npm:~5.1.3":
+"har-validator@npm:~5.1.3":
   version: 5.1.3
   resolution: "har-validator@npm:5.1.3"
   dependencies:
@@ -24579,7 +24579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.24, psl@npm:^1.1.28, psl@npm:^1.1.33":
+"psl@npm:^1.1.28, psl@npm:^1.1.33":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
   checksum: 10c0/6a3f805fdab9442f44de4ba23880c4eba26b20c8e8e0830eff1cb31007f6825dace61d17203c58bfe36946842140c97a1ba7f67bc63ca2d88a7ee052b65d97ab
@@ -26416,8 +26416,8 @@ __metadata:
   linkType: hard
 
 "request@npm:^2.81.0":
-  version: 2.88.0
-  resolution: "request@npm:2.88.0"
+  version: 2.88.2
+  resolution: "request@npm:2.88.2"
   dependencies:
     aws-sign2: "npm:~0.7.0"
     aws4: "npm:^1.8.0"
@@ -26426,7 +26426,7 @@ __metadata:
     extend: "npm:~3.0.2"
     forever-agent: "npm:~0.6.1"
     form-data: "npm:~2.3.2"
-    har-validator: "npm:~5.1.0"
+    har-validator: "npm:~5.1.3"
     http-signature: "npm:~1.2.0"
     is-typedarray: "npm:~1.0.0"
     isstream: "npm:~0.1.2"
@@ -26436,10 +26436,10 @@ __metadata:
     performance-now: "npm:^2.1.0"
     qs: "npm:~6.5.2"
     safe-buffer: "npm:^5.1.2"
-    tough-cookie: "npm:~2.4.3"
+    tough-cookie: "npm:~2.5.0"
     tunnel-agent: "npm:^0.6.0"
     uuid: "npm:^3.3.2"
-  checksum: 10c0/90369e22e14bcc393ae1f59e06f9b3eaf929d2b55036380b340776c0e196e5702516d8ae954ab0778a32a4c76cda70ab102b056f0d4160bb61ee90e114a83000
+  checksum: 10c0/0ec66e7af1391e51ad231de3b1c6c6aef3ebd0a238aa50d4191c7a792dcdb14920eea8d570c702dc5682f276fe569d176f9b8ebc6031a3cf4a630a691a431a63
   languageName: node
   linkType: hard
 
@@ -27387,7 +27387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-oauth2@npm:^1.5.0":
+"simple-oauth2@npm:^1.6.0":
   version: 1.6.0
   resolution: "simple-oauth2@npm:1.6.0"
   dependencies:
@@ -28960,16 +28960,6 @@ __metadata:
   dependencies:
     tldts: "npm:^6.1.32"
   checksum: 10c0/5f95023a47de0f30a902bba951664b359725597d8adeabc66a0b93a931c3af801e1e697dae4b8c21a012056c0ea88bd2bf4dfe66b2adcf8e2f42cd9796fe0626
-  languageName: node
-  linkType: hard
-
-"tough-cookie@npm:~2.4.3":
-  version: 2.4.3
-  resolution: "tough-cookie@npm:2.4.3"
-  dependencies:
-    psl: "npm:^1.1.24"
-    punycode: "npm:^1.4.1"
-  checksum: 10c0/35fb214ea89533bee66917faf563dddbe494d69a0b4f2ace7c27dcf5fe8c6b3c9484e8731654d35c56c3645c896c660b488e2509b6896f29c7af1e30fc11463b
   languageName: node
   linkType: hard
 
