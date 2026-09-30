@@ -24,18 +24,38 @@ HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
 
 install_nginx() {
-  if ! command -v nginx &>/dev/null; then
-    echo 'nginx not installed. Installing...'
-    sudo apt-get install -yqq nginx
+  # Stable branch from nginx.org. Patch releases are picked up automatically; bump this to move to
+  # a new stable branch. See https://nginx.org/en/linux_packages.html
+  local nginx_branch=1.30
 
-    # add h5bp config
+  local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
+
+  sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/nginx.gpg /usr/share/keyrings/nginx.gpg
+  echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] https://nginx.org/packages/ubuntu $os_codename nginx" |
+    sudo tee /etc/apt/sources.list.d/nginx.list
+  # Prefer the pinned nginx.org branch over Ubuntu’s own (older) nginx package
+  printf 'Package: nginx\nPin: version %s.*\nPin-Priority: 1001\n' "$nginx_branch" |
+    sudo tee /etc/apt/preferences.d/99nginx
+  sudo apt-get update
+
+  # Also replaces Ubuntu’s nginx-core and nginx-common, if installed. Config files are overwritten
+  # by configureNginx.sh at deploy time, so take the package’s versions.
+  echo "Installing nginx $nginx_branch.x..."
+  sudo apt-get install -yqq -o Dpkg::Options::=--force-confnew nginx
+
+  # The nginx.org package ships a default server, which would be picked up by conf.d/*.conf
+  sudo rm -f /etc/nginx/conf.d/default.conf
+
+  # add h5bp config
+  if [ ! -d /etc/nginx/h5bp ]; then
     git clone --branch 2.0.0 --depth 1 https://github.com/h5bp/server-configs-nginx.git
     sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
     rm -rf server-configs-nginx
-
-    # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
-    sudo usermod -a -G ubuntu www-data
   fi
+
+  # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
+  sudo usermod -a -G ubuntu www-data
+
   nginx -v
 }
 

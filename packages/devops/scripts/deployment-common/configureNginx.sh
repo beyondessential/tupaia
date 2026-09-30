@@ -14,7 +14,7 @@ else
 fi
 
 if [ "$USE_SSL" = true ]; then 
-    PORT="443 ssl http2"
+    PORT="443 ssl"
 else 
     PORT="80"
 fi
