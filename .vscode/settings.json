@@ -10,7 +10,7 @@
     "boto",
     "cacheable",
     "cachers",
-    "Clazz",
+    "clazz",
     "cleanup",
     "clearable",
     "Codeship",
@@ -73,7 +73,7 @@
     "spec",
     "specs",
     "swipeable",
-    "Syncable",
+    "syncable",
     "testid",
     "Tongatapu",
     "Tupaia",
@@ -89,11 +89,11 @@
   "files.exclude": {
     ".yarn/": true
   },
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "search.exclude": {
     ".yarn/": true,
     "*.lock": true,
     "*.log": true,
     "**/lib": true
-  },
-  "typescript.tsdk": "root/node_modules/typescript/lib"
+  }
 }
