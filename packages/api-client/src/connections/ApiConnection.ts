@@ -21,6 +21,8 @@ const DEFAULT_MAX_WAIT_TIME = 120_000; // 120 seconds
 export interface ApiConnectionOptions {
   /** Optional headers to send with every API request */
   headers?: { 'X-Client-Version'?: string };
+  /** Max time (ms) to wait for response headers. Does not limit how long the body takes */
+  timeout?: number;
 }
 
 export class ApiConnection {
@@ -30,6 +32,8 @@ export class ApiConnection {
 
   private readonly headerOverrides?: ApiConnectionOptions['headers'];
 
+  private readonly timeout: number;
+
   public constructor(
     authHandler: AuthHandler,
     baseUrl: string,
@@ -38,6 +42,7 @@ export class ApiConnection {
     this.authHandler = authHandler;
     this.baseUrl = baseUrl;
     this.headerOverrides = options.headers;
+    this.timeout = options.timeout ?? DEFAULT_MAX_WAIT_TIME;
   }
 
   public async get(endpoint: string, queryParameters?: QueryParameters | null) {
@@ -117,11 +122,7 @@ export class ApiConnection {
     return response;
   }
 
-  private async fetchWithTimeout(
-    url: string,
-    config: RequestInit,
-    timeout: number = DEFAULT_MAX_WAIT_TIME,
-  ): Promise<Response> {
+  private async fetchWithTimeout(url: string, config: RequestInit): Promise<Response> {
     // Not simply passing `signal: AbortSignal.timeout(timeout)` to `fetch`. Only time out waiting
     // for response headers. Once headers arrive, let the body take as long as it needs.
     // (e.g. Streamed sync pulls, large exports.)
@@ -130,11 +131,11 @@ export class ApiConnection {
       () =>
         controller.abort(
           new DOMException(
-            `${config.method || 'GET'} ${url} timed out after ${timeout.toLocaleString()}ms`,
+            `${config.method || 'GET'} ${url} timed out after ${this.timeout.toLocaleString()}ms`,
             'TimeoutError',
           ),
         ),
-      timeout,
+      this.timeout,
     );
     try {
       return await fetch(url, { ...config, signal: controller.signal });
