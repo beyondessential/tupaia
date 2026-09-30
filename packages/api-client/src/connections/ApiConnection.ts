@@ -129,7 +129,10 @@ export class ApiConnection {
     const timer = setTimeout(
       () =>
         controller.abort(
-          new DOMException(`Request to ${url} timed out after ${timeout}ms`, 'TimeoutError'),
+          new DOMException(
+            `${config.method || 'GET'} ${url} timed out after ${timeout.toLocaleString()}ms`,
+            'TimeoutError',
+          ),
         ),
       timeout,
     );
