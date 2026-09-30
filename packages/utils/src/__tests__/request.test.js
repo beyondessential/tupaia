@@ -54,7 +54,7 @@ describe('request', () => {
         let i = 0;
         const interval = setInterval(() => {
           res.write(CHUNKS[i]);
-          i += 1;
+          i++;
           if (i === CHUNKS.length) {
             clearInterval(interval);
             res.end();
