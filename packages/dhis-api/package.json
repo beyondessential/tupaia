@@ -26,7 +26,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "es-toolkit": "^1.46.0",
-    "simple-oauth2": "^1.5.0",
+    "simple-oauth2": "^1.6.0",
     "urlencode": "^1.1.0",
     "winston": "^3.17.0"
   },
