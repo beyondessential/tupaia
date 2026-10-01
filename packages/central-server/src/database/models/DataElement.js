@@ -8,7 +8,6 @@ export const DATA_SOURCE_SERVICE_TYPES = [
   'dhis',
   'indicator',
   'kobo',
-  'superset',
   'tupaia',
   'weather',
 ];

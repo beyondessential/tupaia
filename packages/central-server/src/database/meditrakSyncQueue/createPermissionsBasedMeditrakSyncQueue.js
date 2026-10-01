@@ -135,6 +135,7 @@ LEFT JOIN country uep_e_co ON uep_e_co.code = uep_e.country_code
 
 GROUP BY msq.id;
 CREATE UNIQUE INDEX permissions_based_meditrak_sync_queue_id_idx ON permissions_based_meditrak_sync_queue (id);
+CREATE INDEX permissions_based_meditrak_sync_queue_change_time_idx ON permissions_based_meditrak_sync_queue (change_time);
 `);
 
 export const createPermissionsBasedMeditrakSyncQueue = async database => {

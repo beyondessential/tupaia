@@ -18,7 +18,6 @@ internal_deps=(
   kobo-api
   server-boilerplate
   server-utils
-  superset-api
   sync
   tsmodels
   tsutils
