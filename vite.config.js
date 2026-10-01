@@ -26,6 +26,14 @@ export default defineConfig(({ command, mode }) => {
 
   const isDatatrakWeb = packageName === DATATRAK_WEB_NAME;
 
+  // Inline each REACT_APP_ variable on its own. Replacing `process.env` as a whole would embed
+  // every build-time variable in the bundle
+  const reactAppEnvReplacements = Object.fromEntries(
+    Object.entries(env)
+      .filter(([key]) => key.startsWith('REACT_APP_'))
+      .map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+
   const baseConfig = {
     build: {
       rolldownOptions: {
@@ -75,13 +83,12 @@ export default defineConfig(({ command, mode }) => {
               },
             }),
             commonjs(),
-            // Replace process.env with actual values instead of using define, because define
-            // also replaces process.env in external node_modules, causing issues with knex
+            // Replace in the source rather than using `define`, which in dev only sets values on
+            // `globalThis.process`. The polyfills give each module its own `process`, so the values
+            // would never reach our code
             replace({
-              'process.env': JSON.stringify(env),
-              include: 'src/**/*',
-              exclude: 'node_modules/**',
-              preventAssignment: false,
+              ...reactAppEnvReplacements,
+              preventAssignment: true,
             }),
           ]
         : []),
