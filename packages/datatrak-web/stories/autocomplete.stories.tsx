@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import styled from 'styled-components';
 import { MobileAutocomplete } from '../src/features/Tasks/TasksTable/MobileAutocomplete';
