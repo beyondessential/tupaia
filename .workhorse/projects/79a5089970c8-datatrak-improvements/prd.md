@@ -42,7 +42,6 @@ This is the committed direction: rather than chasing a fully invisible sync, acc
 
 ### 4. OOM Crash
 
-Chris has further DataTrak improvements in mind that are not yet captured here. To be gathered and folded in.
 
 ### 5. Over the air updates
 
