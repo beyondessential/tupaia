@@ -28,7 +28,7 @@ The migration path for existing on-device data, and OPFS's environment requireme
 Replace the fixed-interval scheduler with one that lands sync when it will cost the user least:
 
 - **Sync when the user is idle**, not on a blind timer that can fire mid-entry.
-- **Piggyback the unavoidable blocking window on moments the user already expects to wait**, such as submitting a survey, where a short pause is already the natural rhythm.
+- **Piggyback the unavoidable blocking window on moments the user already expects to wait**, such as submitting a survey, or when they've been idle for a minute, where a short pause is already the natural rhythm.
 - Keep urgent/manual sync available on demand.
 
 ### 3. Blocking sync modal
