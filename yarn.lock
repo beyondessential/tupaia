@@ -19411,14 +19411,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.3.0":
-  version: 4.3.0
-  resolution: "js-yaml@npm:4.3.0"
+"js-yaml@npm:4.3.1":
+  version: 4.3.1
+  resolution: "js-yaml@npm:4.3.1"
   dependencies:
     argparse: "npm:^2.0.1"
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 10c0/058b30473d6915ca5b4feb11e2f7d4d97242f98d00a798ed48dd90b46b7c640398afe9128c5db22c5300f8c6528fe2a174b9a93f351a70ebc28c6203938d8bff
+  checksum: 10c0/13c500ca322e0c3f8c81686e6ecda96d2ea37b45247a420c17c7db36932d6965cc27391abc2d1a104501600e7f0d947a5f8b7be6db619c4fefa87901b3512807
   languageName: node
   linkType: hard
 
@@ -24124,9 +24124,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pm2@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "pm2@npm:7.0.3"
+"pm2@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "pm2@npm:7.0.4"
   dependencies:
     "@pm2/blessed": "npm:0.1.81"
     "@pm2/js-api": "npm:0.8.1"
@@ -24143,7 +24143,7 @@ __metadata:
     debug: "npm:4.4.3"
     eventemitter2: "npm:6.4.9"
     fast-json-patch: "npm:3.1.1"
-    js-yaml: "npm:4.3.0"
+    js-yaml: "npm:4.3.1"
     pidusage: "npm:4.0.1"
     pm2-deploy: "npm:1.0.2"
     proxy-agent: "npm:6.5.0"
@@ -24155,7 +24155,7 @@ __metadata:
     pm2-dev: bin/pm2-dev
     pm2-docker: bin/pm2-docker
     pm2-runtime: bin/pm2-runtime
-  checksum: 10c0/f6408bd78f717ea5adfd419b9478f558a027589673ce2f197842265ed0d795085aa3c91bb8a918d9966f5b104fd3429e9b8d195476f698054838da355d08a67d
+  checksum: 10c0/6bb31b79e4650159c2b3207685cbe1d5c3c511f811862d86a7a27ab3181bda8af19a91929c5dc7c6d049d81c3c40a73c27c85000a034923eddb5a1cf97ff04ba
   languageName: node
   linkType: hard
 
@@ -29209,7 +29209,7 @@ __metadata:
     jest-when: "npm:^3.6.0"
     nodemon: "npm:^2.0.4"
     npm-package-json-lint: "npm:5.1.0"
-    pm2: "npm:^7.0.3"
+    pm2: "npm:^7.0.4"
     prettier: "npm:^3.5.1"
     react-docgen-typescript-plugin: "npm:^1.0.8"
     storybook: "npm:^8.2.9"
