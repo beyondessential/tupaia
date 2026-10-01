@@ -42,7 +42,7 @@ This is the committed direction: rather than chasing a fully invisible sync, acc
 
 ### 4. OOM Crash
 
-May be mul
+May be multiple issues, differ
 ### 5. Over the air updates
 
 
