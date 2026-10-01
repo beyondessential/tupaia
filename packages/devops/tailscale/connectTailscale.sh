@@ -27,6 +27,9 @@ echo "  Auth key:  $auth_key_param_name (from Parameter Store)"
 echo "  Hostname:  $hostname"
 echo "  Tags:      $tags"
 
+# Let this user run `tailscale up` unprivileged
+sudo tailscale set --operator="$(id -un)"
+
 tailscale up \
   --auth-key="$("$deployment_aws_scripts"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
   --hostname="$hostname" \

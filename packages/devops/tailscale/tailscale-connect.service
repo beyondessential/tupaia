@@ -2,12 +2,16 @@
 Description=Connect Tailscale
 Wants=network-online.target tailscaled.service
 After=network-online.target tailscaled.service
+StartLimitIntervalSec=10min
+StartLimitBurst=5
 
 [Service]
 Type=oneshot
 User=ubuntu
 ExecStart=/home/ubuntu/tupaia/packages/devops/tailscale/connectTailscale.sh
 RemainAfterExit=yes
+Restart=on-failure
+RestartSec=30s
 
 [Install]
 WantedBy=multi-user.target
