@@ -50,7 +50,7 @@
     "cors": "^2.8.5",
     "countries-and-timezones": "^3.6.0",
     "es-toolkit": "^1.46.0",
-    "express": "^4.21.2",
+    "express": "^4.22.3",
     "format-link-header": "^2.1.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
