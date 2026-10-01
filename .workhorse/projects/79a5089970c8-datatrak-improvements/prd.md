@@ -44,7 +44,7 @@ This is the committed direction: rather than chasing a fully invisible sync, acc
 
 Chris has further DataTrak improvements in mind that are not yet captured here. To be gathered and folded in.
 
-### 4. Other Tamanu Mobile fixes (Mobile Love leftovers)
+### 5. Other Tamanu Mobile fixes (Mobile Love leftovers)
 
 ### 6. Other Tamanu Mobile fixes (Mobile Love leftovers)
 
