@@ -44,8 +44,8 @@ This is the committed direction: rather than chasing a fully invisible sync, acc
 
 May be multiple issues, different on emulated device and tablet.
 
-### 5. Over the air updates
-Pull latests javascript
+### 5. Tamanu Over the air updates
+Pull latest javascript
 
 ### 6. Other Tamanu Mobile fixes (Mobile Love leftovers)
 
