@@ -43,7 +43,7 @@
     "alasql": "^4.2.3",
     "date-fns": "^2.30.0",
     "es-toolkit": "^1.46.0",
-    "express": "^4.21.2",
+    "express": "^4.22.3",
     "mathjs": "^11.11.0",
     "moment": "^2.24.0",
     "winston": "^3.17.0"
