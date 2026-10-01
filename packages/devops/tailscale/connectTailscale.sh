@@ -2,7 +2,7 @@
 set -e +x
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-tupaia_dir=$(realpath -- "$script_dir"/../../../..)
+tupaia_dir=$(realpath -- "$script_dir"/../../..)
 deployment_aws_scripts=$(realpath -- "$script_dir"/../scripts/deployment-aws)
 
 if ! "$tupaia_dir"/scripts/bash/requireCommands.sh "$deployment_aws_scripts"/fetchParameterStoreValue.sh tailscale; then
