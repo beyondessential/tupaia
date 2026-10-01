@@ -1,9 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import nodemailer from 'nodemailer';
-import { getEnvVarOrDefault, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
-import Mail from 'nodemailer/lib/mailer';
 import handlebars from 'handlebars';
+import fs from 'node:fs';
+import path from 'node:path';
+import nodemailer, { type Mail } from 'nodemailer';
+
+import { getEnvVarOrDefault, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 
 type CTA = {
   text: string;
