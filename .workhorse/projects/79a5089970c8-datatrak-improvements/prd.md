@@ -45,6 +45,7 @@ This is the committed direction: rather than chasing a fully invisible sync, acc
 Chris has further DataTrak improvements in mind that are not yet captured here. To be gathered and folded in.
 
 ### 5. Other Tamanu Mobile fixes (Mobile Love leftovers)
+### 5. Other Tamanu Mobile fixes (Mobile Love leftovers)
 
 Any remaining capacity goes to the unfinished Mobile Love items. Note these are in a different repository (`beyondessential/tamanu`, `packages/mobile`); cards for them are implemented there, not in Tupaia. The project lead picks which to adopt from the menu below; they are candidates, not a committed set.
 
