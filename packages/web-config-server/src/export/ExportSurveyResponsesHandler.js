@@ -1,3 +1,5 @@
+import { pipeline } from 'node:stream/promises';
+
 import { ensure } from '@tupaia/tsutils';
 import { ValidationError } from '@tupaia/utils';
 import { RouteHandler } from '/apiV1/RouteHandler';
@@ -55,12 +57,12 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       this.req.session.userJson.userName,
     );
 
-    pipeSurveyResponseToClient(response, this.res);
+    await pipeSurveyResponseToClient(response, this.res);
   }
 }
 
-function pipeSurveyResponseToClient(response, res) {
+async function pipeSurveyResponseToClient(response, res) {
   res.setHeader('Content-Disposition', response.headers.get('Content-Disposition'));
   res.setHeader('Content-Type', response.headers.get('Content-Type'));
-  response.body.pipe(res);
+  await pipeline(response.body, res);
 }
