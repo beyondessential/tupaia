@@ -50,7 +50,7 @@ Any remaining capacity goes to the unfinished Mobile Love items. Note these are 
 
 Candidates from Mobile Love:
 
--**Over the air updates** 
+- **Over the air updates** 
 - **TAM-7105 — Batch-write survey response answers** (Backlog). Survey submit writes answers one at a time inside the transaction. Batch-insert the rows. Note: DataTrak has already had success with this approach, so there is a pattern to port.
 - **TAM-7109 — Fix CustomField N+1** (Backlog). One `PatientFieldDefinition.findOne` per custom field; fetch definitions once in the parent.
 - **TAM-7129 — A3: do the pull-side transform in SQL instead of JS** (Backlog). The large "sync engine" item: incremental pull currently double-serialises every page through JS, freezing the UI. Doing the transform in SQL is the alternative to a JS-worker approach.
