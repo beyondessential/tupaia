@@ -45,7 +45,7 @@ This is the committed direction: rather than chasing a fully invisible sync, acc
 May be multiple issues, different on emulated device and tablet.
 
 ### 5. Tamanu Mobile: Over the air updates
-Pull latest javascript bundle to update, if native d
+Pull latest javascript bundle to update, if native dependencies haven't chna
 
 ### 6. Other Tamanu Mobile fixes (Mobile Love leftovers)
 
