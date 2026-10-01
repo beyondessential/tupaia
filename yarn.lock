@@ -6573,26 +6573,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slack/types@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@slack/types@npm:3.0.0"
-  checksum: 10c0/caf1efdd87835dd1c66b4713f90a88fc4501447773d04a97893b0e793aca345389467d6ae3403c58044d0c2045260119559a22301e72879256c355e81f7dce71
+"@slack/types@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@slack/types@npm:3.1.0"
+  checksum: 10c0/8bdc7fcb36bf7f2a3c5c6c00c35167ded1bd304bda1657209d48c58338a041249e42332f9123705f11e0caece846b38912f2807b49b80730b172ca4f70b95757
   languageName: node
   linkType: hard
 
-"@slack/web-api@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@slack/web-api@npm:8.0.0"
+"@slack/web-api@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "@slack/web-api@npm:8.1.1"
   dependencies:
     "@slack/logger": "npm:^5.0.0"
-    "@slack/types": "npm:^3.0.0"
+    "@slack/types": "npm:^3.1.0"
     "@types/node": "npm:>=20"
-    "@types/retry": "npm:0.12.0"
+    "@types/retry": "npm:0.12.5"
     eventemitter3: "npm:^5.0.1"
-    p-queue: "npm:^6"
-    p-retry: "npm:^4"
+    p-queue: "npm:^6.6.2"
+    p-retry: "npm:^4.6.2"
     retry: "npm:^0.13.1"
-  checksum: 10c0/02190f32ad86ea707689d8441489f35b38594f119a44ee009d346708b363be94299a3de6cdb505c5c4669912c66100e32330ffb039f100799eb16e2cf0c66909
+  checksum: 10c0/2568eb3dca9551fd627e4b4debed195b14bf5d9bbe3505a90b3c4bf7d8dc861837ca08adaf7bde6da931c5a00224420ac7bc43835038de6c67e7e8e56762baa6
   languageName: node
   linkType: hard
 
@@ -8432,7 +8432,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/viz-test-tool@workspace:packages/viz-test-tool"
   dependencies:
-    "@slack/web-api": "npm:^8.0.0"
+    "@slack/web-api": "npm:^8.1.1"
     "@tupaia/api-client": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/types": "workspace:*"
@@ -9267,6 +9267,13 @@ __metadata:
   version: 0.12.0
   resolution: "@types/retry@npm:0.12.0"
   checksum: 10c0/7c5c9086369826f569b83a4683661557cab1361bac0897a1cefa1a915ff739acd10ca0d62b01071046fe3f5a3f7f2aec80785fe283b75602dc6726781ea3e328
+  languageName: node
+  linkType: hard
+
+"@types/retry@npm:0.12.5":
+  version: 0.12.5
+  resolution: "@types/retry@npm:0.12.5"
+  checksum: 10c0/eaaca483cc62f2f02c0b8486847ee70986ca7f97afd7363037247dbe3e98df8bd56a5b50d58b1e96768a5a1be0307010d86e9991bd458d72e8df88be471bd720
   languageName: node
   linkType: hard
 
@@ -15592,9 +15599,9 @@ __metadata:
   linkType: hard
 
 "eventemitter3@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "eventemitter3@npm:5.0.1"
-  checksum: 10c0/4ba5c00c506e6c786b4d6262cfbce90ddc14c10d4667e5c83ae993c9de88aa856033994dd2b35b83e8dc1170e224e66a319fa80adc4c32adcd2379bbc75da814
+  version: 5.0.4
+  resolution: "eventemitter3@npm:5.0.4"
+  checksum: 10c0/575b8cac8d709e1473da46f8f15ef311b57ff7609445a7c71af5cd42598583eee6f098fa7a593e30f27e94b8865642baa0689e8fa97c016f742abdb3b1bf6d9a
   languageName: node
   linkType: hard
 
@@ -23435,7 +23442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-queue@npm:^6, p-queue@npm:^6.6.2":
+"p-queue@npm:^6.6.2":
   version: 6.6.2
   resolution: "p-queue@npm:6.6.2"
   dependencies:
@@ -23445,7 +23452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-retry@npm:4, p-retry@npm:^4":
+"p-retry@npm:4, p-retry@npm:^4.6.2":
   version: 4.6.2
   resolution: "p-retry@npm:4.6.2"
   dependencies:
