@@ -41,6 +41,7 @@ When a sync is going to block the user, make that honest rather than letting jan
 This is the committed direction: rather than chasing a fully invisible sync, accept a short, signposted blocking window, timed by component 2 to land where it is least disruptive (survey submit, idle). The modal owns that window and gives the user a way out (skip/defer).
 
 ### 4. OOM Crash
+
 May be multiple issues, different on emulated device and tablet.
 
 ### 5. Over the air updates
