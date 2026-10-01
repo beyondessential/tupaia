@@ -46,7 +46,7 @@ May be multiple issues, different on emulated device and tablet.
 
 ### 5. Tamanu Mobile: Over the air updates
 
-Pull latest javascript bundle to update, if native dependencies haven't changed, rather than requiring a new APK. Or, having the app auto-download APKs and install them over the to
+Pull latest javascript bundle to update, if native dependencies haven't changed, rather than requiring a new APK. Or, having the app auto-download APKs and install them over the top without user interac
 
 ### 6. Other Tamanu Mobile fixes (Mobile Love leftovers)
 
