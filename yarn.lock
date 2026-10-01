@@ -4658,13 +4658,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@isaacs/cliui@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@isaacs/cliui@npm:9.0.0"
-  checksum: 10c0/971063b7296419f85053dacd0a0285dcadaa3dfc139228b23e016c1a9848121ad4aa5e7fcca7522062014e1eb6239a7424188b9f2cba893a79c90aae5710319c
-  languageName: node
-  linkType: hard
-
 "@isaacs/fs-minipass@npm:^4.0.0":
   version: 4.0.1
   resolution: "@isaacs/fs-minipass@npm:4.0.1"
@@ -7254,7 +7247,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     eslint: "npm:^7.32.0"
     npm-run-all: "npm:^4.1.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7280,7 +7273,7 @@ __metadata:
     jest: "npm:^29.7.0"
     langchain: "npm:^0.3.37"
     multer: "npm:^2.4.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
     xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
@@ -7331,7 +7324,7 @@ __metadata:
     react-router-dom: "npm:6.3.0"
     redux: "npm:^3.7.2"
     redux-thunk: "npm:^2.2.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     styled-components: "npm:^5.1.0"
     uuid: "npm:^14.0.0"
     vite: "npm:^4.5.14"
@@ -7352,7 +7345,7 @@ __metadata:
     jest-extended: "npm:^0.11.5"
     mockdate: "npm:^3.0.5"
     npm-run-all: "npm:^4.1.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7369,7 +7362,7 @@ __metadata:
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
     qs: "npm:^6.12.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7389,7 +7382,7 @@ __metadata:
     npm-run-all: "npm:^4.1.5"
     rand-token: "npm:^1.0.1"
     randomatic: "npm:^3.1.1"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     semver-compare: "npm:^1.0.0"
     sha256: "npm:^0.2.0"
   languageName: unknown
@@ -7443,7 +7436,7 @@ __metadata:
     public-ip: "npm:4.0.4"
     rate-limiter-flexible: "npm:^5.0.3"
     react-autobind: "npm:^1.0.6"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     sinon: "npm:^9.0.2"
     sinon-chai: "npm:^3.3.0"
     sinon-test: "npm:^3.0.0"
@@ -7459,7 +7452,7 @@ __metadata:
   resolution: "@tupaia/constants@workspace:packages/constants"
   dependencies:
     "@types/node": "npm:^26.1.2"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     ts-node: "npm:^10.9.1"
     typescript: "npm:5.2.2"
   languageName: unknown
@@ -7479,7 +7472,7 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     moment: "npm:^2.24.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.2.2"
   languageName: unknown
@@ -7508,7 +7501,7 @@ __metadata:
     jest-extended: "npm:^0.11.5"
     mockdate: "npm:^3.0.5"
     moment: "npm:^2.24.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7526,7 +7519,7 @@ __metadata:
     knex: "npm:^3.1.0"
     moment: "npm:^2.24.0"
     pg: "npm:8.5.1"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7549,7 +7542,7 @@ __metadata:
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
     mockdate: "npm:^3.0.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -7588,7 +7581,7 @@ __metadata:
     pluralize: "npm:^8.0.0"
     rand-token: "npm:^1.0.1"
     react-autobind: "npm:1.0.6"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -7613,7 +7606,7 @@ __metadata:
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -7713,7 +7706,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-when: "npm:^3.6.0"
     npm-run-all: "npm:^4.1.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     simple-oauth2: "npm:^1.6.0"
     urlencode: "npm:^1.1.0"
     winston: "npm:^3.17.0"
@@ -7764,7 +7757,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-extended: "npm:^0.11.5"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -7783,7 +7776,7 @@ __metadata:
     mathjs: "npm:^11.11.0"
     mockdate: "npm:^3.0.5"
     npm-run-all: "npm:^4.1.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7800,7 +7793,7 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     jest-extended: "npm:^0.11.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7812,7 +7805,7 @@ __metadata:
     "@babel/eslint-parser": "npm:^7.27.5"
     "@tupaia/utils": "workspace:*"
     npm-run-all: "npm:^4.1.5"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -7830,7 +7823,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -7894,7 +7887,7 @@ __metadata:
     knex: "npm:^3.1.0"
     mockdate: "npm:^3.0.5"
     moment-timezone: "npm:^0.5.45"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     semver-compare: "npm:^1.0.0"
     winston: "npm:^3.17.0"
   languageName: unknown
@@ -7986,7 +7979,7 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -8057,7 +8050,7 @@ __metadata:
     mathjs: "npm:^11.11.0"
     mockdate: "npm:^3.0.5"
     moment: "npm:^2.24.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     supertest: "npm:^3.1.0"
     winston: "npm:^3.17.0"
   languageName: unknown
@@ -8093,7 +8086,7 @@ __metadata:
     knex: "npm:^3.1.0"
     morgan: "npm:^1.11.0"
     public-ip: "npm:4.0.4"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     supertest: "npm:^3.1.0"
     winston: "npm:^3.17.0"
   languageName: unknown
@@ -8126,7 +8119,7 @@ __metadata:
     node-schedule: "npm:^2.1.1"
     nodemailer: "npm:^9.0.3"
     puppeteer: "npm:^25.5.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     sha256: "npm:^0.2.0"
     sharp: "npm:~0.35.4"
   languageName: unknown
@@ -8152,7 +8145,7 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     express: "npm:^4.21.2"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     semver: "npm:^7.7.4"
     winston: "npm:^3.17.0"
   languageName: unknown
@@ -8168,7 +8161,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     es-toolkit: "npm:^1.43.0"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -8181,7 +8174,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@types/node": "npm:^26.1.2"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     ts-node: "npm:^10.9.1"
     typescript: "npm:5.2.2"
   languageName: unknown
@@ -8202,7 +8195,7 @@ __metadata:
     jest: "npm:^29.7.0"
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     yup: "npm:^0.32.9"
   languageName: unknown
   linkType: soft
@@ -8225,7 +8218,7 @@ __metadata:
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
   languageName: unknown
   linkType: soft
@@ -8287,7 +8280,7 @@ __metadata:
     diff: "npm:^8.0.2"
     dotenv: "npm:^16.4.5"
     knex: "npm:^3.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.2.2"
     typescript-json-schema: "npm:^0.55.0"
@@ -8414,7 +8407,7 @@ __metadata:
     numeral: "npm:^2.0.6"
     omit-deep: "npm:^0.3.0"
     prop-types: "npm:^15.6.2"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     rrule: "npm:^2.8.1"
     sanitize-filename: "npm:^1.6.4"
     sinon: "npm:^9.0.2"
@@ -8441,7 +8434,7 @@ __metadata:
     cli-progress: "npm:^3.12.0"
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.2.2"
   languageName: unknown
@@ -8454,7 +8447,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
 
@@ -8486,7 +8479,7 @@ __metadata:
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
     morgan: "npm:^1.11.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
     xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
@@ -11026,9 +11019,9 @@ __metadata:
   linkType: hard
 
 "balanced-match@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "balanced-match@npm:1.0.0"
-  checksum: 10c0/d45f1aeec59d87562cd65415e2890b9fd6ab7fa89941a46fb2eb505e2165158680ee1be7110586cf86f3a9599f1b88ec4a7fcf57594560ca37814a560ab95f41
+  version: 1.0.2
+  resolution: "balanced-match@npm:1.0.2"
+  checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
   languageName: node
   linkType: hard
 
@@ -11264,30 +11257,30 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.18
-  resolution: "brace-expansion@npm:1.1.18"
+  version: 1.1.21
+  resolution: "brace-expansion@npm:1.1.21"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10c0/3432c18a9e2ebf94162d4effb62198bd0adea06a9f332b2c0188df5d5e30b1e51ea3c848b6608e47d0b857ebe1ea5b3888ed3326dd3c4f6f9645c94153cf9c14
+  checksum: 10c0/8f0a68a720f9cb28c2ecaea5cdaf15fafd686d6b6e4e722a81c9d4bd2f68c1fd0619731cac05875d842221eaf4d97d564d329a12eb3c4c22137502fb3c65be8b
   languageName: node
   linkType: hard
 
 "brace-expansion@npm:^2.0.1, brace-expansion@npm:^2.0.2":
-  version: 2.1.4
-  resolution: "brace-expansion@npm:2.1.4"
+  version: 2.1.7
+  resolution: "brace-expansion@npm:2.1.7"
   dependencies:
     balanced-match: "npm:^1.0.0"
-  checksum: 10c0/6c0a0e2573eac1dc565b52b1e1bfbeba39bf1830d106ebbc61ff1eaefcf610e9111cd3baa091addd18e33292135c99e019d3184d966389d85dc958fdcdc1449f
+  checksum: 10c0/17ee4194c85b05cde0a7b7c068eeef664440c027116ef42c3d35c13ebabdc9fd3eaf05c5c8a06dd0ca20ae012d652561d8ac2a699daa5cbee1f0510e5134ab4d
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:^5.0.5":
-  version: 5.0.9
-  resolution: "brace-expansion@npm:5.0.9"
+"brace-expansion@npm:^5.0.8":
+  version: 5.0.12
+  resolution: "brace-expansion@npm:5.0.12"
   dependencies:
     balanced-match: "npm:^4.0.2"
-  checksum: 10c0/3dea38884a1c3c8b1c9c44a7402a0c76fca460f70cffb3127242b0b4cbf4472019e022ade021eec44838ff19f1dac2625dfd11dd459d7e1e055b0698a8d52fec
+  checksum: 10c0/a40ac64d3bdb5bb222456514d3633c1f627f03b844f509c69e70f98b78be0ce85e21b44bbfecdd0ddd4cc0855ca4242b41ea96ddccf88c7c3c7a84405474bb3a
   languageName: node
   linkType: hard
 
@@ -16327,7 +16320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"foreground-child@npm:^3.1.0, foreground-child@npm:^3.3.1":
+"foreground-child@npm:^3.1.0":
   version: 3.3.1
   resolution: "foreground-child@npm:3.3.1"
   dependencies:
@@ -16777,19 +16770,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^11.0.0":
-  version: 11.1.0
-  resolution: "glob@npm:11.1.0"
+"glob@npm:^13.0.3":
+  version: 13.0.6
+  resolution: "glob@npm:13.0.6"
   dependencies:
-    foreground-child: "npm:^3.3.1"
-    jackspeak: "npm:^4.1.1"
-    minimatch: "npm:^10.1.1"
-    minipass: "npm:^7.1.2"
-    package-json-from-dist: "npm:^1.0.0"
-    path-scurry: "npm:^2.0.0"
-  bin:
-    glob: dist/esm/bin.mjs
-  checksum: 10c0/1ceae07f23e316a6fa74581d9a74be6e8c2e590d2f7205034dd5c0435c53f5f7b712c2be00c3b65bf0a49294a1c6f4b98cd84c7637e29453b5aa13b79f1763a2
+    minimatch: "npm:^10.2.2"
+    minipass: "npm:^7.1.3"
+    path-scurry: "npm:^2.0.2"
+  checksum: 10c0/269c236f11a9b50357fe7a8c6aadac667e01deb5242b19c84975628f05f4438d8ee1354bb62c5d6c10f37fd59911b54d7799730633a2786660d8c69f1d18120a
   languageName: node
   linkType: hard
 
@@ -18729,15 +18717,6 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: 10c0/6acc10d139eaefdbe04d2f679e6191b3abf073f111edf10b1de5302c97ec93fffeb2fdd8681ed17f16268aa9dd4f8c588ed9d1d3bffbbfa6e8bf897cbb3149b9
-  languageName: node
-  linkType: hard
-
-"jackspeak@npm:^4.1.1":
-  version: 4.2.3
-  resolution: "jackspeak@npm:4.2.3"
-  dependencies:
-    "@isaacs/cliui": "npm:^9.0.0"
-  checksum: 10c0/b5c0c414f1607c2aa0597f4bf2c03b8443897fccd5fd3c2b3e4f77d556b2bc7c3d3413828ba91e0789f6fb40ad90242f7f89fb20aee9e9d705bc1681f7564f67
   languageName: node
   linkType: hard
 
@@ -22027,12 +22006,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^10.1.1":
-  version: 10.2.5
-  resolution: "minimatch@npm:10.2.5"
+"minimatch@npm:^10.2.2":
+  version: 10.2.6
+  resolution: "minimatch@npm:10.2.6"
   dependencies:
-    brace-expansion: "npm:^5.0.5"
-  checksum: 10c0/6bb058bd6324104b9ec2f763476a35386d05079c1f5fe4fbf1f324a25237cd4534d6813ecd71f48208f4e635c1221899bef94c3c89f7df55698fe373aaae20fd
+    brace-expansion: "npm:^5.0.8"
+  checksum: 10c0/4559a836243b98bd4d17ea9f7edae698717c76399eea7be374f3737f33164e4907f19e9726891ddeb122f750a5a7fa80d2ac43e851d6e5984dc4ff42ec127d3a
   languageName: node
   linkType: hard
 
@@ -22104,7 +22083,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.4, minipass@npm:^7.1.2":
+"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.4, minipass@npm:^7.1.2, minipass@npm:^7.1.3":
   version: 7.1.3
   resolution: "minipass@npm:7.1.3"
   checksum: 10c0/539da88daca16533211ea5a9ee98dc62ff5742f531f54640dd34429e621955e91cc280a91a776026264b7f9f6735947629f920944e9c1558369e8bf22eb33fbb
@@ -23547,7 +23526,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"package-json-from-dist@npm:^1.0.0":
+"package-json-from-dist@npm:^1.0.0, package-json-from-dist@npm:^1.0.1":
   version: 1.0.1
   resolution: "package-json-from-dist@npm:1.0.1"
   checksum: 10c0/62ba2785eb655fec084a257af34dbe24292ab74516d6aecef97ef72d4897310bc6898f6c85b5cd22770eaa1ce60d55a0230e150fb6a966e3ecd6c511e23d164b
@@ -23794,13 +23773,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-scurry@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "path-scurry@npm:2.0.0"
+"path-scurry@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "path-scurry@npm:2.0.2"
   dependencies:
     lru-cache: "npm:^11.0.0"
     minipass: "npm:^7.1.2"
-  checksum: 10c0/3da4adedaa8e7ef8d6dc4f35a0ff8f05a9b4d8365f2b28047752b62d4c1ad73eec21e37b1579ef2d075920157856a3b52ae8309c480a6f1a8bbe06ff8e52b33c
+  checksum: 10c0/b35ad37cf6557a87fd057121ce2be7695380c9138d93e87ae928609da259ea0a170fac6f3ef1eb3ece8a068e8b7f2f3adf5bb2374cf4d4a57fe484954fcc9482
   languageName: node
   linkType: hard
 
@@ -26742,15 +26721,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "rimraf@npm:6.0.1"
+"rimraf@npm:^6.1.3":
+  version: 6.1.3
+  resolution: "rimraf@npm:6.1.3"
   dependencies:
-    glob: "npm:^11.0.0"
-    package-json-from-dist: "npm:^1.0.0"
+    glob: "npm:^13.0.3"
+    package-json-from-dist: "npm:^1.0.1"
   bin:
     rimraf: dist/esm/bin.mjs
-  checksum: 10c0/b30b6b072771f0d1e73b4ca5f37bb2944ee09375be9db5f558fcd3310000d29dfcfa93cf7734d75295ad5a7486dc8e40f63089ced1722a664539ffc0c3ece8c6
+  checksum: 10c0/4a56537850102e20ba5d5eb49f366b4b7b2435389734b4b8480cf0e0eb0f6f5d0c44120a171aeb0d8f9ab40312a10d2262f3f50acbad803e32caef61b6cf86fc
   languageName: node
   linkType: hard
 
