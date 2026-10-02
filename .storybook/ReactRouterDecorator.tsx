@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { BrowserRouter, useLocation } from 'react-router-dom';
-import { Args } from '@storybook/react';
-import { DecoratorFunction } from '@storybook/csf';
+import type { Args, Decorator } from '@storybook/react-vite';
 
 const LocationChangeAction = ({ children }) => {
   const location = useLocation();
@@ -14,7 +13,7 @@ const LocationChangeAction = ({ children }) => {
   return <>{children}</>;
 };
 
-const ReactRouterDecorator: DecoratorFunction<any, Args> = (Story, context) => {
+const ReactRouterDecorator: Decorator<Args> = (Story, context) => {
   return (
     <BrowserRouter>
       <LocationChangeAction>
