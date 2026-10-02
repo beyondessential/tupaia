@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { SimplePageLayout } from './SimplePageLayout';

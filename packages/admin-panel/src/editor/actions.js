@@ -20,6 +20,7 @@ import { getEditorState } from './selectors';
 import { getValidationErrors } from './validation';
 import { fetchUsedBy } from '../usedBy';
 import { getFieldEditKey } from './utils';
+import { queryClient } from '../api/queryClient';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -222,6 +223,12 @@ export const saveEdits =
       dispatch({
         type: EDITOR_DATA_EDIT_SUCCESS,
       });
+      // The project selector reads the project list from react-query, which the
+      // redux editor doesn't touch — so a newly created/edited project wouldn't
+      // appear there until a manual refresh. Invalidate it here so it refetches.
+      if (endpoint === 'projects') {
+        queryClient.invalidateQueries(['projects']);
+      }
       onSuccess();
     } catch (error) {
       dispatch({

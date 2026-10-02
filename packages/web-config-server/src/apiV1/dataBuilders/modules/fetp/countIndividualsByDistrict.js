@@ -5,16 +5,16 @@ export const countIndividualsByDistrict = async ({
   models,
   dataBuilderConfig,
   entity,
-  fetchHierarchyId,
+  fetchProjectId,
 }) => {
-  const hierarchyId = await fetchHierarchyId();
-  const districts = await entity.getDescendantsOfType(hierarchyId, models.entity.types.DISTRICT);
+  const projectId = await fetchProjectId();
+  const districts = await entity.getDescendantsOfType(projectId, models.entity.types.DISTRICT);
   const subDistricts = await entity.getDescendantsOfType(
-    hierarchyId,
+    projectId,
     models.entity.types.SUB_DISTRICT,
   );
   const individuals = await entity.getDescendantsOfType(
-    hierarchyId,
+    projectId,
     models.entity.types.INDIVIDUAL,
   );
 

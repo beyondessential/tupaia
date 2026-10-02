@@ -22,6 +22,9 @@ export const ENTITIES = [
   { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
   { code: 'VU_Facility1', attributes: { x: 5, y: 'hello', z: {} } },
   { code: 'VU_Facility2', attributes: { x: 6 } },
+  { code: 'WS_Facility', project_id: 'project_a', attributes: { x: 7 } },
+  { code: 'WS_Facility', project_id: 'project_b', attributes: { x: 7 } },
+  { code: 'WS_Facility', project_id: 'project_c', attributes: { x: 7 } },
 ];
 
 export const ENTITY_RELATIONS = {

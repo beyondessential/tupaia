@@ -1,0 +1,1 @@
+export { importEntityPolygons } from './importEntityPolygons';

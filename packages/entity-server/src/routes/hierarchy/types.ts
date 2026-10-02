@@ -61,7 +61,7 @@ export type FlattenedEntity = Flattened<Required<Entity>>;
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
 export type CommonContext = {
-  hierarchyId: string;
+  projectId: string;
   allowedCountries: string[];
   fields: ExtendedEntityFieldName[];
   filter: EntityFilter;

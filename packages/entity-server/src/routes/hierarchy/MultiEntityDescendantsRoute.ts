@@ -16,11 +16,11 @@ export type MultiEntityDescendantsRequest = MultiEntityRequest<
 >;
 export class MultiEntityDescendantsRoute extends Route<MultiEntityDescendantsRequest> {
   public async buildResponse() {
-    const { hierarchyId, entities, fields, field, filter } = this.req.ctx;
+    const { projectId, entities, fields, field, filter } = this.req.ctx;
     const { includeRootEntity: includeRootEntityString = 'false' } = this.req.query;
     const includeRootEntity = includeRootEntityString?.toLowerCase() === 'true';
     const descendants = await this.req.models.entity.getDescendantsOfEntities(
-      hierarchyId,
+      projectId,
       entities.map(entity => entity.id),
       { ...filter },
     );

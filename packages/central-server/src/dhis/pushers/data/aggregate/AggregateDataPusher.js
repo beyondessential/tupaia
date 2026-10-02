@@ -107,6 +107,12 @@ export class AggregateDataPusher extends DataPusher {
     return this.wrapFetchInCache('organisationUnit', async () => {
       if (this.changeType === 'delete') {
         const { orgUnit } = await this.fetchDataFromSyncLog();
+        // dhis_sync_log doesn't carry project_id, and the
+        // survey response that originally produced this entry has been deleted, so
+        // there's no clean way to scope this lookup. For sub-country duplicated
+        // entities this returns an arbitrary copy; downstream consumers use the
+        // returned entity's `.id`, so a wrong copy may miss matching records.
+        // Fix requires adding project_id to dhis_sync_log writes (separate ticket).
         return this.models.entity.findOne({ code: orgUnit });
       }
       const surveyResponse = await this.fetchSurveyResponse();

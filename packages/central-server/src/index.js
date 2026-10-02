@@ -4,7 +4,7 @@ import nodeSchedule from 'node-schedule';
 
 import {
   AnalyticsRefresher,
-  buildEntityParentChildRelationIfEmpty,
+  buildAncestorDescendantRelationIfEmpty,
   EntityHierarchyCacher,
   getDbMigrator,
   ModelRegistry,
@@ -24,7 +24,6 @@ import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithKoBo } from './kobo';
 import winston from './log';
-import { startSyncWithMs1 } from './ms1';
 import { RepeatingTaskDueDateHandler, TaskOverdueChecker } from './scheduledTasks';
 import { startFeedScraper } from './social';
 
@@ -37,6 +36,31 @@ configureEnv();
    */
   const database = new TupaiaDatabase();
   const models = new ModelRegistry(database, modelClasses, true);
+
+  /**
+   * Run migrations before wiring up change-listeners or the HTTP server.
+   */
+  try {
+    if (process.send) {
+      await database.waitForChangeChannel();
+      winston.info('Successfully connected to pubsub service');
+      const dbMigrator = getDbMigrator();
+      await dbMigrator.up();
+      winston.info('Database migrations complete');
+
+      await buildAncestorDescendantRelationIfEmpty(models);
+
+      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
+        winston.info('Creating permissions based meditrak sync queue');
+        // don't await this as it's not critical, and will hold up the process if it fails
+        createPermissionsBasedMeditrakSyncQueue(database);
+      }
+    } else {
+      await buildAncestorDescendantRelationIfEmpty(models);
+    }
+  } catch (error) {
+    winston.error(error.message);
+  }
 
   /**
    * Set up change handlers e.g. for syncing
@@ -102,11 +126,6 @@ configureEnv();
   startSyncWithDhis(models);
 
   /**
-   * Regularly sync data to MS1
-   */
-  startSyncWithMs1(models);
-
-  /**
    * Regularly sync data from KoBoToolbox
    */
   startSyncWithKoBo(models);
@@ -115,29 +134,6 @@ configureEnv();
    * Regularly sync actions that have happened on server with the app social feed.
    */
   startFeedScraper(models);
-
-  /**
-   * If running via PM2, run migrations then notify that we are ready
-   */
-  if (process.send) {
-    try {
-      await database.waitForChangeChannel();
-      winston.info('Successfully connected to pubsub service');
-      const dbMigrator = getDbMigrator();
-      await dbMigrator.up();
-      winston.info('Database migrations complete');
-
-      await buildEntityParentChildRelationIfEmpty(models);
-
-      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
-        winston.info('Creating permissions based meditrak sync queue');
-        // don't await this as it's not critical, and will hold up the process if it fails
-        createPermissionsBasedMeditrakSyncQueue(database);
-      }
-    } catch (error) {
-      winston.error(error.message);
-    }
-  }
 
   /**
    * Gracefully handle shutdown of ScheduledTasks

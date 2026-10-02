@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver';
 import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
+import { readSelectedProjectCode, PROJECT_CODE_PARAM } from '../projects/useSelectedProject';
 
 const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
 
@@ -133,7 +134,12 @@ export class TupaiaApi {
   }
 
   async request(endpoint, queryParameters, fetchConfig) {
-    const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryParameters);
+    const projectCode = readSelectedProjectCode();
+    const queryWithProject =
+      projectCode && !queryParameters?.[PROJECT_CODE_PARAM]
+        ? { ...(queryParameters ?? {}), [PROJECT_CODE_PARAM]: projectCode }
+        : queryParameters;
+    const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryWithProject);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
 
     await verifyResponseStatus(response);
