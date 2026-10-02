@@ -1,6 +1,6 @@
 import { isPlainObject } from 'es-toolkit/compat';
 
-const OPERATOR_TO_VALUE_CHECK = {
+const OPERATOR_TO_VALUE_CHECK = /** @type {const} */ ({
   '=': (value, target) => value === target,
   '>=': (value, target) => value >= target,
   '<=': (value, target) => value <= target,
@@ -11,9 +11,9 @@ const OPERATOR_TO_VALUE_CHECK = {
   rangeExclusive: (value, target) => target[0] < value && value < target[1],
   regex: (value, target) => !!value.match(target),
   in: (value, target) => target.includes(value),
-};
+});
 
-const NUMERIC_OPERATORS = ['>=', '<=', '>', '<', 'range', 'rangeExclusive'];
+const NUMERIC_OPERATORS = /** @type {const} */ (['>=', '<=', '>', '<', 'range', 'rangeExclusive']);
 
 const ANY_VALUE_CONDITION = '*';
 
