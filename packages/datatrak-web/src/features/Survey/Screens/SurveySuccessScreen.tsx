@@ -41,7 +41,8 @@ export const SurveySuccessScreen = () => {
   const repeatSurvey = () => {
     resetForm();
     const path = generatePath(ROUTES.SURVEY_SCREEN, {
-      ...params,
+      countryCode: params.countryCode ?? null,
+      surveyCode: params.surveyCode ?? null,
       screenNumber: '1',
     });
     navigate(path);

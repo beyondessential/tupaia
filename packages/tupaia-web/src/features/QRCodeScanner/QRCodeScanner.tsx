@@ -98,14 +98,14 @@ export const QRCodeScanner = ({ onCloseEntitySearch }: { onCloseEntitySearch: ()
       entityCode = entity.code;
       // reset error message
       setErrorMessage(null);
-    } catch (e) {
+    } catch {
       setErrorMessage('Error fetching entity details. Please refresh the page and try again.');
       return;
     }
 
     const path = generatePath(ROUTE_STRUCTURE, {
-      projectCode,
-      dashboardName,
+      projectCode: projectCode ?? null,
+      dashboardName: dashboardName ?? null,
       entityCode,
     });
 

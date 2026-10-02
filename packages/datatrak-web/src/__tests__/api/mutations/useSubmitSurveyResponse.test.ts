@@ -108,12 +108,18 @@ describe('useSubmitSurvey', () => {
     });
     expect(result.current.isSuccess).toBe(true);
     expect(successToast).toHaveBeenCalledWith('Congratulations! You’ve earned a coconut', Coconut);
-    expect(mockedUseNavigate).toHaveBeenCalledWith(generatePath(ROUTES.SURVEY_SUCCESS, {}), {
-      state: {
-        surveyResponse: JSON.stringify({
-          createdEntities: [],
-        }),
+    expect(mockedUseNavigate).toHaveBeenCalledWith(
+      generatePath(ROUTES.SURVEY_SUCCESS, {
+        countryCode: null,
+        surveyCode: null,
+      }),
+      {
+        state: {
+          surveyResponse: JSON.stringify({
+            createdEntities: [],
+          }),
+        },
       },
-    });
+    );
   });
 });

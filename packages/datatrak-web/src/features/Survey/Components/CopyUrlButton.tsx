@@ -40,7 +40,10 @@ const StyledCopyIcon = styled(CopyIcon)`
 
 const useCopyUrl = () => {
   const params = useParams();
-  const path = generatePath(ROUTES.SURVEY, params);
+  const path = generatePath(ROUTES.SURVEY, {
+    countryCode: params.countryCode ?? null,
+    surveyCode: params.surveyCode ?? null,
+  });
   const link = `${window.location.origin}${path}`;
 
   const [didJustCopy, setDidJustCopy] = useState(false);
