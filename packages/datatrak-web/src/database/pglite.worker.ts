@@ -51,6 +51,36 @@ for (const level of LEVELS) {
   };
 }
 
+/**
+ * Where the Postgres data directory actually lives.
+ *
+ * `idb://` is Emscripten's IDBFS, which is MEMFS with IndexedDB bolted on for durability: every
+ * file is held as a JS `Uint8Array` for the life of the session, so the *whole database* is
+ * resident in this renderer's memory — hundreds of megabytes for a large project, invisible to
+ * both `performance.memory` (which ignores ArrayBuffers) and the WASM heap size.
+ *
+ * `opfs-ahp://` keeps the files in the Origin Private File System instead, so Postgres reads and
+ * writes pages on demand the way it would on a real disk, and only the working set is in memory.
+ *
+ * Feature-detected rather than assumed: `createSyncAccessHandle` is what PGlite's access-handle
+ * pool needs, it is only exposed in workers, and it is Chrome/Firefox only — PGlite's own platform
+ * table excludes Safari. Anything without it falls back to `idb://` and keeps today's behaviour.
+ *
+ * Note the two are separate stores. A device that switches starts from an empty database and
+ * re-syncs from scratch.
+ */
+const resolveDataDir = (dataDir: string | undefined) => {
+  const canUseOpfs =
+    typeof FileSystemFileHandle !== 'undefined' &&
+    'createSyncAccessHandle' in FileSystemFileHandle.prototype &&
+    typeof navigator !== 'undefined' &&
+    typeof navigator.storage?.getDirectory === 'function';
+
+  if (!dataDir?.startsWith('idb://')) return dataDir;
+
+  return canUseOpfs ? dataDir.replace(/^idb:\/\//, 'opfs-ahp://') : dataDir;
+};
+
 worker({
   init: async options => {
     /*
@@ -78,8 +108,13 @@ worker({
       fetch(fsBundleUrl).then(response => response.blob()),
     ]);
 
+    const dataDir = resolveDataDir(options.dataDir);
+    // Rides the console forwarding above, so it lands in the app's log and you can tell at a
+    // glance which filesystem a given device ended up on
+    console.log(`PGlite filesystem: ${dataDir?.split('://')[0] ?? 'memory'} (requested ${options.dataDir})`);
+
     const db = new PGlite({
-      dataDir: options.dataDir,
+      dataDir,
       debug: options.debug,
       wasmModule,
       fsBundle,
