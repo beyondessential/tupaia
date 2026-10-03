@@ -3,15 +3,16 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
+import { useCurrentUserRecentSurveys } from '../../api'; // TUP-3193: useSurveyResponseDrafts unused in this variant
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
+import { sampleRuntime } from '../../utils'; // TEMPORARY DIAGNOSTIC (TUP-3193)
 import { ActivityFeedSection } from './ActivityFeedSection';
-import { DraftSurveysSection } from './DraftSurveysSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { SurveySelectSection } from './SurveySelectSection';
-import { TasksSection } from './TasksSection';
+// TUP-3193 diagnostic: import { DraftSurveysSection } from './DraftSurveysSection';
+// TUP-3193 diagnostic: import { LeaderboardSection } from './LeaderboardSection';
+// TUP-3193 diagnostic: import { RecentSurveysSection } from './RecentSurveysSection';
+// TUP-3193 diagnostic: import { SurveyResponsesSection } from './SurveyResponsesSection';
+// TUP-3193 diagnostic: import { SurveySelectSection } from './SurveySelectSection';
+// TUP-3193 diagnostic: import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
@@ -121,34 +122,35 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
   }}
 `;
 
+/*
+ * TEMPORARY DIAGNOSTIC (TUP-3193) — variant A of the idle-then-crash bisect. Restore from git.
+ *
+ * ActivityFeedSection alone. It is present in every crash recorded so far and absent from every
+ * clean run that was properly timed, and it is the only section with an infinite query driven by
+ * an IntersectionObserver (InfiniteActivityFeed / InfiniteScroll), so it keeps fetching pages —
+ * unbounded growth on a project with a lot of activity, which fits a crash that needs idle time.
+ *
+ * Pairs with variant B on tup-3193-test-2 (SurveyResponsesSection alone). Run on STRIVE PNG with
+ * full-length waits, three times each.
+ *
+ * CAVEAT: this branch has its own database while tup-3193-test-2 is cloned from production, and
+ * that difference has confounded every cross-deployment comparison in this exercise. A clean run
+ * here may mean lighter data rather than an innocent component. Re-running variant A on
+ * tup-3193-test-2 is what would settle it.
+ */
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
-  const {
-    data: drafts,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useSurveyResponseDrafts();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
-  const hasDrafts = drafts.length > 0;
+
+  /* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
+  React.useEffect(() => {
+    sampleRuntime({ at: 'landing:mounted' });
+  }, []);
 
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMultiple={hasMoreThanOneSurvey} $hasDrafts={hasDrafts}>
-          <SurveySelectSection />
-          <TasksSection />
-          <LeaderboardSection />
-          {hasDrafts && (
-            <DraftSurveysSection
-              drafts={drafts}
-              fetchNextPage={fetchNextPage}
-              hasNextPage={hasNextPage}
-              isFetching={isFetching}
-            />
-          )}
-          <RecentSurveysSection />
-          <SurveyResponsesSection />
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <ActivityFeedSection />
         </Grid>
       </PageBody>
