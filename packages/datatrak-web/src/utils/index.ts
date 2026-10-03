@@ -10,6 +10,15 @@ export {
 } from './sizeClasses';
 export { errorToast, infoToast, successToast } from './toast';
 export { useBeforeUnload } from './useBeforeUnload';
+// TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts
+export {
+  clearCrashLog,
+  countEmitterHandlers,
+  crashLog,
+  dumpCrashLog,
+  logEnvironment,
+  sampleRuntime,
+} from './crashLog';
 export { useNavigationBlocker } from './useNavigationBlocker';
 export { NavigationBlockerProvider, useNavigationBlockerContext } from './NavigationBlockerProvider';
 export { useHasVideoInput } from './useHasVideoInput';

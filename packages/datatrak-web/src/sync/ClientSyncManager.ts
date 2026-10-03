@@ -22,7 +22,7 @@ import { remove, stream } from '../api';
 import type { DatatrakDatabase } from '../database/DatatrakDatabase';
 import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
 import { SYNC_EVENT_ACTIONS } from '../types';
-import { formatFraction, GA_CATEGORY, GA_EVENT, gaEvent } from '../utils';
+import { crashLog, formatFraction, GA_CATEGORY, GA_EVENT, gaEvent } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
@@ -323,6 +323,7 @@ export class ClientSyncManager {
       return {};
     }
 
+    crashLog('sync:sessionStarted', { sessionId, isInitialSync: this.isInitialSync });
     this.isSyncing = true;
     this.isQueuing = false;
     this.progressMessage = 'Initialising sync';
@@ -520,6 +521,7 @@ export class ClientSyncManager {
         projectIds,
         this.deviceId,
       );
+      crashLog('sync:pullInitiated', { totalToPull, pullSince, projectIds });
 
       this.setProgress(this.progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes…');
 
@@ -567,12 +569,50 @@ export class ClientSyncManager {
       );
     };
 
+    /*
+     * TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts
+     *
+     * One line per pulled batch, so the WASM heap figures the worker logs every two seconds can be
+     * read against how far sync actually got. `heapUsedMb` is the V8 heap only and cannot see
+     * PGlite's memory, which is where the bulk of a sync lives — the two together are the picture.
+     *
+     * `saveMs` is the interesting one for the contention theory: the same batch should take
+     * noticeably longer on the home screen, where LandingPage's queries compete for PGlite's single
+     * connection, than on the sync page, which touches the database not at all.
+     */
+    let batchNumber = 0;
+    crashLog('sync:initialPull:start', { totalToPull });
+
     await this.models.wrapInTransaction(async transactingModels => {
       const processStreamedDataFunction = async ({ models, records }: ProcessStreamDataParams) => {
+        batchNumber += 1;
+        const startedAt = performance.now();
+        const savedBefore = totalSaved;
         await saveChangesFromMemory(models, records, false, progressCallback);
+        const memory = (performance as unknown as { memory?: Record<string, number> }).memory;
+        crashLog('sync:batch', {
+          batch: batchNumber,
+          records: records.length,
+          saveMs: Math.round(performance.now() - startedAt),
+          savedThisBatch: totalSaved - savedBefore,
+          totalSaved,
+          totalToPull,
+          ...(memory && {
+            heapUsedMb: Math.round(memory.usedJSHeapSize / 1024 / 1024),
+            heapLimitMb: Math.round(memory.jsHeapSizeLimit / 1024 / 1024),
+          }),
+        });
       };
 
-      const batchSize = 10000;
+      /*
+       * TUP-3193: 10,000 records take ~9s to save on a fast machine and plausibly 45-90s on a
+       * Snapdragon 662. The client stops reading the pull stream for that whole time, and nginx's
+       * write timeout to the client is 60s (its default; `send_timeout` isn't set in
+       * servers.template.conf), so a long save can have the stream killed under it. The saves
+       * themselves are already chunked at SAVE_BATCH_SIZE = 1000 internally, and the server
+       * streams in record-type order, so a smaller pull batch doesn't fragment the inserts.
+       */
+      const batchSize = 1000;
       await withDeferredSyncSafeguards(transactingModels.database, () =>
         pullIncomingChanges(transactingModels, sessionId, batchSize, processStreamedDataFunction),
       );
@@ -581,11 +621,13 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      crashLog('sync:initialPull:committing', { batches: batchNumber, totalSaved });
       await transactingModels.localSystemFact.set(
         SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
         pullUntil.toString(),
       );
     });
+    crashLog('sync:initialPull:committed', { batches: batchNumber, totalSaved });
   }
 
   async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {
@@ -607,7 +649,8 @@ export class ClientSyncManager {
       pullProgressCallback(records.length);
     };
 
-    const batchSize = 10000;
+    // TUP-3193: see the note on the initial-sync batch size above
+    const batchSize = 1000;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');

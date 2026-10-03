@@ -1,38 +1,58 @@
-import { PGlite } from '@electric-sql/pglite';
+import { PGliteWorker } from '@electric-sql/pglite/worker';
 
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
-let sharedPGliteInstance: PGlite | null = null;
+// TEMPORARY DIAGNOSTIC (TUP-3193) — imported directly rather than through the utils barrel,
+// which pulls in React hooks this module has no business loading
+import { crashLog } from '../utils/crashLog';
+
+let sharedPGliteInstance: PGliteWorker | null = null;
+
+const LEVELS = ['log', 'info', 'warn', 'error', 'debug'] as const;
+
+type Level = (typeof LEVELS)[number];
+
+const isLevel = (level: unknown): level is Level => LEVELS.includes(level as Level);
+
+/**
+ * Re-emit log lines forwarded from the PGlite worker (see pglite.worker.ts) through this thread's
+ * `console`, so the startup log capture (startupLog.ts) sees them. A dedicated BroadcastChannel,
+ * separate from the worker's own message channel, which PGliteWorker's handshake protocol owns.
+ */
+const forwardWorkerLogs = () => {
+  const logChannel = new BroadcastChannel('datatrak-pglite-log');
+  logChannel.addEventListener('message', event => {
+    const { data } = event;
+    const level: Level = isLevel(data?.level) ? data.level : 'log';
+    console[level]('[pglite worker]', ...(Array.isArray(data?.args) ? data.args : []));
+
+    /*
+     * TEMPORARY DIAGNOSTIC (TUP-3193): mirror the worker's WASM heap figure into the crash log
+     * so it lands in localStorage alongside the sync timeline. It is the one number that shows
+     * PGlite's real memory use, and `performance.memory` cannot see it.
+     */
+    const [first] = Array.isArray(data?.args) ? data.args : [];
+    if (typeof first === 'string' && first.startsWith('wasmHeapMb')) {
+      crashLog('pglite', { heap: first });
+    }
+  });
+};
 
 export const getConnectionConfig = () => {
   const connectionString = getEnvVarOrDefault('PG_LITE_CONNECTION_STRING', 'idb://datatrak-db');
 
-  /*
-   * Note on `relaxedDurability`: it makes every write to IndexedDB fire-and-forget, which is a
-   * large speed-up, but it is unsafe during first-run setup. PGlite creates the database cluster,
-   * then persists the whole data directory with `await syncToFs()` — and under relaxed durability
-   * that await returns before the write lands. Setup reports success, the app carries on, and if
-   * anything closes or reloads the page before the background write finishes, IndexedDB is left
-   * holding a partial data directory. PGlite then finds it on the next launch, takes its "found
-   * DB, resuming" path instead of running initdb again, and the database comes up missing pieces
-   * (which surfaces as errors like `language "plpgsql" does not exist`). That state is permanent
-   * until storage is cleared.
-   *
-   * Note also that with the flag on there is no way to force a durable flush: `syncToFs()` never
-   * awaits the real write, so an explicit call at a safe point doesn’t help.
-   *
-   * If reinstating it, gate it so it is only enabled once a first startup has completed.
-   */
-
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
   if (!sharedPGliteInstance) {
-    sharedPGliteInstance = new PGlite(connectionString, {
-      // TEMPORARY — REMOVE BEFORE MERGING.
-      // Maximum PGlite logging, to diagnose startup failures on low-spec devices. Everything it
-      // emits goes through `console`, so it is picked up by the startup log shown on the failure
-      // screen. Level 5 logs every protocol message, so it is slow enough to distort any timings
-      // taken while it is on.
-      debug: 5,
+    // PGlite must run in a worker, not on this thread — see pglite.worker.ts for why
+    const workerInstance = new Worker(new URL('./pglite.worker.ts', import.meta.url), {
+      type: 'module',
+      name: 'pglite',
+    });
+    forwardWorkerLogs();
+
+    sharedPGliteInstance = new PGliteWorker(workerInstance, {
+      dataDir: connectionString,
+      relaxedDurability: false, // TUP-3193: temporary false, see the note in pglite.worker.ts
     });
   }
 
