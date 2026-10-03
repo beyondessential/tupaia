@@ -50,27 +50,6 @@
       gtag('config', 'G-P5KF6SLGKR');
     </script>
     <!-- End Google Analytics -->
-    <!-- Start of bes-support Zendesk Widget script -->
-    <script type="text/javascript" defer>
-      const ua = navigator.userAgent.toLowerCase();
-      const platformName = ua.match(/ip(?:ad|od|hone)/)
-        ? 'ios'
-        : (ua.match(/(?:webos|android)/) ||
-            navigator.platform.toLowerCase().match(/mac|win|linux/) || ['other'])[0];
-      const isMobile = /ios|android|webos/.test(platformName);
-
-      const EXPORT_SURVEY_RESPONSE = '/export/';
-      const isExport = window.location.pathname.startsWith(EXPORT_SURVEY_RESPONSE);
-
-      if (!isMobile && !isExport) {
-        const script = document.createElement('script');
-        script.id = 'ze-snippet';
-        script.src =
-          'https://static.zdassets.com/ekr/snippet.js?key=4719227f-a493-431d-a920-41ebcafbcccb';
-        document.head.appendChild(script);
-      }
-    </script>
-    <!-- End of bes-support Zendesk Widget script -->
     <% } %>
 
     <link rel="manifest" id="manifest" href="/manifest.json" />

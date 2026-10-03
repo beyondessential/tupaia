@@ -1,3 +1,7 @@
+// Must come first: fills in Object.hasOwn for older Android WebViews, before any module
+// that calls it (es-toolkit, via @tupaia/sync) is evaluated
+import './polyfills';
+
 import React from 'react';
 import log from 'winston';
 import { render as renderReactApp } from 'react-dom';
@@ -5,8 +9,10 @@ import { render as renderReactApp } from 'react-dom';
 import { App } from './App';
 import { setUpdateReady } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
-import { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './utils';
+import { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties, logEnvironment } from './utils';
 import { getDisplayMode } from './utils/displayMode';
+
+logEnvironment(); // TEMPORARY DIAGNOSTIC (TUP-3193)
 
 renderReactApp(<App />, document.getElementById('root'));
 
