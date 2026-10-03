@@ -1251,7 +1251,7 @@ export interface Project {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
+  'entity_hierarchy_id': string;
   'entity_id'?: string | null;
   'id': string;
   'image_url'?: string | null;
@@ -1266,7 +1266,7 @@ export interface ProjectCreate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
+  'entity_hierarchy_id': string;
   'entity_id'?: string | null;
   'image_url'?: string | null;
   'logo_url'?: string | null;
@@ -1279,7 +1279,7 @@ export interface ProjectUpdate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
+  'entity_hierarchy_id'?: string;
   'entity_id'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
