@@ -32,7 +32,7 @@ export type ConditionQuestionConfig = {
 
 export type EntityQuestionConfigFields = keyof Omit<
   Entity,
-  'region' | 'bounds' | 'point' | 'parent_id'
+  'entity_polygon_id' | 'bounds' | 'point' | 'parent_id'
 >;
 type QuestionValue = { questionId: Question['id'] };
 

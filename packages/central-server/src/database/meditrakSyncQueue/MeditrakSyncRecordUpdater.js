@@ -101,7 +101,63 @@ export class MeditrakSyncRecordUpdater {
       return this.processSurveyChange(change);
     }
 
+    if (change.record_type === 'entity') {
+      return this.processEntityChange(change);
+    }
+
     return this.addToSyncQueue(change);
+  }
+
+  /**
+   * @private
+   * Post entity-hierarchy epic a code can have multiple entity rows (one per project), but
+   * MediTrak sees entities as canonical (one row per code = MIN(id) for that code). An entity
+   * delete is re-canonicalised into what MediTrak needs:
+   *   - full deletion (no rows remain for the code) → enqueue the delete of X;
+   *   - a non-canonical sibling was deleted (a survivor has a lower id than X, so the device
+   *     never held X) → enqueue nothing;
+   *   - the canonical row was deleted, siblings remain → enqueue the delete of X and an upsert
+   *     of the new canonical Y = MIN(id) of the survivors, so the device swaps X for Y.
+   */
+  async processEntityChange(change) {
+    const { new_record: newRecord, old_record: oldRecord, ...entityChange } = change;
+
+    if (entityChange.type !== 'delete') {
+      return this.addToSyncQueue(entityChange);
+    }
+
+    const code = oldRecord?.code;
+    if (!code) {
+      // Code unknown — fall back to a plain delete so the device drops the row.
+      return this.addToSyncQueue(entityChange);
+    }
+
+    // X (this deleted row) is already gone from `entity` here (post-commit AFTER change),
+    // so `find({ code })` returns only the surviving sibling rows for the code.
+    const survivors = await this.models.entity.find({ code });
+
+    if (survivors.length === 0) {
+      // Full deletion: no rows remain for the code, tell MediTrak to remove it.
+      return this.addToSyncQueue(entityChange);
+    }
+
+    // MIN(id) is a lexicographic comparison of the text ObjectIDs (matches the sync query).
+    const newCanonical = survivors.reduce((min, entity) => (entity.id < min.id ? entity : min));
+
+    if (newCanonical.id < entityChange.record_id) {
+      // A non-canonical sibling was deleted (a survivor has a lower id), so the device never
+      // held this row: nothing to sync.
+      return undefined;
+    }
+
+    // The canonical row was deleted and siblings remain: delete X then upsert the new
+    // canonical Y. The delete is awaited first so it gets a strictly lower change_time.
+    await this.addToSyncQueue(entityChange);
+    return this.addToSyncQueue({
+      record_type: 'entity',
+      record_id: newCanonical.id,
+      type: 'update',
+    });
   }
 
   /**

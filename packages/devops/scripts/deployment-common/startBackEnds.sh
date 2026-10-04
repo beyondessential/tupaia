@@ -31,6 +31,14 @@ set_up_central_server() {
 
 readarray -t backend_packages < <(get_backend_packages)
 
+# Run all pending server migrations to completion before starting any servers, so nothing serves
+# or syncs against a half-migrated schema (which otherwise errors, or holds locks that block the
+# migration's DDL). `yarn migrate` is the same server-target migrator central-server runs on boot,
+# and exits non-zero on failure — so a failed migration aborts the deploy here (set -e), which
+# propagates to the startup script's ERR trap so the build tags errored and never swaps in.
+echo "Running database migrations before starting servers..."
+(cd "$tupaia_dir" && yarn migrate)
+
 # Start back end server packages
 for package in "${backend_packages[@]}"; do
     if [[ $package = central-server ]]; then

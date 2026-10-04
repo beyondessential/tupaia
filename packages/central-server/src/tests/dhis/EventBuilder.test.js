@@ -39,8 +39,8 @@ describe('EventBuilder', () => {
     enrollmentSpy = sinon.stub(Enrollments, 'enrollTrackedEntityInProgramIfNotEnrolled');
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
     const entities = Object.values(ENTITIES);
-    const exploreHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
-      name: 'explore',
+    const exploreProject = await findOrCreateDummyRecord(models.project, {
+      code: 'explore',
     });
     for (let i = 0; i < entities.length; i++) {
       // Upsert entities in order for correct parent/child relationships
@@ -49,7 +49,7 @@ describe('EventBuilder', () => {
         await upsertDummyRecord(models.ancestorDescendantRelation, {
           ancestor_id: entity.parent_id,
           descendant_id: entity.id,
-          entity_hierarchy_id: exploreHierarchy.id,
+          project_id: exploreProject.id,
           generational_distance: 1,
         });
       }

@@ -39,6 +39,9 @@ export class DataServiceResolver {
     dataSources: DataSourceTypeInstance[],
     orgUnitCode?: string,
   ): Promise<DataServiceMapping> {
+    // Bare findOne on a duplicated-per-project code is safe here: the only field
+    // we use from `orgUnit` downstream is `country_code` (see resolveDataElements),
+    // which is identical across all per-project copies of a sub-country entity.
     const orgUnit = orgUnitCode
       ? await this.models.entity.findOne({ code: orgUnitCode })
       : undefined;

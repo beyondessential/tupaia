@@ -20,11 +20,14 @@ import { ensure } from '@tupaia/tsutils';
 import type { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import type { DatatrakDatabase } from '../database/DatatrakDatabase';
+import { clearDatabase } from '../database/clearDatabase';
 import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
 import { SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction, GA_CATEGORY, GA_EVENT, gaEvent } from '../utils';
+import { getDataVersionAction, stampDataVersion } from './dataVersion';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
+import { hasOutgoingChanges } from './hasOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
@@ -78,6 +81,9 @@ export class ClientSyncManager {
   isQueuing: boolean = false;
 
   errorMessage: string | null = null;
+
+  // Banner flag: an upgrade re-sync is required but was deferred because local changes couldn't push.
+  dataResetDeferred: boolean = false;
 
   lastSuccessfulSyncTime: Date | null = null;
 
@@ -336,6 +342,13 @@ export class ClientSyncManager {
       startedAtTick,
     });
 
+    const didReset = await this.ensureDataVersion(sessionId, startedAtTick);
+    if (didReset) {
+      // wipe reset the pull cursor to -1, so the pull below runs as a clean full initial sync
+      this.isInitialSync = true;
+      this.progressMaxByStage = STAGE_MAX_PROGRESS_INITIAL; // NOTE: keep in sync with PR #6879 (collapses to STAGE_MAX_PROGRESS)
+    }
+
     await this.pushChanges(sessionId, startedAtTick);
 
     const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
@@ -369,6 +382,65 @@ export class ClientSyncManager {
     }
 
     return { pulledChangesCount };
+  }
+
+  /**
+   * One-time forced clean re-sync when the client's stored data version is behind the build's
+   * required version. Pushes pending changes first and only wipes if that succeeds, so unpushed
+   * data is never lost. Returns true if a wipe + reset happened.
+   */
+  private async ensureDataVersion(sessionId: string, startedAtTick: number): Promise<boolean> {
+    const action = await getDataVersionAction(this.models);
+
+    if (action === 'none') {
+      this.dataResetDeferred = false;
+      return false;
+    }
+
+    if (action === 'stamp') {
+      await stampDataVersion(this.models);
+      this.dataResetDeferred = false;
+      return false;
+    }
+
+    this.setProgress(0, 'Updating your data, please wait…');
+
+    try {
+      await this.pushChanges(sessionId, startedAtTick);
+    } catch (error) {
+      this.dataResetDeferred = true;
+      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
+      log.warn('ClientSyncManager.ensureDataVersion: deferring reset, push failed', { error });
+      throw new Error(
+        'Your device needs to update its data, but some changes could not be sent to the server yet. This will retry automatically once you are back online.',
+      );
+    }
+
+    // Belt-and-braces: never wipe if anything is still pending push.
+    if (
+      await hasOutgoingChanges(
+        getModelsForPush(this.models.getModels()),
+        this.models.localSystemFact,
+      )
+    ) {
+      this.dataResetDeferred = true;
+      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
+      throw new Error('Your device needs to update its data. Retrying shortly…');
+    }
+
+    const projectIds = await this.getProjectsInSync();
+
+    await clearDatabase(this.models);
+    this.models.clearCache();
+
+    for (const projectId of projectIds) {
+      await this.models.localSystemFact.addProjectForSync(projectId);
+    }
+
+    await stampDataVersion(this.models);
+
+    this.dataResetDeferred = false;
+    return true;
   }
 
   /**

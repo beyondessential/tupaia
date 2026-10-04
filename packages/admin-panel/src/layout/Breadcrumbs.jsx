@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ArrowBack } from '@material-ui/icons';
 import { Breadcrumbs as MuiBreadcrumbs, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { generateTitle } from '../pages/resources/resourceName';
-import { useLinkToPreviousSearchState } from '../utilities';
+import { substituteRouteParams, useLinkToPreviousSearchState } from '../utilities';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,11 +37,12 @@ export const Breadcrumbs = ({
   getDisplayValue,
   onClickLinks,
 }) => {
+  const params = useParams();
   const itemDisplayValue = getDisplayValue ? getDisplayValue(details) : details?.[displayProperty];
 
   const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
 
-  const pathname = parent?.to || '/';
+  const pathname = parent?.to ? substituteRouteParams(parent.to, params) : '/';
 
   const { to, newState } = useLinkToPreviousSearchState(pathname);
 

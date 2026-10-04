@@ -6,7 +6,8 @@ import { getTempDirectory } from '@tupaia/server-utils';
 import { catchAsyncErrors } from '../middleware';
 import { importDataElementDataServices } from './importDataElementDataServices';
 import { importDataElements } from './importDataElements';
-import { importEntities } from './importEntities';
+import { constructEntityImportEmail, importEntities } from './importEntities';
+import { importEntityPolygons } from './importEntityPolygons';
 import { importOptionSets } from './importOptionSets';
 import { importStriveLabResults } from './importStriveLabResults';
 import { constructImportEmail, importSurveyResponses } from './importSurveyResponses';
@@ -25,7 +26,17 @@ const upload = multer({
 
 const importRoutes = express.Router();
 
-importRoutes.post('/entities', upload.single('entities'), catchAsyncErrors(importEntities));
+importRoutes.post(
+  '/entities',
+  emailAfterTimeout(constructEntityImportEmail),
+  upload.single('entities'),
+  catchAsyncErrors(importEntities),
+);
+importRoutes.post(
+  '/entityPolygons',
+  upload.single('entityPolygons'),
+  catchAsyncErrors(importEntityPolygons),
+);
 importRoutes.post(
   '/dataElements',
   upload.single('dataElements'),

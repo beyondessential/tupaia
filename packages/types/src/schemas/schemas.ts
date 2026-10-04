@@ -45736,6 +45736,7 @@ export const EntityQuestionConfigFieldsSchema = {
 		"image_url",
 		"metadata",
 		"name",
+		"project_id",
 		"type",
 		"updated_at_sync_tick"
 	],
@@ -45764,6 +45765,7 @@ export const EntityQuestionConfigFieldKeySchema = {
 		"metadata",
 		"name",
 		"parentId",
+		"project_id",
 		"type",
 		"updated_at_sync_tick"
 	],
@@ -46340,6 +46342,76 @@ export const EntityQuestionConfigSchema = {
 					]
 				},
 				"image_url": {
+					"anyOf": [
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"project_id": {
 					"anyOf": [
 						{
 							"additionalProperties": false,
@@ -47461,6 +47533,76 @@ export const SurveyScreenComponentConfigSchema = {
 							]
 						},
 						"image_url": {
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"project_id": {
 							"anyOf": [
 								{
 									"additionalProperties": false,
@@ -49440,13 +49582,13 @@ export const AncestorDescendantRelationSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		}
 	},
@@ -49454,9 +49596,9 @@ export const AncestorDescendantRelationSchema = {
 	"required": [
 		"ancestor_id",
 		"descendant_id",
-		"entity_hierarchy_id",
 		"generational_distance",
-		"id"
+		"id",
+		"project_id"
 	]
 }
 export const AncestorDescendantRelationCreateSchema = {
@@ -49468,19 +49610,19 @@ export const AncestorDescendantRelationCreateSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
+		},
+		"project_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"ancestor_id",
 		"descendant_id",
-		"entity_hierarchy_id",
-		"generational_distance"
+		"generational_distance",
+		"project_id"
 	]
 }
 export const AncestorDescendantRelationUpdateSchema = {
@@ -49492,13 +49634,13 @@ export const AncestorDescendantRelationUpdateSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		}
 	},
@@ -78878,6 +79020,9 @@ export const EntitySchema = {
 		"country_code": {
 			"type": "string"
 		},
+		"entity_polygon_id": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
@@ -78935,7 +79080,7 @@ export const EntitySchema = {
 		"point": {
 			"type": "string"
 		},
-		"region": {
+		"project_id": {
 			"type": "string"
 		},
 		"type": {
@@ -79065,6 +79210,9 @@ export const EntityCreateSchema = {
 		"country_code": {
 			"type": "string"
 		},
+		"entity_polygon_id": {
+			"type": "string"
+		},
 		"image_url": {
 			"type": "string"
 		},
@@ -79119,7 +79267,7 @@ export const EntityCreateSchema = {
 		"point": {
 			"type": "string"
 		},
-		"region": {
+		"project_id": {
 			"type": "string"
 		},
 		"type": {
@@ -79242,6 +79390,9 @@ export const EntityUpdateSchema = {
 		"country_code": {
 			"type": "string"
 		},
+		"entity_polygon_id": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
@@ -79299,7 +79450,7 @@ export const EntityUpdateSchema = {
 		"point": {
 			"type": "string"
 		},
-		"region": {
+		"project_id": {
 			"type": "string"
 		},
 		"type": {
@@ -79396,14 +79547,18 @@ export const EntityUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const EntityHierarchySchema = {
+export const EntityPolygonSchema = {
 	"type": "object",
 	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+		"code": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_source": {
+			"type": "string"
 		},
 		"id": {
 			"type": "string"
@@ -79411,177 +79566,80 @@ export const EntityHierarchySchema = {
 		"name": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
+		"polygon": {
 			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
+		"created_at",
+		"data_source",
 		"id",
 		"name",
-		"updated_at_sync_tick"
+		"polygon",
+		"updated_at"
 	]
 }
-export const EntityHierarchyCreateSchema = {
+export const EntityPolygonCreateSchema = {
 	"type": "object",
 	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"name": {
+		"code": {
 			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"name"
-	]
-}
-export const EntityHierarchyUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
 		},
-		"id": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_source": {
 			"type": "string"
 		},
 		"name": {
 			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityParentChildRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
+		},
+		"polygon": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"data_source",
+		"name",
+		"polygon"
+	]
+}
+export const EntityPolygonUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_source": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"parent_id": {
+		"name": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id",
-		"updated_at_sync_tick"
-	]
-}
-export const EntityParentChildRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
+		"polygon": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityParentChildRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id"
-	]
-}
-export const EntityRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
 		}
 	},
 	"additionalProperties": false
@@ -98669,9 +98727,6 @@ export const ProjectSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98775,9 +98830,6 @@ export const ProjectCreateSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98871,9 +98923,6 @@ export const ProjectUpdateSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98894,6 +98943,61 @@ export const ProjectUpdateSchema = {
 		},
 		"sort_order": {
 			"type": "number"
+		}
+	},
+	"additionalProperties": false
+}
+export const ProjectCountrySchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"id",
+		"project_id",
+		"updated_at_sync_tick"
+	]
+}
+export const ProjectCountryCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"project_id"
+	]
+}
+export const ProjectCountryUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -102366,6 +102470,9 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"country_code": {
 						"type": "string"
 					},
+					"entity_polygon_id": {
+						"type": "string"
+					},
 					"id": {
 						"type": "string"
 					},
@@ -102423,7 +102530,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"point": {
 						"type": "string"
 					},
-					"region": {
+					"project_id": {
 						"type": "string"
 					},
 					"type": {
@@ -102683,9 +102790,6 @@ export const ProjectResponseSchema = {
 			"type": "string"
 		},
 		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
 			"type": "string"
 		},
 		"entityId": {
@@ -103398,6 +103502,9 @@ export const EntityResponseSchema = {
 		"countryCode": {
 			"type": "string"
 		},
+		"entityPolygonId": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
@@ -103455,7 +103562,7 @@ export const EntityResponseSchema = {
 		"point": {
 			"type": "string"
 		},
-		"region": {
+		"projectId": {
 			"type": "string"
 		},
 		"type": {

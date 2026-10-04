@@ -21,8 +21,8 @@ export class SurveyResponseVariablesExtractor {
     return country.id;
   }
 
-  async getVariablesByEntityCode(entityCode) {
-    const entity = await this.models.entity.findOne({ code: entityCode });
+  async getVariablesByEntityCode(entityCode, projectId) {
+    const entity = await this.models.entity.findOneByCodeInProject(entityCode, projectId);
     const country = await this.models.country.findOne({ code: entity.country_code });
     return { country, entities: [entity] };
   }
@@ -104,10 +104,17 @@ export class SurveyResponseVariablesExtractor {
     return surveys;
   }
 
-  async getParametersFromInput(countryCode, entityCode, countryId, entityIds, surveyResponseId) {
+  async getParametersFromInput(
+    countryCode,
+    entityCode,
+    countryId,
+    entityIds,
+    surveyResponseId,
+    projectId,
+  ) {
     const newCountryId =
       (countryCode && (await this.getCountryIdByCountryCode(countryCode))) || countryId;
-    if (entityCode) return this.getVariablesByEntityCode(entityCode);
+    if (entityCode) return this.getVariablesByEntityCode(entityCode, projectId);
     if (newCountryId) return this.getVariablesByCountryId(newCountryId);
     if (entityIds) return this.getVariablesByEntityIds(entityIds, newCountryId);
     if (surveyResponseId) return this.getVariablesBySurveyResponseId(surveyResponseId);

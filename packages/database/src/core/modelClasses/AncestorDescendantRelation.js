@@ -39,42 +39,42 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     return [RECORDS.ANCESTOR_DESCENDANT_RELATION];
   }
 
-  async getImmediateRelations(hierarchyId, criteria) {
+  async getImmediateRelations(projectId, criteria) {
     return this.find({
       ...criteria,
-      entity_hierarchy_id: hierarchyId,
+      project_id: projectId,
       generational_distance: 1,
     });
   }
 
-  async getChildIdToParentId(hierarchyId) {
-    const cacheKey = this.getCacheKey(this.getChildIdToParentId.name, hierarchyId);
+  async getChildIdToParentId(projectId) {
+    const cacheKey = this.getCacheKey(this.getChildIdToParentId.name, projectId);
     return this.runCachedFunction(cacheKey, async () => {
-      const relationRecords = await this.getImmediateRelations(hierarchyId);
+      const relationRecords = await this.getImmediateRelations(projectId);
       return reduceToDictionary(relationRecords, 'descendant_id', 'ancestor_id');
     });
   }
 
-  async getChildCodeToParentCode(hierarchyId) {
-    const cacheKey = this.getCacheKey(this.getChildCodeToParentCode.name, hierarchyId);
+  async getChildCodeToParentCode(projectId) {
+    const cacheKey = this.getCacheKey(this.getChildCodeToParentCode.name, projectId);
     return this.runCachedFunction(cacheKey, async () => {
-      const relationRecords = await this.getImmediateRelations(hierarchyId);
+      const relationRecords = await this.getImmediateRelations(projectId);
       return reduceToDictionary(relationRecords, 'descendant_code', 'ancestor_code');
     });
   }
 
-  async getParentIdToChildIds(hierarchyId) {
-    const cacheKey = this.getCacheKey(this.getParentIdToChildIds.name, hierarchyId);
+  async getParentIdToChildIds(projectId) {
+    const cacheKey = this.getCacheKey(this.getParentIdToChildIds.name, projectId);
     return this.runCachedFunction(cacheKey, async () => {
-      const relationRecords = await this.getImmediateRelations(hierarchyId);
+      const relationRecords = await this.getImmediateRelations(projectId);
       return reduceToArrayDictionary(relationRecords, 'ancestor_id', 'descendant_id');
     });
   }
 
-  async getParentCodeToChildCodes(hierarchyId) {
-    const cacheKey = this.getCacheKey(this.getParentCodeToChildCodes.name, hierarchyId);
+  async getParentCodeToChildCodes(projectId) {
+    const cacheKey = this.getCacheKey(this.getParentCodeToChildCodes.name, projectId);
     return this.runCachedFunction(cacheKey, async () => {
-      const relationRecords = await this.getImmediateRelations(hierarchyId);
+      const relationRecords = await this.getImmediateRelations(projectId);
       return reduceToArrayDictionary(relationRecords, 'ancestor_code', 'descendant_code');
     });
   }

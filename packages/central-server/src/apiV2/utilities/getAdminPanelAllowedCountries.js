@@ -46,7 +46,7 @@ export const getAdminPanelAllowedPermissionGroupIdsByCountryIds = async (accessP
   return Object.fromEntries(
     await Promise.all(
       allowedCountryCodes.map(async countryCode => [
-        (await models.entity.findOne({ code: countryCode })).id,
+        (await models.entity.findOneByCodeInProject(countryCode, null)).id,
         (
           await models.permissionGroup.find({
             name: accessPolicy.getPermissionGroups([countryCode]),

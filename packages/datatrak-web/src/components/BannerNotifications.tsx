@@ -4,6 +4,7 @@ import { useCurrentUserContext } from '../api';
 import { useIsOfflineFirst } from '../api/offlineFirst';
 import { UpdateNotification } from './UpdateConfirmation';
 import { ResetDataNotification } from '../views/ResetDataNotification';
+import { DataUpdateDeferredNotification } from '../views/DataUpdateDeferredNotification';
 
 export const BannerNotifications = () => {
   const isOfflineFirst = useIsOfflineFirst();
@@ -13,6 +14,7 @@ export const BannerNotifications = () => {
     <>
       {isOfflineFirst && <UpdateNotification />}
       {isOfflineFirst && isLoggedIn && window.navigator.onLine && <ResetDataNotification />}
+      {isOfflineFirst && isLoggedIn && <DataUpdateDeferredNotification />}
     </>
   );
 };
