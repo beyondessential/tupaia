@@ -33,7 +33,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
-    "react-leaflet": "^3.2.1",
+    "react-leaflet": "^3.2.5",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {
