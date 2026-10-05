@@ -10,9 +10,9 @@ import { generateId } from '../../core/utilities';
 const resetTestData = async (models, tasks) => {
   await models.task.delete({ id: tasks.map(task => task.id) });
   await models.survey.delete({ code: ['PUBLIC_SURVEY', 'ADMIN_SURVEY'] });
+  await models.project.delete({ code: 'TEST_PROJECT' });
   await models.entity.delete({ code: ['TC1', 'TC2', 'TF1', 'TF2', 'TEST_PROJECT'] });
   await models.country.delete({ code: ['TC1', 'TC2'] });
-  await models.project.delete({ code: 'TEST_PROJECT' });
   await models.permissionGroup.delete({ name: ['Admin', 'Public'] });
 };
 

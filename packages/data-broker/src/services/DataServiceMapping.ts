@@ -6,9 +6,6 @@ export type DataServiceMappingEntry = {
   service_type: ServiceType;
   config: Partial<{
     dhisInstanceCode: string;
-    supersetChartId: number;
-    supersetInstanceCode: string;
-    supersetItemCode: string;
   }>;
 };
 

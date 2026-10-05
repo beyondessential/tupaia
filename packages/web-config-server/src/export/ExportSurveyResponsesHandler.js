@@ -1,11 +1,19 @@
-import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
+import { pipeline } from 'node:stream/promises';
+
+import { ensure } from '@tupaia/tsutils';
+import { ValidationError } from '@tupaia/utils';
 import { RouteHandler } from '/apiV1/RouteHandler';
 import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
+import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
 
 export class ExportSurveyResponsesHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
 
   async handleRequest() {
+    if (!this.query.itemCode) {
+      throw new ValidationError('Missing required query parameter: itemCode');
+    }
+
     await super.handleRequest();
     const {
       organisationUnitCode,
@@ -17,10 +25,12 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       itemCode,
       easyReadingMode,
     } = this.query;
-    const centralServerEndpoint = 'export/surveyResponses';
     const {
       config: { name: reportName },
-    } = itemCode && (await this.models.dashboardItem.findOne({ code: itemCode }));
+    } = ensure(
+      await this.models.dashboardItem.findOne({ code: itemCode }, { columns: ['config'] }),
+      `No dashboard item exists with item code ${itemCode}`,
+    );
 
     const queryParameters = {
       latest,
@@ -41,18 +51,18 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
 
     const response = await fetchFromCentralServerUsingTokens(
       this.models,
-      centralServerEndpoint,
+      'export/surveyResponses',
       null,
       queryParameters,
       this.req.session.userJson.userName,
     );
 
-    pipeSurveyResponseToClient(response, this.res);
+    await pipeSurveyResponseToClient(response, this.res);
   }
 }
 
-function pipeSurveyResponseToClient(response, res) {
+async function pipeSurveyResponseToClient(response, res) {
   res.setHeader('Content-Disposition', response.headers.get('Content-Disposition'));
   res.setHeader('Content-Type', response.headers.get('Content-Type'));
-  response.body.pipe(res);
+  await pipeline(response.body, res);
 }

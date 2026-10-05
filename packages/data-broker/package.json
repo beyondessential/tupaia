@@ -29,7 +29,6 @@
     "@tupaia/dhis-api": "workspace:*",
     "@tupaia/indicators": "workspace:*",
     "@tupaia/kobo-api": "workspace:*",
-    "@tupaia/superset-api": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
@@ -44,6 +43,6 @@
     "jest": "^29.7.0",
     "jest-extended": "^0.11.5",
     "mockdate": "^3.0.5",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.1.3"
   }
 }

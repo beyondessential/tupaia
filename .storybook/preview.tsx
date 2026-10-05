@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import { AppProviders } from './AppProviders';
 import ReactRouterDecorator from './ReactRouterDecorator';
 import ReactHookFormDecorator from './ReactHookFormDecorator';
@@ -7,11 +7,10 @@ import ReactHookFormDecorator from './ReactHookFormDecorator';
 const preview: Preview = {
   parameters: {
     backgrounds: {
-      default: 'Light',
-      values: [
-        { name: 'Dark', value: '#262834' },
-        { name: 'Light', value: '#ffffff' },
-      ],
+      options: {
+        dark: { name: 'Dark', value: '#262834' },
+        light: { name: 'Light', value: '#ffffff' },
+      },
     },
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
@@ -21,6 +20,7 @@ const preview: Preview = {
       },
     },
   },
+
   decorators: [
     ReactRouterDecorator,
     ReactHookFormDecorator,
@@ -32,6 +32,12 @@ const preview: Preview = {
       );
     },
   ],
+
+  initialGlobals: {
+    backgrounds: {
+      value: 'light',
+    },
+  },
 };
 
 export default preview;

@@ -1,6 +1,6 @@
 import winston from 'winston';
 
-import { fetchWithTimeout, createBearerHeader } from '@tupaia/utils';
+import { createBearerHeader, fetchWithTimeout } from '@tupaia/utils';
 import { authenticateWithDhis } from './authenticateWithDhis';
 import { checkIsImportResponse } from './responseUtils';
 import { stringifyDhisQuery } from './stringifyDhisQuery';
@@ -114,7 +114,7 @@ export class DhisFetcher {
         return responseObject;
       } catch (error) {
         // deletes return an invalid body for json() to parse.
-        if (error.type === 'invalid-json' && config.method === 'DELETE') return {};
+        if (error.name === 'SyntaxError' && config.method === 'DELETE') return {};
         if (response.statusText) throw this.constructError(response.statusText, url);
         throw this.constructError(error.message, url);
       }
@@ -136,7 +136,7 @@ export class DhisFetcher {
         return responseObject;
       }
       if (message) errorMessage = message;
-    } catch (e) {
+    } catch {
       // Ignore json parse errors in bad responses
     }
     throw this.constructError(errorMessage, url);

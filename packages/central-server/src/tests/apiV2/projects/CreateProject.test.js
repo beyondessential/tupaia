@@ -64,7 +64,11 @@ describe('Creating a project', async () => {
     await findOrCreateDummyRecord(models.entity, { code: 'test_project' });
     await findOrCreateDummyRecord(models.project, { code: 'test_project' });
     await findOrCreateDummyRecord(models.permissionGroup, { name: 'test_group1' });
-    await findOrCreateDummyRecord(models.mapOverlay, { id: TEST_MAP_OVERLAY_ID, code: '126' });
+    await findOrCreateDummyRecord(
+      models.mapOverlay,
+      { id: TEST_MAP_OVERLAY_ID, code: '126' },
+      { permission_group: 'test_group1' },
+    );
     BESDataAdminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'BES Data Admin',
     });
