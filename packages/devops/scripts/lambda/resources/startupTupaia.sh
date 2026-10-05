@@ -14,7 +14,8 @@ declare -i start_time=$(date +%s)
 home_dir=/home/ubuntu
 tupaia_dir=$home_dir/tupaia
 logs_dir=$home_dir/logs
-deployment_scripts=$tupaia_dir/packages/devops/scripts/deployment-aws
+devops_dir=$tupaia_dir/packages/devops
+deployment_scripts=$devops_dir/scripts/deployment-aws
 
 # Create a directory for logs to go
 mkdir -m 777 -p "$logs_dir"
@@ -109,7 +110,7 @@ main() {
   fi
 
   # central-server and data-table-server need Tailnet access for external database connections
-  sudo -Hu ubuntu DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
+  sudo -Hu ubuntu "$devops_dir"/tailscale/initTailscaleSystemd.sh
   # Build each package, including injecting environment variables from Bitwarden
   sudo -Hu ubuntu "$deployment_scripts"/buildDeployablePackages.sh "$deployment_name"
   # Deploy each package
