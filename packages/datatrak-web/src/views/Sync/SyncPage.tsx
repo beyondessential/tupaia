@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import type { Handler } from 'mitt';
 
 import { useSyncContext } from '../../api/SyncContext';
+import { getStorageBackend } from '../../database/getConnectionConfig'; // TUP-3193
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
@@ -58,6 +59,29 @@ const StyledLastSyncDate = styled(LastSyncDate)`
 const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
+
+/* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
+const StorageBackend = styled.p`
+  margin-block-start: 2rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.75rem;
+`;
+
+/**
+ * `opfs-ahp` keeps the database in files on disk; `idb` keeps the whole thing in memory, which is
+ * what a low-spec device runs out of on a large project. Shown here because testers can't read a
+ * console, and knowing which one a device ended up on is the first question for any report.
+ */
+const StorageIndicator = () => {
+  const backend = getStorageBackend();
+  if (!backend) return null;
+
+  return (
+    <StorageBackend>
+      Storage: {backend === 'opfs-ahp' ? 'OPFS (on disk)' : 'IndexedDB (in memory)'}
+    </StorageBackend>
+  );
+};
 
 function useIsSyncStarted() {
   const syncManager = useSyncContext()?.clientSyncManager;
@@ -165,6 +189,8 @@ export const SyncPage = () => {
           )}
 
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
+          <StorageIndicator />
         </Content>
       </LayoutManager>
     </Wrapper>
