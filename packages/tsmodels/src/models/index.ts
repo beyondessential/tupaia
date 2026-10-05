@@ -33,6 +33,7 @@ export {
   EntityFilterFields,
   EntityModel,
   EntityRecord,
+  EntityRelationsQueryOptions,
   ParentFieldsByChildId,
 } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
