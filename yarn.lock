@@ -7628,7 +7628,7 @@ __metadata:
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
     npm-run-all: "npm:^4.1.5"
-    os: "npm:0.1.1"
+    os: "npm:0.1.2"
     pg: "npm:8.5.1"
     pg-pubsub: "npm:^0.8.1"
     pluralize: "npm:^8.0.0"
@@ -23413,10 +23413,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"os@npm:0.1.1":
-  version: 0.1.1
-  resolution: "os@npm:0.1.1"
-  checksum: 10c0/8b9bcca91d9f7d063b8fa3cc5735b1e250e64bfe7474e04478007e20ef98eb11c9e7548008b999c310c0068f00edbf973f1f1dffabd8a33fff04150a61171732
+"os@npm:0.1.2":
+  version: 0.1.2
+  resolution: "os@npm:0.1.2"
+  checksum: 10c0/90f0db78a19a43cd26bc7497640eaee566043209e93d7e99570f542370f55d7107487f0bffdff01666b6ba48c88b6da8a6ed3811d745b57de93ab1cf7d3591a4
   languageName: node
   linkType: hard
 
