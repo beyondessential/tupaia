@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import type { Handler } from 'mitt';
@@ -9,7 +9,13 @@ import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
 import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../../types';
-import { useIsMobile } from '../../utils';
+import {
+  countEmitterHandlers,
+  crashLog,
+  getStorageBackend,
+  sampleRuntime,
+  useIsMobile,
+} from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
 
@@ -59,6 +65,29 @@ const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
+/* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
+const StorageBackend = styled.p`
+  margin-block-start: 2rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.75rem;
+`;
+
+/**
+ * `opfs-ahp` keeps the database in files on disk; `idb` keeps the whole thing in memory, which is
+ * what a low-spec device runs out of on a large project. Shown here because testers can't read a
+ * console, and knowing which one a device ended up on is the first question for any report.
+ */
+const StorageIndicator = () => {
+  const backend = getStorageBackend();
+  if (!backend) return null;
+
+  return (
+    <StorageBackend>
+      Storage: {backend === 'opfs-ahp' ? 'OPFS (on disk)' : 'IndexedDB (in memory)'}
+    </StorageBackend>
+  );
+};
+
 function useIsSyncStarted() {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [isSyncStarted, setIsSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
@@ -89,12 +118,52 @@ export const SyncPage = () => {
   } = useSyncStatus();
   const isSyncStarted = useIsSyncStarted();
 
+  /* TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts */
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+
+  useEffect(() => {
+    crashLog('syncPage:mounted');
+    // Runs at the start of the unmount commit, so if this is the last line in the log the
+    // crash is inside tearing this page down; if it is followed by landing:mounted the
+    // teardown survived and the problem is further along
+    return () => crashLog('syncPage:cleanup', { renders: renderCount.current });
+  }, []);
+
+  useEffect(() => {
+    const sample = () =>
+      sampleRuntime({
+        renders: renderCount.current,
+        // Tests directly whether the mitt handler arrays grow while the page sits here
+        syncHandlers: countEmitterHandlers(syncManager?.emitter),
+        isSyncing: syncManager?.isSyncing,
+        syncStage: syncManager?.syncStage,
+        progress: syncManager?.progress,
+      });
+
+    sample();
+    const interval = setInterval(sample, 2_000);
+    return () => clearInterval(interval);
+  }, [syncManager]);
+  /* END TEMPORARY DIAGNOSTIC */
+
   const syncFinishedSuccessfully =
     isSyncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
 
   return (
     <Wrapper>
-      {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
+      {isMobile && (
+        <StickyMobileHeader
+          onClose={() => {
+            /* TEMPORARY DIAGNOSTIC (TUP-3193) */
+            sampleRuntime({ at: 'exit:clicked' });
+            crashLog('exit:navigating');
+            navigate(-1);
+          }}
+        >
+          Sync
+        </StickyMobileHeader>
+      )}
 
       <LayoutManager>
         <Content>
@@ -125,6 +194,8 @@ export const SyncPage = () => {
           )}
 
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
+          <StorageIndicator />
         </Content>
       </LayoutManager>
     </Wrapper>
