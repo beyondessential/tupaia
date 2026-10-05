@@ -47,7 +47,7 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
     "react-is": "^16.13.1",
-    "react-leaflet": "^3.2.1",
+    "react-leaflet": "^3.2.5",
     "react-password-strength-bar": "^0.4.1",
     "react-redux": "^5.0.6",
     "react-router-dom": "6.3.0",
