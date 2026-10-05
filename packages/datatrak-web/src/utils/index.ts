@@ -16,6 +16,7 @@ export {
   countEmitterHandlers,
   crashLog,
   dumpCrashLog,
+  getStorageBackend,
   logEnvironment,
   sampleRuntime,
 } from './crashLog';

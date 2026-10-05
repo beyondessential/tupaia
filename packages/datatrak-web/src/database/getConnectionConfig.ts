@@ -4,24 +4,9 @@ import { getEnvVarOrDefault } from '@tupaia/utils';
 
 // TEMPORARY DIAGNOSTIC (TUP-3193) — imported directly rather than through the utils barrel,
 // which pulls in React hooks this module has no business loading
-import { crashLog } from '../utils/crashLog';
+import { crashLog, setStorageBackend } from '../utils/crashLog';
 
 let sharedPGliteInstance: PGliteWorker | null = null;
-
-/**
- * Which filesystem PGlite ended up on, for the indicator on the sync page.
- *
- * It matters enough to surface: `opfs-ahp` keeps the database in files, `idb` keeps the whole
- * thing in this renderer's memory, and that difference is what decides whether a large project
- * fits on a low-spec device. The worker decides at startup by feature detection, so there is no
- * way to know from here without asking it.
- *
- * Read from the log line the worker already emits rather than adding a second channel. Undefined
- * until the worker reports in, and when the app runs online-only there is no worker at all.
- */
-let storageBackend: string | undefined;
-
-export const getStorageBackend = () => storageBackend;
 
 const LEVELS = ['log', 'info', 'warn', 'error', 'debug'] as const;
 
@@ -43,7 +28,8 @@ const forwardWorkerLogs = () => {
 
     const [firstArg] = Array.isArray(data?.args) ? data.args : [];
     if (typeof firstArg === 'string' && firstArg.startsWith('PGlite filesystem:')) {
-      [, storageBackend] = firstArg.match(/PGlite filesystem: (\S+)/) ?? [];
+      const [, backend] = firstArg.match(/PGlite filesystem: (\S+)/) ?? [];
+      if (backend) setStorageBackend(backend);
     }
 
     /*

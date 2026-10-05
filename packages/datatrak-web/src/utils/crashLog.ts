@@ -99,6 +99,23 @@ export const logEnvironment = () => {
   });
 };
 
+/**
+ * Which filesystem PGlite ended up on — `opfs-ahp` (files on disk) or `idb` (the whole database
+ * held in this renderer's memory). The worker decides at startup by feature detection and reports
+ * it through its log channel; getConnectionConfig records it here.
+ *
+ * It lives in this module rather than in `database/` so the sync page can read it without
+ * importing anything that constructs a Worker — `new URL(..., import.meta.url)` isn't compilable
+ * under the module setting the test build uses.
+ */
+let storageBackend: string | undefined;
+
+export const setStorageBackend = (backend: string) => {
+  storageBackend = backend;
+};
+
+export const getStorageBackend = () => storageBackend;
+
 /** Total number of handlers registered across every event type on a mitt emitter. */
 export const countEmitterHandlers = (emitter: unknown) => {
   const all = (emitter as { all?: Map<unknown, unknown[]> } | undefined)?.all;

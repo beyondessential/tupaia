@@ -5,12 +5,17 @@ import styled from 'styled-components';
 import type { Handler } from 'mitt';
 
 import { useSyncContext } from '../../api/SyncContext';
-import { getStorageBackend } from '../../database/getConnectionConfig'; // TUP-3193
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
 import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../../types';
-import { countEmitterHandlers, crashLog, sampleRuntime, useIsMobile } from '../../utils';
+import {
+  countEmitterHandlers,
+  crashLog,
+  getStorageBackend,
+  sampleRuntime,
+  useIsMobile,
+} from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
 
