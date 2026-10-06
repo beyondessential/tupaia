@@ -59,7 +59,6 @@ install_base_dependencies() {
   # Note: Many of these are for puppeteer: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux
   sudo apt-get -yqq install \
     fonts-liberation \
-    libappindicator3-1 \
     libasound2 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
@@ -70,7 +69,7 @@ install_base_dependencies() {
     libexpat1 \
     libfontconfig1 \
     libgbm1 \
-    libgcc1 \
+    libgcc-s1 \
     libglib2.0-0 \
     libgtk-3-0 \
     libnspr4 \
@@ -118,6 +117,25 @@ install_tailscale() {
   tailscale version
 }
 
+install_aws_tools() {
+  # ec2metadata and the AWS CLI are what the startup scripts use to read the instance's tags
+  if ! command -v ec2metadata &>/dev/null; then
+    sudo apt-get -yqq install cloud-utils
+  fi
+
+  if ! command -v aws &>/dev/null; then
+    echo 'AWS CLI not installed. Installing...'
+    sudo apt-get -yqq install unzip
+    local tmp
+    tmp=$(mktemp -d)
+    curl -fsSL -o "$tmp"/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip"
+    unzip -q "$tmp"/awscliv2.zip -d "$tmp"
+    sudo "$tmp"/aws/install
+    rm -rf "$tmp"
+  fi
+  aws --version
+}
+
 install_bestool() {
   if ! command -v bestool &>/dev/null; then
     echo 'bestool not installed. Installing...'
@@ -140,7 +158,14 @@ install_bestool() {
 }
 
 install_munin() {
+  # As on the Tamanu servers: on btrfs, keep the constantly rewritten RRDs in their own
+  # subvolume with copy-on-write off
+  if [[ ! -e /var/lib/munin && $(findmnt -n -o FSTYPE --target /var/lib) == btrfs ]]; then
+    sudo btrfs subvolume create /var/lib/munin
+    sudo chattr +C /var/lib/munin
+  fi
   sudo apt-get -yqq install munin munin-node libwww-perl
+  sudo chown munin:munin /var/lib/munin
 
   # Served over the tailnet only (see setupObservability.sh), never by munin-node itself
   sudo sed -i -E 's/^\s*host\s.*/host 127.0.0.1/' /etc/munin/munin-node.conf
@@ -228,6 +253,7 @@ main() {
   install_psql
   install_base_dependencies
   install_tailscale
+  install_aws_tools
   install_bestool
   install_munin
   install_nvm
