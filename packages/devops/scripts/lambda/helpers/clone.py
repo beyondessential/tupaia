@@ -2,7 +2,7 @@ import asyncio
 import functools
 
 import boto3
-from helpers.creation import create_instance
+from helpers.creation import create_instance, get_instance_type_architecture
 from helpers.utilities import (
     get_account_ids,
     get_instance,
@@ -137,6 +137,12 @@ async def clone_instance(
     subdomains_via_gateway_string = get_tag(base_instance, "SubdomainsViaGateway")
     if subdomains_via_gateway_string != "":
         subdomains_via_gateway = subdomains_via_gateway_string.split(",")
+
+    # The clone gets the base instance's root volume, so it must keep its architecture
+    if get_instance_type_architecture(instance_type) != base_instance["Architecture"]:
+        raise Exception(
+            f"Can’t clone {from_deployment} ({base_instance['Architecture']}) onto {instance_type}"
+        )
 
     iam_role_arn = None
     if "IamInstanceProfile" in base_instance:

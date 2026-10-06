@@ -116,6 +116,8 @@ main() {
   sudo -Hu ubuntu "$deployment_scripts"/../deployment-common/startBackEnds.sh
   # Set nginx config and start the service running
   sudo -E DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/configureNginx.sh
+  # Monitoring must never fail a deployment
+  DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/setupObservability.sh || echo 'Observability setup failed; continuing without it'
 
   # Tag as complete so CI/CD system can use the tag as a health check
   aws ec2 create-tags --resources "$instance_id" --tags Key=StartupBuildProgress,Value=complete

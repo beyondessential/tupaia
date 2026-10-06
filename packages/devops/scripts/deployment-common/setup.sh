@@ -1,22 +1,16 @@
 #!/usr/bin/env bash
-# This script is invoked by setupGoldMaster.sh, which is used by EC2 Image Builder to pre-bake a
-# Tupaia AMI.
+# EC2 Image Builder runs this script to pre-bake the Tupaia AMIs, one per architecture (x86_64 and
+# arm64). The pipelines are defined in the `tupaia` Pulumi stack in beyondessential/ops.
 #
 # DEPLOYING CHANGES
-#   Unlike setupGoldMaster.sh, the “live” version of this file lives in version control, and doesn’t
-#   need to be uploaded to Amazon S3. To deploy changes:
-#
 #   1. Merge changes into the default branch.
-#   2. Optionally, go to EC2 Image Builder → Image pipelines → Tupaia Gold Master and run the
-#      pipeline. Left alone, this will happen automatically according to the image pipeline’s build
-#      schedule. Do this step if you need changes to take effect immediately.
+#   2. Optionally, go to EC2 Image Builder → Image pipelines → tupaia-gold-master-x86_64 and
+#      tupaia-gold-master-arm64 and run both. Left alone, this will happen automatically according
+#      to the pipelines’ build schedule. Do this step if you need changes to take effect immediately.
 #
 # REMARK
-#   The EC2 Image Builder image pipeline always invokes the version of this script from the default
-#   branch, regardless of whether you’ll be deploying from a feature branch.
-#
-# SEE ALSO
-#   packages/devops/scripts/deployment-aws/setupGoldMaster.sh
+#   The pipelines always run the version of this script from the default branch, regardless of
+#   whether you’ll be deploying from a feature branch. It must work on both architectures.
 
 set -e
 
@@ -124,6 +118,58 @@ install_tailscale() {
   tailscale version
 }
 
+install_bestool() {
+  if ! command -v bestool &>/dev/null; then
+    echo 'bestool not installed. Installing...'
+    sudo install -D -m 0644 "$TUPAIA_DIR"/packages/devops/keyrings/bes-tools.gpg /etc/apt/keyrings/bes-tools.gpg
+    echo 'deb [arch=amd64,arm64 signed-by=/etc/apt/keyrings/bes-tools.gpg] https://tools.ops.tamanu.io/apt stable main' |
+      sudo tee /etc/apt/sources.list.d/bes-tools.list
+    sudo apt-get update
+    sudo apt-get -yqq install bestool
+  fi
+
+  # Same auto-update as the Tamanu servers
+  printf '#!/bin/sh\napt-get install -y bestool\n' | sudo tee /etc/cron.daily/apt-upgrade-bestool >/dev/null
+  sudo chmod 0755 /etc/cron.daily/apt-upgrade-bestool
+
+  # Only deployments carrying a Canopy registration run alertd; startupTupaia.sh
+  # turns it on for those (see setupObservability.sh)
+  sudo systemctl disable --now bestool-alertd.service 2>/dev/null || true
+
+  echo "bestool $(bestool --version) is installed"
+}
+
+install_munin() {
+  sudo apt-get -yqq install munin munin-node libwww-perl
+
+  # Served over the tailnet only (see setupObservability.sh), never by munin-node itself
+  sudo sed -i -E 's/^\s*host\s.*/host 127.0.0.1/' /etc/munin/munin-node.conf
+
+  # nginx_request and nginx_status read nginx's stub_status from loopback
+  sudo tee /etc/nginx/conf.d/munin-status.conf >/dev/null <<'NGINX'
+server {
+  listen 127.0.0.1:8099;
+  location = /nginx_status {
+    stub_status;
+    allow 127.0.0.1;
+    deny all;
+  }
+}
+NGINX
+  sudo tee /etc/munin/plugin-conf.d/nginx >/dev/null <<'MUNIN'
+[nginx*]
+env.url http://127.0.0.1:8099/nginx_status
+MUNIN
+  for plugin in nginx_request nginx_status; do
+    sudo ln -sf /usr/share/munin/plugins/$plugin /etc/munin/plugins/$plugin
+  done
+  if [[ -e /usr/share/munin/plugins/bestool_alertd ]]; then
+    sudo ln -sf /usr/share/munin/plugins/bestool_alertd /etc/munin/plugins/bestool_alertd
+  fi
+
+  sudo systemctl enable munin-node
+}
+
 install_nvm() {
   local nvm_path="$HOME/.nvm/nvm.sh"
   if [ ! -s "$nvm_path" ]; then
@@ -182,6 +228,8 @@ main() {
   install_psql
   install_base_dependencies
   install_tailscale
+  install_bestool
+  install_munin
   install_nvm
   install_node
   install_corepack

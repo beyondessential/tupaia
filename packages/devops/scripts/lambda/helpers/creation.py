@@ -17,20 +17,29 @@ ec = boto3.client("ec2")
 rds = boto3.client("rds")
 
 
-def get_latest_image_id(image_code):
+def get_instance_type_architecture(instance_type):
+    instance_types = ec.describe_instance_types(InstanceTypes=[instance_type])
+    architectures = instance_types["InstanceTypes"][0]["ProcessorInfo"][
+        "SupportedArchitectures"
+    ]
+    return "arm64" if "arm64" in architectures else "x86_64"
+
+
+def get_latest_image_id(image_code, architecture):
     filters = [
         {"Name": "tag:Code", "Values": [image_code]},
+        {"Name": "architecture", "Values": [architecture]},
     ]
     account_ids = get_account_ids()
     image_response = ec.describe_images(Owners=account_ids, Filters=filters)
 
     if "Images" not in image_response or not image_response["Images"]:
-        raise Exception(f"No AMI matching {image_code}")
+        raise Exception(f"No {architecture} AMI matching {image_code}")
 
     image_id = sorted(
         image_response["Images"], key=lambda k: k["CreationDate"], reverse=True
     )[0]["ImageId"]
-    print(f"Found AMI {image_id}")
+    print(f"Found {architecture} AMI {image_id}")
     return image_id
 
 
@@ -100,7 +109,13 @@ def get_instance_creation_config(
         security_group_code, security_group_id
     )
 
-    image_id = image_id if image_id != None else get_latest_image_id(image_code)
+    image_id = (
+        image_id
+        if image_id != None
+        else get_latest_image_id(
+            image_code, get_instance_type_architecture(instance_type)
+        )
+    )
 
     tags = [
         {"Key": "Name", "Value": f"{deployment_type}: {deployment_name}"},
