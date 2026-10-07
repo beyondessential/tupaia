@@ -44,4 +44,6 @@ def flush_instance_state(instance, timeout_seconds=180):
         if invocation["Status"] not in ("Pending", "InProgress", "Delayed"):
             print(f"Flush of {instance_id} finished: {invocation['Status']}")
             return
-    print(f"Flush of {instance_id} still running after {timeout_seconds} s; carrying on")
+    print(
+        f"Flush of {instance_id} still running after {timeout_seconds} s; carrying on"
+    )
