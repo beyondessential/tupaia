@@ -77,9 +77,10 @@ setup_munin() {
 }
 
 setup_alertd() {
-	local blob
-	blob=$(parameter "/tupaia/canopy/$DEPLOYMENT_NAME/blob")
-	if [[ -z $blob ]]; then
+	# A `bestool canopy export` of a server enrolled once by hand, not an enrolment ticket
+	local registration
+	registration=$(parameter "/tupaia/canopy/$DEPLOYMENT_NAME/registration")
+	if [[ -z $registration ]]; then
 		echo "No Canopy registration for $DEPLOYMENT_NAME; alertd stays off"
 		return
 	fi
@@ -88,7 +89,7 @@ setup_alertd() {
 	passphrase_file=$(mktemp)
 	chmod 0600 "$passphrase_file"
 	parameter "/tupaia/canopy/$DEPLOYMENT_NAME/passphrase" >"$passphrase_file"
-	bestool canopy import --passphrase-path "$passphrase_file" <<<"$blob"
+	bestool canopy import --passphrase-path "$passphrase_file" <<<"$registration"
 	rm -f "$passphrase_file"
 
 	# The packaged unit expects these to exist (written to by backups on Tamanu servers)
