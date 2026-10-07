@@ -2,7 +2,8 @@
 # Builds and starts this branch's Tupaia on a fresh server. The deployment Lambda's boot script
 # (in the `tupaia-infra` Pulumi stack, at pulumi/tupaia/infra in beyondessential/ops) checks out
 # the branch, then runs this as root with DEPLOYMENT_NAME and BRANCH set, logging its output and
-# tagging the instance with how it went. Changes here ship with the branch, so they can be tried on a branch deployment.
+# tagging the instance with how it went. Changes here ship with the branch, so they can be tried
+# on a branch deployment.
 set -eEo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)

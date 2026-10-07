@@ -2,13 +2,13 @@
 # Called as root by startupTupaia.sh once the deployment is up. Sets up, per deployment name:
 #   - Uploading Munin history and logs to S3 (hourly, at shutdown, and when the deployment Lambda
 #     is about to replace the instance; see flushToS3.sh), and restoring Munin history from there
-#   - Munin, served on the tailnet at https://<node>:4950, and at svc:tupaia-<deployment>-svc-munin
-#     where that exists
+#   - Munin, served on the tailnet at https://<node>:4950 (the node, and so its name, carries over
+#     across redeploys; see connectTailscale.sh)
 #   - bestool alertd, only for deployments with a Canopy registration in Parameter Store, so every
 #     instance of e.g. production reports as the same Canopy machine and branch deployments never
 #     appear in Canopy
 #
-# The bucket, the registrations and the tailnet services are managed by the `tupaia-infra` Pulumi
+# The bucket and the registrations are managed by the `tupaia-infra` Pulumi
 # stack, at pulumi/tupaia/infra in beyondessential/ops.
 set -euo pipefail
 
@@ -68,12 +68,6 @@ setup_munin() {
 	systemctl restart munin-node
 
 	tailscale serve --bg --https=4950 /var/cache/munin/www
-	local service="svc:tupaia-$DEPLOYMENT_NAME-svc-munin"
-	if tailscale serve --service="$service" --https=4950 /var/cache/munin/www; then
-		echo "Munin advertised as $service"
-	else
-		echo "Not advertising $service (not defined on the tailnet, or not approved for this node)"
-	fi
 }
 
 setup_alertd() {
