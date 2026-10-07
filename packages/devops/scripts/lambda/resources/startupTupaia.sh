@@ -3,9 +3,8 @@
 # the first time the instance starts
 #
 # REMARK
-#   The production version of this script lives in the ‘deployment’ Lambda function; simply merging
-#   does not deploy code changes to production. To make changes, see
-#   https://beyond-essential.slab.com/posts/making-changes-to-deployment-process-9kjpcjic
+#   The production version of this script lives in the ‘deployment’ Lambda function, which
+#   .github/workflows/deploy-lambda.yaml updates when changes to it are merged to master.
 
 set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 

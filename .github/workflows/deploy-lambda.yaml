@@ -1,0 +1,42 @@
+name: Deploy deployment Lambda
+# Releases packages/devops/scripts/lambda (including the startup scripts it hands to new servers)
+# to the `deployment` Lambda. The function itself is defined in the `tupaia` Pulumi stack in
+# beyondessential/ops; only its code is deployed from here.
+on:
+  push:
+    branches: [master]
+    paths:
+      - packages/devops/scripts/lambda/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for AWS
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-southeast-2
+          role-to-assume: arn:aws:iam::843218180240:role/Tupaia_GHA
+          role-session-name: GHA@Tupaia-deploy-lambda
+      - name: Package
+        working-directory: packages/devops/scripts/lambda
+        run: zip -qr "$RUNNER_TEMP/deployment.zip" . -x '*__pycache__*' '*.pyc'
+      - name: Deploy
+        run: |
+          aws lambda update-function-code \
+            --function-name deployment \
+            --zip-file "fileb://$RUNNER_TEMP/deployment.zip" \
+            --no-cli-pager \
+            --query '{Version: Version, CodeSha256: CodeSha256}'
+          aws lambda wait function-updated-v2 --function-name deployment
