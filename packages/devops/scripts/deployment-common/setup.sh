@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # EC2 Image Builder runs this script to pre-bake the Tupaia AMIs, one per architecture (x86_64 and
-# arm64). The pipelines are defined in the `tupaia` Pulumi stack in beyondessential/ops.
+# arm64). The pipelines are defined in the `tupaia-infra` Pulumi stack, at pulumi/tupaia/infra in
+# beyondessential/ops.
 #
 # DEPLOYING CHANGES
 #   1. Merge changes into the default branch.

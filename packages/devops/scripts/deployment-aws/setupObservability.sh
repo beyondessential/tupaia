@@ -8,8 +8,8 @@
 #     instance of e.g. production reports as the same Canopy machine and branch deployments never
 #     appear in Canopy
 #
-# The bucket, the registrations and the tailnet services are managed by the `tupaia` Pulumi stack
-# in beyondessential/ops.
+# The bucket, the registrations and the tailnet services are managed by the `tupaia-infra` Pulumi
+# stack, at pulumi/tupaia/infra in beyondessential/ops.
 set -euo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)

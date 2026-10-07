@@ -4,7 +4,8 @@
 #
 # REMARKS
 #   - getEC2TagValue.sh is a dependency of startupTupaia.sh and startupLesmis.sh, the boot scripts
-#     of the ‘deployment’ Lambda function (in the `tupaia` Pulumi stack in beyondessential/ops).
+#     of the ‘deployment’ Lambda function (in the `tupaia-infra` Pulumi stack, at
+#     pulumi/tupaia/infra in beyondessential/ops).
 #   - The version of getEC2TagValue.sh invoked by startupTupaia.sh and startupLesmis.sh is always
 #     from the default branch. (The code in those scripts responsible for fetching new code from
 #     version control depend on instance tags fetched with getEC2TagValue.sh.)
