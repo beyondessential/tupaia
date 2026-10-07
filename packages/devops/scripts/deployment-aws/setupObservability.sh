@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Called as root by startupTupaia.sh once the deployment is up. Sets up, per deployment name:
-#   - Munin, restoring its history from S3 (each redeploy is a new instance) and serving it on
-#     the tailnet at https://<node>:4950, and at svc:tupaia-<deployment>-svc-munin where that exists
+#   - Uploading Munin history and logs to S3 (hourly, at shutdown, and when the deployment Lambda
+#     is about to replace the instance; see flushToS3.sh), and restoring Munin history from there
+#   - Munin, served on the tailnet at https://<node>:4950, and at svc:tupaia-<deployment>-svc-munin
+#     where that exists
 #   - bestool alertd, only for deployments with a Canopy registration in Parameter Store, so every
 #     instance of e.g. production reports as the same Canopy machine and branch deployments never
 #     appear in Canopy
@@ -22,19 +24,47 @@ parameter() {
 	"$script_dir"/fetchParameterStoreValue.sh "$1" 2>/dev/null || true
 }
 
-setup_munin() {
+setup_storage() {
 	local bucket
-	bucket=$(parameter /tupaia/munin/bucket)
-	if [[ -n $bucket ]]; then
-		local prefix="s3://$bucket/$DEPLOYMENT_NAME/"
-		echo "Restoring Munin history from $prefix"
-		aws s3 sync --only-show-errors "$prefix" /var/lib/munin/
-		chown -R munin:munin /var/lib/munin
-		echo "17 * * * * root aws s3 sync --only-show-errors --delete /var/lib/munin/ $prefix" >/etc/cron.d/munin-s3-sync
-	else
-		echo 'No Munin bucket configured; history will start afresh'
+	bucket=$(parameter /tupaia/servers/bucket)
+	if [[ -z $bucket ]]; then
+		echo 'No server bucket configured; Munin history will start afresh and logs stay local'
+		return
 	fi
 
+	echo "Restoring Munin history from s3://$bucket/munin/$DEPLOYMENT_NAME/"
+	aws s3 sync --only-show-errors "s3://$bucket/munin/$DEPLOYMENT_NAME/" /var/lib/munin/
+	chown -R munin:munin /var/lib/munin
+
+	cat >/etc/default/tupaia-flush <<-EOF
+		BUCKET=$bucket
+		DEPLOYMENT_NAME=$DEPLOYMENT_NAME
+		INSTANCE_ID=$(ec2metadata --instance-id)
+	EOF
+	echo "17 * * * * root $script_dir/flushToS3.sh" >/etc/cron.d/tupaia-flush
+
+	# Its stop runs at shutdown and termination, before the network goes down
+	cat >/etc/systemd/system/tupaia-flush.service <<-EOF
+		[Unit]
+		Description=Upload Munin history and logs to S3 at shutdown
+		Wants=network-online.target
+		After=network-online.target
+
+		[Service]
+		Type=oneshot
+		RemainAfterExit=yes
+		ExecStart=/bin/true
+		ExecStop=$script_dir/flushToS3.sh
+		TimeoutStopSec=180
+
+		[Install]
+		WantedBy=multi-user.target
+	EOF
+	systemctl daemon-reload
+	systemctl enable --now tupaia-flush.service
+}
+
+setup_munin() {
 	systemctl restart munin-node
 
 	tailscale serve --bg --https=4950 /var/cache/munin/www
@@ -67,5 +97,6 @@ setup_alertd() {
 	echo "alertd reporting to Canopy as $DEPLOYMENT_NAME"
 }
 
+setup_storage
 setup_munin
 setup_alertd

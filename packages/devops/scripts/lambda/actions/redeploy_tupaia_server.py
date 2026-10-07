@@ -33,6 +33,7 @@ used, you need to tag the AMI and security groups with the codes you specify
 """
 
 from helpers.create_from_image import create_server_instance_from_image
+from helpers.flush import flush_instance_state
 from helpers.utilities import find_instances, get_tag
 
 
@@ -110,6 +111,8 @@ def redeploy_tupaia_server(event):
         stop_at_utc = get_tag(existing_instance, "StopAtUTC")
         if stop_at_utc != "":
             extra_tags.append({"Key": "StopAtUTC", "Value": stop_at_utc})
+
+        flush_instance_state(existing_instance)
 
         # launch server instance based on gold master AMI
         # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
