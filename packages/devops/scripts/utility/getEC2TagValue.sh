@@ -3,8 +3,8 @@
 # value is found, prints `None` (sans-backticks).
 #
 # REMARKS
-#   - getEC2TagValue.sh is a dependency of startupTupaia.sh and startupLesmis.sh, which are packaged
-#     into the code for the ‘deployment’ Lambda function.
+#   - getEC2TagValue.sh is a dependency of startupTupaia.sh and startupLesmis.sh, the boot scripts
+#     of the ‘deployment’ Lambda function (in the `tupaia` Pulumi stack in beyondessential/ops).
 #   - The version of getEC2TagValue.sh invoked by startupTupaia.sh and startupLesmis.sh is always
 #     from the default branch. (The code in those scripts responsible for fetching new code from
 #     version control depend on instance tags fetched with getEC2TagValue.sh.)
@@ -12,7 +12,7 @@
 #   To deploy changes to getEC2TagValue.sh that need to be “seen” by either of the startup scripts:
 #
 #   1. Merge code change into the default branch (dev).
-#   2. Go to EC2 Image Builder → Image pipelines → Tupaia Gold Master and run the pipeline. (This
+#   2. Go to EC2 Image Builder → Image pipelines → tupaia-gold-master-* and run them. (This
 #      affects ALL deployments, including production. Ensure the code change is backward-
 #      compatible.)
 set -e
