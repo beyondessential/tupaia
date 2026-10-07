@@ -10,7 +10,9 @@ FLUSH_SCRIPT = "/home/ubuntu/tupaia/packages/devops/scripts/deployment-aws/flush
 def flush_instance_state(instance, timeout_seconds=180):
     """
     Asks a server that is about to be replaced to upload its Munin history and logs to S3, so its
-    replacement restores the latest Munin data and the logs outlive it. Best effort: a server that
+    replacement restores the latest Munin data and the logs outlive it. The final flush also stops
+    the server uploading Munin again (e.g. when it's terminated after the swap), so it can't
+    overwrite its replacement's newer history. Best effort: a server that
     is stopped, predates the flush script or has no SSM agent is replaced all the same.
     """
     instance_id = instance["InstanceId"]
@@ -24,7 +26,9 @@ def flush_instance_state(instance, timeout_seconds=180):
             DocumentName="AWS-RunShellScript",
             Comment="Flush Munin and logs before replacement",
             Parameters={
-                "commands": [f"if [ -x {FLUSH_SCRIPT} ]; then {FLUSH_SCRIPT}; fi"]
+                "commands": [
+                    f"if [ -x {FLUSH_SCRIPT} ]; then {FLUSH_SCRIPT} --final; fi"
+                ]
             },
             TimeoutSeconds=timeout_seconds,
         )["Command"]["CommandId"]

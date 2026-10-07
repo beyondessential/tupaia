@@ -4,12 +4,27 @@
 # Munin from here. Runs hourly from cron, when the instance shuts down or is terminated
 # (tupaia-flush.service), and when the deployment Lambda is about to replace it.
 #
+# With --final (from the deployment Lambda), it marks this server as superseded once the upload
+# succeeds: its replacement restores from that upload and then owns the deployment's Munin history,
+# so later runs here (hourly, and at termination after the swap) upload logs only and never
+# overwrite the replacement's newer data.
+#
 # Configured by setupObservability.sh in /etc/default/tupaia-flush.
 set -euo pipefail
 
 source /etc/default/tupaia-flush
 
-aws s3 sync --only-show-errors --delete /var/lib/munin/ "s3://$BUCKET/munin/$DEPLOYMENT_NAME/"
+superseded=/var/lib/tupaia-flush/superseded
+
+if [[ -e $superseded ]]; then
+	echo 'Superseded by a replacement; not uploading Munin history'
+else
+	aws s3 sync --only-show-errors --delete /var/lib/munin/ "s3://$BUCKET/munin/$DEPLOYMENT_NAME/"
+	if [[ ${1:-} == --final ]]; then
+		mkdir -p "${superseded%/*}"
+		touch "$superseded"
+	fi
+fi
 
 # No --delete: rotated-away logs stay in S3 until the bucket's retention expires them
 logs="s3://$BUCKET/logs/$DEPLOYMENT_NAME/$INSTANCE_ID"
