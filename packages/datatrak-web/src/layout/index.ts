@@ -4,3 +4,4 @@ export { MainPageLayout } from './MainPageLayout';
 export { CentredLayout } from './CentredLayout';
 export { TasksLayout, TasksContentWrapper } from './TasksLayout';
 export { StickyMobileHeader, MobileHeaderRoot } from './StickyMobileHeader';
+export { FloatingSyncButton } from './FloatingSyncButton';
