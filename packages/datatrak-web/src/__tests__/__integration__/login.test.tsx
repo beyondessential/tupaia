@@ -45,10 +45,7 @@ describe('Login', () => {
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Select project/i);
   });
 
-  // TEMPORARY DIAGNOSTIC (TUP-3193) — unskip when the landing page is restored.
-  // This asserts on "Select survey", which comes from SurveySelectSection. That section is removed
-  // in the bisect builds, so the assertion can't pass until LandingPage is put back.
-  it.skip('Redirects to landing page', async () => {
+  it('Redirects to landing page', async () => {
     renderPage('/login');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
 
