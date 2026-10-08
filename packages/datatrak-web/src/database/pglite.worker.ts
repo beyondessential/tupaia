@@ -62,23 +62,27 @@ for (const level of LEVELS) {
  * `opfs-ahp://` keeps the files in the Origin Private File System instead, so Postgres reads and
  * writes pages on demand the way it would on a real disk, and only the working set is in memory.
  *
- * Feature-detected rather than assumed: `createSyncAccessHandle` is what PGlite's access-handle
- * pool needs, it is only exposed in workers, and it is Chrome/Firefox only — PGlite's own platform
- * table excludes Safari. Anything without it falls back to `idb://` and keeps today's behaviour.
+ * TEMPORARY (TUP-3193): forced to OPFS with no feature detection and no fallback, so that the
+ * indicator on the sync page cannot be a false positive — there is only one branch, so if the app
+ * starts at all it started on OPFS.
+ *
+ * The cost is that any browser PGlite can't run OPFS on now fails outright instead of degrading:
+ * Chrome below 102, and Safari, where the access-handle pool aborts even though every capability
+ * test passes. Restore the detection before this goes anywhere near production:
+ *
+ *   const canUseOpfs =
+ *     typeof FileSystemFileHandle !== 'undefined' &&
+ *     'createSyncAccessHandle' in FileSystemFileHandle.prototype &&
+ *     typeof navigator !== 'undefined' &&
+ *     typeof navigator.storage?.getDirectory === 'function';
  *
  * Note the two are separate stores. A device that switches starts from an empty database and
  * re-syncs from scratch.
  */
 const resolveDataDir = (dataDir: string | undefined) => {
-  const canUseOpfs =
-    typeof FileSystemFileHandle !== 'undefined' &&
-    'createSyncAccessHandle' in FileSystemFileHandle.prototype &&
-    typeof navigator !== 'undefined' &&
-    typeof navigator.storage?.getDirectory === 'function';
-
   if (!dataDir?.startsWith('idb://')) return dataDir;
 
-  return canUseOpfs ? dataDir.replace(/^idb:\/\//, 'opfs-ahp://') : dataDir;
+  return dataDir.replace(/^idb:\/\//, 'opfs-ahp://');
 };
 
 worker({
@@ -109,9 +113,6 @@ worker({
     ]);
 
     const dataDir = resolveDataDir(options.dataDir);
-    // Rides the console forwarding above, so it lands in the app's log and you can tell at a
-    // glance which filesystem a given device ended up on
-    console.log(`PGlite filesystem: ${dataDir?.split('://')[0] ?? 'memory'} (requested ${options.dataDir})`);
 
     const db = new PGlite({
       dataDir,
@@ -131,6 +132,17 @@ worker({
       relaxedDurability: false,
     });
     await db.waitReady;
+
+    /*
+     * Reported only once the database is actually up, so the log line and the indicator on the
+     * sync page describe what started rather than what we asked for. Logged before `waitReady`
+     * it would claim OPFS even on a browser where PGlite then fails to initialise on it.
+     *
+     * Rides the console forwarding above, so it reaches the app's log too.
+     */
+    console.log(
+      `PGlite filesystem: ${dataDir?.split('://')[0] ?? 'memory'} (requested ${options.dataDir})`,
+    );
 
     /*
      * TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts
