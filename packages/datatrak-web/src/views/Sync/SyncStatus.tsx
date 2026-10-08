@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { useTheme } from '@material-ui/core'; // TUP-3193: LinearProgress unused while the bar is removed
+import { LinearProgress, useTheme } from '@material-ui/core';
 import { CircleCheck, CircleX } from 'lucide-react';
 
 import { SyncHeading } from './SyncHeading';
@@ -16,7 +16,6 @@ const Wrapper = styled.div`
   }
 `;
 
-/* TUP-3193 diagnostic — restore from git:
 const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
   background-color: transparent;
   block-size: 1.5rem;
@@ -31,7 +30,6 @@ const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
     border-radius: calc(infinity * 1px);
   }
 `;
-*/
 
 interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
   percentage: number | null;
@@ -70,8 +68,7 @@ export const SyncStatus = ({
       {isSyncing && (
         <>
           <SyncHeading>Syncing {percentage}%</SyncHeading>
-          {/* TUP-3193 diagnostic: <Progress /> removed to test whether the animated MUI
-              LinearProgress is implicated. The percentage above still shows progress. */}
+          <Progress value={percentage ?? undefined} />
         </>
       )}
 
