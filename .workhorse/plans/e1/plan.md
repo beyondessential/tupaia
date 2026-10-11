@@ -13,9 +13,11 @@
 
 ## Process count on prod
 
-- `startBackEnds.sh` runs report-server and web-config-server in pm2 cluster mode with one instance per app-server core minus one. data-table-server runs as one instance.
+- `startBackEnds.sh` ran report-server and web-config-server in pm2 cluster mode with one instance per app-server core minus one (7 each on prod's 8 vCPUs). data-table-server runs as one instance.
 - The limiter is per process, so the real ceiling on heavy queries is the cap × (report-server instances + web-config-server instances + 1). For example, on an 8-core app server that's 15 processes, so a cap of 4 still allows 60 heavy queries against a 2-vCPU database.
 - Each process also has its own knex pools of up to 10 connections. That likely explains the ~114 average active sessions on prod.
+- Decision: run a fixed 2 copies each of report-server and web-config-server. That's 5 processes in total, so a cap of 3 gives a predictable ceiling of 15 heavy queries. More copies don't help much when the database has only 2 vCPUs.
+- Risk: report transforms run in Node, so 2 copies give less CPU for that work. Watch for heavy dashboards getting slower on the app side, not just the database side.
 
 ## Approach
 
@@ -31,7 +33,8 @@
 - [x] Wrap analytics and events queries in `TupaiaDataApi`
 - [x] Unit tests for the limiter
 - [x] Document env var in `env/db.env.example`
-- [ ] Set `ANALYTICS_QUERY_CONCURRENCY` on prod (start around 4) and watch Performance Insights
+- [x] Run 2 copies each of report-server and web-config-server in `startBackEnds.sh`
+- [ ] Set `ANALYTICS_QUERY_CONCURRENCY` on prod (start at 3) and watch Performance Insights
 
 ## Follow-ups (not this card)
 
