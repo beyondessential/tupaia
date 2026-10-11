@@ -79,11 +79,24 @@ describe('limitQueryConcurrency', () => {
     await expect(limitQueryConcurrency(() => Promise.resolve('next'))).resolves.toBe('next');
   });
 
-  it.each(['0', '-2', '1.5', 'six'])('rejects an invalid value of "%s"', async value => {
-    const limitQueryConcurrency = loadLimitQueryConcurrency(value);
+  it.each(['0', '-2', '1.5', 'six', '1e2', '0x10', ' 3 ', '+3'])(
+    'rejects an invalid value of "%s"',
+    async value => {
+      const limitQueryConcurrency = loadLimitQueryConcurrency(value);
 
-    expect(() => limitQueryConcurrency(() => Promise.resolve())).toThrow(
-      'ANALYTICS_QUERY_CONCURRENCY must be a positive integer',
-    );
+      await expect(limitQueryConcurrency(() => Promise.resolve())).rejects.toThrow(
+        'ANALYTICS_QUERY_CONCURRENCY must be a positive integer',
+      );
+    },
+  );
+
+  it('rejects rather than throwing synchronously when the query throws', async () => {
+    const limitQueryConcurrency = loadLimitQueryConcurrency(undefined);
+
+    // Reaching the next line at all proves the call didn't throw synchronously
+    const result = limitQueryConcurrency(() => {
+      throw new Error('sync failure');
+    });
+    await expect(result).rejects.toThrow('sync failure');
   });
 });

@@ -54,9 +54,9 @@ export class TupaiaDataApi {
   public async fetchEvents(optionsInput: Record<string, unknown>) {
     const validatedOptions = eventOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
-    const results = await limitQueryConcurrency(() =>
-      new EventsFetchQuery(this.database, sanitizedOptions).fetch(),
-    );
+    // Built outside the limiter so invalid options fail without waiting for a slot
+    const query = new EventsFetchQuery(this.database, sanitizedOptions);
+    const results = await limitQueryConcurrency(() => query.fetch());
     const answersByEventId = groupBy(results, 'eventId');
     const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(answersByEventId)
@@ -76,8 +76,10 @@ export class TupaiaDataApi {
   public async fetchAnalytics(optionsInput: Record<string, unknown>) {
     const validatedOptions = analyticsOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
+    // Built outside the limiter so invalid options fail without waiting for a slot
+    const query = new AnalyticsFetchQuery(this.database, sanitizedOptions);
     const { analytics, numAggregationsProcessed } = await limitQueryConcurrency(() =>
-      new AnalyticsFetchQuery(this.database, sanitizedOptions).fetch(),
+      query.fetch(),
     );
     return {
       analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({

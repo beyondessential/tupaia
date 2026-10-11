@@ -18,11 +18,10 @@ let limiter: Limiter | undefined;
 const getLimiter = (): Limiter => {
   if (!limiter) {
     const raw = process.env.ANALYTICS_QUERY_CONCURRENCY;
-    const concurrency = Number(raw);
     if (!raw) {
       limiter = runImmediately;
-    } else if (Number.isInteger(concurrency) && concurrency > 0) {
-      limiter = pLimit(concurrency);
+    } else if (/^\d+$/.test(raw) && Number(raw) > 0) {
+      limiter = pLimit(Number(raw));
     } else {
       throw new Error(`ANALYTICS_QUERY_CONCURRENCY must be a positive integer, got "${raw}"`);
     }
@@ -30,4 +29,5 @@ const getLimiter = (): Limiter => {
   return limiter;
 };
 
-export const limitQueryConcurrency = <T>(fn: () => Promise<T>): Promise<T> => getLimiter()(fn);
+export const limitQueryConcurrency = async <T>(fn: () => Promise<T>): Promise<T> =>
+  getLimiter()(fn);

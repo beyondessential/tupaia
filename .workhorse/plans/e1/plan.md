@@ -21,7 +21,7 @@
 
 ## Approach
 
-- One process-wide limiter at the leaf: `TupaiaDataApi.fetchAnalytics` and `fetchEvents`. Every heavy analytics SQL query from report-server, data-table-server and web-config-server passes through here.
+- One process-wide limiter at the leaf: `TupaiaDataApi.fetchAnalytics` and `fetchEvents`. Every query against the `analytics` materialized view on the main Tupaia database passes through here, whichever server issues it. The other SQL paths run against different databases, so they don't load the RDS instance this card is about: `SqlDataTableService` queries external database connections, and `DataLakeApi` queries the data lake.
 - Deadlock-free with a single shared budget, because each slot wraps exactly one SQL query that never waits on another slot.
 - Only heavy queries are gated, so pool connections stay free for light queries (dashboard list, entities, permissions).
 - `ANALYTICS_QUERY_CONCURRENCY` env var. Unset means no cap (no behaviour change), so it can merge safely and be tuned on prod against Performance Insights.
