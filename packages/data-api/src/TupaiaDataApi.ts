@@ -7,6 +7,7 @@ import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
 import { isNotNullish } from '@tupaia/tsutils';
 import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery, EventAnswer } from './EventsFetchQuery';
+import { limitQueryConcurrency } from './limitQueryConcurrency';
 import { sanitizeMetadataValue, sanitizeAnalyticsTableValue } from './utils';
 import { eventOptionsValidator, analyticsOptionsValidator } from './validators';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
@@ -53,7 +54,9 @@ export class TupaiaDataApi {
   public async fetchEvents(optionsInput: Record<string, unknown>) {
     const validatedOptions = eventOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
-    const results = await new EventsFetchQuery(this.database, sanitizedOptions).fetch();
+    const results = await limitQueryConcurrency(() =>
+      new EventsFetchQuery(this.database, sanitizedOptions).fetch(),
+    );
     const answersByEventId = groupBy(results, 'eventId');
     const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(answersByEventId)
@@ -73,10 +76,9 @@ export class TupaiaDataApi {
   public async fetchAnalytics(optionsInput: Record<string, unknown>) {
     const validatedOptions = analyticsOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
-    const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
-      this.database,
-      sanitizedOptions,
-    ).fetch();
+    const { analytics, numAggregationsProcessed } = await limitQueryConcurrency(() =>
+      new AnalyticsFetchQuery(this.database, sanitizedOptions).fetch(),
+    );
     return {
       analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({
         organisationUnit: entityCode,
