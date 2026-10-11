@@ -11,6 +11,12 @@
 - Prod app restarts (redeploy or swap-out of the server) don't touch RDS, so Postgres's cache survives them. Only a reboot of the RDS instance, or a failover, empties it, and even then the data is read from the local volume, not S3.
 - A cap only slows things down when the database could have used more parallel reads than the cap allows. To compare branches on a QA deployment, warm the database first (load the dashboards once) so lazy loading doesn't swamp the result.
 
+## Process count on prod
+
+- `startBackEnds.sh` runs report-server and web-config-server in pm2 cluster mode with one instance per app-server core minus one. data-table-server runs as one instance.
+- The limiter is per process, so the real ceiling on heavy queries is the cap × (report-server instances + web-config-server instances + 1). For example, on an 8-core app server that's 15 processes, so a cap of 4 still allows 60 heavy queries against a 2-vCPU database.
+- Each process also has its own knex pools of up to 10 connections. That likely explains the ~114 average active sessions on prod.
+
 ## Approach
 
 - One process-wide limiter at the leaf: `TupaiaDataApi.fetchAnalytics` and `fetchEvents`. Every heavy analytics SQL query from report-server, data-table-server and web-config-server passes through here.
