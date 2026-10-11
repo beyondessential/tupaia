@@ -27,6 +27,11 @@
 - `ANALYTICS_QUERY_CONCURRENCY` env var. Unset means no cap (no behaviour change), so it can merge safely and be tuned on prod against Performance Insights.
 - An invalid value throws on the first analytics query rather than silently running uncapped.
 
+## Known risk once the cap is enabled
+
+- Nothing sets a `statement_timeout` or `connectionTimeoutMillis` anywhere in `packages/database`, and the limiter has no deadline, so a query that hangs holds its slot indefinitely. With a cap of 3, three hung queries stall analytics for that process; today the bound is the knex pool of 10 instead. The queue is also unbounded, so a burst keeps queuing work that runs after clients have already timed out.
+- Not addressed here because both mitigations change what users see: a `statement_timeout` turns slow reports into errors, and a queue-depth limit sheds load rather than delaying it. Worth deciding before raising the cap's reach on prod.
+
 ## Steps
 
 - [x] Shared limiter in `packages/data-api/src/limitQueryConcurrency.ts`
