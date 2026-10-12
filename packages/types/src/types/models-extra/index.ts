@@ -10,7 +10,6 @@ export {
   DataElementConfig,
   DataServiceEntityConfig,
   OptionAttributes,
-  SupersetInstanceConfig,
 } from './common';
 export type {
   AliasTransform,

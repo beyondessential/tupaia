@@ -1,44 +1,46 @@
 import '@babel/polyfill';
-import { configureEnv } from '../src/configureEnv';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { parseArgs } from 'node:util';
+import { configureEnv } from '../src/configureEnv';
+import * as modelClasses from '../src/database/models';
 import winston from '../src/log';
 import { RepeatingTaskDueDateHandler, TaskOverdueChecker } from '../src/scheduledTasks';
-import * as modelClasses from '../src/database/models';
 
-const SCHEDULED_TASK_MODULES = {
+const SCHEDULED_TASK_MODULES = /** @type {const} */ ({
   TaskOverdueChecker,
   RepeatingTaskDueDateHandler,
-};
+});
 
 configureEnv();
 
-const getTaskArg = argv => {
-  const taskAgr = argv[4];
-  if (!taskAgr || !Object.keys(SCHEDULED_TASK_MODULES).find(t => t === taskAgr)) {
+const getTaskArg = () => {
+  const {
+    positionals: [taskArg],
+  } = parseArgs({ allowPositionals: true });
+  if (!Object.hasOwn(SCHEDULED_TASK_MODULES, taskArg)) {
     const availableOptions = Object.keys(SCHEDULED_TASK_MODULES).join(', ');
     throw new Error(`You need to specify one of the following tasks to run: ${availableOptions}`);
   }
 
-  return argv[4];
+  return taskArg;
 };
 
 (async () => {
+  const profiler = winston.startTimer();
   const database = new TupaiaDatabase();
   try {
     winston.info('Starting scheduled task script');
-    const start = Date.now();
-    const taskArg = getTaskArg(process.argv);
-    const taskKey = Object.keys(SCHEDULED_TASK_MODULES).find(t => t === taskArg);
-    const taskModule = taskKey && SCHEDULED_TASK_MODULES[taskKey];
+    const taskArg = getTaskArg();
+    const TaskModule = SCHEDULED_TASK_MODULES[taskArg];
     winston.info(`Running ${taskArg} module`);
     const models = new ModelRegistry(database, modelClasses, true);
-    const taskInstance = new taskModule(models);
+    const taskInstance = new TaskModule(models);
     await taskInstance.run();
-    const end = Date.now();
-    winston.info(`Completed in ${end - start}ms`);
+    profiler.done({ message: 'Done' });
   } catch (error) {
     winston.error(error.message);
     winston.error(error.stack);
+    profiler.done({ message: 'Failed' });
   } finally {
     await database.closeConnections();
   }

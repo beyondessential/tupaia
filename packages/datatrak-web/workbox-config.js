@@ -17,7 +17,7 @@ module.exports = {
    * Vite content-hashes these filenames, so Workbox adding its own revision hash would only force
    * the precache install to re-download bytes the browser already has.
    */
-  dontCacheBustURLsMatching: /-[0-9a-f]{8}\.\w+$/,
+  dontCacheBustURLsMatching: /^assets\/.+-[\w-]{8}\.\w+$/, // Rolldown hashes are base64url
   swSrc: 'dist/sw.js',
   swDest: 'dist/sw.js',
   maximumFileSizeToCacheInBytes: 16_777_216, // 16 MiB

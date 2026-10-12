@@ -3,8 +3,8 @@ import AdmZip from 'adm-zip';
 
 export function zipMultipleFiles(filePath, files) {
   const zip = new AdmZip();
-  files.forEach(file => zip.addLocalFile(file));
+  for (const file of files) zip.addLocalFile(file);
   zip.writeZip(filePath);
-  files.forEach(file => fs.unlinkSync(file));
+  for (const file of files) fs.unlinkSync(file);
   return filePath;
 }

@@ -17,16 +17,13 @@ const getStaticDir = () => {
 
 const config: StorybookConfig = {
   stories: [getStoriesDir()],
-  addons: ['@storybook/addon-essentials'],
+  addons: ['@storybook/addon-docs'],
   framework: {
     name: '@storybook/react-vite',
     options: {},
   },
   typescript: {
     reactDocgen: 'react-docgen-typescript',
-  },
-  core: {
-    builder: '@storybook/builder-vite',
   },
   staticDirs: getStaticDir(),
   viteFinal: async (config, { configType }) => {
@@ -51,25 +48,23 @@ const config: StorybookConfig = {
           // The ui component packages are source-only (no build step), so resolve them to their
           // TypeScript sources and let Vite compile them alongside the stories
           '@tupaia/ui-chart-components': path.resolve(
-            __dirname,
+            import.meta.dirname,
             '../packages/ui-chart-components/src/index.ts',
           ),
           '@tupaia/ui-map-components': path.resolve(
-            __dirname,
+            import.meta.dirname,
             '../packages/ui-map-components/src/index.ts',
           ),
           '@tupaia/ui-components': path.resolve(
-            __dirname,
+            import.meta.dirname,
             '../packages/ui-components/src/index.ts',
           ),
-          http: path.resolve(__dirname, '../mock/moduleMock.js'),
-          winston: path.resolve(__dirname, '../mock/moduleMock.js'),
-          jsonwebtoken: path.resolve(__dirname, '../mock/moduleMock.js'),
-          'node-fetch': path.resolve(__dirname, '../mock/moduleMock.js'),
-          // This is a workaround for us using react-16 in the monorepo
-          '@storybook/react-dom-shim': '@storybook/react-dom-shim/dist/react-16',
-          'pg-pubsub': path.resolve(__dirname, '../mock/moduleMock.js'),
-          '@node-rs/argon2': path.resolve(__dirname, '../mock/argon2ModuleMock.js'),
+          http: path.resolve(import.meta.dirname, '../mock/moduleMock.js'),
+          winston: path.resolve(import.meta.dirname, '../mock/moduleMock.js'),
+          jsonwebtoken: path.resolve(import.meta.dirname, '../mock/moduleMock.js'),
+          'node-fetch': path.resolve(import.meta.dirname, '../mock/moduleMock.js'),
+          'pg-pubsub': path.resolve(import.meta.dirname, '../mock/moduleMock.js'),
+          '@node-rs/argon2': path.resolve(import.meta.dirname, '../mock/argon2ModuleMock.js'),
         },
       },
     });
