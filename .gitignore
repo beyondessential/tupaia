@@ -16,9 +16,6 @@
 *.pem
 dump.sql
 *.todo
-**/cypress/screenshots
-**/cypress/videos
-/snapshots.js
 .idea
 dockercfg
 packages/.vscode/settings.json
