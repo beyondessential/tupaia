@@ -435,11 +435,6 @@ export const constructForSingle = (models, recordType) => {
         readonly: [hasContent, isBoolean],
         config: [hasContent],
       };
-    case RECORDS.SUPERSET_INSTANCE:
-      return {
-        code: [isAString],
-        config: [hasContent],
-      };
     case RECORDS.TASK:
       return {
         entity_id: [constructRecordExistsWithId(models.entity)],

@@ -1,19 +1,20 @@
 import '@babel/polyfill';
-import http from 'http';
-import express from 'express';
-import compression from 'compression';
 import bodyParser from 'body-parser';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import express from 'express';
+import http from 'http';
 import morgan from 'morgan';
-import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+
 import { Authenticator } from '@tupaia/auth';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
+import { configureEnv } from './configureEnv';
+import './log';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
-import './log';
-import { configureEnv } from './configureEnv';
 
 configureEnv();
 

@@ -18,7 +18,7 @@ nvm install --default
 # PM2 is installed per Node version; reinstall if nvm switched versions
 if ! command -v pm2 &>/dev/null; then
   echo 'PM2 not found (likely because Node version changed from AMI). Installing...'
-  npm install --global pm2@^7.0.3
+  npm install --global pm2@^7.0.4
 fi
 echo "PM2 $(pm2 --version) is installed"
 pm2 install pm2-logrotate

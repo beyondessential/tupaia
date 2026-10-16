@@ -236,9 +236,9 @@ describe('DataBroker', () => {
       // For each data element, a different data service can be defined per country, see
       // "mapped by country" above. If the org units are in different countries, then a data
       // element could resolve to multiple services. E.g. Data Element Patient_Age could be
-      // in DHIS-tonga for Tonga, and in Superset-Fiji for Fiji. This logic then
+      // in DHIS-tonga for Tonga, and in the data lake for Fiji. This logic then
       // attempts to minimise the number of calls to any one service type, in the example
-      // above there should only be one call to DHIS and one to Superset.
+      // above there should only be one call to DHIS and one to the data lake.
       //
       // Note: all resulting pull calls to a data service are given ALL org unit codes and
       // ALL data element codes. Some data services are ok with this, and some will throw

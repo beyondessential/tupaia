@@ -344,10 +344,6 @@ export class UserModel extends DatabaseModel {
         obj[key] = value;
         return obj;
       }, preferences);
-      // If we change the selected project, we clear out the recent entities
-      if (updatedPreferenceFields.project_id) {
-        updatedPreferenceFields.recentEntities = {};
-      }
 
       updatedFields = {
         preferences: updatedPreferenceFields,
