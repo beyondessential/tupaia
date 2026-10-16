@@ -18,6 +18,10 @@ export class RouteHandler {
     this.project = null;
   }
 
+  get projectId() {
+    return this.project?.id ?? null;
+  }
+
   // can be overridden by subclasses with specific permissions checks
   async checkPermissions() {
     const { PermissionsChecker } = this.constructor;
@@ -44,12 +48,15 @@ export class RouteHandler {
   async handleRequest() {
     // Fetch permissions
     const entityCode = this.query?.entityCode || this.query?.organisationUnitCode;
-    this.entity = await this.models.entity.findOne({ code: entityCode });
+    this.project = await this.fetchAndCacheProject();
+    // TUP-3156: project-scope the entity lookup. A null projectId falls back to
+    // an unscoped findOne — intentional for now: not every route carries project
+    // context (TUP-3054 is wiring projectCode through the admin-panel global
+    // filter). Remove the fallback once projectCode is guaranteed on all routes.
+    this.entity = await this.models.entity.findOneByCodeInProject(entityCode, this.projectId);
     if (!this.entity) {
       throw new ValidationError(`Entity ${entityCode} could not be found`);
     }
-
-    this.project = await this.fetchAndCacheProject();
 
     await this.checkPermissions();
     // if a 'buildResponse' is defined by the subclass, run it and respond, otherwise assume the
@@ -71,7 +78,7 @@ export class RouteHandler {
     return this.project;
   };
 
-  fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
+  fetchProjectId = async () => (await this.fetchAndCacheProject()).id;
 
   fetchTypesExcludedFromWebFrontend = async (project, allCountryCodes) => {
     const { frontendExcluded } = project?.config;
@@ -96,9 +103,8 @@ export class RouteHandler {
           );
         }
 
-        const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups(
-          allCountryCodes,
-        );
+        const userPermissionGroups =
+          await this.req.accessPolicy.getPermissionGroups(allCountryCodes);
         const userHasAccessToExcludedTypes = permissionGroups.some(permissionGroup =>
           userPermissionGroups.includes(permissionGroup),
         );

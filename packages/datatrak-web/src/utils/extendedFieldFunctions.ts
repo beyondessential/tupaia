@@ -3,22 +3,22 @@ import { EntityRecord } from '@tupaia/tsmodels';
 const getParentName = async (
   entity: EntityRecord,
   context: {
-    hierarchyId: string;
+    projectId: string;
   },
 ) => {
-  const { hierarchyId } = context;
-  const parent = await entity.getParentFromParentChildRelation(hierarchyId);
+  const { projectId } = context;
+  const parent = await entity.getParentFromParentChildRelation(projectId);
   return parent?.name;
 };
 
 const getParentCode = async (
   entity: EntityRecord,
   context: {
-    hierarchyId: string;
+    projectId: string;
   },
 ) => {
-  const { hierarchyId } = context;
-  const parent = await entity.getParentFromParentChildRelation(hierarchyId);
+  const { projectId } = context;
+  const parent = await entity.getParentFromParentChildRelation(projectId);
   return parent?.code;
 };
 

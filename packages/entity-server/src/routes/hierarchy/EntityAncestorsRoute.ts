@@ -16,10 +16,10 @@ export type AncestorsRequest = SingleEntityRequest<
 >;
 export class EntityAncestorsRoute extends Route<AncestorsRequest> {
   public async buildResponse() {
-    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
+    const { projectId, entity, fields, field, filter } = this.req.ctx;
     const { includeRootEntity: includeRootEntityString = 'false' } = this.req.query;
     const includeRootEntity = includeRootEntityString?.toLowerCase() === 'true';
-    const ancestors = await entity.getAncestors(hierarchyId, {
+    const ancestors = await entity.getAncestors(projectId, {
       ...filter,
     });
     const responseEntities = includeRootEntity ? [entity].concat(ancestors) : ancestors;

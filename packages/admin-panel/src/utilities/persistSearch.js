@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 export const useLinkWithSearchState = url => {
   const location = useLocation();

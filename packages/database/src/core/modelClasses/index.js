@@ -18,8 +18,7 @@ import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
 import { DebugLogModel } from './DebugLog';
 import { EntityModel } from './Entity';
-import { EntityHierarchyModel } from './EntityHierarchy';
-import { EntityRelationModel } from './EntityRelation';
+import { EntityPolygonModel } from './EntityPolygon';
 import { ExternalDatabaseConnectionModel } from './ExternalDatabaseConnection';
 import { FacilityModel } from './Facility';
 import { FeedItemModel } from './FeedItem';
@@ -39,9 +38,9 @@ import { OptionModel } from './Option';
 import { OptionSetModel } from './OptionSet';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
+import { ProjectCountryModel } from './ProjectCountry';
 import { QuestionModel } from './Question';
 import { ReportModel } from './Report';
-import { EntityParentChildRelationModel } from './EntityParentChildRelation';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyGroupModel } from './SurveyGroup';
@@ -90,8 +89,7 @@ export const modelClasses = {
   DebugLog: DebugLogModel,
   DhisInstance: DhisInstanceModel,
   Entity: EntityModel,
-  EntityHierarchy: EntityHierarchyModel,
-  EntityRelation: EntityRelationModel,
+  EntityPolygon: EntityPolygonModel,
   ExternalDatabaseConnection: ExternalDatabaseConnectionModel,
   Facility: FacilityModel,
   FeedItem: FeedItemModel,
@@ -110,9 +108,9 @@ export const modelClasses = {
   OptionSet: OptionSetModel,
   PermissionGroup: PermissionGroupModel,
   Project: ProjectModel,
+  ProjectCountry: ProjectCountryModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
-  EntityParentChildRelation: EntityParentChildRelationModel,
   Report: ReportModel,
   Survey: SurveyModel,
   SurveyGroup: SurveyGroupModel,
@@ -156,8 +154,7 @@ export { DataServiceSyncGroupModel, DataServiceSyncGroupRecord } from './DataSer
 export { DataTableModel, DataTableRecord } from './DataTable';
 export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityModel, EntityRecord } from './Entity';
-export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
-export { EntityRelationModel, EntityRelationRecord } from './EntityRelation';
+export { EntityPolygonModel, EntityPolygonRecord } from './EntityPolygon';
 export {
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionRecord,
@@ -177,12 +174,9 @@ export { OptionModel, OptionRecord } from './Option';
 export { OptionSetModel, OptionSetRecord } from './OptionSet';
 export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
 export { ProjectModel, ProjectRecord } from './Project';
+export { ProjectCountryModel, ProjectCountryRecord } from './ProjectCountry';
 export { QuestionModel, QuestionRecord } from './Question';
 export { ReportModel, ReportRecord } from './Report';
-export {
-  EntityParentChildRelationModel,
-  EntityParentChildRelationRecord,
-} from './EntityParentChildRelation';
 export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel, SurveyGroupRecord } from './SurveyGroup';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';

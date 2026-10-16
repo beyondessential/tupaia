@@ -3,6 +3,7 @@
  * @typedef {import('../records').PublicSchemaRecordName} PublicSchemaRecordName
  */
 
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { resourceToRecordType } from './resourceToRecordType';
 
 /**
@@ -40,7 +41,14 @@ export const processColumnSelector = (models, unprocessedColumnSelector, baseRec
 export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
+    if (columnSelector === QUERY_CONJUNCTIONS.AND || columnSelector === QUERY_CONJUNCTIONS.OR) {
+      // _and_/_or_ are bracketing operators, not columns. Keep the key as-is and
+      // qualify the column selectors nested inside, so addWhereClause still sees
+      // the conjunction (and the inner columns stay unambiguous across joins).
+      processedObject[columnSelector] = processColumnSelectorKeys(models, value, recordType);
+    } else {
+      processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
+    }
   });
   return processedObject;
 };
