@@ -27,6 +27,7 @@ export const SYNC_STREAM_MESSAGE_KIND = {
   PULL_WAITING: 0x0002,
   PULL_CHANGE: 0x0003,
   PUSH_WAITING: 0x0004,
+  PUSH_CHANGE: 0x0005,
 } as const;
 
 // Internal sync facts
