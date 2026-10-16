@@ -1,10 +1,12 @@
-import { TestableServer } from '@tupaia/server-boilerplate';
+import { getTestModels } from '@tupaia/database';
+import type { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
+import type { TestModelRegistry } from '../types';
 import {
-  getEntityWithFields,
-  getEntitiesWithFields,
-  ENTITIES,
   COUNTRIES,
+  ENTITIES,
+  getEntitiesWithFields,
+  getEntityWithFields,
   getHierarchiesWithFields,
 } from './fixtures';
 
@@ -180,6 +182,46 @@ describe('fieldsAndFilters', () => {
       });
 
       expect(gsEntity).toEqual({ code: 'LAVENDER', child_codes: ['LAVENDER_RADIO_TOWER'] });
+    });
+  });
+
+  describe('project bounds', () => {
+    const models = getTestModels() as TestModelRegistry;
+    const COUNTRY_BOUNDS = {
+      KANTO: '{"type":"Polygon","coordinates":[[[130,30],[130,35],[135,35],[135,30],[130,30]]]}',
+      JOHTO: '{"type":"Polygon","coordinates":[[[125,32],[125,38],[131,38],[131,32],[125,32]]]}',
+    };
+
+    const setCountryBounds = async (boundsByCode: Record<string, string | null>) => {
+      for (const [code, bounds] of Object.entries(boundsByCode)) {
+        await models.database.executeSql(
+          'UPDATE entity SET bounds = ST_GeomFromGeoJSON(?) WHERE code = ?',
+          [bounds, code],
+        );
+      }
+      await models.database.waitForAllChangeHandlers();
+    };
+
+    beforeAll(async () => {
+      await setCountryBounds(COUNTRY_BOUNDS);
+    });
+
+    afterAll(async () => {
+      await setCountryBounds({ KANTO: null, JOHTO: null });
+    });
+
+    it('calculates project bounds from the bounds of its countries', async () => {
+      const { body: entity } = await app.get('hierarchy/goldsilver/goldsilver', {
+        query: { fields: 'code,bounds' },
+      });
+
+      expect(entity).toEqual({
+        code: 'goldsilver',
+        bounds: [
+          [30, 125],
+          [38, 135],
+        ],
+      });
     });
   });
 
