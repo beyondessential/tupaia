@@ -2,7 +2,7 @@ import { syncGroups } from '@tupaia/admin-panel';
 import { getColumnFilter } from '../../table/columnTypes';
 import { getCreateConfigs, getDeleteColumnConfigs, getBaseEditorConfigs } from '../helpers';
 
-const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
+const SERVICE_TYPES = /** @type {const} */ ([]);
 
 export const getSyncGroupsPageConfig = translate => {
   const FIELDS = [
