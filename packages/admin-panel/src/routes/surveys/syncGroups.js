@@ -2,7 +2,7 @@ import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
 
 const RESOURCE_NAME = { singular: 'sync group' };
 
-const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
+const SERVICE_TYPES = [];
 
 const FIELDS = [
   {

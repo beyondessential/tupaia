@@ -87,12 +87,11 @@ type EntityFields = {
   country_code?: string | null;
   type: Entity['type'];
   name?: string;
-  config?: Entity['config'];
   metadata?: Entity['metadata'];
 };
 export const entity = (fields: EntityFields): Entity => {
-  const { code, country_code, type, name = code, config = {}, metadata = {} } = fields;
-  return { code, country_code, type, name, config, metadata };
+  const { code, country_code, type, name = code, metadata = {} } = fields;
+  return { code, country_code, type, name, metadata };
 };
 export const entityType = (fields: Partial<EntityFields & BaseEntityRecord>) => {
   const entityFields: EntityFields = { ...fields, ...entity(fields as EntityFields) };

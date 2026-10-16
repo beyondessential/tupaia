@@ -1,16 +1,9 @@
-import { DataBroker } from '@tupaia/data-broker';
 import { respond, ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertSyncGroupEditPermissions } from './assertSyncGroupPermissions';
-import { syncWithKoBo } from '../../kobo';
 
-const manualSyncFunctions = {
-  kobo: (models, syncGroupCode) => {
-    const dataBroker = new DataBroker();
-    return syncWithKoBo(models, dataBroker, syncGroupCode);
-  },
-};
+const manualSyncFunctions = {};
 
 export class ManuallySyncSyncGroup extends CRUDHandler {
   async validateRecordExists() {

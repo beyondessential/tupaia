@@ -124,7 +124,6 @@ Centralised gateway supporting multiple external data sources:
 - `dhis` - DHIS2 integration
 - `indicator` - Calculated indicators
 - `data-lake` - Data lake API (data lake in turn has integrations with Tamanu, mSupply, etc.)
-- `kobo` - KoBoToolbox integration
 - `weather` - Weather API data
 
 ## Important Conventions
