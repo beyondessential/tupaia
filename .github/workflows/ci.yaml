@@ -99,6 +99,18 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
 
+  validate_dedupe:
+    name: Validate dedupe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-yarn
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn dedupe --check
+
   package_list:
     name: Generate package list
     runs-on: ubuntu-latest
@@ -195,6 +207,7 @@ jobs:
     needs:
       - validate_branch_name
       - validate_lockfile
+      - validate_dedupe
       - validate_migration
       - validate_tests
       - validate_types
