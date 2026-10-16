@@ -40,7 +40,6 @@ COPY packages/ui-chart-components/. ./packages/ui-chart-components
 COPY packages/ui-map-components/. ./packages/ui-map-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
-COPY packages/kobo-api/. ./packages/kobo-api
 COPY scripts/bash/ ./scripts/bash/
 
 #  Build tooling configuration files

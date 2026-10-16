@@ -40,7 +40,7 @@ export const DATA_GROUPS = {
 export const SYNC_GROUPS = {
   SG_1: {
     code: 'SG_1',
-    service_type: 'kobo',
+    service_type: 'tupaia',
     config: {},
     databaseRecord: RECORDS.DATA_SERVICE_SYNC_GROUP,
   },

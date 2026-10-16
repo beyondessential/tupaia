@@ -369,9 +369,6 @@ export const DataServiceEntityConfigSchema = {
 	"properties": {
 		"dhis_id": {
 			"type": "string"
-		},
-		"kobo_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -78143,9 +78140,6 @@ export const DataServiceEntitySchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78172,9 +78166,6 @@ export const DataServiceEntityCreateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78196,9 +78187,6 @@ export const DataServiceEntityUpdateSchema = {
 			"type": "object",
 			"properties": {
 				"dhis_id": {
-					"type": "string"
-				},
-				"kobo_id": {
 					"type": "string"
 				}
 			},

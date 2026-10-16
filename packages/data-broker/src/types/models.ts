@@ -52,13 +52,7 @@ type DatabaseModel<
 
 export type DataSourceType = 'dataElement' | 'dataGroup' | 'syncGroup';
 
-export type ServiceType =
-  | 'data-lake'
-  | 'dhis'
-  | 'indicator'
-  | 'kobo'
-  | 'tupaia'
-  | 'weather';
+export type ServiceType = 'data-lake' | 'dhis' | 'indicator' | 'tupaia' | 'weather';
 
 export type DataSource = {
   code: string;
@@ -84,7 +78,6 @@ type SyncStatus = 'IDLE' | 'SYNCING' | 'ERROR';
 export type DataServiceEntity = {
   config: {
     dhis_id: string;
-    kobo_id: string;
   };
   entity_code: string;
 };
@@ -94,9 +87,6 @@ export type Entity = {
   name: string;
   type: string;
   point?: string;
-  config: {
-    kobo_id?: string;
-  };
   metadata: {
     dhis?: {
       trackedEntityId: string;
