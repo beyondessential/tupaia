@@ -2,14 +2,12 @@ import { TupaiaDataApi } from '@tupaia/data-api';
 import { DataLakeApi } from '@tupaia/data-lake-api';
 import { TupaiaDatabase } from '@tupaia/database';
 import { IndicatorApi } from '@tupaia/indicators';
-import { KoBoApi } from '@tupaia/kobo-api';
 import { WeatherApi } from '@tupaia/weather-api';
 import { DataBroker } from '../DataBroker';
 import { DataBrokerModelRegistry, ServiceType } from '../types';
 import { DataLakeService } from './data-lake';
 import { DhisService } from './dhis';
 import { IndicatorService } from './indicator';
-import { KoBoService } from './kobo';
 import { Service } from './Service';
 import { TupaiaService } from './tupaia';
 import { WeatherService } from './weather';
@@ -33,8 +31,6 @@ export const createService = (
       );
     case 'weather':
       return new WeatherService(models, new WeatherApi());
-    case 'kobo':
-      return new KoBoService(models, new KoBoApi());
     default:
       throw new Error(`Invalid service type: ${type}`);
   }

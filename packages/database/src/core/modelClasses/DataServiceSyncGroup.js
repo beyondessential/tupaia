@@ -8,9 +8,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { generateId } from '../utilities';
 
-const SERVICE_TYPES = {
-  KOBO: 'kobo',
-};
+const SERVICE_TYPES = /** @type {const} */ ({});
 
 const syncStatuses = {
   syncing: 'SYNCING',
@@ -18,6 +16,7 @@ const syncStatuses = {
   error: 'ERROR',
 };
 
+/** @deprecated */
 export class DataServiceSyncGroupRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_SERVICE_SYNC_GROUP;
 
