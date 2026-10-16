@@ -397,15 +397,6 @@ export const EntityMetadataSchema = {
 			},
 			"additionalProperties": false
 		},
-		"ms1": {
-			"type": "object",
-			"properties": {
-				"distributionId": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
 		"openStreetMaps": {
 			"type": "object",
 			"properties": {
@@ -45801,15 +45792,6 @@ export const EntityQuestionConfigFieldValueSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -45881,15 +45863,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -45946,15 +45919,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46021,15 +45985,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46086,15 +46041,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46161,15 +46107,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46226,15 +46163,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46301,15 +46229,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46366,15 +46285,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46441,15 +46351,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46506,15 +46407,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -47002,15 +46894,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47067,15 +46950,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47142,15 +47016,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47207,15 +47072,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47282,15 +47138,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47347,15 +47194,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47422,15 +47260,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47487,15 +47316,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47562,15 +47382,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47627,15 +47438,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -78905,15 +78707,6 @@ export const EntitySchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -79089,15 +78882,6 @@ export const EntityCreateSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -79264,15 +79048,6 @@ export const EntityUpdateSchema = {
 							"type": "boolean"
 						},
 						"trackedEntityId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
 							"type": "string"
 						}
 					},
@@ -97745,209 +97520,6 @@ export const MeditrakSyncQueueUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const Ms1SyncLogSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"record_id",
-		"record_type"
-	]
-}
-export const Ms1SyncLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type"
-	]
-}
-export const Ms1SyncLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const Ms1SyncQueueSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"record_id",
-		"record_type",
-		"type"
-	]
-}
-export const Ms1SyncQueueCreateSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type",
-		"type"
-	]
-}
-export const Ms1SyncQueueUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const OneTimeLoginSchema = {
 	"type": "object",
 	"properties": {
@@ -102393,15 +101965,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 								},
 								"additionalProperties": false
 							},
-							"ms1": {
-								"type": "object",
-								"properties": {
-									"distributionId": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false
-							},
 							"openStreetMaps": {
 								"type": "object",
 								"properties": {
@@ -103420,15 +102983,6 @@ export const EntityResponseSchema = {
 							"type": "boolean"
 						},
 						"trackedEntityId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
 							"type": "string"
 						}
 					},
