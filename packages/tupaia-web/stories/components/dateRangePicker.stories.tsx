@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 import { Moment } from 'moment';
 import React, { useState } from 'react';
 

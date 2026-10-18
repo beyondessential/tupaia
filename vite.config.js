@@ -34,20 +34,38 @@ export default defineConfig(({ command, mode }) => {
   // used only in the context of a <Router> component`).
   const isPsss = packageName === '@tupaia/psss';
 
+  // Inline each REACT_APP_ variable on its own. Replacing `process.env` as a whole would embed
+  // every build-time variable in the bundle
+  const reactAppEnvReplacements = Object.fromEntries(
+    Object.entries(env)
+      .filter(([key]) => key.startsWith('REACT_APP_'))
+      .map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+
   const baseConfig = {
     build: {
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          manualChunks: function manualChunks(id) {
-            if (id.includes('ace-builds')) return 'ace';
-            if (id.includes('react-ace')) return 'reactAce';
-            if (id.includes('jsoneditor')) return 'jsonEditor';
-            if (id.includes('jszip')) return 'jszip';
-            if (id.includes('icons')) return 'muiIcons';
-            if (id.includes('moment-timezone')) return 'momentTimezone';
-            if (id.includes('qrcode')) return 'qrcode';
-            if (id.includes('types')) return 'tupaiaTypes';
-            if (id.includes('xlsx')) return 'xlsx';
+          codeSplitting: {
+            groups: [
+              {
+                debugName: 'namedChunks',
+                // Returning a name puts the module in that chunk; returning null leaves it to
+                // automatic code splitting
+                name: function chunkName(id) {
+                  if (id.includes('ace-builds')) return 'ace';
+                  if (id.includes('react-ace')) return 'reactAce';
+                  if (id.includes('jsoneditor')) return 'jsonEditor';
+                  if (id.includes('jszip')) return 'jszip';
+                  if (id.includes('icons')) return 'muiIcons';
+                  if (id.includes('moment-timezone')) return 'momentTimezone';
+                  if (id.includes('qrcode')) return 'qrcode';
+                  if (id.includes('types')) return 'tupaiaTypes';
+                  if (id.includes('xlsx')) return 'xlsx';
+                  return null;
+                },
+              },
+            ],
           },
         },
         ...(isDatatrakWeb && {
@@ -73,13 +91,12 @@ export default defineConfig(({ command, mode }) => {
               },
             }),
             commonjs(),
-            // Replace process.env with actual values instead of using define, because define
-            // also replaces process.env in external node_modules, causing issues with knex
+            // Replace in the source rather than using `define`, which in dev only sets values on
+            // `globalThis.process`. The polyfills give each module its own `process`, so the values
+            // would never reach our code
             replace({
-              'process.env': JSON.stringify(env),
-              include: 'src/**/*',
-              exclude: 'node_modules/**',
-              preventAssignment: false,
+              ...reactAppEnvReplacements,
+              preventAssignment: true,
             }),
           ]
         : []),
@@ -98,7 +115,6 @@ export default defineConfig(({ command, mode }) => {
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
-      ...(isDatatrakWeb && { conditions: ['browser'] }),
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: [
         '@material-ui/core',
@@ -138,6 +154,12 @@ export default defineConfig(({ command, mode }) => {
           pg: path.resolve(__dirname, 'mock/pgMock.js'),
           'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
           '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
+          // knex-pglite `require`s PGlite, which would otherwise resolve to its CommonJS build. Use
+          // the ES module build that our own code imports, so only one copy is bundled
+          '@electric-sql/pglite': path.resolve(
+            __dirname,
+            'node_modules/@electric-sql/pglite/dist/index.js',
+          ),
         }),
       },
     },
@@ -164,6 +186,10 @@ export default defineConfig(({ command, mode }) => {
             '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
             '@tupaia/tsutils': path.resolve(__dirname, './packages/tsutils/src/index.ts'),
             '@tupaia/access-policy': path.resolve(__dirname, './packages/access-policy/src/index.js'),
+            // Only imported on PGlite's Node code paths. The build marks them external, which
+            // doesn't apply to the dev server, and the browser polyfills don't provide them
+            'fs/promises': path.resolve(__dirname, 'mock/moduleMock.js'),
+            'stream/promises': path.resolve(__dirname, 'mock/moduleMock.js'),
           }),
         },
       },
