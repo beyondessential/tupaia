@@ -34,11 +34,46 @@ echo "  Auth key:  $auth_key_param_name (from Parameter Store)"
 echo "  Hostname:  $hostname"
 echo "  Tags:      $tags"
 
-sudo tailscale up \
-	--auth-key="$("$script_dir"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
-	--hostname="$hostname" \
-	--ssh \
-	--advertise-tags="$tags"
+# When the server this one replaces handed its Tailscale identity over (the deployment Lambda tags
+# this instance only then), take over its node: same name, address and Canopy binding, rather
+# than a new node per redeploy. See flushToS3.sh for the other side.
+restore_identity() {
+	[[ $("$script_dir"/../utility/getEC2TagValue.sh TailscaleIdentity) == handed-over ]] || return 1
+
+	local bucket archive
+	bucket=$("$script_dir"/fetchParameterStoreValue.sh /tupaia/servers/bucket 2>/dev/null) || return 1
+	archive=$(mktemp)
+	if ! aws s3 cp --only-show-errors "s3://$bucket/tailscale/$DEPLOYMENT_NAME/identity.tgz" "$archive"; then
+		rm -f "$archive"
+		return 1
+	fi
+
+	echo "  Taking over the deployment's node from s3://$bucket/tailscale/$DEPLOYMENT_NAME/"
+	sudo systemctl stop tailscaled
+	sudo rm -rf /var/lib/tailscale
+	sudo install -d -m 0700 /var/lib/tailscale
+	sudo tar -C /var/lib/tailscale -xzpf "$archive"
+	rm -f "$archive"
+	sudo systemctl start tailscaled
+
+	sudo tailscale up --reset --hostname="$hostname" --ssh --advertise-tags="$tags" --timeout=60s &&
+		[[ $(tailscale status --json | jq -r .BackendState) == Running ]]
+}
+
+if ! restore_identity; then
+	# Never half a restored identity: start clean as a new node
+	if [[ -e /var/lib/tailscale/tailscaled.state ]]; then
+		sudo systemctl stop tailscaled
+		sudo rm -rf /var/lib/tailscale
+		sudo systemctl start tailscaled
+	fi
+	echo '  Joining as a new node'
+	sudo tailscale up \
+		--auth-key="$("$script_dir"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
+		--hostname="$hostname" \
+		--ssh \
+		--advertise-tags="$tags"
+fi
 
 echo
 echo 'Connected to bes.au Tailnet'
