@@ -5,7 +5,7 @@
  * @typedef {(answer: Answer) => Promise<Answer["text"]>} GetAnswerTextFunction
  */
 
-import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
+import { S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
 import { isValidHttpUrl } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
 
@@ -36,7 +36,7 @@ async function getFileAnswerText(answer) {
     return answer.body;
   }
 
-  const s3Client = new S3Client(new S3());
+  const s3Client = new S3Client();
   const { uniqueFileName, data } = answer.body;
 
   void (await s3Client.uploadFile(uniqueFileName, data));
@@ -62,7 +62,7 @@ async function getPhotoAnswerText(answer) {
 
   // Included for backward compatibility passing base64 strings for images, and for datatrak-web to
   // upload images in answers
-  const s3Client = new S3Client(new S3());
+  const s3Client = new S3Client();
   return await s3Client.uploadImage(answer.body);
 }
 

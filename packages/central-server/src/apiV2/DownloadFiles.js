@@ -5,7 +5,7 @@ import {
   getUniqueFileNameParts,
   getDeDuplicatedFileName,
 } from '@tupaia/utils';
-import { S3, S3Client, getTempDirectory } from '@tupaia/server-utils';
+import { S3Client, getTempDirectory } from '@tupaia/server-utils';
 import { RouteHandler } from './RouteHandler';
 import { zipMultipleFiles } from './utilities';
 
@@ -24,7 +24,7 @@ export class DownloadFiles extends RouteHandler {
       );
     }
 
-    const s3Client = new S3Client(new S3());
+    const s3Client = new S3Client();
     const files = await Promise.all(
       uniqueFileNames.map(uniqueFileName => s3Client.downloadFile(uniqueFileName)),
     );
