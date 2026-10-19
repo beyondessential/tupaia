@@ -11,6 +11,18 @@ fi
 deployment_name=$1
 repo_root=$(realpath "$dir/../..")
 
+# These values are substituted into the .env files, so restrict them to characters valid in a
+# hostname. Validate before touching Bitwarden.
+if [[ ! $deployment_name =~ ^[a-z0-9-]+$ ]]; then
+    echo -e "${BOLD}${RED}Invalid deployment name ‘$deployment_name’.${RESET} Use only lowercase alphanumerics and hyphens." >&2
+    echo -e "Usage: ${GREEN}downloadEnvironmentVariables.sh ${BLUE}<deployment-name> [package]...${RESET}" >&2
+    exit 1
+fi
+if [[ -v DOMAIN && ! $DOMAIN =~ ^[a-z0-9.-]+$ ]]; then
+    echo -e "${BOLD}${RED}Invalid DOMAIN ‘$DOMAIN’.${RESET} Use only lowercase alphanumerics, hyphens and full stops." >&2
+    exit 1
+fi
+
 # Log into Bitwarden
 if ! yarn bw login --check &>/dev/null; then
     if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET && -v BW_PASSWORD ]]; then
@@ -43,14 +55,6 @@ cleanup() {
     echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
     yarn bw logout
     echo
-
-    # Clean up detritus on macOS
-    # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a
-    # way that’s compatible to both (by not supplying a suffix for the -i flag), but this causes
-    # macOS to generate backup files which we don’t need.
-    if [[ $(uname) = 'Darwin' ]]; then
-        rm -f "$repo_root"/env/*.env-e "$repo_root"/packages/*/.env-e
-    fi
 }
 
 trap cleanup EXIT
@@ -114,15 +118,14 @@ load_env_file_from_bw() {
     fi
 
     # checkout deployment specific env vars, or dev as fallback
-    deployment_env_vars=$(get_note "$file_name.$deployment_name.env")
+    local contents
+    contents=$(get_note "$file_name.$deployment_name.env")
 
-    if [[ -n $deployment_env_vars ]]; then
-        echo "$deployment_env_vars" >"$env_file_path"
-    else
-        local dev_env_vars=$(get_note "$file_name.dev.env")
-        echo "$dev_env_vars" >"$env_file_path"
+    if [[ -z $contents ]]; then
+        contents=$(get_note "$file_name.dev.env")
 
-        if [[ -z $dev_env_vars ]]; then
+        if [[ -z $contents ]]; then
+            echo >"$env_file_path"
             if [[ -t 1 ]]; then
                 echo -en "$CLEAR_LINE"
             fi
@@ -133,17 +136,17 @@ load_env_file_from_bw() {
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual
     # deployment name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
-    sed -i -e "s/\[deployment-name\]/$deployment_name/g" "$env_file_path"
+    contents=${contents//'[deployment-name]'/"$deployment_name"}
 
     if [[ -v DOMAIN ]]; then
         # Replace the placeholder [domain]
-        sed -i -e "s/\[domain\]/$DOMAIN/g" "$env_file_path"
+        contents=${contents//'[domain]'/"$DOMAIN"}
     fi
 
     if [[ $deployment_name = *-e2e || $deployment_name = e2e ]]; then
         # Update e2e environment variables
         if [[ $file_name = aggregation ]]; then
-            sed -i -e 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' "$env_file_path"
+            contents=$(sed -e 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' <<<"$contents")
         fi
     fi
 
@@ -151,8 +154,10 @@ load_env_file_from_bw() {
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
-        sed -i -e 's/^###DEV_ONLY###//g' "$env_file_path"
+        contents=$(sed -e 's/^###DEV_ONLY###//g' <<<"$contents")
     fi
+
+    echo "$contents" >"$env_file_path"
 
     if [[ -t 1 ]]; then
         echo -en "$CLEAR_LINE"
