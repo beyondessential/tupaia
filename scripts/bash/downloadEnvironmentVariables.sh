@@ -62,6 +62,9 @@ if [[ ! -t 1 && ! -v BW_PASSWORD ]]; then
 fi
 eval "$(yarn bw unlock --passwordenv BW_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
 
+# The session token is all we need from here on; keep long-lived credentials out of child processes
+unset BW_CLIENTID BW_CLIENTSECRET BW_PASSWORD BW_EMAIL
+
 # Collection in BitWarden where .env vars are kept
 collection_path='Engineering/Tupaia General/Environment Variables'
 collection_id=$(yarn bw get collection "$collection_path" | jq --raw-output .id)
