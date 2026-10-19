@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
 import { configureDotEnv } from '../../configureDotEnv';
-import { S3, S3Client } from '../../s3';
+import { S3Client } from '../../s3';
 import * as getUniqueFileNameModule from '../../s3/getUniqueFileName';
 
 configureDotEnv([path.resolve(__dirname, '../../../../../env/aws.env')]);
@@ -27,7 +27,7 @@ describe('S3Client', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
-    s3Client = new S3Client(new S3());
+    s3Client = new S3Client();
   });
 
   describe('uploadImage', () => {
