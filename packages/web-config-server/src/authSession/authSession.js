@@ -34,7 +34,7 @@ const auth = () => async (req, res, next) => {
       req.userJson = req.session.userJson;
       // to match what is in server boilerplate, until we refactor to use server boilerplate middleware
       req.user = {
-        id: authHeaderUser.id,
+        id: userId,
       };
       req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
       next();
@@ -53,6 +53,7 @@ const auth = () => async (req, res, next) => {
     req.accessPolicy = await getAccessPolicyForUser(authenticator, PUBLIC_USER_NAME);
   } catch (error) {
     next(new UnauthenticatedError(error.message));
+    return;
   }
   next();
 };
