@@ -36,7 +36,7 @@ const auth = () => async (req, res, next) => {
       req.user = {
         id: userId,
       };
-      req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
+      req.accessPolicy ??= await getAccessPolicyForUser(authenticator, userId);
       next();
       return;
     }
