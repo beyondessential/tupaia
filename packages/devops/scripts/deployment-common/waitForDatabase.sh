@@ -67,7 +67,7 @@ record_is_published() {
 }
 
 # Sets `failure` (and `failure_detail`, if there is any) to the first check that doesn’t pass
-check_database() {
+database_is_ready() {
 	failure_detail=
 
 	if ! record_is_published; then
@@ -99,7 +99,7 @@ min() {
 echo -e "${BLUE}==>️${RESET} ${BOLD}Waiting for database at $DB_URL${RESET}"
 
 declare -i start_time=$SECONDS
-until check_database; do
+until database_is_ready; do
 	declare -i elapsed=$((SECONDS - start_time))
 	if ((elapsed >= DB_WAIT_TIMEOUT_SECONDS)); then
 		echo -en "${BOLD}${RED}Database not ready after $(format_duration "$elapsed").${RESET} " >&2
