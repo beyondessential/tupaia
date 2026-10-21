@@ -33,10 +33,12 @@ if [[ -z $DB_URL ]]; then
 	exit 1
 fi
 
+# Assume `DB_URL` takes format `$DEPLOYMENT_NAME-db.tupaia.org`. Zone is constant.
+zone=tupaia.org
+
 # Look for the record on the zone’s own nameservers rather than through the local resolver. Asking a
 # resolver about a name that doesn’t exist yet makes it cache that answer (for up to 15 min with
 # tupaia.org’s SOA), which would keep the database out of reach after the record is created.
-zone=${DB_URL#*.}
 declare -a authoritative_nameservers=()
 
 record_is_published() {
