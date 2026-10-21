@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Waits until this deployment’s database can be reached and logged into, or gives up after
+# DB_WAIT_TIMEOUT_SECONDS (default 600).
+#
+# A fresh staging deployment’s server is launched before its database has finished restoring from a
+# snapshot. The [deployment-name]-db.tupaia.org record is only created once the restore is done, and
+# the master password is reset after that, so the database can lag well behind the build.
+set -e
+
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+tupaia_dir=$(realpath -- "$script_dir"/../../../..)
+
+source "$tupaia_dir"/scripts/bash/ansiControlSequences.sh
+
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh getent pg_isready psql; then
+	exit 1
+fi
+
+source "$tupaia_dir"/scripts/bash/mergeEnvForDB.sh
+
+: "${DB_PORT:=5432}"
+: "${DB_WAIT_TIMEOUT_SECONDS:=600}"
+: "${DB_WAIT_INTERVAL_SECONDS:=15}"
+
+for varname in DB_URL DB_NAME DB_PG_USER DB_PG_PASSWORD; do
+	if [[ -z ${!varname} ]]; then
+		echo -en "${BOLD}${RED}Missing environment variable.${RESET} " >&2
+		echo -e "${BOLD}$varname${RESET} must be set in env/db.env or env/pg.env." >&2
+		exit 1
+	fi
+done
+
+is_ip() {
+	[[ $1 =~ ^[0-9]+(\.[0-9]+){3}$ || $1 = *:* ]]
+}
+
+# Look for the record on the zone’s own nameserver rather than through the local resolver. Asking a
+# resolver about a name that doesn’t exist yet makes it cache that answer (for up to 15 min with
+# tupaia.org’s SOA), which would keep the database out of reach after the record is created.
+authoritative_nameserver=
+parent_domain=${DB_URL#*.}
+if ! is_ip "$DB_URL" && [[ $parent_domain = *.* ]] && command -v dig &>/dev/null; then
+	authoritative_nameserver=$(dig +short NS "$parent_domain" 2>/dev/null | head -1) || true
+fi
+
+record_is_published() {
+	local answer
+	# If the nameserver can’t be reached, leave it to the local resolver
+	answer=$(dig +short +norecurse +time=5 +tries=1 "$DB_URL" @"$authoritative_nameserver" 2>&1) || return 0
+	[[ -n $answer ]]
+}
+
+# Sets `failure` (and `failure_detail`, if there is any) to the first check that doesn’t pass
+check_database() {
+	failure_detail=
+
+	if [[ -n $authoritative_nameserver ]] && ! record_is_published; then
+		failure="$DB_URL isn’t in DNS yet"
+		return 1
+	fi
+
+	if ! getent hosts "$DB_URL" >/dev/null; then
+		sudo -n resolvectl flush-caches &>/dev/null || true
+		failure="$DB_URL doesn’t resolve on this host yet"
+		return 1
+	fi
+
+	if ! failure_detail=$(pg_isready --host="$DB_URL" --port="$DB_PORT" --timeout=5 2>&1); then
+		failure='the database isn’t accepting connections yet'
+		return 1
+	fi
+
+	# DB_PG_USER is the first user to connect (see install-mv-refresh). Checking it also covers the
+	# master password still being reset.
+	if ! failure_detail=$(
+		PGCONNECT_TIMEOUT=10 PGPASSWORD=$DB_PG_PASSWORD psql \
+			--host="$DB_URL" \
+			--port="$DB_PORT" \
+			--username="$DB_PG_USER" \
+			--dbname="$DB_NAME" \
+			--no-psqlrc \
+			--command='SELECT 1' \
+			2>&1 >/dev/null
+	); then
+		failure="$DB_PG_USER can’t log in yet"
+		return 1
+	fi
+}
+
+format_duration() {
+	echo "$(($1 / 60))m $(($1 % 60))s"
+}
+
+echo -e "${BLUE}==>️${RESET} ${BOLD}Waiting for database at $DB_URL${RESET}"
+
+declare -i start_time=$SECONDS
+until check_database; do
+	declare -i elapsed=$((SECONDS - start_time))
+	if ((elapsed >= DB_WAIT_TIMEOUT_SECONDS)); then
+		echo -en "${BOLD}${RED}Database not ready after $(format_duration "$elapsed").${RESET} " >&2
+		echo "Last check: $failure" >&2
+		if [[ -n $failure_detail ]]; then
+			echo "$failure_detail" >&2
+		fi
+		exit 1
+	fi
+
+	echo "Waiting for database ($(format_duration "$elapsed")): $failure"
+	sleep "$DB_WAIT_INTERVAL_SECONDS"
+done
+
+duration=$(format_duration $((SECONDS - start_time)))
+echo "Database ready (waited $duration)"
