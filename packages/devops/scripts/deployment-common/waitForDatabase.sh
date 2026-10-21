@@ -75,7 +75,14 @@ check_database() {
 		return 1
 	fi
 
-	if ! failure_detail=$(pg_isready --host="$DB_URL" --port="$DB_PORT" --timeout=5 2>&1); then
+	local status=0
+	failure_detail=$(pg_isready --host="$DB_URL" --port="$DB_PORT" --timeout=5 2>&1) || status=$?
+	if ((status == 3)); then
+		# No connection was attempted because of an invalid parameter, so waiting won’t help
+		echo -en "${BOLD}${RED}Invalid connection parameters.${RESET} " >&2
+		echo "Check DB_URL, DB_PORT and any PG* environment variables. pg_isready: $failure_detail" >&2
+		exit 1
+	elif ((status != 0)); then
 		failure='the database isn’t accepting connections yet'
 		return 1
 	fi
