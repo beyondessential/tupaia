@@ -12,7 +12,7 @@ tupaia_dir=$(realpath -- "$script_dir"/../../../..)
 
 source "$tupaia_dir"/scripts/bash/ansiControlSequences.sh
 
-if ! "$tupaia_dir"/scripts/bash/requireCommands.sh getent pg_isready psql; then
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh dig psql; then
 	exit 1
 fi
 
@@ -37,64 +37,50 @@ for var in DB_URL DB_NAME DB_PG_USER DB_PG_PASSWORD; do
 	fi
 done
 
-# Prevent stray libpq settings from redirecting or weakening the checks (PGHOSTADDR overrides --host)
-unset PGHOSTADDR PGSERVICE PGSERVICEFILE PGOPTIONS PGSSLMODE
-
 # Match server process behaviour, which connect over SSL when this is set (see getConnectionConfig.js)
 if [[ $DB_ENABLE_SSL = true ]]; then
 	export PGSSLMODE=require
 fi
 
-is_ip() {
-	[[ $1 =~ ^[0-9]+(\.[0-9]+){3}$ || $1 = *:* ]]
-}
-
-# Look for the record on the zone’s own nameserver rather than through the local resolver. Asking a
+# Look for the record on the zone’s own nameservers rather than through the local resolver. Asking a
 # resolver about a name that doesn’t exist yet makes it cache that answer (for up to 15 min with
 # tupaia.org’s SOA), which would keep the database out of reach after the record is created.
+zone=${DB_URL#*.}
 declare -a authoritative_nameservers=()
-parent_domain=${DB_URL#*.}
-if ! is_ip "$DB_URL" && [[ $parent_domain = *.* ]] && command -v dig &>/dev/null; then
-	# dig can print ‘;;’ diagnostics to stdout even with +short, so keep only hostnames
-	readarray -t authoritative_nameservers < <(
-		dig +short NS "$parent_domain" 2>/dev/null | grep -E '^[A-Za-z0-9.-]+$'
-	)
-fi
 
 record_is_published() {
-	local nameserver answer
+	if ((${#authoritative_nameservers[@]} == 0)); then
+		# dig can print ‘;;’ diagnostics to stdout even with +short, so keep only hostnames
+		readarray -t authoritative_nameservers < <(
+			dig +short NS "$zone" 2>/dev/null | grep -E '^[A-Za-z0-9.-]+$'
+		)
+		if ((${#authoritative_nameservers[@]} == 0)); then
+			failure_detail="Couldn’t find the nameservers for $zone"
+			return 1
+		fi
+	fi
+
+	local nameserver response
 	for nameserver in "${authoritative_nameservers[@]}"; do
-		if answer=$(dig +short +norecurse +time=5 +tries=1 "$DB_URL" @"$nameserver" 2>&1); then
-			[[ -n $answer ]]
+		response=$(dig +norecurse +time=5 +tries=1 +noall +comments +answer "$DB_URL" @"$nameserver" 2>&1) ||
+			continue
+		# Anything but NOERROR or NXDOMAIN (e.g. REFUSED, SERVFAIL) says nothing about the record
+		if [[ $response =~ status:\ (NOERROR|NXDOMAIN) ]]; then
+			grep -q '^[^;]' <<<"$response"
 			return
 		fi
 	done
-	# If none of the nameservers can be reached, leave it to the local resolver
-	return 0
+
+	failure_detail="None of the nameservers for $zone gave an answer"
+	return 1
 }
 
 # Sets `failure` (and `failure_detail`, if there is any) to the first check that doesn’t pass
 check_database() {
 	failure_detail=
 
-	if ((${#authoritative_nameservers[@]} > 0)) && ! record_is_published; then
+	if ! record_is_published; then
 		failure="$DB_URL isn’t in DNS yet"
-		return 1
-	fi
-
-	if ! getent hosts "$DB_URL" >/dev/null; then
-		# Clear any negative answer cached before the record existed, but only once: it needs root and
-		# empties the cache for the whole host
-		if [[ -z $flushed_dns_cache ]]; then
-			sudo -n resolvectl flush-caches &>/dev/null || true
-			flushed_dns_cache=1
-		fi
-		failure="$DB_URL doesn’t resolve on this host yet"
-		return 1
-	fi
-
-	if ! failure_detail=$(pg_isready --host="$DB_URL" --port="$DB_PORT" --timeout=5 2>&1); then
-		failure='the database isn’t accepting connections yet'
 		return 1
 	fi
 
@@ -110,7 +96,7 @@ check_database() {
 			--command='SELECT 1' \
 			2>&1 >/dev/null
 	); then
-		failure="$DB_PG_USER can’t log in yet"
+		failure="can’t log in as $DB_PG_USER yet"
 		return 1
 	fi
 }
@@ -137,7 +123,7 @@ until check_database; do
 		exit 1
 	fi
 
-	echo "Waiting for database ($(format_duration "$elapsed")): $failure"
+	echo "Waiting for database ($(format_duration "$elapsed")): $failure${failure_detail:+ (${failure_detail%%$'\n'*})}"
 	sleep "$(min "$DB_WAIT_INTERVAL_SECONDS" $((DB_WAIT_TIMEOUT_SECONDS - elapsed)))"
 done
 
