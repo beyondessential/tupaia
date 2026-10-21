@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Waits until this deployment’s database is accepting connections, or gives up after
+# Waits until this deployment’s database is accepting connections, giving up after
 # DB_WAIT_TIMEOUT_SECONDS (default 600).
 #
 # Using `pg_isready` only for simplicity; a more robust check would attempt a login with `psql`.
