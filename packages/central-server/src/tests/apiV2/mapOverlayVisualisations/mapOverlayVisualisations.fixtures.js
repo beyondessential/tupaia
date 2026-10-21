@@ -59,8 +59,8 @@ const LEGACY_REPORTS = [
 
 export const TEST_SETUP = {
   dbRecords: {
-    mapOverlay: MAP_OVERLAYS,
     permissionGroup: PERMISSION_GROUPS,
+    mapOverlay: MAP_OVERLAYS,
     report: REPORTS,
     legacyReport: LEGACY_REPORTS,
   },

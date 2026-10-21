@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "humao.rest-client",
+    "ms-python.black-formatter",
+    "streetsidesoftware.code-spell-checker",
+    "styled-components.vscode-styled-components",
+    "visualstudioexptteam.vscodeintellicode"
+  ]
+}

@@ -1,11 +1,22 @@
-import React from 'react';
-import { SnackbarContent, CustomContentProps, closeSnackbar, OptionsObject } from 'notistack';
-import styled from 'styled-components';
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { CustomContentProps, OptionsObject, SnackbarContent, closeSnackbar } from 'notistack';
+import React from 'react';
+import styled from 'styled-components';
+
+import { VisuallyHidden } from '@tupaia/ui-components';
+
+const nonAttributes = new Set([
+  'action',
+  'anchorOrigin',
+  'autoHideDuration',
+  'hideIconVariant',
+  'iconVariant',
+  'persist',
+]);
 
 const Wrapper = styled(SnackbarContent).withConfig({
-  shouldForwardProp: prop => !['anchorOrigin', 'iconVariant'].includes(prop),
+  shouldForwardProp: prop => !nonAttributes.has(prop),
 })`
   background-color: white;
   border-radius: 0.625rem;
@@ -83,12 +94,9 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) =
         )}
         <Message $variant={variant}>{message}</Message>
         {!hideCloseButton && (
-          <CloseButton
-            onClick={() => closeSnackbar(id)}
-            $variant={variant}
-            title="Close toast message"
-          >
+          <CloseButton $variant={variant} onClick={() => closeSnackbar(id)}>
             <Close />
+            <VisuallyHidden>Dismiss</VisuallyHidden>
           </CloseButton>
         )}
       </Container>
