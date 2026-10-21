@@ -31,6 +31,9 @@ set_up_central_server() {
 
 readarray -t backend_packages < <(get_backend_packages)
 
+# On a fresh deployment, the database may still be restoring from a snapshot
+"$script_dir"/waitForDatabase.sh
+
 # Start back end server packages
 for package in "${backend_packages[@]}"; do
     if [[ $package = central-server ]]; then
