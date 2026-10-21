@@ -23,9 +23,32 @@ exports.up = async function (db) {
   `);
 };
 
-/** Irreversible: dropped sync groups and logs are not reconstructed. */
-exports.down = function (db) {
-  return null;
+/**
+ * Recreates the schema only: dropped sync groups and logs are not restored. Notification
+ * triggers are reinstated by `runPostMigration`.
+ */
+exports.down = async function (db) {
+  await db.runSql(`
+    CREATE TYPE sync_group_sync_status AS ENUM ('IDLE', 'SYNCING', 'ERROR');
+
+    CREATE TABLE data_service_sync_group (
+      id TEXT PRIMARY KEY,
+      code TEXT NOT NULL UNIQUE,
+      service_type service_type NOT NULL,
+      config JSONB NOT NULL,
+      data_group_code TEXT NOT NULL REFERENCES data_group(code) ON DELETE RESTRICT ON UPDATE CASCADE,
+      sync_cursor TEXT DEFAULT '1970-01-01T00:00:00.000Z',
+      sync_status sync_group_sync_status DEFAULT 'IDLE'
+    );
+
+    CREATE TABLE sync_group_log (
+      id TEXT PRIMARY KEY,
+      sync_group_code TEXT NOT NULL REFERENCES data_service_sync_group(code) ON DELETE RESTRICT ON UPDATE CASCADE,
+      service_type service_type NOT NULL,
+      log_message TEXT NOT NULL,
+      "timestamp" TIMESTAMP WITHOUT TIME ZONE DEFAULT timezone('UTC', now())
+    );
+  `);
 };
 
 exports._meta = {
