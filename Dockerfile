@@ -30,7 +30,6 @@ COPY packages/data-api/. ./packages/data-api
 COPY packages/data-broker/. ./packages/data-broker
 COPY packages/data-lake-api/. ./packages/data-lake-api
 COPY packages/dhis-api/. ./packages/dhis-api
-COPY packages/e2e/. ./packages/e2e
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
