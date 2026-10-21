@@ -105,6 +105,10 @@ format_duration() {
 	echo "$(($1 / 60))m $(($1 % 60))s"
 }
 
+min() {
+	echo $(($1 < $2 ? $1 : $2))
+}
+
 echo -e "${BLUE}==>️${RESET} ${BOLD}Waiting for database at $DB_URL${RESET}"
 
 declare -i start_time=$SECONDS
@@ -120,7 +124,7 @@ until check_database; do
 	fi
 
 	echo "Waiting for database ($(format_duration "$elapsed")): $failure"
-	sleep "$DB_WAIT_INTERVAL_SECONDS"
+	sleep "$(min "$DB_WAIT_INTERVAL_SECONDS" $((DB_WAIT_TIMEOUT_SECONDS - elapsed)))"
 done
 
 duration=$(format_duration $((SECONDS - start_time)))
