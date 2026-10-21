@@ -18,13 +18,6 @@ if ! yarn bw login --check &>/dev/null; then
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
         yarn bw login --apikey
 
-    elif [[ -v BW_EMAIL && -v BW_PASSWORD ]]; then
-        # Legacy behaviour, kept for backward compatibility
-        # On new devices, requires OTP which is emailed to Bitwarden account holder
-        # See https://bitwarden.com/help/cli/#using-email-and-password
-        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BW_EMAIL) and password${RESET}"
-        yarn bw login "$BW_EMAIL" "$BW_PASSWORD"
-
     elif [[ -t 1 ]]; then
         # Requires manual intervention. Bitwarden will prompt for email & password
         # Recommended for interactive sessions
@@ -63,7 +56,7 @@ fi
 eval "$(yarn bw unlock --passwordenv BW_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
 
 # The session token is all we need from here on; keep long-lived credentials out of child processes
-unset BW_CLIENTID BW_CLIENTSECRET BW_PASSWORD BW_EMAIL
+unset BW_CLIENTID BW_CLIENTSECRET BW_PASSWORD
 
 # Collection in BitWarden where .env vars are kept
 collection_path='Engineering/Tupaia General/Environment Variables'
