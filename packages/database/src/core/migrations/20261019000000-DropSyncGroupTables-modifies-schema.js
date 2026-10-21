@@ -16,9 +16,11 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   /** `sync_group_log` first, as it references `data_service_sync_group(code)` */
-  await db.runSql('DROP TABLE IF EXISTS sync_group_log;');
-  await db.runSql('DROP TABLE IF EXISTS data_service_sync_group;');
-  await db.runSql('DROP TYPE IF EXISTS sync_group_sync_status;');
+  await db.runSql(`
+    DROP TABLE IF EXISTS sync_group_log;
+    DROP TABLE IF EXISTS data_service_sync_group;
+    DROP TYPE IF EXISTS sync_group_sync_status;
+  `);
 };
 
 /** Irreversible: dropped sync groups and logs are not reconstructed. */
