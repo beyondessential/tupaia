@@ -74,7 +74,12 @@ check_database() {
 	fi
 
 	if ! getent hosts "$DB_URL" >/dev/null; then
-		sudo -n resolvectl flush-caches &>/dev/null || true
+		# Clear any negative answer cached before the record existed, but only once: it needs root and
+		# empties the cache for the whole host
+		if [[ -z $flushed_dns_cache ]]; then
+			sudo -n resolvectl flush-caches &>/dev/null || true
+			flushed_dns_cache=1
+		fi
 		failure="$DB_URL doesn’t resolve on this host yet"
 		return 1
 	fi
