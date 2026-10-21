@@ -38,6 +38,9 @@ for var in DB_URL DB_NAME DB_PG_USER DB_PG_PASSWORD; do
 	fi
 done
 
+# Stop stray libpq settings from redirecting or weakening the checks (PGHOSTADDR overrides --host)
+unset PGHOSTADDR PGSERVICE PGSERVICEFILE PGOPTIONS PGSSLMODE
+
 is_ip() {
 	[[ $1 =~ ^[0-9]+(\.[0-9]+){3}$ || $1 = *:* ]]
 }
