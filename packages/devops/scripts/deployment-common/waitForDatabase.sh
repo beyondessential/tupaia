@@ -48,7 +48,10 @@ is_ip() {
 authoritative_nameserver=
 parent_domain=${DB_URL#*.}
 if ! is_ip "$DB_URL" && [[ $parent_domain = *.* ]] && command -v dig &>/dev/null; then
-	authoritative_nameserver=$(dig +short NS "$parent_domain" 2>/dev/null | head -1) || true
+	# dig can print ‘;;’ diagnostics to stdout even with +short, so keep only a hostname
+	authoritative_nameserver=$(
+		dig +short NS "$parent_domain" 2>/dev/null | grep -m1 -E '^[A-Za-z0-9.-]+$'
+	) || true
 fi
 
 record_is_published() {
