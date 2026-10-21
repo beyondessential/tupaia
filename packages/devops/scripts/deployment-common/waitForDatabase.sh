@@ -20,7 +20,7 @@ source "$tupaia_dir"/scripts/bash/mergeEnvForDB.sh
 : "${DB_WAIT_INTERVAL_SECONDS:=15}"
 
 for int_var in DB_WAIT_TIMEOUT_SECONDS DB_WAIT_INTERVAL_SECONDS; do
-	if ! { [[ ${!int_var} =~ ^[0-9]+$ ]] && ((int_var > 0)); }; then
+	if [[ ! ${!int_var} =~ ^[1-9][0-9]*$ ]]; then
 		echo -en "${BOLD}${RED}Invalid environment variable.${RESET} " >&2
 		echo -e "${BOLD}$int_var${RESET} must be a natural number of seconds." >&2
 		exit 1
