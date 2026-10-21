@@ -89,7 +89,9 @@ database_is_ready() {
 }
 
 format_duration() {
-	echo "$(($1 / 60))m $(($1 % 60))s"
+	local minutes=$(($1 / 60))
+	local seconds=$(($1 % 60))
+	printf '%dm %02ds\n' "$minutes" "$seconds"
 }
 
 min() {
