@@ -475,32 +475,6 @@ export interface DataServiceEntityUpdate {
   'entity_code'?: string;
   'id'?: string;
 }
-export interface DataServiceSyncGroup {
-  'code': string;
-  'config': {};
-  'data_group_code': string;
-  'id': string;
-  'service_type': ServiceType;
-  'sync_cursor'?: string | null;
-  'sync_status'?: SyncGroupSyncStatus | null;
-}
-export interface DataServiceSyncGroupCreate {
-  'code': string;
-  'config': {};
-  'data_group_code': string;
-  'service_type': ServiceType;
-  'sync_cursor'?: string | null;
-  'sync_status'?: SyncGroupSyncStatus | null;
-}
-export interface DataServiceSyncGroupUpdate {
-  'code'?: string;
-  'config'?: {};
-  'data_group_code'?: string;
-  'id'?: string;
-  'service_type'?: ServiceType;
-  'sync_cursor'?: string | null;
-  'sync_status'?: SyncGroupSyncStatus | null;
-}
 export interface DataTable {
   'code': string;
   'config': {};
@@ -1603,26 +1577,6 @@ export interface SurveyScreenComponentUpdate {
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
-export interface SyncGroupLog {
-  'id': string;
-  'log_message': string;
-  'service_type': ServiceType;
-  'sync_group_code': string;
-  'timestamp'?: Date | null;
-}
-export interface SyncGroupLogCreate {
-  'log_message': string;
-  'service_type': ServiceType;
-  'sync_group_code': string;
-  'timestamp'?: Date | null;
-}
-export interface SyncGroupLogUpdate {
-  'id'?: string;
-  'log_message'?: string;
-  'service_type'?: ServiceType;
-  'sync_group_code'?: string;
-  'timestamp'?: Date | null;
-}
 export interface SyncQueuedDevice {
   'id': string;
   'last_seen_time': Date;
@@ -1909,11 +1863,6 @@ export enum TaskStatus {
 export enum TaskCommentType {
   'user' = 'user',
   'system' = 'system',
-}
-export enum SyncGroupSyncStatus {
-  'IDLE' = 'IDLE',
-  'SYNCING' = 'SYNCING',
-  'ERROR' = 'ERROR',
 }
 export enum ServiceType {
   'dhis' = 'dhis',
