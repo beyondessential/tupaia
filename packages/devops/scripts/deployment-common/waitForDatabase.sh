@@ -112,7 +112,7 @@ until database_is_ready; do
 		exit 1
 	fi
 
-	echo "Waiting for database ($(format_duration "$elapsed")): $failure${failure_detail:+ (${failure_detail%%$'\n'*})}"
+	echo "Waiting… ($(format_duration "$elapsed")): $failure${failure_detail:+ (${failure_detail%%$'\n'*})}"
 	sleep "$(min "$DB_WAIT_INTERVAL_SECONDS" $((DB_WAIT_TIMEOUT_SECONDS - elapsed)))"
 done
 
