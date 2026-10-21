@@ -8,19 +8,31 @@ if ! "$dir"/requireCommands.sh yarn jq; then
 fi
 
 . "$dir/ansiControlSequences.sh"
+
+assert_deployment_name_is_valid() {
+    local deployment_name=$1
+    if [[ ! $deployment_name =~ ^[a-z0-9-]+$ ]]; then
+        echo -e "${BOLD}${RED}Invalid deployment name ‘$deployment_name’.${RESET} Use only lowercase alphanumerics and hyphens." >&2
+        exit 1
+    fi
+}
+
+assert_domain_is_valid() {
+    local domain=$1
+    if [[ ! $domain =~ ^[a-z0-9.-]+$ ]]; then
+        echo -e "${BOLD}${RED}Invalid DOMAIN ‘$domain’.${RESET} Use only lowercase alphanumerics, hyphens and full stops." >&2
+        exit 1
+    fi
+}
+
 deployment_name=$1
 repo_root=$(realpath "$dir/../..")
 
 # These values are substituted into the .env files, so restrict them to characters valid in a
 # hostname. Validate before touching Bitwarden.
-if [[ ! $deployment_name =~ ^[a-z0-9-]+$ ]]; then
-    echo -e "${BOLD}${RED}Invalid deployment name ‘$deployment_name’.${RESET} Use only lowercase alphanumerics and hyphens." >&2
-    echo -e "Usage: ${GREEN}downloadEnvironmentVariables.sh ${BLUE}<deployment-name> [package]...${RESET}" >&2
-    exit 1
-fi
-if [[ -v DOMAIN && ! $DOMAIN =~ ^[a-z0-9.-]+$ ]]; then
-    echo -e "${BOLD}${RED}Invalid DOMAIN ‘$DOMAIN’.${RESET} Use only lowercase alphanumerics, hyphens and full stops." >&2
-    exit 1
+assert_deployment_name_is_valid "$deployment_name"
+if [[ -v DOMAIN ]]; then
+    assert_domain_is_valid "$DOMAIN"
 fi
 
 # Log into Bitwarden
