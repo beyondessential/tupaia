@@ -38,8 +38,13 @@ for var in DB_URL DB_NAME DB_PG_USER DB_PG_PASSWORD; do
 	fi
 done
 
-# Stop stray libpq settings from redirecting or weakening the checks (PGHOSTADDR overrides --host)
+# Prevent stray libpq settings from redirecting or weakening the checks (PGHOSTADDR overrides --host)
 unset PGHOSTADDR PGSERVICE PGSERVICEFILE PGOPTIONS PGSSLMODE
+
+# Match server process behaviour, which connect over SSL when this is set (see getConnectionConfig.js)
+if [[ $DB_ENABLE_SSL = true ]]; then
+	export PGSSLMODE=require
+fi
 
 is_ip() {
 	[[ $1 =~ ^[0-9]+(\.[0-9]+){3}$ || $1 = *:* ]]
