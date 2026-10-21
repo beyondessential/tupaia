@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# Waits until this deployment’s database can be reached and logged into, or gives up after
+# Waits until this deployment’s database is accepting connections, or gives up after
 # DB_WAIT_TIMEOUT_SECONDS (default 600).
 #
-# A fresh staging deployment’s server is launched before its database has finished restoring from a
-# snapshot. The [deployment-name]-db.tupaia.org record is only created once the restore is done, and
-# the master password is reset after that, so the database can lag well behind the build.
+# Using `pg_isready` only for simplicity; a more robust check would attempt a login with `psql`.
 set -e
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
@@ -12,7 +10,7 @@ tupaia_dir=$(realpath -- "$script_dir"/../../../..)
 
 source "$tupaia_dir"/scripts/bash/ansiControlSequences.sh
 
-if ! "$tupaia_dir"/scripts/bash/requireCommands.sh dig psql; then
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh dig pg_isready; then
 	exit 1
 fi
 
@@ -29,17 +27,10 @@ for int_var in DB_WAIT_TIMEOUT_SECONDS DB_WAIT_INTERVAL_SECONDS; do
 	fi
 done
 
-for var in DB_URL DB_NAME DB_PG_USER DB_PG_PASSWORD; do
-	if [[ -z ${!var} ]]; then
-		echo -en "${BOLD}${RED}Missing environment variable.${RESET} " >&2
-		echo -e "${BOLD}$var${RESET} must be set in env/db.env or env/pg.env." >&2
-		exit 1
-	fi
-done
-
-# Match server process behaviour, which connect over SSL when this is set (see getConnectionConfig.js)
-if [[ $DB_ENABLE_SSL = true ]]; then
-	export PGSSLMODE=require
+if [[ -z $DB_URL ]]; then
+	echo -en "${BOLD}${RED}Missing environment variable.${RESET} " >&2
+	echo -e "${BOLD}DB_URL${RESET} must be set in env/db.env." >&2
+	exit 1
 fi
 
 # Look for the record on the zone’s own nameservers rather than through the local resolver. Asking a
@@ -84,19 +75,8 @@ check_database() {
 		return 1
 	fi
 
-	# DB_PG_USER is the first user to connect (see install-mv-refresh). Checking it also covers the
-	# master password still being reset.
-	if ! failure_detail=$(
-		PGCONNECT_TIMEOUT=10 PGPASSWORD=$DB_PG_PASSWORD psql \
-			--host="$DB_URL" \
-			--port="$DB_PORT" \
-			--username="$DB_PG_USER" \
-			--dbname="$DB_NAME" \
-			--no-psqlrc \
-			--command='SELECT 1' \
-			2>&1 >/dev/null
-	); then
-		failure="can’t log in as $DB_PG_USER yet"
+	if ! failure_detail=$(pg_isready --host="$DB_URL" --port="$DB_PORT" --timeout=5 2>&1); then
+		failure='the database isn’t accepting connections yet'
 		return 1
 	fi
 }
