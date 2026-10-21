@@ -52,27 +52,32 @@ is_ip() {
 # Look for the record on the zone’s own nameserver rather than through the local resolver. Asking a
 # resolver about a name that doesn’t exist yet makes it cache that answer (for up to 15 min with
 # tupaia.org’s SOA), which would keep the database out of reach after the record is created.
-authoritative_nameserver=
+declare -a authoritative_nameservers=()
 parent_domain=${DB_URL#*.}
 if ! is_ip "$DB_URL" && [[ $parent_domain = *.* ]] && command -v dig &>/dev/null; then
-	# dig can print ‘;;’ diagnostics to stdout even with +short, so keep only a hostname
-	authoritative_nameserver=$(
-		dig +short NS "$parent_domain" 2>/dev/null | grep -m1 -E '^[A-Za-z0-9.-]+$'
-	) || true
+	# dig can print ‘;;’ diagnostics to stdout even with +short, so keep only hostnames
+	readarray -t authoritative_nameservers < <(
+		dig +short NS "$parent_domain" 2>/dev/null | grep -E '^[A-Za-z0-9.-]+$'
+	)
 fi
 
 record_is_published() {
-	local answer
-	# If the nameserver can’t be reached, leave it to the local resolver
-	answer=$(dig +short +norecurse +time=5 +tries=1 "$DB_URL" @"$authoritative_nameserver" 2>&1) || return 0
-	[[ -n $answer ]]
+	local nameserver answer
+	for nameserver in "${authoritative_nameservers[@]}"; do
+		if answer=$(dig +short +norecurse +time=5 +tries=1 "$DB_URL" @"$nameserver" 2>&1); then
+			[[ -n $answer ]]
+			return
+		fi
+	done
+	# If none of the nameservers can be reached, leave it to the local resolver
+	return 0
 }
 
 # Sets `failure` (and `failure_detail`, if there is any) to the first check that doesn’t pass
 check_database() {
 	failure_detail=
 
-	if [[ -n $authoritative_nameserver ]] && ! record_is_published; then
+	if ((${#authoritative_nameservers[@]} > 0)) && ! record_is_published; then
 		failure="$DB_URL isn’t in DNS yet"
 		return 1
 	fi
