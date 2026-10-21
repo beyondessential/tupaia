@@ -83,7 +83,7 @@ database_is_ready() {
 		echo "pg_isready exited with code 3. Check DB_URL, DB_PORT and any PG* environment variables." >&2
 		exit 1
 	elif ((status != 0)); then
-		failure='Database not yet accepting connections.'
+		failure='Database not yet accepting connections'
 		return 1
 	fi
 }
