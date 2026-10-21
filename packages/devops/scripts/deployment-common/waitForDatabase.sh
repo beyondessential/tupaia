@@ -17,7 +17,6 @@ if ! "$tupaia_dir"/scripts/bash/requireCommands.sh getent pg_isready psql; then
 fi
 
 source "$tupaia_dir"/scripts/bash/mergeEnvForDB.sh
-
 : "${DB_PORT:=5432}"
 : "${DB_WAIT_TIMEOUT_SECONDS:=600}"
 : "${DB_WAIT_INTERVAL_SECONDS:=15}"
