@@ -29,10 +29,12 @@ const assertNoKoboDataSources = async db => {
       ) AS data_element_data_service,
       (SELECT count(*) FROM data_group WHERE service_type = 'kobo') AS data_group;
   `);
-  const nonEmpty = Object.entries(rows[0]).filter(([, count]) => Number(count) > 0);
+  const nonEmpty = Object.entries(rows[0]).filter(([, count]) => Number.parseInt(count, 10) > 0);
   if (nonEmpty.length > 0) {
     const counts = nonEmpty.map(([table, count]) => `${table}: ${count}`).join(', ');
-    throw new Error(`Found kobo data sources that must be removed manually first (${counts})`);
+    throw new Error(
+      `Found KoboToolbox data sources that must be removed manually first (${counts})`,
+    );
   }
 };
 
