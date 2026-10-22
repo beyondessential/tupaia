@@ -13,15 +13,16 @@ export const attachCommonEntityContext = async (
   try {
     const { hierarchyName } = req.params;
 
-    const hierarchy = await req.models.entityHierarchy.findOne(
-      { name: hierarchyName },
+    // The "hierarchy name" in the URL is the project code — each project has one hierarchy.
+    const project = await req.models.project.findOne(
+      { code: hierarchyName },
       { columns: ['id'] },
     );
-    if (!hierarchy) {
+    if (!project) {
       throw new PermissionsError(`No access to requested hierarchy: ${hierarchyName}`);
     }
 
-    req.ctx.hierarchyId = hierarchy.id;
+    req.ctx.projectId = project.id;
 
     const { fields, field } = req.query;
     req.ctx.fields = extractEntityFieldsFromQuery(fields);

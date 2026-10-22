@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/admin-panel",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "description": "An interface for managing Tupaia data for non-developers",
   "repository": {
@@ -36,7 +36,6 @@
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
     "@tanstack/react-query": "4.36.1",
-    "@tanstack/react-query-devtools": "4.36.1",
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-chart-components": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
