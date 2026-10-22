@@ -3,7 +3,7 @@ name: design-audit
 description: "Audit this card's mockups or implementation against the design library"
 label: "Design audit"
 category: design
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Design audit

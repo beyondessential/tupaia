@@ -1,4 +1,4 @@
-<!-- BEGIN:workhorse 0.3.0 -->
+<!-- BEGIN:workhorse 0.7.2 -->
 # Workhorse framework
 
 This workspace uses [Workhorse](https://github.com/beyondessential/workhorse), a spec-driven development workbench. Workhorse ships skills (invokable prompts) and reference docs into this repo to shape how AI agents work here.
