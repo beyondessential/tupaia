@@ -30,8 +30,8 @@ exports.up = async function (db) {
 
     -- config is VARCHAR, not JSONB. (Expected to be no-op anyway)
     UPDATE survey_screen_component
-    SET config = (config::jsonb # - '{entity,fields,metadata,ms1}')::text
-    WHERE config LIKE '%"ms1"%';
+    SET config = (config::jsonb #- '{entity,fields,metadata,ms1}')::text
+    WHERE config::jsonb #> '{entity,fields,metadata,ms1}' IS NOT NULL;
   `);
 };
 
