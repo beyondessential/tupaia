@@ -1,16 +1,23 @@
 import log from 'winston';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
-import { post, stream } from '../api';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { post, stream, supportsRequestStreams, pushChangesAsStream } from '../api';
 
 // TODO: Move to config model RN-1668
 const LIMIT = 10000;
 
-export const pushOutgoingChanges = async (
+type ProgressCallback = (total: number, progressCount: number) => void;
+
+/**
+ * Buffered push: send changes as a series of JSON POSTs, one per page. Each page is fully
+ * serialised into a request body, so it is bounded by the request-body size cap (see nginx
+ * `client_max_body_size` and the express `bodyParser.json` limit). Kept as a fallback for runtimes
+ * that do not support streaming request bodies.
+ */
+const pushBufferedChanges = async (
   sessionId: string,
   changes: SyncSnapshotAttributes[],
-  deviceId: string,
-  progressCallback: (total: number, progressCount: number) => void,
+  progressCallback: ProgressCallback,
 ): Promise<void> => {
   let startOfPage = 0;
   while (startOfPage < changes.length) {
@@ -22,6 +29,36 @@ export const pushOutgoingChanges = async (
     progressCallback(changes.length, endOfPage);
 
     startOfPage = endOfPage;
+  }
+};
+
+/**
+ * Streaming push: send changes frame by frame over a single streaming request body, so the total
+ * submission size is no longer bounded by the request-body size cap. This is the path that lets
+ * photo-heavy submissions (base64 photos inline) sync without hitting the ~50 MB ceiling.
+ */
+const pushStreamedChanges = async (
+  sessionId: string,
+  changes: SyncSnapshotAttributes[],
+  progressCallback: ProgressCallback,
+): Promise<void> => {
+  await pushChangesAsStream(`sync/${sessionId}/push/stream`, changes, sent =>
+    progressCallback(changes.length, sent),
+  );
+};
+
+export const pushOutgoingChanges = async (
+  sessionId: string,
+  changes: SyncSnapshotAttributes[],
+  deviceId: string,
+  progressCallback: ProgressCallback,
+): Promise<void> => {
+  // Prefer the streaming push when the runtime supports streaming request bodies; otherwise fall
+  // back to the buffered push so no browser regresses.
+  if (supportsRequestStreams()) {
+    await pushStreamedChanges(sessionId, changes, progressCallback);
+  } else {
+    await pushBufferedChanges(sessionId, changes, progressCallback);
   }
 
   for await (const { kind, message } of stream(() => ({

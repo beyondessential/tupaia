@@ -40,6 +40,9 @@ export const StreamMessage = {
   pushWaiting() {
     return shape(SYNC_STREAM_MESSAGE_KIND.PUSH_WAITING);
   },
+  pushChange(data: unknown) {
+    return shape(SYNC_STREAM_MESSAGE_KIND.PUSH_CHANGE, data);
+  },
   end(data = {}) {
     return shape(SYNC_STREAM_MESSAGE_KIND.END, Object.entries(data).length > 0 ? data : undefined);
   },
