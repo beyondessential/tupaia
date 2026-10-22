@@ -31,6 +31,8 @@ set_up_central_server() {
 
 readarray -t backend_packages < <(get_backend_packages)
 
+"$script_dir"/waitForDatabase.sh
+
 # Run all pending server migrations to completion before starting any servers, so nothing serves
 # or syncs against a half-migrated schema (which otherwise errors, or holds locks that block the
 # migration's DDL). `yarn migrate` is the same server-target migrator central-server runs on boot,
