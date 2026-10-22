@@ -24,8 +24,9 @@ exports.up = async function (db) {
 };
 
 /**
- * Recreates the schema only: dropped sync groups and logs are not restored. Notification
- * triggers are reinstated by `runPostMigration`.
+ * Recreates the schema only: dropped sync groups and logs are not restored. The notification
+ * triggers are recreated here (rather than by `runPostMigration`, which doesn’t cover these
+ * tables), including the legacy-named duplicate `sync_service_log_trigger`.
  */
 exports.down = async function (db) {
   await db.runSql(`
@@ -48,6 +49,12 @@ exports.down = async function (db) {
       log_message TEXT NOT NULL,
       "timestamp" TIMESTAMP WITHOUT TIME ZONE DEFAULT timezone('UTC', now())
     );
+
+    CREATE TRIGGER sync_group_log_trigger AFTER INSERT OR UPDATE OR DELETE ON sync_group_log
+      FOR EACH ROW EXECUTE FUNCTION notification();
+    -- Yep, this is a duplicate, but that’s what existed before (see schema.sql:3433-3440)
+    CREATE TRIGGER sync_service_log_trigger AFTER INSERT OR UPDATE OR DELETE ON sync_group_log
+      FOR EACH ROW EXECUTE FUNCTION notification();
   `);
 };
 
