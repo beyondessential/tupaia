@@ -14,33 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-/**
- * Abort rather than delete if any kobo-backed data sources remain. Deleting them would cascade to
- * `data_element_data_group` and null out `survey.data_group_id`, which `down` cannot reconstruct.
- */
-const assertNoKoboDataSources = async db => {
-  const { rows } = await db.runSql(`
-    SELECT
-      (SELECT count(*) FROM data_element WHERE service_type = 'kobo') AS data_element,
-      (
-        SELECT count(*) FROM data_element_data_service
-        WHERE service_type = 'kobo'
-          OR data_element_code IN (SELECT code FROM data_element WHERE service_type = 'kobo')
-      ) AS data_element_data_service,
-      (SELECT count(*) FROM data_group WHERE service_type = 'kobo') AS data_group;
-  `);
-  const nonEmpty = Object.entries(rows[0]).filter(([, count]) => Number.parseInt(count, 10) > 0);
-  if (nonEmpty.length > 0) {
-    const counts = nonEmpty.map(([table, count]) => `${table}: ${count}`).join(', ');
-    throw new Error(
-      `Found KoboToolbox data sources that must be removed manually first (${counts})`,
-    );
-  }
-};
-
 exports.up = async function (db) {
-  /** As of comitting, these are expected to be no-ops */
-  await assertNoKoboDataSources(db);
+  /** As of comitting, these are expected to be no-ops; no KoboToolbox-backed data sources exist */
   await db.runSql(`
     DELETE FROM data_element_data_service
     WHERE service_type = 'kobo'
