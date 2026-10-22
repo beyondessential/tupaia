@@ -1084,67 +1084,6 @@ export interface MeditrakSyncQueueUpdate {
   'record_type'?: string;
   'type'?: string;
 }
-export interface Ms1SyncLog {
-  'count'?: number | null;
-  'data'?: string | null;
-  'endpoint'?: string | null;
-  'error_list'?: string | null;
-  'id': string;
-  'record_id': string;
-  'record_type': string;
-}
-export interface Ms1SyncLogCreate {
-  'count'?: number | null;
-  'data'?: string | null;
-  'endpoint'?: string | null;
-  'error_list'?: string | null;
-  'record_id': string;
-  'record_type': string;
-}
-export interface Ms1SyncLogUpdate {
-  'count'?: number | null;
-  'data'?: string | null;
-  'endpoint'?: string | null;
-  'error_list'?: string | null;
-  'id'?: string;
-  'record_id'?: string;
-  'record_type'?: string;
-}
-export interface Ms1SyncQueue {
-  'bad_request_count'?: number | null;
-  'change_time'?: number | null;
-  'details'?: string | null;
-  'id': string;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
-  'priority'?: number | null;
-  'record_id': string;
-  'record_type': string;
-  'type': string;
-}
-export interface Ms1SyncQueueCreate {
-  'bad_request_count'?: number | null;
-  'change_time'?: number | null;
-  'details'?: string | null;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
-  'priority'?: number | null;
-  'record_id': string;
-  'record_type': string;
-  'type': string;
-}
-export interface Ms1SyncQueueUpdate {
-  'bad_request_count'?: number | null;
-  'change_time'?: number | null;
-  'details'?: string | null;
-  'id'?: string;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
-  'priority'?: number | null;
-  'record_id'?: string;
-  'record_type'?: string;
-  'type'?: string;
-}
 export interface OneTimeLogin {
   'creation_date'?: Date | null;
   'id': string;

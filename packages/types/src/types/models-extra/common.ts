@@ -119,7 +119,6 @@ export interface EntityMetadata {
     push?: boolean;
     trackedEntityId?: string;
   };
-  ms1?: { distributionId?: string };
   openStreetMaps?: { id?: string };
 }
 
