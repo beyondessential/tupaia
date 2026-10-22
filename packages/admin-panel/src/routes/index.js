@@ -1,5 +1,5 @@
 export { ROUTES, AUTH_ROUTES } from './routes';
-export { surveys, questions, surveyResponses, dataElements, surveysTabRoutes } from './surveys';
+export { dataElements, questions, surveyResponses, surveys, surveysTabRoutes } from './surveys';
 export { users, permissions, usersTabRoutes } from './users';
 export {
   dashboardItems,
