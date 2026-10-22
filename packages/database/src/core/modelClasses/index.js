@@ -58,7 +58,6 @@ import { DhisInstanceModel } from './DhisInstance';
 import { DataElementDataServiceModel } from './DataElementDataService';
 import { SurveyResponseDraftModel } from './SurveyResponseDraft';
 import { TaskModel } from './Task';
-import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
 import { SyncLookupModel } from './SyncLookup';
 import { SyncSessionModel } from './SyncSession';
@@ -128,7 +127,6 @@ export const modelClasses = {
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
-  UserCountryAccessAttempt: UserCountryAccessAttemptModel,
   SyncLookup: SyncLookupModel,
   SyncSession: SyncSessionModel,
   SyncDeviceTick: SyncDeviceTickModel,
@@ -202,10 +200,6 @@ export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRela
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
 export { AnswerModel, AnswerRecord } from './Answer';
 export { TaskModel, TaskRecord } from './Task';
-export {
-  UserCountryAccessAttemptModel,
-  UserCountryAccessAttemptRecord,
-} from './UserCountryAccessAttempt';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
 export { SyncLookupModel, SyncLookupRecord } from './SyncLookup';
