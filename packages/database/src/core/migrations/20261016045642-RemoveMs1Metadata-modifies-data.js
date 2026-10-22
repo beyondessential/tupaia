@@ -27,6 +27,11 @@ exports.up = async function (db) {
     UPDATE survey
     SET integration_metadata = integration_metadata - 'ms1'
     WHERE integration_metadata ? 'ms1';
+
+    -- config is VARCHAR, not JSONB. (Expected to be no-op anyway)
+    UPDATE survey_screen_component
+    SET config = (config::jsonb # - '{entity,fields,metadata,ms1}')::text
+    WHERE config LIKE '%"ms1"%';
   `);
 };
 
