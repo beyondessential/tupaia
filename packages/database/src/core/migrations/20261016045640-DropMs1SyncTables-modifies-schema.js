@@ -60,13 +60,7 @@ exports.down = async function (db) {
       FOR EACH ROW
       EXECUTE PROCEDURE notification();
 
-    DO $$
-    BEGIN
-      IF EXISTS (SELECT FROM pg_roles WHERE rolname = 'tupaia_read') THEN
-        GRANT SELECT ON TABLE ms1_sync_log, ms1_sync_queue TO tupaia_read;
-      END IF;
-    END
-    $$;
+    GRANT SELECT ON TABLE ms1_sync_log, ms1_sync_queue TO tupaia_read;
   `);
 };
 
