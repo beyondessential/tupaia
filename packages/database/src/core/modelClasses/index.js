@@ -14,7 +14,6 @@ import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataElementModel } from './DataElement';
 import { DataGroupModel } from './DataGroup';
-import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
 import { DebugLogModel } from './DebugLog';
 import { EntityModel } from './Entity';
@@ -49,7 +48,6 @@ import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
-import { SyncGroupLogModel } from './SyncGroupLog';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
@@ -84,7 +82,6 @@ export const modelClasses = {
   DataElement: DataElementModel,
   DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
-  DataServiceSyncGroup: DataServiceSyncGroupModel,
   DataTable: DataTableModel,
   DebugLog: DebugLogModel,
   DhisInstance: DhisInstanceModel,
@@ -120,7 +117,6 @@ export const modelClasses = {
   SurveyResponseDraft: SurveyResponseDraftModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
-  SyncGroupLog: SyncGroupLogModel,
   Task: TaskModel,
   TaskComment: TaskCommentModel,
   User: UserModel,
@@ -150,7 +146,6 @@ export {
 } from './DataElementDataService';
 export { DataElementModel, DataElementRecord } from './DataElement';
 export { DataGroupModel, DataGroupRecord } from './DataGroup';
-export { DataServiceSyncGroupModel, DataServiceSyncGroupRecord } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableRecord } from './DataTable';
 export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityModel, EntityRecord } from './Entity';

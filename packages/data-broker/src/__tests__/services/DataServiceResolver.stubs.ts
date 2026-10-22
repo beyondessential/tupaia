@@ -37,15 +37,6 @@ export const DATA_GROUPS = {
   },
 } as const;
 
-export const SYNC_GROUPS = {
-  SG_1: {
-    code: 'SG_1',
-    service_type: 'tupaia',
-    config: {},
-    databaseRecord: RECORDS.DATA_SERVICE_SYNC_GROUP,
-  },
-} as const;
-
 export const ENTITIES = entities({
   FJ_Facility_1: { code: 'FJ_Facility_1', country_code: 'FJ', type: 'facility' },
   TO_Facility_1: { code: 'TO_Facility_1', country_code: 'TO', type: 'facility' },
