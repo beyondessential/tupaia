@@ -17,7 +17,6 @@
 dump.sql
 *.todo
 .idea
-dockercfg
 packages/.vscode/settings.json
 **/testRequests/*.http
 *:Zone.Identifier
