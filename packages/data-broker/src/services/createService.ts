@@ -1,12 +1,10 @@
 import { TupaiaDataApi } from '@tupaia/data-api';
-import { DataLakeApi } from '@tupaia/data-lake-api';
 import { TupaiaDatabase } from '@tupaia/database';
 import { IndicatorApi } from '@tupaia/indicators';
 import { KoBoApi } from '@tupaia/kobo-api';
 import { WeatherApi } from '@tupaia/weather-api';
 import { DataBroker } from '../DataBroker';
 import { DataBrokerModelRegistry, ServiceType } from '../types';
-import { DataLakeService } from './data-lake';
 import { DhisService } from './dhis';
 import { IndicatorService } from './indicator';
 import { KoBoService } from './kobo';
@@ -24,8 +22,6 @@ export const createService = (
       return new DhisService(models);
     case 'tupaia':
       return new TupaiaService(models, new TupaiaDataApi(models.database as TupaiaDatabase));
-    case 'data-lake':
-      return new DataLakeService(models, new DataLakeApi());
     case 'indicator':
       return new IndicatorService(
         models,

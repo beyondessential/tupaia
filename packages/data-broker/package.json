@@ -24,7 +24,6 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/data-api": "workspace:*",
-    "@tupaia/data-lake-api": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/dhis-api": "workspace:*",
     "@tupaia/indicators": "workspace:*",

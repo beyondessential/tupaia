@@ -10,7 +10,6 @@ internal_deps=(
   constants
   data-api
   data-broker
-  data-lake-api
   database
   dhis-api
   expression-parser

@@ -3,14 +3,7 @@ import {
   DataElementModel as CommonDataElementModel,
 } from '@tupaia/database';
 
-export const DATA_SOURCE_SERVICE_TYPES = [
-  'data-lake',
-  'dhis',
-  'indicator',
-  'kobo',
-  'tupaia',
-  'weather',
-];
+export const DATA_SOURCE_SERVICE_TYPES = ['dhis', 'indicator', 'kobo', 'tupaia', 'weather'];
 
 const getSurveyDateCode = surveyCode => `${surveyCode}SurveyDate`;
 

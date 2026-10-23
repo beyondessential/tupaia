@@ -2,10 +2,6 @@ import React from 'react';
 
 export const SERVICE_TYPE_OPTIONS = [
   {
-    label: 'Data Lake',
-    value: 'data-lake',
-  },
-  {
     label: 'DHIS',
     value: 'dhis',
   },

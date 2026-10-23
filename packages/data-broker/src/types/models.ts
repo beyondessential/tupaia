@@ -53,7 +53,6 @@ type DatabaseModel<
 export type DataSourceType = 'dataElement' | 'dataGroup' | 'syncGroup';
 
 export type ServiceType =
-  | 'data-lake'
   | 'dhis'
   | 'indicator'
   | 'kobo'
