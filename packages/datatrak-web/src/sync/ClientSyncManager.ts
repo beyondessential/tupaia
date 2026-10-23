@@ -23,6 +23,7 @@ import type { DatatrakDatabase } from '../database/DatatrakDatabase';
 import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
 import { SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction, GA_CATEGORY, GA_EVENT, gaEvent } from '../utils';
+import { ConnectionWatcher } from './ConnectionWatcher';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
@@ -32,6 +33,12 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
 const SYNC_INTERVAL_MS = 30_000;
 const URGENT_SYNC_INTERVAL_MS = 10_000;
+
+// How long the app must leave the database alone before an incremental sync saves
+const SAVE_IDLE_MS = 3_000;
+
+/** Thrown to roll back a save when the app needs the database */
+class SaveCancelledError extends Error {}
 
 const SYNC_STAGES = {
   PUSH: 1,
@@ -70,6 +77,8 @@ export class ClientSyncManager {
 
   private syncInterval: ReturnType<typeof setInterval> | null = null;
 
+  private connectionWatcher: ConnectionWatcher;
+
   progressMaxByStage: typeof STAGE_MAX_PROGRESS_INCREMENTAL | typeof STAGE_MAX_PROGRESS_INITIAL =
     STAGE_MAX_PROGRESS_INCREMENTAL;
 
@@ -95,6 +104,7 @@ export class ClientSyncManager {
     this.models = models;
     this.database = models.database;
     this.deviceId = deviceId;
+    this.connectionWatcher = new ConnectionWatcher(this.database);
     this.progress = 0;
     log.debug('ClientSyncManager.constructor', {
       deviceId,
@@ -104,7 +114,10 @@ export class ClientSyncManager {
   static async getInstance(models: DatatrakWebModelRegistry): Promise<ClientSyncManager> {
     if (!ClientSyncManager.instance) {
       const deviceId = await getDeviceId(models);
-      ClientSyncManager.instance = new ClientSyncManager(models, deviceId);
+      const instance = new ClientSyncManager(models, deviceId);
+      const lastSyncTime = await models.localSystemFact.get(SyncFact.LAST_SUCCESSFUL_SYNC_TIME);
+      instance.lastSuccessfulSyncTime = lastSyncTime ? new Date(lastSyncTime) : null;
+      ClientSyncManager.instance = instance;
     }
     return ClientSyncManager.instance;
   }
@@ -338,9 +351,10 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
+    const pulledChangesCount = await this.pullChanges(sessionId, projectIds, urgent);
 
-    await this.endSyncSession(sessionId);
+    // Incremental sync ends the session itself, before saving (see pullIncrementalSync)
+    if (this.isInitialSync) await this.endSyncSession(sessionId);
 
     performance.mark('endSyncSession');
     log.info(
@@ -356,6 +370,10 @@ export class ClientSyncManager {
     await dropSnapshotTable(this.database, sessionId);
 
     this.lastSuccessfulSyncTime = new Date();
+    await this.models.localSystemFact.set(
+      SyncFact.LAST_SUCCESSFUL_SYNC_TIME,
+      this.lastSuccessfulSyncTime.toISOString(),
+    );
 
     const syncDurationSeconds = Math.round((Date.now() - syncStartTime) / 1000);
     gaEvent(GA_EVENT.SYNC_COMPLETED, GA_CATEGORY.SYNC, this.isInitialSync ? 'initial' : 'incremental', {
@@ -486,7 +504,11 @@ export class ClientSyncManager {
     });
   }
 
-  async pullChanges(sessionId: string, projectIds: Project['id'][]): Promise<number> {
+  async pullChanges(
+    sessionId: string,
+    projectIds: Project['id'][],
+    urgent: boolean,
+  ): Promise<number> {
     this.setSyncStage(SYNC_STAGES.PULL);
 
     try {
@@ -543,7 +565,7 @@ export class ClientSyncManager {
       if (isInitialPull) {
         await this.pullInitialSync(sessionId, totalToPull, pullUntil);
       } else {
-        await this.pullIncrementalSync(sessionId, totalToPull, pullUntil);
+        await this.pullIncrementalSync(sessionId, totalToPull, pullUntil, urgent);
       }
 
       return totalToPull;
@@ -596,7 +618,12 @@ export class ClientSyncManager {
     });
   }
 
-  async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {
+  async pullIncrementalSync(
+    sessionId: string,
+    totalToPull: number,
+    pullUntil: number,
+    urgent: boolean,
+  ) {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
       pullTotal += Number(incrementalPulled);
@@ -619,10 +646,51 @@ export class ClientSyncManager {
     const batchSize = 1000;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
-    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
+    // Everything is downloaded, so free up the session on central (which only allows a few at a
+    // time) rather than holding it while the save waits for the app to be idle
+    await this.endSyncSession(sessionId);
+
     this.setSyncStage(SYNC_STAGES.PERSIST);
+
+    // Save in one transaction, so the app never sees half-saved data. PGlite has only one
+    // connection, so the app can’t use the database while the save runs. To keep the app
+    // responsive, wait until the app is idle, and cancel the save (rolling it back) as soon as the
+    // app needs the database, then try again. A prioritised save runs to the end instead.
+    for (;;) {
+      if (totalToPull > 0) await this.connectionWatcher.waitUntilIdle(SAVE_IDLE_MS);
+      const isPrioritised = this.isSavePrioritised(urgent, totalToPull);
+      try {
+        await this.saveIncrementalSync(sessionId, totalToPull, pullUntil, isPrioritised);
+        return;
+      } catch (error) {
+        if (!(error instanceof SaveCancelledError)) throw error;
+        log.debug('ClientSyncManager.saveCancelled: retrying when the app is idle');
+      }
+    }
+  }
+
+  /**
+   * A prioritised save can’t be cancelled by the app, so it always finishes. Devices that haven’t
+   * synced for a while aren’t forced to: a banner asks the user to tap Manual sync instead.
+   */
+  isSavePrioritised(urgent: boolean, totalToPull: number): boolean {
+    if (totalToPull === 0) return true; // Only the cursor to save
+    if (urgent) return true; // The user tapped “Manual sync”, so expects to wait
+    return document.visibilityState === 'hidden'; // Nobody is using the app
+  }
+
+  async saveIncrementalSync(
+    sessionId: string,
+    totalToPull: number,
+    pullUntil: number,
+    isPrioritised: boolean,
+  ) {
+    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
+      if (!isPrioritised && this.connectionWatcher.waitingCount > 0) {
+        throw new SaveCancelledError();
+      }
       totalSaved += Number(incrementalSaved);
       this.updateProgress(
         totalToPull,
@@ -630,21 +698,33 @@ export class ClientSyncManager {
         `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
       );
     };
-    await this.models.wrapInTransaction(async transactingModels => {
-      const incomingModels = getModelsForPull(transactingModels.getModels());
-      await withDeferredSyncSafeguards(transactingModels.database, () =>
-        saveIncomingSnapshotChanges(incomingModels, sessionId, false, saveProgressCallback),
-      );
 
-      // update the last successful sync in the same save transaction - if updating the cursor fails,
-      // we want to roll back the rest of the saves so that we don't end up detecting them as
-      // needing a sync up to the central server when we attempt to resync from the same old cursor
-      log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(
-        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
-        pullUntil.toString(),
-      );
-    });
+    let releaseQueries = () => {};
+    try {
+      await this.models.wrapInTransaction(async transactingModels => {
+        if (isPrioritised) {
+          // The save holds the connection now. Hold the app’s queries until it finishes, so they
+          // wait for as long as it takes rather than timing out
+          releaseQueries = this.connectionWatcher.holdQueries();
+        }
+
+        const incomingModels = getModelsForPull(transactingModels.getModels());
+        await withDeferredSyncSafeguards(transactingModels.database, () =>
+          saveIncomingSnapshotChanges(incomingModels, sessionId, false, saveProgressCallback),
+        );
+
+        // update the last successful sync in the same save transaction - if updating the cursor fails,
+        // we want to roll back the rest of the saves so that we don't end up detecting them as
+        // needing a sync up to the central server when we attempt to resync from the same old cursor
+        log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+        return transactingModels.localSystemFact.set(
+          SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+          pullUntil.toString(),
+        );
+      });
+    } finally {
+      releaseQueries();
+    }
   }
 
   async updatePermissionsChanged(permissionsChanged: boolean): Promise<void> {

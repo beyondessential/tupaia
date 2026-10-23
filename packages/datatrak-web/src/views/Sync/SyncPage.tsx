@@ -11,6 +11,7 @@ import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
 import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
+import { SyncParagraph } from './SyncParagraph';
 import { SyncStatus } from './SyncStatus';
 
 const Wrapper = styled.div`
@@ -114,6 +115,12 @@ export const SyncPage = () => {
             syncFinishedSuccessfully={syncFinishedSuccessfully}
             hasError={Boolean(errorMessage)}
           />
+
+          {isSyncing && (
+            <SyncParagraph>
+              Please stay on this page so sync can finish uninterrupted.
+            </SyncParagraph>
+          )}
 
           {!isSyncing && !isRequestingSync && (
             <>
