@@ -62,9 +62,9 @@ for (const level of LEVELS) {
  * `opfs-ahp://` keeps the files in the Origin Private File System instead, so Postgres reads and
  * writes pages on demand the way it would on a real disk, and only the working set is in memory.
  *
- * TEMPORARY (TUP-3193): forced to OPFS with no feature detection and no fallback, so that the
- * indicator on the sync page cannot be a false positive — there is only one branch, so if the app
- * starts at all it started on OPFS.
+ * TEMPORARY (TUP-3193): forced to OPFS with no feature detection and no fallback, so that a test
+ * run cannot silently land on IndexedDB — there is only one branch, so if the app starts at all it
+ * started on OPFS.
  *
  * The cost is that any browser PGlite can't run OPFS on now fails outright instead of degrading:
  * Chrome below 102, and Safari, where the access-handle pool aborts even though every capability
@@ -134,30 +134,15 @@ worker({
     await db.waitReady;
 
     /*
-     * Reported only once the database is actually up, so the log line and the indicator on the
-     * sync page describe what started rather than what we asked for. Logged before `waitReady`
-     * it would claim OPFS even on a browser where PGlite then fails to initialise on it.
+     * Reported only once the database is actually up, so the log line describes what started
+     * rather than what we asked for. Logged before `waitReady` it would claim OPFS even on a
+     * browser where PGlite then fails to initialise on it.
      *
      * Rides the console forwarding above, so it reaches the app's log too.
      */
     console.log(
       `PGlite filesystem: ${dataDir?.split('://')[0] ?? 'memory'} (requested ${options.dataDir})`,
     );
-
-    /*
-     * TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts
-     *
-     * PGlite holds the whole Postgres data directory in this worker's WASM linear memory
-     * (`idb://` mounts Emscripten's IDBFS, which is MEMFS plus IndexedDB writeback), and that
-     * memory only ever grows — `memory.grow` cannot shrink. It is charged to the same renderer
-     * process as the page but is invisible to `performance.memory`, which reports the V8 heap
-     * only, so it has to be sampled here. Rides the console forwarding set up above.
-     */
-    setInterval(() => {
-      const bytes = (db as unknown as { Module?: { HEAP8?: Uint8Array } }).Module?.HEAP8
-        ?.byteLength;
-      if (bytes) console.debug(`wasmHeapMb ${Math.round(bytes / 1024 / 1024)}`);
-    }, 2_000);
 
     // Default parser for TIMESTAMP (without time zone) is the `Date` constructor, but that
     // interprets the input string in UTC. We want to treat these as floating times. Must be set
