@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { BottomNavigation, useBottomNavigationVisibility } from '../components/BottomNavigation';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
-import { crashLog, useIsMobile } from '../utils';
+import { useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
 import { BannerNotifications } from '../components/BannerNotifications';
@@ -65,15 +65,6 @@ const useHeaderVisibility = () => {
 export const MainPageLayout = () => {
   const showHeader = useHeaderVisibility();
   const showBottomNavigation = useBottomNavigationVisibility();
-
-  /*
-   * TEMPORARY DIAGNOSTIC (TUP-3193) — remove with crashLog.ts
-   * ROUTES.SYNC is in both mobileHeaderlessRoutes and the bottom-nav blocklist, so leaving the
-   * sync page mounts the Header and the BottomNavigation in the same commit that unmounts it.
-   */
-  React.useEffect(() => {
-    crashLog('layout:chrome', { showHeader, showBottomNavigation });
-  }, [showHeader, showBottomNavigation]);
   return (
     <PageWrapper>
       {showHeader && <Header />}
