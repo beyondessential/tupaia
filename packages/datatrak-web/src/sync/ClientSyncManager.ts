@@ -109,6 +109,11 @@ export class ClientSyncManager {
     return ClientSyncManager.instance;
   }
 
+  /**
+   * Only the initial sync is triggered automatically. Incremental syncs must be requested manually
+   * (see `triggerUrgentSync`). The interval keeps polling until the initial sync has completed,
+   * because on first login there may be no project in sync yet.
+   */
   async startSyncService(queryClient: QueryClient): Promise<void> {
     if (this.syncInterval) {
       return;
@@ -118,7 +123,12 @@ export class ClientSyncManager {
 
     log.info('Starting sync service');
     const run = async (): Promise<void> => {
-      log.info('Running regular sync');
+      const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
+      if (pullSince !== -1) {
+        // Initial sync already done; incremental sync is manual only
+        return;
+      }
+      log.info('Running initial sync');
       await this.triggerSync(false, queryClient);
     };
 
