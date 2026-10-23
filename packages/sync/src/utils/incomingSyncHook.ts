@@ -46,7 +46,7 @@ export const incomingSyncHook = async (
             model.databaseRecord,
             SYNC_SESSION_DIRECTION.INCOMING,
           );
-          fromId = batchRecords.at(-1)?.id;
+          fromId = batchRecords[batchRecords.length - 1]?.id;
 
           const { inserts = [], updates = [] } = await model.incomingSyncHook(batchRecords);
 
