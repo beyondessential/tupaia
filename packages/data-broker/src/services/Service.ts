@@ -3,12 +3,10 @@ import {
   DataBrokerModelRegistry,
   DataElement,
   DataGroup,
-  DataServiceSyncGroup,
   DataSource,
   DataSourceType,
   Diagnostics,
   EventResults,
-  SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES } from '../utils';
 import { DataServiceMapping } from './DataServiceMapping';
@@ -38,7 +36,6 @@ export abstract class Service {
     return DATA_SOURCE_TYPES as {
       DATA_ELEMENT: 'dataElement';
       DATA_GROUP: 'dataGroup';
-      SYNC_GROUP: 'syncGroup';
     };
   }
 
@@ -63,11 +60,6 @@ export abstract class Service {
     dataGroups: DataGroup[],
     options: Record<string, unknown>,
   ): Promise<EventResults>;
-
-  public abstract pullSyncGroupResults(
-    syncGroups: DataServiceSyncGroup[],
-    options: Record<string, unknown>,
-  ): Promise<SyncGroupResults>;
 
   /**
    * The default pullMetadata behaviour is to return no metadata

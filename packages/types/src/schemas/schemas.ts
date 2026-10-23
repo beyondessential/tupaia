@@ -369,9 +369,6 @@ export const DataServiceEntityConfigSchema = {
 	"properties": {
 		"dhis_id": {
 			"type": "string"
-		},
-		"kobo_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -77945,9 +77942,6 @@ export const DataServiceEntitySchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -77974,9 +77968,6 @@ export const DataServiceEntityCreateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -77999,9 +77990,6 @@ export const DataServiceEntityUpdateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78010,142 +77998,6 @@ export const DataServiceEntityUpdateSchema = {
 			"type": "string"
 		},
 		"id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const DataServiceSyncGroupSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"data_group_code",
-		"id",
-		"service_type"
-	]
-}
-export const DataServiceSyncGroupCreateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"data_group_code",
-		"service_type"
-	]
-}
-export const DataServiceSyncGroupUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
 			"type": "string"
 		}
 	},
@@ -99853,107 +99705,6 @@ export const SurveyScreenComponentUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const SyncGroupLogSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"log_message",
-		"service_type",
-		"sync_group_code"
-	]
-}
-export const SyncGroupLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"log_message",
-		"service_type",
-		"sync_group_code"
-	]
-}
-export const SyncGroupLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false
-}
 export const SyncQueuedDeviceSchema = {
 	"type": "object",
 	"properties": {
@@ -101430,14 +101181,6 @@ export const TaskCommentTypeSchema = {
 	"enum": [
 		"system",
 		"user"
-	],
-	"type": "string"
-}
-export const SyncGroupSyncStatusSchema = {
-	"enum": [
-		"ERROR",
-		"IDLE",
-		"SYNCING"
 	],
 	"type": "string"
 }

@@ -7439,7 +7439,6 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/dhis-api": "workspace:*"
     "@tupaia/indicators": "workspace:*"
-    "@tupaia/kobo-api": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -7719,18 +7718,6 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     jest-extended: "npm:^0.11.5"
-    rimraf: "npm:^6.1.3"
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/kobo-api@workspace:*, @tupaia/kobo-api@workspace:packages/kobo-api":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/kobo-api@workspace:packages/kobo-api"
-  dependencies:
-    "@babel/core": "npm:^7.26.10"
-    "@babel/eslint-parser": "npm:^7.27.5"
-    "@tupaia/utils": "workspace:*"
-    npm-run-all: "npm:^4.1.5"
     rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft

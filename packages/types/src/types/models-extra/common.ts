@@ -109,7 +109,6 @@ export interface DataElementConfig {
 
 export interface DataServiceEntityConfig {
   dhis_id?: string;
-  kobo_id?: string;
 }
 
 export interface EntityMetadata {
