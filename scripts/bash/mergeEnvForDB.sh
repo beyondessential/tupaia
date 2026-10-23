@@ -28,7 +28,6 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 paths=(
     "$script_dir/../../env/db.env"
     "$script_dir/../../env/pg.env"
-    "$script_dir/../../env/data-lake.env"
     "$caller_dir/.env"
 )
 
