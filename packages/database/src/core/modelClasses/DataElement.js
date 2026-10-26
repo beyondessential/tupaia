@@ -5,14 +5,14 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-const SERVICE_TYPES = {
+const SERVICE_TYPES = /** @type {const} */ ({
   DHIS: 'dhis',
   TUPAIA: 'tupaia',
   INDICATOR: 'indicator',
   DATA_LAKE: 'data-lake',
-};
+});
 
-const CONFIG_SCHEMA_BY_SERVICE = {
+const CONFIG_SCHEMA_BY_SERVICE = /** @type {const} */ ({
   [SERVICE_TYPES.DHIS]: {
     categoryOptionCombo: {},
     dataElementCode: {},
@@ -21,12 +21,12 @@ const CONFIG_SCHEMA_BY_SERVICE = {
   [SERVICE_TYPES.TUPAIA]: {},
   [SERVICE_TYPES.INDICATOR]: {},
   [SERVICE_TYPES.DATA_LAKE]: {},
-};
+});
 
-const DHIS_DATA_TYPES = {
+const DHIS_DATA_TYPES = /** @type {const} */ ({
   DATA_ELEMENT: 'DataElement',
   INDICATOR: 'Indicator',
-};
+});
 
 export class DataElementRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_ELEMENT;
@@ -46,18 +46,17 @@ export class DataElementRecord extends DatabaseRecord {
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_SERVICE[this.service_type];
-    if (!configSchema) {
+    if (configSchema === undefined) {
       throw new Error(`No config schema for '${this.service_type}' service found`);
     }
 
     // `false` values are allowed in config
     const isEmpty = value => !value && value !== false;
 
-    if (!this.config) {
-      this.config = {};
-    }
+    this.config ??= {};
+
     // Clear invalid/empty fields
-    Object.keys(this.config).forEach(key => {
+    for (const key of Object.keys(this.config)) {
       if (!configSchema[key] || isEmpty(this.config[key])) {
         if (this.config[key] === null && configSchema[key].allowNull) {
           // keep as null
@@ -65,9 +64,9 @@ export class DataElementRecord extends DatabaseRecord {
           delete this.config[key];
         }
       }
-    });
+    }
     // Use default values for valid empty fields
-    Object.entries(configSchema).forEach(([key, { default: defaultValue, allowNull }]) => {
+    for (const [key, { default: defaultValue, allowNull }] of Object.entries(configSchema)) {
       if (defaultValue !== undefined && isEmpty(this.config[key])) {
         if (this.config[key] === null && allowNull) {
           // keep as null
@@ -76,7 +75,7 @@ export class DataElementRecord extends DatabaseRecord {
           this.config[key] = defaultValue;
         }
       }
-    });
+    }
   }
 }
 
