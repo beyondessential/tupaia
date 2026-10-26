@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { PageHeader } from '../../widgets';
-import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
@@ -125,7 +124,6 @@ export const ResourcePage = ({
         resourceName={resourceName?.singular}
         {...editorConfig}
       />
-      <LogsModal />
       <QrCodeModal />
       <ResubmitSurveyResponseModal />
       <ArchiveSurveyResponseModal />

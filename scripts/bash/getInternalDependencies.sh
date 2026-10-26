@@ -15,7 +15,6 @@ internal_deps=(
   dhis-api
   expression-parser
   indicators
-  kobo-api
   server-boilerplate
   server-utils
   sync

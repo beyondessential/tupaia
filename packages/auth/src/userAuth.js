@@ -51,11 +51,16 @@ export function getTokenClaims(jwtToken) {
   try {
     tokenClaims = jwt.verify(jwtToken, requireEnv('JWT_SECRET'));
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      throw new UnauthenticatedError('Authorization token has expired, please log in again');
-    } else {
-      throw error;
+    // `TokenExpiredError` extends `JsonWebTokenError`, so must be checked first
+    if (error instanceof jwt.TokenExpiredError) {
+      throw new UnauthenticatedError('Authorization token has expired. Please log in again.');
     }
+    if (error instanceof jwt.JsonWebTokenError) {
+      // E.g. malformed, or signed with a different secret (such as after rotating JWT_SECRET).
+      // Respond with 401 rather than 500, so that clients refresh their access token.
+      throw new UnauthenticatedError('Authorization token is invalid. Please log in again.');
+    }
+    throw error;
   }
 
   return tokenClaims;

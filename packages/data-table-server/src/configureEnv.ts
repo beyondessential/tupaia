@@ -1,19 +1,21 @@
-import path from 'path';
+import path from 'node:path';
 import { configureDotEnv } from '@tupaia/server-utils';
 
+const paths = [
+  '../../../env/aggregation.env',
+  '../../../env/api-client.env',
+  '../../../env/data-lake.env',
+  '../../../env/db.env',
+  '../../../env/dhis.env',
+  /** We hit a character limit in the external-db-connections Bitwarden note */
+  '../../../env/external-db-connections.env',
+  '../../../env/external-db-connections-2.env',
+  '../../../env/external-db-connections-3.env',
+  '../../../env/servers.env',
+  '../../../env/weatherbit.env',
+  '../.env',
+] as const;
+
 export const configureEnv = () => {
-  configureDotEnv([
-    path.resolve(__dirname, '../../../env/aggregation.env'),
-    path.resolve(__dirname, '../../../env/api-client.env'),
-    path.resolve(__dirname, '../../../env/servers.env'),
-    path.resolve(__dirname, '../../../env/db.env'),
-    path.resolve(__dirname, '../../../env/dhis.env'),
-    path.resolve(__dirname, '../../../env/data-lake.env'),
-    path.resolve(__dirname, '../../../env/external-db-connections.env'),
-    /** We hit a character limit in the external-db-connections Bitwarden note */
-    path.resolve(__dirname, '../../../env/external-db-connections-2.env'),
-    path.resolve(__dirname, '../../../env/external-db-connections-3.env'),
-    path.resolve(__dirname, '../../../env/weatherbit.env'),
-    '../.env',
-  ]); // Load the environment variables into process.env
+  configureDotEnv(paths.map(p => path.resolve(__dirname, p)));
 };

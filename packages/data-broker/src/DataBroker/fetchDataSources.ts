@@ -30,13 +30,3 @@ export const fetchDataGroups = async (models: DataBrokerModelRegistry, codes: st
   checkRequestedVsFound(codes, foundCodes, 'data groups');
   return dataGroups;
 };
-
-export const fetchSyncGroups = async (models: DataBrokerModelRegistry, codes: string[]) => {
-  if (codes.length === 0) {
-    throw new Error('Please provide at least one existing sync group code');
-  }
-  const syncGroups = await models.dataServiceSyncGroup.find({ code: codes });
-  const foundCodes = syncGroups.map(({ code }) => code);
-  checkRequestedVsFound(codes, foundCodes, 'sync groups');
-  return syncGroups;
-};

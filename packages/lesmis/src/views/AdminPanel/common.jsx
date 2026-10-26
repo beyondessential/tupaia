@@ -14,10 +14,6 @@ export const SERVICE_TYPE_OPTIONS = [
     value: 'indicator',
   },
   {
-    label: 'Kobo',
-    value: 'kobo',
-  },
-  {
     label: 'Tupaia',
     value: 'tupaia',
   },

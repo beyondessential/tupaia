@@ -279,10 +279,6 @@ export class DhisService extends Service {
       : this.eventsPuller.pull.bind(this)(apis, dhisDataGroups, options);
   }
 
-  public async pullSyncGroupResults(): Promise<never> {
-    throw new Error('pullSyncGroupResults is not supported in DhisService');
-  }
-
   public async pullMetadata(
     dataSources: DataElement[],
     type: 'dataElement',
