@@ -9,7 +9,7 @@ import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 import { handleError } from './apiV2/middleware';
 import { apiV2 } from './apiV2';
 
-const TRUSTED_PROXIES_INTERVAL = 60000; // 1 minute
+const TRUSTED_PROXIES_INTERVAL = 60_000; // 1 minute
 
 /**
  * Dynamically set trusted proxy so that we can trust the IP address of the client
