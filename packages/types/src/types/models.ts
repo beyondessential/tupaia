@@ -475,32 +475,6 @@ export interface DataServiceEntityUpdate {
   'entity_code'?: string;
   'id'?: string;
 }
-export interface DataServiceSyncGroup {
-  'code': string;
-  'config': {};
-  'data_group_code': string;
-  'id': string;
-  'service_type': ServiceType;
-  'sync_cursor'?: string | null;
-  'sync_status'?: SyncGroupSyncStatus | null;
-}
-export interface DataServiceSyncGroupCreate {
-  'code': string;
-  'config': {};
-  'data_group_code': string;
-  'service_type': ServiceType;
-  'sync_cursor'?: string | null;
-  'sync_status'?: SyncGroupSyncStatus | null;
-}
-export interface DataServiceSyncGroupUpdate {
-  'code'?: string;
-  'config'?: {};
-  'data_group_code'?: string;
-  'id'?: string;
-  'service_type'?: ServiceType;
-  'sync_cursor'?: string | null;
-  'sync_status'?: SyncGroupSyncStatus | null;
-}
 export interface DataTable {
   'code': string;
   'config': {};
@@ -1063,67 +1037,6 @@ export interface MeditrakSyncQueueUpdate {
   'record_type'?: string;
   'type'?: string;
 }
-export interface Ms1SyncLog {
-  'count'?: number | null;
-  'data'?: string | null;
-  'endpoint'?: string | null;
-  'error_list'?: string | null;
-  'id': string;
-  'record_id': string;
-  'record_type': string;
-}
-export interface Ms1SyncLogCreate {
-  'count'?: number | null;
-  'data'?: string | null;
-  'endpoint'?: string | null;
-  'error_list'?: string | null;
-  'record_id': string;
-  'record_type': string;
-}
-export interface Ms1SyncLogUpdate {
-  'count'?: number | null;
-  'data'?: string | null;
-  'endpoint'?: string | null;
-  'error_list'?: string | null;
-  'id'?: string;
-  'record_id'?: string;
-  'record_type'?: string;
-}
-export interface Ms1SyncQueue {
-  'bad_request_count'?: number | null;
-  'change_time'?: number | null;
-  'details'?: string | null;
-  'id': string;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
-  'priority'?: number | null;
-  'record_id': string;
-  'record_type': string;
-  'type': string;
-}
-export interface Ms1SyncQueueCreate {
-  'bad_request_count'?: number | null;
-  'change_time'?: number | null;
-  'details'?: string | null;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
-  'priority'?: number | null;
-  'record_id': string;
-  'record_type': string;
-  'type': string;
-}
-export interface Ms1SyncQueueUpdate {
-  'bad_request_count'?: number | null;
-  'change_time'?: number | null;
-  'details'?: string | null;
-  'id'?: string;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
-  'priority'?: number | null;
-  'record_id'?: string;
-  'record_type'?: string;
-  'type'?: string;
-}
 export interface OneTimeLogin {
   'creation_date'?: Date | null;
   'id': string;
@@ -1594,26 +1507,6 @@ export interface SurveyScreenComponentUpdate {
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
-export interface SyncGroupLog {
-  'id': string;
-  'log_message': string;
-  'service_type': ServiceType;
-  'sync_group_code': string;
-  'timestamp'?: Date | null;
-}
-export interface SyncGroupLogCreate {
-  'log_message': string;
-  'service_type': ServiceType;
-  'sync_group_code': string;
-  'timestamp'?: Date | null;
-}
-export interface SyncGroupLogUpdate {
-  'id'?: string;
-  'log_message'?: string;
-  'service_type'?: ServiceType;
-  'sync_group_code'?: string;
-  'timestamp'?: Date | null;
-}
 export interface SyncQueuedDevice {
   'id': string;
   'last_seen_time': Date;
@@ -1818,20 +1711,6 @@ export interface UserAccountUpdate {
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
-export interface UserCountryAccessAttempt {
-  'country_code': string;
-  'id': string;
-  'user_id': string;
-}
-export interface UserCountryAccessAttemptCreate {
-  'country_code': string;
-  'user_id': string;
-}
-export interface UserCountryAccessAttemptUpdate {
-  'country_code'?: string;
-  'id'?: string;
-  'user_id'?: string;
-}
 export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
@@ -1900,11 +1779,6 @@ export enum TaskStatus {
 export enum TaskCommentType {
   'user' = 'user',
   'system' = 'system',
-}
-export enum SyncGroupSyncStatus {
-  'IDLE' = 'IDLE',
-  'SYNCING' = 'SYNCING',
-  'ERROR' = 'ERROR',
 }
 export enum ServiceType {
   'dhis' = 'dhis',

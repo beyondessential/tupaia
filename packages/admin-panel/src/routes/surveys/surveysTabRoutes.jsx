@@ -6,6 +6,7 @@ import { optionSets } from './optionSets';
 import { dataElements } from './dataElements';
 import { dataGroups } from './dataGroups';
 import { surveyResponses } from './surveyResponses';
+import { dataMapping } from './dataMapping';
 import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
 
 export const surveysTabRoutes = {
@@ -20,5 +21,6 @@ export const surveysTabRoutes = {
     { ...dataGroups, scope: ALL_PROJECTS_SCOPE },
     { ...optionSets, scope: ALL_PROJECTS_SCOPE },
     { ...questions, scope: ALL_PROJECTS_SCOPE },
+    { ...dataMapping, scope: ALL_PROJECTS_SCOPE },
   ],
 };

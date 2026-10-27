@@ -7370,7 +7370,6 @@ __metadata:
     chance: "npm:^1.1.13"
     compare-versions: "npm:^6.1.0"
     cors: "npm:^2.8.5"
-    countries-and-timezones: "npm:^3.6.0"
     cross-env: "npm:^7.0.2"
     deep-equal-in-any-order: "npm:^1.0.21"
     es-toolkit: "npm:^1.46.0"
@@ -7423,6 +7422,7 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     moment: "npm:^2.24.0"
+    p-limit: "npm:^3.1.0"
     rimraf: "npm:^6.1.3"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.2.2"
@@ -7439,7 +7439,6 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/dhis-api": "workspace:*"
     "@tupaia/indicators": "workspace:*"
-    "@tupaia/kobo-api": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -7719,18 +7718,6 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     jest-extended: "npm:^0.11.5"
-    rimraf: "npm:^6.1.3"
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/kobo-api@workspace:*, @tupaia/kobo-api@workspace:packages/kobo-api":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/kobo-api@workspace:packages/kobo-api"
-  dependencies:
-    "@babel/core": "npm:^7.26.10"
-    "@babel/eslint-parser": "npm:^7.27.5"
-    "@tupaia/utils": "workspace:*"
-    npm-run-all: "npm:^4.1.5"
     rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
@@ -12620,13 +12607,6 @@ __metadata:
     path-type: "npm:^4.0.0"
     yaml: "npm:^1.10.0"
   checksum: 10c0/3cd38525ba22e13da0ef9f4be131df226c94f5b96fb50f6297eb17baeedefe15cf5819f8c73cde69f71cc5034e712c86bd20c7756883dd8094087680ecc25932
-  languageName: node
-  linkType: hard
-
-"countries-and-timezones@npm:^3.6.0":
-  version: 3.7.2
-  resolution: "countries-and-timezones@npm:3.7.2"
-  checksum: 10c0/72f81bc341b9cd0d3d2f565433eb6f2d110c49157bedf1a55f9286e731fe1db56af431d0ca41de14a96a055267dea5b882e2e87f20000d3980e8c78fd09b3dcb
   languageName: node
   linkType: hard
 

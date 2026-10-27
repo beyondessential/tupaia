@@ -5,8 +5,6 @@ import type {
   DataElementRecord as BaseDataElementRecord,
   DataGroupModel as BaseDataGroupModel,
   DataGroupRecord as BaseDataGroupRecord,
-  DataServiceSyncGroupModel as BaseDataServiceSyncGroupModel,
-  DataServiceSyncGroupRecord as BaseDataServiceSyncGroupRecord,
   EntityModel as BaseEntityModel,
   EntityRecord as BaseEntityRecord,
   ModelRegistry,
@@ -50,15 +48,9 @@ type DatabaseModel<
   findOne: (dbConditions: DbConditions<R>) => Promise<DatabaseRecord<R, T>>;
 };
 
-export type DataSourceType = 'dataElement' | 'dataGroup' | 'syncGroup';
+export type DataSourceType = 'dataElement' | 'dataGroup';
 
-export type ServiceType =
-  | 'data-lake'
-  | 'dhis'
-  | 'indicator'
-  | 'kobo'
-  | 'tupaia'
-  | 'weather';
+export type ServiceType = 'data-lake' | 'dhis' | 'indicator' | 'tupaia' | 'weather';
 
 export type DataSource = {
   code: string;
@@ -73,18 +65,9 @@ export type DataElement = DataSource & {
 
 export type DataGroup = DataSource;
 
-export type DataServiceSyncGroup = DataSource & {
-  data_group_code: string;
-  sync_cursor: string;
-  sync_status: SyncStatus;
-};
-
-type SyncStatus = 'IDLE' | 'SYNCING' | 'ERROR';
-
 export type DataServiceEntity = {
   config: {
     dhis_id: string;
-    kobo_id: string;
   };
   entity_code: string;
 };
@@ -94,9 +77,6 @@ export type Entity = {
   name: string;
   type: string;
   point?: string;
-  config: {
-    kobo_id?: string;
-  };
   metadata: {
     dhis?: {
       trackedEntityId: string;
@@ -134,10 +114,7 @@ export type Project = {
 };
 
 export type DataSourceTypeInstance = DataSource & {
-  databaseRecord:
-    | typeof RECORDS.DATA_ELEMENT
-    | typeof RECORDS.DATA_GROUP
-    | typeof RECORDS.DATA_SERVICE_SYNC_GROUP;
+  databaseRecord: typeof RECORDS.DATA_ELEMENT | typeof RECORDS.DATA_GROUP;
 };
 type DataElementRecord = DatabaseRecord<DataElement, BaseDataElementRecord>;
 export interface EntityRecord extends DatabaseRecord<Entity, BaseEntityRecord> {}
@@ -162,11 +139,6 @@ export type DataGroupModel = DatabaseModel<
     }
   >
 >;
-export type DataServiceSyncGroupModel = DatabaseModel<
-  DataServiceSyncGroup,
-  BaseDataServiceSyncGroupRecord,
-  BaseDataServiceSyncGroupModel
->;
 type DataServiceEntityModel = DatabaseModel<DataServiceEntity>;
 type EntityModel = DatabaseModel<Entity, EntityRecord, BaseEntityModel>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
@@ -182,7 +154,6 @@ export interface DataBrokerModelRegistry extends ModelRegistry {
   readonly dataElement: DataElementModel;
   readonly dataGroup: DataGroupModel;
   readonly dataServiceEntity: DataServiceEntityModel;
-  readonly dataServiceSyncGroup: DataServiceSyncGroupModel;
   readonly entity: EntityModel;
   readonly dhisInstance: DhisInstanceModel;
   readonly entityHierarchy: EntityHierarchyModel;

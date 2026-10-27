@@ -14,7 +14,6 @@ import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataElementModel } from './DataElement';
 import { DataGroupModel } from './DataGroup';
-import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
 import { DebugLogModel } from './DebugLog';
 import { EntityModel } from './Entity';
@@ -48,7 +47,6 @@ import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
-import { SyncGroupLogModel } from './SyncGroupLog';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
@@ -57,7 +55,6 @@ import { DhisInstanceModel } from './DhisInstance';
 import { DataElementDataServiceModel } from './DataElementDataService';
 import { SurveyResponseDraftModel } from './SurveyResponseDraft';
 import { TaskModel } from './Task';
-import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
 import { SyncLookupModel } from './SyncLookup';
 import { SyncSessionModel } from './SyncSession';
@@ -84,7 +81,6 @@ export const modelClasses = {
   DataElement: DataElementModel,
   DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
-  DataServiceSyncGroup: DataServiceSyncGroupModel,
   DataTable: DataTableModel,
   DebugLog: DebugLogModel,
   DhisInstance: DhisInstanceModel,
@@ -119,14 +115,12 @@ export const modelClasses = {
   SurveyResponseDraft: SurveyResponseDraftModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
-  SyncGroupLog: SyncGroupLogModel,
   Task: TaskModel,
   TaskComment: TaskCommentModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
-  UserCountryAccessAttempt: UserCountryAccessAttemptModel,
   SyncLookup: SyncLookupModel,
   SyncSession: SyncSessionModel,
   SyncDeviceTick: SyncDeviceTickModel,
@@ -150,7 +144,6 @@ export {
 } from './DataElementDataService';
 export { DataElementModel, DataElementRecord } from './DataElement';
 export { DataGroupModel, DataGroupRecord } from './DataGroup';
-export { DataServiceSyncGroupModel, DataServiceSyncGroupRecord } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableRecord } from './DataTable';
 export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityModel, EntityRecord } from './Entity';
@@ -196,10 +189,6 @@ export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRela
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
 export { AnswerModel, AnswerRecord } from './Answer';
 export { TaskModel, TaskRecord } from './Task';
-export {
-  UserCountryAccessAttemptModel,
-  UserCountryAccessAttemptRecord,
-} from './UserCountryAccessAttempt';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
 export { SyncLookupModel, SyncLookupRecord } from './SyncLookup';

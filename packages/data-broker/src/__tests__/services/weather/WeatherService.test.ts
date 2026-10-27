@@ -235,13 +235,4 @@ describe('WeatherService', () => {
       );
     });
   });
-
-  describe('pullSyncGroupResults()', () => {
-    it('throws an error', async () => {
-      const mockModels = await createMockModelsStubWithMockEntity();
-      const mockApi = createWeatherApiStubWithMockResponse();
-      const service = new WeatherService(mockModels, mockApi);
-      await expect(service.pullSyncGroupResults()).toBeRejectedWith('not supported');
-    });
-  });
 });

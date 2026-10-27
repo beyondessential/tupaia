@@ -49,8 +49,9 @@ for package in "${backend_packages[@]}"; do
 
     instances_flag=()
     if [[ $package = web-config-server || $package = report-server ]]; then
-        # as many replicas as cpu cores - 1
-        instances_flag=(--instances -1)
+        # A fixed, small replica count keeps the number of concurrent analytics queries hitting the
+        # database predictable (see ANALYTICS_QUERY_CONCURRENCY, which caps each replica)
+        instances_flag=(--instances 2)
     fi
 
     # Some `Link` headers for from GET requests can be huge (over 24KiB) if they include a large

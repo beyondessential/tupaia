@@ -39,8 +39,6 @@ const TABLES_TO_CLEAR = [
   'feed_item',
   'meditrak_device',
   'meditrak_sync_queue',
-  'ms1_sync_queue',
-  'ms1_sync_log',
   'one_time_login',
   'option',
   'option_set',
