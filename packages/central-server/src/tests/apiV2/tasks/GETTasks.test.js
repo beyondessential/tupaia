@@ -204,5 +204,22 @@ describe('Permissions checker for GETTasks', async () => {
 
       expect(results).to.be.empty;
     });
+
+    it('Accepts an allow-listed rawSort', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const rawSort = encodeURIComponent('due_date ASC');
+      const { body: results } = await app.get(`tasks?rawSort=${rawSort}`);
+
+      expect(results.length).to.equal(tasks.length);
+    });
+
+    it('Rejects a rawSort that is not allow-listed', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const rawSort = encodeURIComponent('(SELECT 1/0)');
+      const { body: result } = await app.get(`tasks?rawSort=${rawSort}`);
+
+      expect(result).to.have.keys('error');
+      expect(result.error).to.include('Unsupported rawSort');
+    });
   });
 });
