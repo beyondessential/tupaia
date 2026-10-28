@@ -45,11 +45,6 @@ export class SurveyResponseRecord extends DatabaseRecord {
     return await this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
   }
 
-  /** @returns {Promise<Country['code']>} */
-  async getCountryCode() {
-    return (await this.getEntity({ columns: ['country_code'] })).country_code;
-  }
-
   /** @returns {Promise<EntityRecord>} */
   async getEntity(options) {
     const entityId =
@@ -58,15 +53,6 @@ export class SurveyResponseRecord extends DatabaseRecord {
       await this.otherModels.entity.findById(entityId, options),
       `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${entityId})`,
     );
-  }
-
-  /** @returns {Promise<Entity['name'] | undefined>} */
-  async getEntityParentName() {
-    const [projectId, entityId] = await Promise.all([
-      this.getProjectId(),
-      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id,
-    ]);
-    return await this.otherModels.entity.getParentEntityName(projectId, entityId);
   }
 
   /** @returns {Promise<Project['id']>} */

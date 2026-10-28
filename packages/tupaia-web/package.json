@@ -16,7 +16,7 @@
     "preview": "vite preview",
     "start-dev": "yarn run package:start:vite --port=8088",
     "start-stack": "yarn package:start-stack tupaia-web",
-    "test": "yarn package:test --env=jsdom",
+    "test": "yarn package:test --env=jsdom --passWithNoTests",
     "start-storybook": "yarn package:storybook:start",
     "build-storybook": "yarn package:storybook:build"
   },

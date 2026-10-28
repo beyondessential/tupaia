@@ -1,5 +1,3 @@
-import { groupBy } from 'es-toolkit/compat';
-
 import { utcMoment } from '@tupaia/tsutils';
 import { momentToPeriod, convertToPeriod } from '@tupaia/utils';
 
@@ -15,5 +13,3 @@ export const groupEventsByPeriod = (events = [], periodType) => {
     return { ...results, [period]: [...(results[period] || []), event] };
   }, {});
 };
-
-export const groupEventsByOrgUnit = events => groupBy(events, 'orgUnit');

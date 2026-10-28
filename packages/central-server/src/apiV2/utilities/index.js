@@ -2,7 +2,6 @@ export { constructNewRecordValidationRules } from './constructNewRecordValidatio
 export * from './excel';
 export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchRequestingMeditrakDevice';
 export {
-  getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
   getAdminPanelAllowedPermissionGroupIdsByCountryIds,
 } from './getAdminPanelAllowedCountries';
@@ -12,7 +11,6 @@ export {
   hasVizBuilderAccessToEntity,
   hasVizBuilderAccessToEntityCode,
 } from './hasAccessToEntityForVisualisation';
-export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
@@ -27,7 +25,6 @@ export {
   translateUserEmailToIdAndAssessorName,
 } from './translateSurveyResponseFields';
 export { translateObjectFields } from './translateObjectFields';
-export { getUserInfoInString } from './getUserInfoInString';
 export { getPermissionListWithWildcard } from './getPermissionListWithWildcard';
 export { uploadImage } from './uploadImage';
 export { zipMultipleFiles } from './zipMultipleFiles';

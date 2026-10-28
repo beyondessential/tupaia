@@ -17,7 +17,6 @@ export {
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponseDraftsRequest,
   DatatrakWebSurveyResponsesRequest,
-  DatatrakWebSurveysRequest,
   DatatrakWebSyncEndSessionRequest,
   DatatrakWebSyncInitiatePullRequest,
   DatatrakWebSyncPullRequest,

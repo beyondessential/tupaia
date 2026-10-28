@@ -7,7 +7,6 @@ import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupai
 import type { AuthHandler, ApiConnectionOptions } from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { UnauthenticatedError } from '@tupaia/utils';
 
 // @ts-expect-error no types
 import morgan from 'morgan';
@@ -113,14 +112,6 @@ export class ApiBuilder {
     return this;
   }
 
-  public logApiRequests() {
-    if (!this.apiName) {
-      throw new Error('Must set apiName in order to log api requests');
-    }
-    this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
-    return this;
-  }
-
   public useAttachSession(attachSession: RequestHandler) {
     this.attachSession = attachSession;
     return this;
@@ -159,24 +150,6 @@ export class ApiBuilder {
     }
     // Add translation to req/res locals
     this.app.use(i18n.init);
-    return this;
-  }
-
-  public verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
-    this.verifyAuthMiddleware = (req: Request, _res: Response, next: NextFunction) => {
-      try {
-        const { session } = req;
-        if (!session) {
-          throw new UnauthenticatedError('Session not attached to request');
-        }
-
-        verify(session.accessPolicy);
-
-        next();
-      } catch (error) {
-        next(error);
-      }
-    };
     return this;
   }
 

@@ -1,7 +1,5 @@
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
-export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-
 type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable' | 'webConfig' | 'sync';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
@@ -91,16 +89,6 @@ const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string =
   const { subdomain, version } = SERVICES[service];
   const fullSubdomain = subdomainPrefix ? `${subdomainPrefix}-${subdomain}` : subdomain;
   return `https://${fullSubdomain}.${DOMAIN}/${version}`;
-};
-
-export const DEV_BASE_URLS: ServiceBaseUrlSet = {
-  auth: getServiceUrl('auth', 'dev'),
-  entity: getServiceUrl('entity', 'dev'),
-  central: getServiceUrl('central', 'dev'),
-  report: getServiceUrl('report', 'dev'),
-  dataTable: getServiceUrl('dataTable', 'dev'),
-  webConfig: getServiceUrl('webConfig', 'dev'),
-  sync: getServiceUrl('sync', 'dev'),
 };
 
 export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
