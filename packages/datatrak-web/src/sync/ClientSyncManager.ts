@@ -39,7 +39,7 @@ const URGENT_SYNC_INTERVAL_MS = 10_000;
 const SYNC_IDLE_MS = 3_000;
 
 // How long a sync step keeps waiting and retrying before sync gives up and tries again later
-const SYNC_STEP_GIVE_UP_MS = 30 * 60_000;
+const SYNC_STEP_GIVE_UP_MS = 60_000; // TEMP manual testing, revert to 30 * 60_000
 
 /** Thrown to roll back a sync step when the app needs the database */
 class CancelledForAppError extends Error {}
@@ -726,7 +726,8 @@ export class ClientSyncManager {
         return await this.models.wrapInTransaction(step, transactionConfig);
       } catch (error) {
         if (!(error instanceof CancelledForAppError)) throw error;
-        log.debug('ClientSyncManager.cancelledForApp: retrying when the app is idle');
+        // TEMP manual testing, revert to log.debug
+        console.log('ClientSyncManager.cancelledForApp: retrying when the app is idle');
       }
     }
   }
