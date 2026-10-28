@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/database",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "description": "Common database code for use across other packages within this monorepo",
   "repository": {
@@ -73,6 +73,6 @@
     "@tupaia/expression-parser": "workspace:*",
     "npm-run-all": "^4.1.5",
     "pluralize": "^8.0.0",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.1.3"
   }
 }

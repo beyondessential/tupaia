@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/indicators",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "description": "Shareable computations of derived data",
   "repository": {
@@ -32,6 +32,6 @@
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "jest-extended": "^0.11.5",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.1.3"
   }
 }

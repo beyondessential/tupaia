@@ -31,7 +31,6 @@
     "public.dashboard_relation.entity_types": "EntityType[]",
     "public.option.attributes": "OptionAttributes",
     "public.project.config": "ProjectConfig",
-    "public.superset_instance.config": "SupersetInstanceConfig",
     "public.sync_session.info": "SyncSessionInfo",
     "public.task_comment.template_variables": "TaskCommentTemplateVariables",
     "public.task.repeat_schedule": "RepeatSchedule"
@@ -57,7 +56,6 @@
       "ProjectConfig": "./models-extra",
       "TaskCommentTemplateVariables": "./models-extra",
       "RepeatSchedule": "./models-extra",
-      "SupersetInstanceConfig": "./models-extra",
       "SyncSessionInfo": "./models-extra"
     }
   }
