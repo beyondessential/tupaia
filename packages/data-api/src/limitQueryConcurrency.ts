@@ -22,10 +22,12 @@ const getLimiter = (): Limiter => {
     const raw = getEnvVarOrDefault('ANALYTICS_QUERY_CONCURRENCY', undefined);
     if (!raw) {
       limiter = runImmediately;
-    } else if (/^\d+$/.test(raw) && Number(raw) > 0) {
-      limiter = limitAsync<Limiter>(runImmediately, Number(raw));
     } else {
-      throw new Error(`ANALYTICS_QUERY_CONCURRENCY must be a positive integer, got "${raw}"`);
+      const concurrency = Number.parseInt(raw, 10);
+      if (!/^\d+$/.test(raw) || !Number.isFinite(concurrency) || concurrency <= 0) {
+        throw new Error(`ANALYTICS_QUERY_CONCURRENCY must be a positive integer, got "${raw}"`);
+      }
+      limiter = limitAsync<Limiter>(runImmediately, concurrency);
     }
   }
   return limiter;
