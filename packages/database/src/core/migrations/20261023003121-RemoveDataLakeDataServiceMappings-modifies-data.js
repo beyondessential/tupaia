@@ -19,20 +19,27 @@ exports.setup = function (options, seedLink) {
  */
 exports.up = async function (db) {
   await db.runSql(`
+    CREATE TEMPORARY TABLE data_lake_code AS
+      SELECT code FROM data_element WHERE service_type = 'data-lake'
+      UNION
+      SELECT code FROM data_group WHERE service_type = 'data-lake';
+
     DELETE FROM report r
     WHERE EXISTS (
       SELECT 1
-      FROM data_element de
-      WHERE de.service_type = 'data-lake'
-        AND strpos(r.config::text, '"' || de.code || '"') > 0
+      FROM data_lake_code dlc
+      WHERE strpos(r.config::text, '"' || dlc.code || '"') > 0
     );
     DELETE FROM indicator i
     WHERE EXISTS (
       SELECT 1
-      FROM data_element de
-      WHERE de.service_type = 'data-lake'
-        AND strpos(i.config::text, '"' || de.code || '"') > 0
+      FROM data_lake_code dlc
+      WHERE strpos(i.config::text, '"' || dlc.code || '"') > 0
+        OR dlc.code = ANY (regexp_split_to_array(i.config ->> 'formula', '[^A-Za-z0-9_$@]+'))
     );
+
+    DROP TABLE data_lake_code;
+
     DELETE FROM data_element_data_service
     WHERE service_type = 'data-lake'
       OR data_element_code IN (SELECT code FROM data_element WHERE service_type = 'data-lake');
