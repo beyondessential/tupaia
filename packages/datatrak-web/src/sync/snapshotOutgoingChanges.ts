@@ -5,13 +5,8 @@ import { sanitizeRecord, SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '
 import { assertModelsForPush } from './assertModelsForPush';
 import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
-const snapshotChangesForModel = async (
-  model: DatabaseModel,
-  since: number,
-  cancelIfAppIsWaiting?: () => void,
-) => {
+const snapshotChangesForModel = async (model: DatabaseModel, since: number) => {
   const changedRecords = await model.find(getModelOutgoingChangesFilter(since));
-  cancelIfAppIsWaiting?.();
 
   log.debug(
     `snapshotChangesForModel: Found ${changedRecords.length} for model ${model.databaseRecord} since ${since}`,
@@ -27,7 +22,13 @@ const snapshotChangesForModel = async (
 };
 
 /**
- * @param cancelIfAppIsWaiting Called after reading each model’s changes; throws to cancel
+ * Reads one model at a time, rather than all of them at once. `cancelIfAppIsWaiting` throws from
+ * inside one of these reads, and `Promise.all` rejects on the first throw, so the transaction
+ * would start rolling back with the sibling reads still outstanding against it — and nothing left
+ * awaiting them to handle their rejections. PGlite serialises the reads on its single connection
+ * anyway, so running them in turn costs nothing.
+ *
+ * @param cancelIfAppIsWaiting Called before reading each model’s changes; throws to cancel
  */
 export const snapshotOutgoingChanges = async (
   models: DatabaseModel[],
@@ -39,9 +40,11 @@ export const snapshotOutgoingChanges = async (
 
   assertModelsForPush(models);
 
-  const modelChanges = await Promise.all(
-    models.map(model => snapshotChangesForModel(model, since, cancelIfAppIsWaiting)),
-  );
+  const modelChanges: SyncSnapshotAttributes[][] = [];
+  for (const model of models) {
+    cancelIfAppIsWaiting?.();
+    modelChanges.push(await snapshotChangesForModel(model, since));
+  }
 
   console.groupEnd();
   console.log(`Snapshotted outgoing changes in ${performance.now() - startTime} ms`);

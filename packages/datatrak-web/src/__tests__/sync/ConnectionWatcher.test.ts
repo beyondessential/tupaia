@@ -42,6 +42,15 @@ describe('ConnectionWatcher', () => {
     expect(watcher.waitingCount).toBe(0);
   });
 
+  it('still hands the connection to the query it is counting', async () => {
+    const { askForConnection, giveConnection } = createWatcher();
+
+    const query = askForConnection();
+    giveConnection();
+
+    await expect(query).resolves.toBe('connection');
+  });
+
   it('waits until the connection has been unused for the idle time', async () => {
     const { pool, watcher } = createWatcher();
     pool.emit('release');
@@ -58,6 +67,27 @@ describe('ConnectionWatcher', () => {
     expect(isIdle).toBe(false);
 
     await jest.advanceTimersByTimeAsync(1000);
+    await waiting;
+    expect(isIdle).toBe(true);
+  });
+
+  it('is not idle while a query is waiting for the connection', async () => {
+    const { watcher, askForConnection, giveConnection } = createWatcher();
+
+    const query = askForConnection();
+
+    let isIdle = false;
+    const waiting = watcher.waitUntilIdle(3000).then(() => {
+      isIdle = true;
+    });
+
+    // Long enough to be idle, but the query still holds a place in the queue
+    await jest.advanceTimersByTimeAsync(10_000);
+    expect(isIdle).toBe(false);
+
+    giveConnection();
+    await query;
+    await jest.advanceTimersByTimeAsync(3000);
     await waiting;
     expect(isIdle).toBe(true);
   });
