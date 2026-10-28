@@ -1,5 +1,7 @@
 import { limitAsync } from 'es-toolkit';
 
+import { getEnvVarOrDefault } from '@tupaia/utils';
+
 type Limiter = <T>(fn: () => Promise<T>) => Promise<T>;
 
 const runImmediately: Limiter = fn => fn();
@@ -17,7 +19,7 @@ let limiter: Limiter | undefined;
  */
 const getLimiter = (): Limiter => {
   if (!limiter) {
-    const raw = process.env.ANALYTICS_QUERY_CONCURRENCY;
+    const raw = getEnvVarOrDefault('ANALYTICS_QUERY_CONCURRENCY', undefined);
     if (!raw) {
       limiter = runImmediately;
     } else if (/^\d+$/.test(raw) && Number(raw) > 0) {
