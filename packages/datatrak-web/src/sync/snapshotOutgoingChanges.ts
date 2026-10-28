@@ -13,23 +13,37 @@ const snapshotChangesForModel = async (model: DatabaseModel, since: number) => {
   );
 
   return changedRecords.map(r => ({
-    direction: SYNC_SESSION_DIRECTION.OUTGOING,
-    recordType: model.databaseRecord,
+    varcharId: r.id,
     recordId: r.id,
-    isDeleted: Boolean(r.is_deleted),
+    isDeleted: !!r.deleted_at,
+    recordType: model.databaseRecord,
     data: sanitizeRecord(r),
+    direction: SYNC_SESSION_DIRECTION.OUTGOING,
   })) as SyncSnapshotAttributes[];
 };
 
-export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: number) => {
+/**
+ * Reads one model at a time, rather than all of them at once, so that `cancelIfAppIsWaiting` can
+ * throw between models without leaving reads running against a transaction that is rolling back.
+ * PGlite serialises them on its single connection anyway, so nothing is lost by doing so.
+ *
+ * @param cancelIfAppIsWaiting Called before reading each model’s changes; throws to cancel
+ */
+export const snapshotOutgoingChanges = async (
+  models: DatabaseModel[],
+  since: number,
+  cancelIfAppIsWaiting?: () => void,
+) => {
   console.groupCollapsed('Snapshotting outgoing changes');
   const startTime = performance.now();
 
   assertModelsForPush(models);
 
-  const modelChanges = await Promise.all(
-    models.map(model => snapshotChangesForModel(model, since)),
-  );
+  const modelChanges: SyncSnapshotAttributes[][] = [];
+  for (const model of models) {
+    cancelIfAppIsWaiting?.();
+    modelChanges.push(await snapshotChangesForModel(model, since));
+  }
 
   console.groupEnd();
   console.log(`Snapshotted outgoing changes in ${performance.now() - startTime} ms`);

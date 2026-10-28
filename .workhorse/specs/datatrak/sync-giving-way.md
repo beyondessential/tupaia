@@ -29,7 +29,7 @@ abandons the work in progress as soon as the app needs the connection back, retr
       phase of an incremental sync, gives way.
 - [ ] Streaming pulled changes into the local snapshot table does not give way. Each batch takes
       the connection only briefly, so the app interleaves with it.
-- [ ] The initial sync does not give way. It holds a single transaction for the whole pull, and
+- [ ] The initial pull does not give way. It holds a single transaction for the whole pull, and
       the user has no local data to work with until it finishes.
 - [ ] A sync the user asked for explicitly gives way on the same terms as a background sync.
 
