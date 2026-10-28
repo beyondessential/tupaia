@@ -3,7 +3,10 @@ import { sleep } from '@tupaia/utils';
 import type { DatatrakDatabase } from '../database/DatatrakDatabase';
 
 /**
- * Watches the queries asking for PGlite’s only connection. While sync saves inside a transaction,
+ * Watches the queries asking for PGlite’s only connection. PGlite is a single Postgres session, so
+ * knex-pglite fixes knex’s connection pool at one connection (`pool: { min: 1, max: 1 }`, and it
+ * throws if you try to configure it). Every query outside a transaction borrows that connection
+ * from the pool, and a transaction keeps it until it ends. While sync saves inside a transaction,
  * the transaction already holds the connection, so any query asking for it comes from the app.
  * (Queries inside a transaction use the transaction’s connection, so they don’t ask.)
  */
@@ -13,9 +16,6 @@ export class ConnectionWatcher {
 
   private lastActivityTime = 0;
 
-  /** While set, queries wait for it before asking knex for the connection */
-  private hold: Promise<void> | null = null;
-
   constructor(database: DatatrakDatabase) {
     const { client } = database.connection;
     const acquireConnection = client.acquireConnection.bind(client);
@@ -23,7 +23,6 @@ export class ConnectionWatcher {
       this.waitingCount++;
       this.lastActivityTime = Date.now();
       try {
-        while (this.hold) await this.hold;
         return await acquireConnection();
       } finally {
         this.waitingCount--;
@@ -35,27 +34,14 @@ export class ConnectionWatcher {
   }
 
   /**
-   * Makes queries wait until the returned function is called. knex fails a query that waits more
-   * than 60 seconds for the connection, but its timer only starts once the query asks for it, so
-   * held queries can wait as long as a save takes.
+   * Waits until nothing has used the connection for `idleMs`. Returns false once `deadline` (a
+   * timestamp) has passed, even if it is idle by then.
    */
-  holdQueries(): () => void {
-    let release = () => {};
-    const hold = new Promise<void>(resolve => {
-      release = resolve;
-    });
-    this.hold = hold;
-    return () => {
-      if (this.hold === hold) this.hold = null;
-      release();
-    };
-  }
-
-  /** Resolves once nothing has used the connection for `idleMs` */
-  async waitUntilIdle(idleMs: number): Promise<void> {
+  async waitUntilIdle(idleMs: number, deadline = Infinity): Promise<boolean> {
     for (;;) {
+      if (Date.now() >= deadline) return false;
       const idleFor = Date.now() - this.lastActivityTime;
-      if (this.waitingCount === 0 && idleFor >= idleMs) return;
+      if (this.waitingCount === 0 && idleFor >= idleMs) return true;
       await sleep(Math.max(idleMs - idleFor, 100));
     }
   }

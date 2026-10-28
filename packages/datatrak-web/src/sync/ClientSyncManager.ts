@@ -1,4 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
+import type { Knex } from 'knex';
 import mitt from 'mitt';
 import log from 'winston';
 
@@ -34,11 +35,14 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 const SYNC_INTERVAL_MS = 30_000;
 const URGENT_SYNC_INTERVAL_MS = 10_000;
 
-// How long the app must leave the database alone before an incremental sync saves
-const SAVE_IDLE_MS = 3_000;
+// How long the app must leave the database alone before sync uses it (see runPatiently)
+const SYNC_IDLE_MS = 3_000;
 
-/** Thrown to roll back a save when the app needs the database */
-class SaveCancelledError extends Error {}
+// How long a sync step keeps waiting and retrying before sync gives up and tries again later
+const SYNC_STEP_GIVE_UP_MS = 30 * 60_000;
+
+/** Thrown to roll back a sync step when the app needs the database */
+class CancelledForAppError extends Error {}
 
 const SYNC_STAGES = {
   PUSH: 1,
@@ -341,17 +345,27 @@ export class ClientSyncManager {
     this.progressMessage = 'Initialising sync';
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
-    // clear previous temp data, in case last session errored out or server was restarted
-    await dropAllSnapshotTables(this.database);
+    let pulledChangesCount: number;
+    try {
+      // clear previous temp data, in case last session errored out or server was restarted
+      await dropAllSnapshotTables(this.database);
 
-    log.debug('ClientSyncManager.receivedSessionInfo', {
-      sessionId,
-      startedAtTick,
-    });
+      log.debug('ClientSyncManager.receivedSessionInfo', {
+        sessionId,
+        startedAtTick,
+      });
 
-    await this.pushChanges(sessionId, startedAtTick);
+      await this.pushChanges(sessionId, startedAtTick);
 
-    const pulledChangesCount = await this.pullChanges(sessionId, projectIds, urgent);
+      pulledChangesCount = await this.pullChanges(sessionId, projectIds);
+    } catch (error) {
+      // This session won’t be retried, so free it up on central, which only allows a few at a time.
+      // If incremental sync already ended it before saving, this is just a harmless extra request
+      await this.endSyncSession(sessionId).catch(endError =>
+        log.warn('ClientSyncManager.runSync(): Failed to end sync session', { endError }),
+      );
+      throw error;
+    }
 
     // Incremental sync ends the session itself, before saving (see pullIncrementalSync)
     if (this.isInitialSync) await this.endSyncSession(sessionId);
@@ -475,12 +489,15 @@ export class ClientSyncManager {
     // is underway aren't included (as this could lead to a pair of foreign records with the child in
     // the snapshot and its parent missing)
     // as the snapshot only contains read queries, there will be no concurrent update issues :)
-    const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
-      async transactingModels => {
-        const modelsForPush = getModelsForPush(transactingModels.getModels());
-        return snapshotOutgoingChanges(modelsForPush, pushSince);
-      },
-    );
+    const snapshotStep = (transactingModels: DatatrakWebModelRegistry) =>
+      snapshotOutgoingChanges(
+        getModelsForPush(transactingModels.getModels()),
+        pushSince,
+        this.cancelIfAppIsWaiting,
+      );
+    const outgoingChanges = await this.runPatiently(snapshotStep, {
+      isolationLevel: 'repeatable read',
+    });
 
     if (outgoingChanges.length > 0) {
       log.debug('ClientSyncManager.pushingOutgoingChanges', {
@@ -504,11 +521,7 @@ export class ClientSyncManager {
     });
   }
 
-  async pullChanges(
-    sessionId: string,
-    projectIds: Project['id'][],
-    urgent: boolean,
-  ): Promise<number> {
+  async pullChanges(sessionId: string, projectIds: Project['id'][]): Promise<number> {
     this.setSyncStage(SYNC_STAGES.PULL);
 
     try {
@@ -565,7 +578,7 @@ export class ClientSyncManager {
       if (isInitialPull) {
         await this.pullInitialSync(sessionId, totalToPull, pullUntil);
       } else {
-        await this.pullIncrementalSync(sessionId, totalToPull, pullUntil, urgent);
+        await this.pullIncrementalSync(sessionId, totalToPull, pullUntil);
       }
 
       return totalToPull;
@@ -618,12 +631,7 @@ export class ClientSyncManager {
     });
   }
 
-  async pullIncrementalSync(
-    sessionId: string,
-    totalToPull: number,
-    pullUntil: number,
-    urgent: boolean,
-  ) {
+  async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
       pullTotal += Number(incrementalPulled);
@@ -652,45 +660,23 @@ export class ClientSyncManager {
 
     this.setSyncStage(SYNC_STAGES.PERSIST);
 
-    // Save in one transaction, so the app never sees half-saved data. PGlite has only one
-    // connection, so the app can’t use the database while the save runs. To keep the app
-    // responsive, wait until the app is idle, and cancel the save (rolling it back) as soon as the
-    // app needs the database, then try again. A prioritised save runs to the end instead.
-    for (;;) {
-      if (totalToPull > 0) await this.connectionWatcher.waitUntilIdle(SAVE_IDLE_MS);
-      const isPrioritised = this.isSavePrioritised(urgent, totalToPull);
-      try {
-        await this.saveIncrementalSync(sessionId, totalToPull, pullUntil, isPrioritised);
-        return;
-      } catch (error) {
-        if (!(error instanceof SaveCancelledError)) throw error;
-        log.debug('ClientSyncManager.saveCancelled: retrying when the app is idle');
-      }
-    }
+    // Save in one transaction, so the app never sees half-saved data
+    const saveStep = (transactingModels: DatatrakWebModelRegistry) =>
+      this.saveIncomingChanges(transactingModels, sessionId, totalToPull, pullUntil);
+    await this.runPatiently(saveStep);
   }
 
-  /**
-   * A prioritised save can’t be cancelled by the app, so it always finishes. Devices that haven’t
-   * synced for a while aren’t forced to: a banner asks the user to tap Manual sync instead.
-   */
-  isSavePrioritised(urgent: boolean, totalToPull: number): boolean {
-    if (totalToPull === 0) return true; // Only the cursor to save
-    if (urgent) return true; // The user tapped “Manual sync”, so expects to wait
-    return document.visibilityState === 'hidden'; // Nobody is using the app
-  }
-
-  async saveIncrementalSync(
+  /** Moves the pulled changes from the snapshot table into the real tables */
+  private async saveIncomingChanges(
+    transactingModels: DatatrakWebModelRegistry,
     sessionId: string,
     totalToPull: number,
     pullUntil: number,
-    isPrioritised: boolean,
   ) {
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
-      if (!isPrioritised && this.connectionWatcher.waitingCount > 0) {
-        throw new SaveCancelledError();
-      }
+      this.cancelIfAppIsWaiting();
       totalSaved += Number(incrementalSaved);
       this.updateProgress(
         totalToPull,
@@ -699,33 +685,56 @@ export class ClientSyncManager {
       );
     };
 
-    let releaseQueries = () => {};
-    try {
-      await this.models.wrapInTransaction(async transactingModels => {
-        if (isPrioritised) {
-          // The save holds the connection now. Hold the app’s queries until it finishes, so they
-          // wait for as long as it takes rather than timing out
-          releaseQueries = this.connectionWatcher.holdQueries();
-        }
+    const incomingModels = getModelsForPull(transactingModels.getModels());
+    await withDeferredSyncSafeguards(transactingModels.database, () =>
+      saveIncomingSnapshotChanges(incomingModels, sessionId, false, saveProgressCallback),
+    );
 
-        const incomingModels = getModelsForPull(transactingModels.getModels());
-        await withDeferredSyncSafeguards(transactingModels.database, () =>
-          saveIncomingSnapshotChanges(incomingModels, sessionId, false, saveProgressCallback),
-        );
+    // update the last successful sync in the same save transaction - if updating the cursor fails,
+    // we want to roll back the rest of the saves so that we don't end up detecting them as
+    // needing a sync up to the central server when we attempt to resync from the same old cursor
+    log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+    await transactingModels.localSystemFact.set(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+      pullUntil.toString(),
+    );
+  }
 
-        // update the last successful sync in the same save transaction - if updating the cursor fails,
-        // we want to roll back the rest of the saves so that we don't end up detecting them as
-        // needing a sync up to the central server when we attempt to resync from the same old cursor
-        log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-        return transactingModels.localSystemFact.set(
-          SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
-          pullUntil.toString(),
-        );
-      });
-    } finally {
-      releaseQueries();
+  /**
+   * Runs a sync step in one transaction, giving way whenever the app needs the database.
+   *
+   * PGlite has only one connection, so the app can’t run any queries while the transaction is open.
+   * So each attempt:
+   * 1. waits until the app hasn’t used the database for SYNC_IDLE_MS, then
+   * 2. runs the step. The step calls cancelIfAppIsWaiting between its queries, and if the app is
+   *    waiting, the transaction rolls back and we go back to 1.
+   *
+   * Gives up once it has been waiting and retrying for SYNC_STEP_GIVE_UP_MS. An attempt already
+   * running then still finishes, unless the app needs the database.
+   */
+  private async runPatiently<T>(
+    step: (models: DatatrakWebModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T> {
+    const giveUpAt = Date.now() + SYNC_STEP_GIVE_UP_MS;
+    for (;;) {
+      const isIdle = await this.connectionWatcher.waitUntilIdle(SYNC_IDLE_MS, giveUpAt);
+      if (!isIdle) {
+        throw new Error('The app has been busy, so sync couldn’t finish. It will try again soon.');
+      }
+      try {
+        return await this.models.wrapInTransaction(step, transactionConfig);
+      } catch (error) {
+        if (!(error instanceof CancelledForAppError)) throw error;
+        log.debug('ClientSyncManager.cancelledForApp: retrying when the app is idle');
+      }
     }
   }
+
+  /** Sync steps call this between their queries, to give way if the app needs the database */
+  private cancelIfAppIsWaiting = () => {
+    if (this.connectionWatcher.waitingCount > 0) throw new CancelledForAppError();
+  };
 
   async updatePermissionsChanged(permissionsChanged: boolean): Promise<void> {
     this.permissionsChanged = permissionsChanged;

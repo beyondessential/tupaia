@@ -42,26 +42,6 @@ describe('ConnectionWatcher', () => {
     expect(watcher.waitingCount).toBe(0);
   });
 
-  it('holds queries until released, before they ask knex for the connection', async () => {
-    const { watcher, askForConnection, giveConnection } = createWatcher();
-    const releaseQueries = watcher.holdQueries();
-
-    let isDone = false;
-    const query = askForConnection().then(() => {
-      isDone = true;
-    });
-    giveConnection(); // Nothing asked knex yet, so this does nothing
-    await jest.advanceTimersByTimeAsync(120_000);
-    expect(isDone).toBe(false);
-    expect(watcher.waitingCount).toBe(1);
-
-    releaseQueries();
-    await jest.advanceTimersByTimeAsync(0);
-    giveConnection();
-    await query;
-    expect(isDone).toBe(true);
-  });
-
   it('waits until the connection has been unused for the idle time', async () => {
     const { pool, watcher } = createWatcher();
     pool.emit('release');
@@ -80,5 +60,24 @@ describe('ConnectionWatcher', () => {
     await jest.advanceTimersByTimeAsync(1000);
     await waiting;
     expect(isIdle).toBe(true);
+  });
+
+  it('stops waiting at the deadline if the connection is still in use', async () => {
+    const { pool, watcher } = createWatcher();
+    pool.emit('release');
+    const deadline = Date.now() + 5000;
+
+    let result: boolean | undefined;
+    const waiting = watcher.waitUntilIdle(3000, deadline).then(isIdle => {
+      result = isIdle;
+    });
+
+    // The app keeps using the database every 2 seconds, so it is never idle for 3
+    for (let i = 0; i < 4; i++) {
+      pool.emit('release');
+      await jest.advanceTimersByTimeAsync(2000);
+    }
+    await waiting;
+    expect(result).toBe(false);
   });
 });
