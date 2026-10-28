@@ -3,8 +3,6 @@
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('../BaseDatabase').JoinType} JoinType
  * @typedef {import('../records').PublicSchemaRecordName} PublicSchemaRecordName
- * @typedef {import('./Country').CountryRecord} CountryRecord
- * @typedef {import('./PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  */
 
 import moment from 'moment';
@@ -12,7 +10,6 @@ import moment from 'moment';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { FeedItemTypes } from '@tupaia/types';
-import { reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -43,7 +40,8 @@ export class FeedItemModel extends DatabaseModel {
    * @returns {Promise<{ sql: string; parameters: (PermissionGroup['name'] | Country['id'])[] }>}
    */
   async createAccessPolicyQueryClause(accessPolicy) {
-    const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
+    const countryIdsByPermissionGroup =
+      await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
     const entries = Object.entries(countryIdsByPermissionGroup);
     return {
       sql: `((${entries
@@ -55,32 +53,6 @@ export class FeedItemModel extends DatabaseModel {
       /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
       parameters: entries.flat(2),
     };
-  }
-
-  /**
-   * @param {AccessPolicy} accessPolicy
-   * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
-   * @privateRemarks Identical to `SurveyModel.getCountryIdsByPermissionGroup`
-   */
-  async getCountryIdsByPermissionGroup(accessPolicy) {
-    const permissionGroupNames = accessPolicy.getPermissionGroups();
-
-    /** @type {[CountryRecord[], PermissionGroupRecord[]]} */
-    const [countries, permissionGroups] = await Promise.all([
-      this.otherModels.country.all(),
-      this.otherModels.permissionGroup.find({ name: permissionGroupNames }),
-    ]);
-
-    const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
-
-    const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
-    return permissionGroupNames.reduce((result, permissionGroupName) => {
-      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
-      const permissionGroupId = permissionGroupIdByName[permissionGroupName];
-      const countryIds = countryCodes.map(code => countryIdByCode[code]);
-      result[permissionGroupId] = countryIds;
-      return result;
-    }, {});
   }
 
   /**

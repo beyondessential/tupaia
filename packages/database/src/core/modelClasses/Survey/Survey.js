@@ -59,7 +59,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-import { PermissionsError, reduceToDictionary } from '@tupaia/utils';
+import { PermissionsError } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseRecord } from '../../DatabaseRecord';
 import { SqlQuery } from '../../SqlQuery';
@@ -285,7 +285,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {AccessPolicy} accessPolicy
    */
   async createAccessPolicyQueryClause(accessPolicy) {
-    const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
+    const countryIdsByPermissionGroup =
+      await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
     const entries = Object.entries(countryIdsByPermissionGroup);
     return {
       sql: `(${entries
@@ -296,32 +297,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
       parameters: entries.flat(2),
     };
-  }
-
-  /**
-   * @param {AccessPolicy} accessPolicy
-   * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
-   */
-  async getCountryIdsByPermissionGroup(accessPolicy) {
-    const permissionGroupNames = accessPolicy.getPermissionGroups();
-
-    const countries = await this.otherModels.country.all({ columns: ['code', 'id'] });
-    const permissionGroups = await this.otherModels.permissionGroup.find(
-      { name: permissionGroupNames },
-      { columns: ['id', 'name'] },
-    );
-
-    const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
-    const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
-
-    return permissionGroupNames.reduce((result, permissionGroupName) => {
-      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
-      const permissionGroupId = permissionGroupIdByName[permissionGroupName];
-      const countryIds = countryCodes.map(code => countryIdByCode[code]);
-
-      result[permissionGroupId] = countryIds;
-      return result;
-    }, /** @type {Record<PermissionGroup['id'], Country['id'][]} */ ({}));
   }
 
   /**

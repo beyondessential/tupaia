@@ -357,7 +357,7 @@ export class DatabaseModel {
     if (!containFields) {
       throw new Error(`${this.databaseRecord} table does not have ${field} or id column`);
     }
-    const records = await this.find({ [field]: fieldValues });
+    const records = await this.find({ [field]: fieldValues }, { columns: [field, 'id'] });
     return reduceToDictionary(records, field, 'id');
   }
 

@@ -91,12 +91,12 @@ export class PermissionGroupModel extends DatabaseModel {
    * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
    */
   async fetchCountryIdsByPermissionGroupId(accessPolicy) {
-    const countryCodesByPermissionGroupId =
-      await this.fetchCountryCodesByPermissionGroupId(accessPolicy);
-
     // Transform arrays of codes to arrays of ids
     const allCountryCodes = accessPolicy.getEntitiesAllowed();
-    const countryCodeToId = await this.otherModels.country.findIdByCode(allCountryCodes);
+    const [countryCodesByPermissionGroupId, countryCodeToId] = await Promise.all([
+      this.fetchCountryCodesByPermissionGroupId(accessPolicy),
+      this.otherModels.country.findIdByCode(allCountryCodes),
+    ]);
     const countryIdsByPermissionGroupId = {};
     for (const [permissionGroupId, countryCodes] of Object.entries(
       countryCodesByPermissionGroupId,
