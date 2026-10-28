@@ -1,4 +1,4 @@
-import pLimit from 'p-limit';
+import { limitAsync } from 'es-toolkit';
 
 type Limiter = <T>(fn: () => Promise<T>) => Promise<T>;
 
@@ -21,7 +21,7 @@ const getLimiter = (): Limiter => {
     if (!raw) {
       limiter = runImmediately;
     } else if (/^\d+$/.test(raw) && Number(raw) > 0) {
-      limiter = pLimit(Number(raw));
+      limiter = limitAsync<Limiter>(runImmediately, Number(raw));
     } else {
       throw new Error(`ANALYTICS_QUERY_CONCURRENCY must be a positive integer, got "${raw}"`);
     }
