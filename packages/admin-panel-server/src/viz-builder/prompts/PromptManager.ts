@@ -42,8 +42,8 @@ export class PromptManager {
     const prompt = ChatPromptTemplate.fromMessages([
       SystemMessagePromptTemplate.fromTemplate(presentationOptionsContext),
       HumanMessagePromptTemplate.fromTemplate(
-        `My chart description is: {chartDescription}. 
-        My data structure is: {dataStructure}. 
+        `My chart description is: {chartDescription}.
+        My data structure is: {dataStructure}.
         My existing presentation options are: {presentationOptions}`,
       ),
     ]);
