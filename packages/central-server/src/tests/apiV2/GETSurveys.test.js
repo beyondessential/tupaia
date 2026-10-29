@@ -124,6 +124,15 @@ describe('Permissions checker for GETSurveys', async () => {
       expect(results.map(r => r.id)).to.have.members(surveyIds);
     });
 
+    it('Ignores the rawSort query parameter', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      // Would error with a division by zero if interpolated into the query
+      const rawSort = encodeURIComponent('(SELECT 1/0)');
+      const { body: results } = await app.get(`surveys?${filterString}&rawSort=${rawSort}`);
+
+      expect(results.map(r => r.id)).to.have.members([surveyIds[0], surveyIds[3]]);
+    });
+
     it('Insufficient permissions: Return an empty array if users do not have access to any surveys', async () => {
       const policy = {
         DL: ['Public'],
