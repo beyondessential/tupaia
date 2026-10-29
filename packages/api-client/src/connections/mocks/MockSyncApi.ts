@@ -32,6 +32,9 @@ export class MockSyncApi implements SyncApiInterface {
   public push(sessionId: string, changes: any[]): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public pushStream(sessionId: string, body: NodeJS.ReadableStream): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
   public completePush(res: ExpressResponse, sessionId: string, deviceId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
