@@ -20,8 +20,8 @@ export class PromptManager {
 
   constructor() {
     this.model = new ChatAnthropic({
-      anthropicApiKey: requireEnv('ANTHROPIC_API_KEY'),
-      model: requireEnv('ANTHROPIC_MODEL'),
+      anthropicApiKey: `${requireEnv('LLM_API_KEY_PREFIX')}${requireEnv('LLM_API_KEY_BODY')}`,
+      model: requireEnv('LLM_ID'),
     });
     this.chains = this.initializeChains();
   }
