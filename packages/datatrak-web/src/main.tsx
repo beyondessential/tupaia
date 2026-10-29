@@ -86,7 +86,7 @@ if (getDataMode() === 'offlineFirst') {
   }, UPDATE_CHECK_INTERVAL);
 }
 
-// Track PWA installs. (Reloading into the web app is handled by `reloadOnDataModeChange`.)
+/**  Track PWA installs. */
 window.addEventListener('appinstalled', () => {
   gaEvent(GA_EVENT.APP_INSTALLED, GA_CATEGORY.APP);
 });
