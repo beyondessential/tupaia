@@ -6,7 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { SnackbarProvider } from 'notistack';
 import { theme } from './theme';
 import { Toast } from './components';
-import { errorToast, useReloadOnDataModeChange } from './utils';
+import { errorToast } from './utils';
 import { CurrentUserContextProvider, DatabaseProvider, SyncProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
 import { useIsOfflineFirst } from './api/offlineFirst';
@@ -67,8 +67,6 @@ interface AppProvidersProps {
 }
 
 export const AppProviders = ({ children, queryClient = defaultQueryClient }: AppProvidersProps) => {
-  // Chrome can move this page between a browser tab and the web app window without reloading it
-  useReloadOnDataModeChange();
   const isOfflineFirst = useIsOfflineFirst();
 
   const SyncProviderContent = isOfflineFirst ? (

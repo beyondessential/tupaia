@@ -1,6 +1,6 @@
 export * from './date';
 export * from './detectDevice';
-export { getDataMode, useReloadOnDataModeChange } from './dataMode';
+export { getDataMode } from './dataMode';
 export type { DataMode } from './dataMode';
 export { formatNumberWithTrueMinus, formatFraction } from './formatNumbers';
 export { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './ga';
