@@ -106,7 +106,7 @@ worker({
         debug: options.debug,
         wasmModule,
         fsBundle,
-        relaxedDurability: false,
+        relaxedDurability: true,
       });
       await db.waitReady;
       return db;
