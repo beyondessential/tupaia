@@ -3,7 +3,7 @@ name: acceptance-audit
 description: "Check whether this card's code meets the acceptance criteria"
 label: "Acceptance audit"
 category: verify
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Acceptance audit

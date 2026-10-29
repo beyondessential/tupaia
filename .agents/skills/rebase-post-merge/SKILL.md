@@ -3,7 +3,7 @@ name: rebase-post-merge
 description: "Rebase the branch past a merge so a follow-up PR carries only new work"
 label: "Rebase"
 category: other
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: rebase past the merge
