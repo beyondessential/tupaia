@@ -6,7 +6,7 @@ import {
   SystemMessagePromptTemplate,
   HumanMessagePromptTemplate,
 } from '@langchain/core/prompts';
-import { Runnable } from '@langchain/core/runnables';
+import type { Runnable } from '@langchain/core/runnables';
 
 import { requireEnv } from '@tupaia/utils';
 
