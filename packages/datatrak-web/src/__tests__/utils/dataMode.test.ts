@@ -2,7 +2,7 @@ type DataModeModule = typeof import('../../utils/dataMode');
 type RenderHook = typeof import('@testing-library/react-hooks/pure').renderHook;
 
 describe('dataMode', () => {
-  const STORAGE_KEY = 'datatrak.dataMode';
+  const STORAGE_KEY = 'dataMode';
 
   let displayMode: string;
   let changeListeners: { query: string; listener: () => void }[];
