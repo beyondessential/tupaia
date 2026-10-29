@@ -1,4 +1,5 @@
 type DataModeModule = typeof import('../../utils/dataMode');
+type RenderHook = typeof import('@testing-library/react-hooks/pure').renderHook;
 
 describe('dataMode', () => {
   const STORAGE_KEY = 'datatrak.dataMode';
@@ -8,14 +9,29 @@ describe('dataMode', () => {
   const originalLocation = window.location;
   const reload = jest.fn();
 
+  let unmountCallbacks: (() => void)[];
+
   // Each test gets a fresh copy of the module, so the data mode is evaluated against that test’s
-  // display mode
-  const loadModule = (): DataModeModule => {
+  // display mode. `renderHook` must come from the same copy of React as the module’s hooks. (The
+  // `pure` entry point doesn’t register its own `afterEach` cleanup, which can’t be done mid-test.)
+  const loadModule = (): DataModeModule & { renderHook: RenderHook } => {
     let module: DataModeModule | undefined;
+    let isolatedRenderHook: RenderHook | undefined;
     jest.isolateModules(() => {
       module = require('../../utils/dataMode');
+      ({ renderHook: isolatedRenderHook } = require('@testing-library/react-hooks/pure'));
     });
-    return module!;
+    const renderHook = ((...args: Parameters<RenderHook>) => {
+      const result = isolatedRenderHook!(...args);
+      unmountCallbacks.push(result.unmount);
+      return result;
+    }) as RenderHook;
+    return { ...module!, renderHook };
+  };
+
+  const mountReloadHook = () => {
+    const { renderHook, useReloadOnDataModeChange } = loadModule();
+    return renderHook(() => useReloadOnDataModeChange());
   };
 
   const matches = (query: string) => query === `(display-mode: ${displayMode})`;
@@ -43,6 +59,7 @@ describe('dataMode', () => {
   beforeEach(() => {
     displayMode = 'browser';
     changeListeners = [];
+    unmountCallbacks = [];
     reload.mockClear();
     window.sessionStorage.clear();
     Object.defineProperty(window, 'matchMedia', {
@@ -55,12 +72,17 @@ describe('dataMode', () => {
         addEventListener: (_event: string, listener: () => void) => {
           changeListeners.push({ query, listener });
         },
-        removeEventListener: jest.fn(),
+        removeEventListener: (_event: string, listener: () => void) => {
+          changeListeners = changeListeners.filter(
+            entry => entry.query !== query || entry.listener !== listener,
+          );
+        },
       })),
     });
   });
 
   afterEach(() => {
+    for (const unmount of unmountCallbacks) unmount();
     jest.restoreAllMocks();
   });
 
@@ -146,9 +168,9 @@ describe('dataMode', () => {
     });
   });
 
-  describe('reloadOnDataModeChange', () => {
+  describe('useReloadOnDataModeChange', () => {
     it('reloads when a browser tab becomes an installed app', () => {
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('standalone');
       expect(reload).toHaveBeenCalledTimes(1);
@@ -156,7 +178,7 @@ describe('dataMode', () => {
 
     it('reloads when an installed app is moved back into a browser tab', () => {
       displayMode = 'standalone';
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('browser');
       expect(reload).toHaveBeenCalledTimes(1);
@@ -164,7 +186,7 @@ describe('dataMode', () => {
 
     it('reloads when a fullscreen browser tab becomes an installed app', () => {
       displayMode = 'fullscreen';
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('standalone');
       expect(reload).toHaveBeenCalledTimes(1);
@@ -173,14 +195,14 @@ describe('dataMode', () => {
     it('reloads when a fullscreen installed app is moved into a browser tab', () => {
       window.sessionStorage.setItem(STORAGE_KEY, 'offlineFirst');
       displayMode = 'fullscreen';
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('browser');
       expect(reload).toHaveBeenCalledTimes(1);
     });
 
     it('does not reload when a browser tab enters or leaves fullscreen', () => {
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('fullscreen');
       switchDisplayMode('browser');
@@ -189,7 +211,7 @@ describe('dataMode', () => {
 
     it('does not reload when an installed app enters or leaves fullscreen', () => {
       displayMode = 'standalone';
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('fullscreen');
       expect(window.sessionStorage.getItem(STORAGE_KEY)).toBe('offlineFirst');
@@ -200,7 +222,7 @@ describe('dataMode', () => {
     it('does not reload when an installed app opened in fullscreen leaves fullscreen', () => {
       window.sessionStorage.setItem(STORAGE_KEY, 'offlineFirst');
       displayMode = 'fullscreen';
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('standalone');
       expect(reload).not.toHaveBeenCalled();
@@ -208,9 +230,30 @@ describe('dataMode', () => {
 
     it('does not reload when switching between installed app display modes', () => {
       displayMode = 'standalone';
-      loadModule().reloadOnDataModeChange();
+      mountReloadHook();
 
       switchDisplayMode('minimal-ui');
+      switchDisplayMode('standalone');
+      expect(reload).not.toHaveBeenCalled();
+    });
+
+    it('reloads on mount if the data mode changed since the module loaded', () => {
+      const { renderHook, useReloadOnDataModeChange } = loadModule();
+      displayMode = 'standalone';
+
+      renderHook(() => useReloadOnDataModeChange());
+      expect(reload).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not reload on mount if the data mode is unchanged', () => {
+      mountReloadHook();
+      expect(reload).not.toHaveBeenCalled();
+    });
+
+    it('stops listening once unmounted', () => {
+      const { unmount } = mountReloadHook();
+      unmount();
+
       switchDisplayMode('standalone');
       expect(reload).not.toHaveBeenCalled();
     });
