@@ -6,11 +6,12 @@ import { App } from './App';
 import { setUpdateReady } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 import { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './utils';
-import { getDisplayMode, reloadOnDisplayModeChange } from './utils/displayMode';
+import { reloadOnDataModeChange } from './utils/dataMode';
+import { getDisplayMode } from './utils/displayMode';
 
 renderReactApp(<App />, document.getElementById('root'));
 
-reloadOnDisplayModeChange();
+reloadOnDataModeChange();
 
 // Set GA user properties on every session
 gaSetUserProperties({
