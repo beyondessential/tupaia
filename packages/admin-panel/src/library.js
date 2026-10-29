@@ -3,7 +3,6 @@ export {
   questions,
   surveyResponses,
   dataElements,
-  syncGroups,
   users,
   permissions,
   dashboardItems,
