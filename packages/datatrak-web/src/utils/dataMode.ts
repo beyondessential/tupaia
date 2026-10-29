@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { getDisplayMode } from './displayMode';
 
 /**
@@ -23,14 +24,14 @@ const detectDataMode = (): DataMode | 'unknown' => {
   }
 };
 
-const DATA_MODE_STORAGE_KEY = 'datatrak.dataMode';
+const DATA_MODE_STORAGE_KEY = 'dataMode';
 
 const readStoredDataMode = (): DataMode | 'unknown' => {
   try {
     const value = window.sessionStorage.getItem(DATA_MODE_STORAGE_KEY);
     if (value === 'online' || value === 'offlineFirst') return value;
   } catch {
-    // Storage can be unavailable (e.g. site data blocked)
+    console.warn(`Couldn’t get ${DATA_MODE_STORAGE_KEY} from localStorage`);
   }
   return 'unknown';
 };
@@ -39,7 +40,7 @@ const storeDataMode = (dataMode: DataMode) => {
   try {
     window.sessionStorage.setItem(DATA_MODE_STORAGE_KEY, dataMode);
   } catch {
-    // Storage can be unavailable (e.g. site data blocked)
+    console.warn(`Couldn’t set ${DATA_MODE_STORAGE_KEY} in localStorage`);
   }
 };
 
@@ -78,18 +79,29 @@ export const getDataMode = (): DataMode => _dataMode;
 
 /**
  * Reloads the page if its data mode changes, i.e. it switches between running in a browser tab and
- * as a web app. Entering `fullscreen` is ignored, as it doesn’t tell us which one we’re in.
+ * as a web app. Entering `fullscreen` is ignored, as it doesn’t tell us which one we’re in. Call once,
+ * from a component that stays mounted for the life of the page.
  */
-export const reloadOnDataModeChange = () => {
-  let isReloading = false;
-  // A single switch can change more than one of the media queries below
-  const onChange = () => {
-    const detected = resolveDataMode();
-    if (isReloading || detected === 'unknown' || detected === getDataMode()) return;
-    isReloading = true;
-    window.location.reload();
-  };
-  window.matchMedia('(display-mode: browser)').addEventListener('change', onChange);
-  window.matchMedia('(display-mode: minimal-ui)').addEventListener('change', onChange);
-  window.matchMedia('(display-mode: standalone)').addEventListener('change', onChange);
+export const useReloadOnDataModeChange = () => {
+  useEffect(() => {
+    let isReloading = false;
+    // A single switch can change more than one of the media queries below
+    const reloadIfChanged = () => {
+      const detected = resolveDataMode();
+      if (isReloading || detected === 'unknown' || detected === getDataMode()) return;
+      isReloading = true;
+      window.location.reload();
+    };
+
+    // The data mode was fixed when this module loaded; catch any switch since then
+    reloadIfChanged();
+
+    const queries = ['browser', 'minimal-ui', 'standalone'].map(displayMode =>
+      window.matchMedia(`(display-mode: ${displayMode})`),
+    );
+    for (const query of queries) query.addEventListener('change', reloadIfChanged);
+    return () => {
+      for (const query of queries) query.removeEventListener('change', reloadIfChanged);
+    };
+  }, []);
 };
