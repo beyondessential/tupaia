@@ -4,7 +4,6 @@ import { configureDotEnv } from '@tupaia/server-utils';
 const paths = [
   '../../../env/aggregation.env',
   '../../../env/api-client.env',
-  '../../../env/data-lake.env',
   '../../../env/db.env',
   '../../../env/dhis.env',
   /** We hit a character limit in the external-db-connections Bitwarden note */

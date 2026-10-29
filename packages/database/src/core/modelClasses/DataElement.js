@@ -9,7 +9,6 @@ const SERVICE_TYPES = /** @type {const} */ ({
   DHIS: 'dhis',
   TUPAIA: 'tupaia',
   INDICATOR: 'indicator',
-  DATA_LAKE: 'data-lake',
 });
 
 const CONFIG_SCHEMA_BY_SERVICE = /** @type {const} */ ({
@@ -20,7 +19,6 @@ const CONFIG_SCHEMA_BY_SERVICE = /** @type {const} */ ({
   },
   [SERVICE_TYPES.TUPAIA]: {},
   [SERVICE_TYPES.INDICATOR]: {},
-  [SERVICE_TYPES.DATA_LAKE]: {},
 });
 
 const DHIS_DATA_TYPES = /** @type {const} */ ({

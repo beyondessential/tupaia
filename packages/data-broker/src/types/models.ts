@@ -50,7 +50,7 @@ type DatabaseModel<
 
 export type DataSourceType = 'dataElement' | 'dataGroup';
 
-export type ServiceType = 'data-lake' | 'dhis' | 'indicator' | 'tupaia' | 'weather';
+export type ServiceType = 'dhis' | 'indicator' | 'tupaia' | 'weather';
 
 export type DataSource = {
   code: string;

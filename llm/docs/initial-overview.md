@@ -123,7 +123,6 @@ Centralised gateway supporting multiple external data sources:
 - `tupaia` - Internal Tupaia data
 - `dhis` - DHIS2 integration
 - `indicator` - Calculated indicators
-- `data-lake` - Data lake API (data lake in turn has integrations with Tamanu, mSupply, etc.)
 - `weather` - Weather API data
 
 ## Important Conventions
