@@ -8,14 +8,14 @@ exports.up = async function (db) {
   `);
 
   // Hierarchy walks (entity-server, web-config-server, report aggregation) always filter
-  // ancestor_descendant_relation by entity_hierarchy_id alongside ancestor_id/descendant_id,
-  // and often generational_distance. The existing single-column indexes can't serve
-  // hierarchy-scoped scans (e.g. entity search, child/parent code maps).
+  // ancestor_descendant_relation by project_id alongside ancestor_id/descendant_id, and
+  // often generational_distance. The existing single-column indexes can't serve
+  // project-scoped scans (e.g. entity search, child/parent code maps).
   await db.runSql(`
-    CREATE INDEX IF NOT EXISTS ancestor_descendant_relation_hierarchy_ancestor_idx
-      ON ancestor_descendant_relation (entity_hierarchy_id, ancestor_id, generational_distance);
-    CREATE INDEX IF NOT EXISTS ancestor_descendant_relation_hierarchy_descendant_idx
-      ON ancestor_descendant_relation (entity_hierarchy_id, descendant_id, generational_distance);
+    CREATE INDEX IF NOT EXISTS ancestor_descendant_relation_project_ancestor_idx
+      ON ancestor_descendant_relation (project_id, ancestor_id, generational_distance);
+    CREATE INDEX IF NOT EXISTS ancestor_descendant_relation_project_descendant_idx
+      ON ancestor_descendant_relation (project_id, descendant_id, generational_distance);
   `);
 
   // The sync-server snapshot query filters updated_at_sync_tick with a btree-unusable
@@ -49,8 +49,6 @@ exports.up = async function (db) {
   // Small relation tables on hot paths (/projects, /dashboards, /measures) with primary
   // keys only. Low impact today, but removes a scaling cliff at negligible cost.
   await db.runSql(`
-    CREATE INDEX IF NOT EXISTS entity_relation_hierarchy_parent_idx
-      ON entity_relation (entity_hierarchy_id, parent_id);
     CREATE INDEX IF NOT EXISTS dashboard_relation_dashboard_id_idx
       ON dashboard_relation (dashboard_id);
     CREATE INDEX IF NOT EXISTS map_overlay_group_relation_map_overlay_group_id_idx
@@ -64,8 +62,8 @@ exports.down = async function (db) {
     ALTER TABLE data_group DROP CONSTRAINT IF EXISTS data_group_code_key;
     ALTER TABLE map_overlay DROP CONSTRAINT IF EXISTS map_overlay_code_key;
 
-    DROP INDEX IF EXISTS ancestor_descendant_relation_hierarchy_ancestor_idx;
-    DROP INDEX IF EXISTS ancestor_descendant_relation_hierarchy_descendant_idx;
+    DROP INDEX IF EXISTS ancestor_descendant_relation_project_ancestor_idx;
+    DROP INDEX IF EXISTS ancestor_descendant_relation_project_descendant_idx;
 
     DROP INDEX IF EXISTS sync_lookup_updated_at_sync_tick_idx;
     DROP INDEX IF EXISTS sync_lookup_project_ids_gin_idx;
@@ -77,7 +75,6 @@ exports.down = async function (db) {
 
     DROP INDEX IF EXISTS api_request_log_refresh_token_idx;
 
-    DROP INDEX IF EXISTS entity_relation_hierarchy_parent_idx;
     DROP INDEX IF EXISTS dashboard_relation_dashboard_id_idx;
     DROP INDEX IF EXISTS map_overlay_group_relation_map_overlay_group_id_idx;
   `);

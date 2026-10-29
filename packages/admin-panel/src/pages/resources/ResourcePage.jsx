@@ -9,7 +9,14 @@ import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurvey
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 import { ArchiveSurveyResponseModal } from '../../surveyResponse';
-import { getExplodedFields, useHasBesAdminAccess, useHasVizBuilderAccess } from '../../utilities';
+import { useSelectedProjectCode } from '../../projects';
+import { SINGLE_PROJECT_PATH_PARAM } from '../../routes/scopes';
+import {
+  getExplodedFields,
+  substituteRouteParams,
+  useHasBesAdminAccess,
+  useHasVizBuilderAccess,
+} from '../../utilities';
 
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
@@ -58,9 +65,20 @@ export const ResourcePage = ({
   const hasVizBuilderAccess = useHasVizBuilderAccess();
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
+  const selectedProjectCode = useSelectedProjectCode();
 
   // assume the first nested view is the one we want to link to and any others would be direct linked to
   const { path, getHasNestedView } = nestedViews?.[0] || {};
+  // Single-project nested-view paths carry a literal `:projectCode` token (e.g.
+  // `/:projectCode/surveys/:id/questions`). The row-link formatter only fills
+  // params from row data (`:id`), so substitute the live projectCode here or
+  // the drill-down link resolves to a non-matching route and clicking a row
+  // does nothing. `:id` is intentionally left for the row formatter.
+  const projectScopedParams = params[SINGLE_PROJECT_PATH_PARAM]
+    ? { [SINGLE_PROJECT_PATH_PARAM]: params[SINGLE_PROJECT_PATH_PARAM] }
+    : {};
+  const detailUrl = path ? substituteRouteParams(path, projectScopedParams) : path;
+  const resolvedBasePath = basePath ? substituteRouteParams(basePath, projectScopedParams) : basePath;
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = !!parent;
@@ -112,12 +130,12 @@ export const ResourcePage = ({
         defaultFilters={defaultFilters}
         defaultSorting={defaultSorting}
         deleteConfig={deleteConfig}
-        detailUrl={path}
+        detailUrl={detailUrl}
         getHasNestedView={getHasNestedView}
         getNestedViewLink={getNestedViewLink}
-        basePath={basePath}
+        basePath={resolvedBasePath}
         actionLabel={actionLabel}
-        key={updatedEndpoint}
+        key={`${updatedEndpoint}-${selectedProjectCode ?? ''}`}
       />
       <EditModal
         onProcessDataForSave={onProcessDataForSave}
