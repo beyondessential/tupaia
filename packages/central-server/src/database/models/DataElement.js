@@ -4,7 +4,6 @@ import {
 } from '@tupaia/database';
 
 export const DATA_SOURCE_SERVICE_TYPES = /** @type {const} */ ([
-  'data-lake',
   'dhis',
   'indicator',
   'tupaia',

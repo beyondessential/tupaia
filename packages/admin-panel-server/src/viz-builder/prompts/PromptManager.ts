@@ -1,12 +1,12 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { ChatAnthropic } from '@langchain/anthropic';
 import {
   ChatPromptTemplate,
-  SystemMessagePromptTemplate,
   HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
 } from '@langchain/core/prompts';
-import { Runnable } from '@langchain/core/runnables';
+import type { Runnable } from '@langchain/core/runnables';
 
 import { requireEnv } from '@tupaia/utils';
 
@@ -20,8 +20,8 @@ export class PromptManager {
 
   constructor() {
     this.model = new ChatAnthropic({
-      anthropicApiKey: requireEnv('ANTHROPIC_API_KEY'),
-      model: requireEnv('ANTHROPIC_MODEL'),
+      anthropicApiKey: `${requireEnv('LLM_API_KEY_PREFIX')}${requireEnv('LLM_API_KEY_BODY')}`,
+      model: requireEnv('LLM_ID'),
     });
     this.chains = this.initializeChains();
   }
@@ -42,8 +42,8 @@ export class PromptManager {
     const prompt = ChatPromptTemplate.fromMessages([
       SystemMessagePromptTemplate.fromTemplate(presentationOptionsContext),
       HumanMessagePromptTemplate.fromTemplate(
-        `My chart description is: {chartDescription}. 
-        My data structure is: {dataStructure}. 
+        `My chart description is: {chartDescription}.
+        My data structure is: {dataStructure}.
         My existing presentation options are: {presentationOptions}`,
       ),
     ]);

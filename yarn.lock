@@ -7435,7 +7435,6 @@ __metadata:
   dependencies:
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/data-api": "workspace:*"
-    "@tupaia/data-lake-api": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/dhis-api": "workspace:*"
     "@tupaia/indicators": "workspace:*"
@@ -7451,24 +7450,6 @@ __metadata:
     jest-extended: "npm:^0.11.5"
     mockdate: "npm:^3.0.5"
     moment: "npm:^2.24.0"
-    rimraf: "npm:^6.1.3"
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/data-lake-api@workspace:*, @tupaia/data-lake-api@workspace:packages/data-lake-api":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/data-lake-api@workspace:packages/data-lake-api"
-  dependencies:
-    "@tupaia/database": "workspace:*"
-    "@tupaia/tsutils": "workspace:*"
-    "@tupaia/utils": "workspace:*"
-    "@types/jest": "npm:^29.5.14"
-    es-toolkit: "npm:^1.46.0"
-    jest: "npm:^29.7.0"
-    jest-extended: "npm:^0.11.5"
-    knex: "npm:^3.1.0"
-    moment: "npm:^2.24.0"
-    pg: "npm:8.5.1"
     rimraf: "npm:^6.1.3"
   languageName: unknown
   linkType: soft
