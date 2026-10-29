@@ -11,7 +11,7 @@ import { BannerNotification } from './BannerNotification';
 
 // Sync doesn’t force a long save on a busy user, so after this long without a successful sync we
 // ask them to run one
-const SYNC_NEEDED_AFTER_MS = 24 * 60 * 60_000;
+const SYNC_NEEDED_AFTER_MS = 60_000; // TEMP manual testing, revert to 24 * 60 * 60_000
 
 const StyledLink = styled(Link)`
   &.MuiLink-root {
