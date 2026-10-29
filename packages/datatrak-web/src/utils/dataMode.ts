@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { getDisplayMode } from './displayMode';
 
 /**
@@ -79,29 +78,21 @@ export const getDataMode = (): DataMode => _dataMode;
 
 /**
  * Reloads the page if its data mode changes, i.e. it switches between running in a browser tab and
- * as a web app. Entering `fullscreen` is ignored, as it doesn’t tell us which one we’re in. Call once,
- * from a component that stays mounted for the life of the page.
+ * as a web app. Entering `fullscreen` is ignored, as it doesn’t tell us which one we’re in.
+ *
+ * This is the only place that reloads the page on install; the `appinstalled` handler in `main.tsx`
+ * only logs.
  */
-export const useReloadOnDataModeChange = () => {
-  useEffect(() => {
-    let isReloading = false;
-    // A single switch can change more than one of the media queries below
-    const reloadIfChanged = () => {
-      const detected = resolveDataMode();
-      if (isReloading || detected === 'unknown' || detected === getDataMode()) return;
-      isReloading = true;
-      window.location.reload();
-    };
-
-    // The data mode was fixed when this module loaded; catch any switch since then
-    reloadIfChanged();
-
-    const queries = ['browser', 'minimal-ui', 'standalone'].map(displayMode =>
-      window.matchMedia(`(display-mode: ${displayMode})`),
-    );
-    for (const query of queries) query.addEventListener('change', reloadIfChanged);
-    return () => {
-      for (const query of queries) query.removeEventListener('change', reloadIfChanged);
-    };
-  }, []);
+export const reloadOnDataModeChange = () => {
+  let isReloading = false;
+  // A single switch can change more than one of the media queries below
+  const reloadIfChanged = () => {
+    const detected = resolveDataMode();
+    if (isReloading || detected === 'unknown' || detected === getDataMode()) return;
+    isReloading = true;
+    window.location.reload();
+  };
+  for (const displayMode of ['browser', 'minimal-ui', 'standalone']) {
+    window.matchMedia(`(display-mode: ${displayMode})`).addEventListener('change', reloadIfChanged);
+  }
 };
