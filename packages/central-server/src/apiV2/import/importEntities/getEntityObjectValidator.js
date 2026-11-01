@@ -2,7 +2,6 @@ import {
   ObjectValidator,
   hasContent,
   constructIsEmptyOr,
-  constructIsOneOf,
   isPlainObject,
   constructIsValidEntityType,
 } from '@tupaia/utils';
@@ -18,27 +17,10 @@ const constructEntityFieldValidators = models => ({
   data_service_entity: [constructIsEmptyOr(isPlainObject)],
 });
 
-const constructSpecificEntityTypeValidators = (entityType, models) => {
-  switch (entityType) {
-    case models.entity.types.FACILITY:
-      return {
-        facility_type: [
-          hasContent,
-          cellValue => {
-            const checkIsOneOf = constructIsOneOf(['1', '2', '3', '4']);
-            checkIsOneOf(cellValue.substring(0, 1));
-          },
-        ],
-      };
-    default:
-      return null;
-  }
-};
-
+// `entityType` is retained in the signature for callers, but there are no
+// longer any entity-type-specific column validators — `facility_type` was the
+// only one and facility classification is no longer imported (it only wrote to
+// the deprecated `clinic` table; see updateCountryEntities).
 export function getEntityObjectValidator(entityType, models) {
-  const validators = {
-    ...constructEntityFieldValidators(models),
-    ...constructSpecificEntityTypeValidators(entityType, models),
-  };
-  return new ObjectValidator(validators);
+  return new ObjectValidator(constructEntityFieldValidators(models));
 }

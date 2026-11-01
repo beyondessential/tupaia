@@ -16,11 +16,11 @@ export type DescendantsRequest = SingleEntityRequest<
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   public async buildResponse() {
-    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
+    const { projectId, entity, fields, field, filter } = this.req.ctx;
     const { includeRootEntity: includeRootEntityString = 'false', pageSize } = this.req.query;
     const includeRootEntity = includeRootEntityString?.toLowerCase() === 'true';
     const descendants = await entity.getDescendants(
-      hierarchyId,
+      projectId,
       {
         ...filter,
       },

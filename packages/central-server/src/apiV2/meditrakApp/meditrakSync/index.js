@@ -4,3 +4,4 @@ export {
   supportsPermissionsBasedSync,
   PERMISSIONS_BASED_SYNC_MIN_APP_VERSION,
 } from './supportsPermissionsBasedSync';
+export { canonicaliseEntityParentIds } from './canonicaliseParentIds';
