@@ -140,19 +140,15 @@ const DataFetchingTableComponent = memo(
         width: buttonWidths,
         disableSortBy: true,
         // eslint-disable-next-line react/prop-types
-        Cell: ({ row }) => {
-          return (
-            <ButtonCell>
-              {buttonColumns.map(({ Cell, accessor, ...col }) => {
-                return (
-                  <SingleButtonWrapper key={col.id} style={{ inlineSize: col.width }}>
-                    <Cell {...col} row={row} />
-                  </SingleButtonWrapper>
-                );
-              })}
-            </ButtonCell>
-          );
-        },
+        Cell: ({ row }) => (
+          <ButtonCell>
+            {buttonColumns.map(({ Cell, accessor, ...col }) => (
+              <SingleButtonWrapper key={col.id} style={{ inlineSize: col.width }}>
+                <Cell {...col} row={row} />
+              </SingleButtonWrapper>
+            ))}
+          </ButtonCell>
+        ),
       };
 
       return [...nonButtonColumns, singleButtonColumn];
