@@ -8,12 +8,18 @@ import {
 } from '@material-ui/core';
 import { ChevronUp } from 'lucide-react';
 import React, { useMemo } from 'react';
-import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
+import {
+  type Column,
+  type SortingRule,
+  useFlexLayout,
+  useResizeColumns,
+  useTable,
+} from 'react-table';
 import styled from 'styled-components';
 
 import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
-import { FilterCell, FilterCellProps, Filters } from './FilterCell';
+import { FilterCell, type FilterCellProps, type Filters } from './FilterCell';
 import { Pagination } from './Pagination';
 
 const TableContainer = styled(MuiTableContainer)`
