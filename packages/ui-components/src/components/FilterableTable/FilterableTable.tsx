@@ -156,9 +156,8 @@ export const FilterableTable = ({
       <TableContainer>
         <Table {...getTableProps()} stickyHeader className="data-fetching-table">
           <TableHead>
-            {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
+            {headerGroups.map(({ getHeaderGroupProps, headers }) => (
+              <TableRow {...getHeaderGroupProps()}>
                 {headers.map(
                   ({
                     getHeaderProps,
@@ -173,7 +172,7 @@ export const FilterableTable = ({
                     return (
                       <HeaderDisplayCell
                         {...getHeaderProps()}
-                        key={`header-${id}`}
+                        key={id}
                         canResize={canResize}
                         getResizerProps={getResizerProps}
                         maxWidth={maxWidth}
@@ -181,7 +180,7 @@ export const FilterableTable = ({
                         {render('Header')}
                         {!disableSortBy && (
                           <TableSortLabel
-                            active={!!sortedConfig}
+                            active={sortedConfig !== undefined}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
                             // Lucide declares wider `className` type than MUI’s IconComponent
                             IconComponent={ChevronUp as React.ComponentType<{ className: string }>}
