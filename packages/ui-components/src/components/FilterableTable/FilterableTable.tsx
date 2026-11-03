@@ -212,13 +212,13 @@ export const FilterableTable = ({
               rows.map(row => {
                 prepareRow(row);
                 return (
-                  <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
+                  <TableRow {...row.getRowProps()} key={row.id}>
                     {row.cells.map(({ getCellProps, render }, i) => {
                       const col = visibleColumns[i] as ColumnInstance;
                       return (
                         <TableCell
                           {...getCellProps()}
-                          key={`table-row-${row.id}-cell-${col.id}`}
+                          key={col.id}
                           row={row.original}
                           maxWidth={col.maxWidth}
                           column={col}
