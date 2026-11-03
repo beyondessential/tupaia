@@ -14,7 +14,7 @@ def get_cert(type_tag):
         tags = acm.list_tags_for_certificate(CertificateArn=cert["CertificateArn"])
         if tags_contains(tags["Tags"], "Type", type_tag):
             return cert
-    raise Exception("No certificate found with type tag: " + type_tag)
+    raise Exception(f"No certificate found with type tag: {type_tag}")
 
 
 # --------------
@@ -33,7 +33,7 @@ class GatewayNotFoundError(Exception):
 
 
 def get_gateway_name(deployment_type, deployment_name):
-    name = deployment_type + "-" + deployment_name
+    name = f"{deployment_type}-{deployment_name}"
     name = name[0:32]  # max 32 chars in an ELB or gateway name
     if name.endswith("-"):
         name = name[:-1]  # name cannot end with a hyphen
@@ -53,18 +53,12 @@ def get_gateway_elb(deployment_type, deployment_name):
         )
         if len(matching_arns) > 1:
             raise Exception(
-                "Multiple "
-                + deployment_type
-                + " gateway elbs found tagged with deployment name: "
-                + deployment_name
+                f"Multiple {deployment_type} gateway ELBs found tagged with deployment name: {deployment_name}"
             )
         if len(matching_arns) == 1:
             return elb
     raise GatewayNotFoundError(
-        "No "
-        + deployment_type
-        + " gateway elb found tagged with deployment name: "
-        + deployment_name
+        f"No {deployment_type} gateway ELB found tagged with deployment name: {deployment_name}"
     )
 
 
@@ -83,19 +77,13 @@ def get_gateway_target_group(deployment_type, deployment_name):
         )
         if len(matching_arns) > 1:
             raise Exception(
-                "Multiple "
-                + deployment_type
-                + " target groups found tagged with deployment name: "
-                + deployment_name
+                f"Multiple {deployment_type} target groups found tagged with deployment name: {deployment_name}"
             )
         if len(matching_arns) == 1:
             return target_group
 
     raise GatewayNotFoundError(
-        "No "
-        + deployment_type
-        + " gateway target group found tagged with deployment name: "
-        + deployment_name
+        f"No {deployment_type} gateway target group found tagged with deployment name: {deployment_name}"
     )
 
 
@@ -259,7 +247,7 @@ def build_record_set(
 
     # prefix with dualstack, see
     # https://aws.amazon.com/premiumsupport/knowledge-center/alias-resource-record-set-route53-cli/
-    dns_name = "dualstack." + gateway["DNSName"]
+    dns_name = f"dualstack.{gateway['DNSName']}"
 
     return {
         "Action": action,
@@ -292,7 +280,7 @@ def add_subdomains_to_route53(
     route53.change_resource_record_sets(
         HostedZoneId=hosted_zone_id,
         ChangeBatch={
-            "Comment": "Adding subdomains for " + deployment_name + " to " + domain,
+            "Comment": f"Adding subdomains for {deployment_name} to {domain}",
             "Changes": record_set_changes,
         },
     )

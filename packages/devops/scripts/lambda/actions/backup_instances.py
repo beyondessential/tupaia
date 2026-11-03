@@ -30,7 +30,7 @@ def backup_instances(event):
     filters = [{"Name": "instance-state-name", "Values": ["running", "stopped"]}]
 
     if "InstanceName" in event:
-        print("Only backing up " + event["InstanceName"])
+        print(f"Only backing up {event['InstanceName']}")
         filters.append({"Name": "tag:Name", "Values": [event["InstanceName"]]})
     else:
         print('Backing up all instances tagged "Backup')
@@ -55,7 +55,7 @@ def backup_instances(event):
         if retention_days == "":
             retention_days = "7"  # default to 7 days of snapshot retention
 
-        print("Backing up " + instance_name)
+        print(f"Backing up {instance_name}")
 
         for dev in instance["BlockDeviceMappings"]:
             if dev.get("Ebs", None) is None:
@@ -65,7 +65,7 @@ def backup_instances(event):
             print(f"Creating snapshot for volume {vol_id}")
             snap = ec.create_snapshot(
                 VolumeId=vol_id,
-                Description="Backup created from " + instance_name,
+                Description=f"Backup created from {instance_name}",
             )
             print(f"Created snapshot {snap['SnapshotId']} ({snap['Description']})")
 
