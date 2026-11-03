@@ -4,3 +4,4 @@ export * from './task';
 export * from './user';
 export * from './option';
 export * from './clearDatabase';
+export * from './simulation';
