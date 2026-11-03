@@ -109,7 +109,6 @@ export interface DataElementConfig {
 
 export interface DataServiceEntityConfig {
   dhis_id?: string;
-  kobo_id?: string;
 }
 
 export interface EntityMetadata {
@@ -119,17 +118,10 @@ export interface EntityMetadata {
     push?: boolean;
     trackedEntityId?: string;
   };
-  ms1?: { distributionId?: string };
   openStreetMaps?: { id?: string };
 }
 
 export interface OptionAttributes {
   parent_category?: string;
   grandparent_category?: string;
-}
-
-export interface SupersetInstanceConfig {
-  serverName?: string;
-  baseUrl: string;
-  insecure?: boolean;
 }

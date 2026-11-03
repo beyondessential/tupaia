@@ -10,15 +10,12 @@ internal_deps=(
   constants
   data-api
   data-broker
-  data-lake-api
   database
   dhis-api
   expression-parser
   indicators
-  kobo-api
   server-boilerplate
   server-utils
-  superset-api
   sync
   tsmodels
   tsutils

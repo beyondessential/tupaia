@@ -369,9 +369,6 @@ export const DataServiceEntityConfigSchema = {
 	"properties": {
 		"dhis_id": {
 			"type": "string"
-		},
-		"kobo_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -392,15 +389,6 @@ export const EntityMetadataSchema = {
 					"type": "boolean"
 				},
 				"trackedEntityId": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"ms1": {
-			"type": "object",
-			"properties": {
-				"distributionId": {
 					"type": "string"
 				}
 			},
@@ -429,24 +417,6 @@ export const OptionAttributesSchema = {
 		}
 	},
 	"additionalProperties": false
-}
-export const SupersetInstanceConfigSchema = {
-	"type": "object",
-	"properties": {
-		"serverName": {
-			"type": "string"
-		},
-		"baseUrl": {
-			"type": "string"
-		},
-		"insecure": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"baseUrl"
-	]
 }
 export const DatePickerOffsetSpecSchema = {
 	"type": "object",
@@ -32642,6 +32612,7 @@ export const DashboardItemReportSchema = {
 export const EntityTypeSchema = {
 	"enum": [
 		"asset",
+		"assistive_device",
 		"bes_asset",
 		"bes_office",
 		"business",
@@ -32810,6 +32781,7 @@ export const MeasureConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -32895,6 +32867,7 @@ export const MeasureConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -33130,6 +33103,7 @@ export const DisplayedValueTypeSchema = {
 export const EntityLevelSchema = {
 	"enum": [
 		"Asset",
+		"AssistiveDevice",
 		"BesAsset",
 		"BesOffice",
 		"Business",
@@ -33215,6 +33189,7 @@ export const EntityLevelSchema = {
 		"WishSubDistrict",
 		"World",
 		"asset",
+		"assistive_device",
 		"bes_asset",
 		"bes_office",
 		"business",
@@ -33590,6 +33565,7 @@ export const BaseMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -33675,6 +33651,7 @@ export const BaseMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -33860,6 +33837,7 @@ export const BaseMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -33945,6 +33923,7 @@ export const BaseMapOverlayConfigSchema = {
 							"WishSubDistrict",
 							"World",
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -34128,6 +34107,7 @@ export const BaseMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -34213,6 +34193,7 @@ export const BaseMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -34672,6 +34653,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -34757,6 +34739,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -34942,6 +34925,7 @@ export const SpectrumMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -35027,6 +35011,7 @@ export const SpectrumMapOverlayConfigSchema = {
 							"WishSubDistrict",
 							"World",
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -35210,6 +35195,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -35295,6 +35281,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -35860,6 +35847,7 @@ export const IconMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -35945,6 +35933,7 @@ export const IconMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -36130,6 +36119,7 @@ export const IconMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -36215,6 +36205,7 @@ export const IconMapOverlayConfigSchema = {
 							"WishSubDistrict",
 							"World",
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -36398,6 +36389,7 @@ export const IconMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -36483,6 +36475,7 @@ export const IconMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -36973,6 +36966,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -37058,6 +37052,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -37243,6 +37238,7 @@ export const RadiusMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -37328,6 +37324,7 @@ export const RadiusMapOverlayConfigSchema = {
 							"WishSubDistrict",
 							"World",
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -37511,6 +37508,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -37596,6 +37594,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -38060,6 +38059,7 @@ export const ColorMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -38145,6 +38145,7 @@ export const ColorMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -38330,6 +38331,7 @@ export const ColorMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -38415,6 +38417,7 @@ export const ColorMapOverlayConfigSchema = {
 							"WishSubDistrict",
 							"World",
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -38598,6 +38601,7 @@ export const ColorMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -38683,6 +38687,7 @@ export const ColorMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -39161,6 +39166,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -39246,6 +39252,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -39431,6 +39438,7 @@ export const ShadingMapOverlayConfigSchema = {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
 						"enum": [
 							"Asset",
+							"AssistiveDevice",
 							"BesAsset",
 							"BesOffice",
 							"Business",
@@ -39516,6 +39524,7 @@ export const ShadingMapOverlayConfigSchema = {
 							"WishSubDistrict",
 							"World",
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -39699,6 +39708,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
+				"AssistiveDevice",
 				"BesAsset",
 				"BesOffice",
 				"Business",
@@ -39784,6 +39794,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"WishSubDistrict",
 				"World",
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -40254,6 +40265,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -40339,6 +40351,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -40524,6 +40537,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -40609,6 +40623,7 @@ export const MapOverlayConfigSchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -40792,6 +40807,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -40877,6 +40893,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -41442,6 +41459,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -41527,6 +41545,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -41712,6 +41731,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -41797,6 +41817,7 @@ export const MapOverlayConfigSchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -41980,6 +42001,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -42065,6 +42087,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -42555,6 +42578,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -42640,6 +42664,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -42825,6 +42850,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -42910,6 +42936,7 @@ export const MapOverlayConfigSchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -43093,6 +43120,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -43178,6 +43206,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -43642,6 +43671,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -43727,6 +43757,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -43912,6 +43943,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -43997,6 +44029,7 @@ export const MapOverlayConfigSchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -44180,6 +44213,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -44265,6 +44299,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -44743,6 +44778,7 @@ export const MapOverlayConfigSchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -44828,6 +44864,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -45013,6 +45050,7 @@ export const MapOverlayConfigSchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -45098,6 +45136,7 @@ export const MapOverlayConfigSchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -45281,6 +45320,7 @@ export const MapOverlayConfigSchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -45366,6 +45406,7 @@ export const MapOverlayConfigSchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -45748,15 +45789,6 @@ export const EntityQuestionConfigFieldValueSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -45828,15 +45860,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -45893,15 +45916,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -45968,15 +45982,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46038,15 +46043,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46103,15 +46099,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46178,15 +46165,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46243,15 +46221,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46318,15 +46287,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46383,15 +46343,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46458,15 +46409,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46509,6 +46451,7 @@ export const EntityQuestionConfigSchema = {
 							"items": {
 								"enum": [
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -46600,6 +46543,7 @@ export const EntityQuestionConfigSchema = {
 						{
 							"enum": [
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -46947,15 +46891,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47012,15 +46947,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47087,15 +47013,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47157,15 +47074,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47222,15 +47130,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47297,15 +47196,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47362,15 +47252,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47437,15 +47318,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47502,15 +47374,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47577,15 +47440,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47628,6 +47482,7 @@ export const SurveyScreenComponentConfigSchema = {
 									"items": {
 										"enum": [
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -47719,6 +47574,7 @@ export const SurveyScreenComponentConfigSchema = {
 								{
 									"enum": [
 										"asset",
+										"assistive_device",
 										"bes_asset",
 										"bes_office",
 										"business",
@@ -48608,6 +48464,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"state": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"assistive_device": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -77216,6 +77078,7 @@ export const DashboardRelationSchema = {
 			"items": {
 				"enum": [
 					"asset",
+					"assistive_device",
 					"bes_asset",
 					"bes_office",
 					"business",
@@ -77352,6 +77215,7 @@ export const DashboardRelationCreateSchema = {
 			"items": {
 				"enum": [
 					"asset",
+					"assistive_device",
 					"bes_asset",
 					"bes_office",
 					"business",
@@ -77483,6 +77347,7 @@ export const DashboardRelationUpdateSchema = {
 			"items": {
 				"enum": [
 					"asset",
+					"assistive_device",
 					"bes_asset",
 					"bes_office",
 					"business",
@@ -78077,9 +77942,6 @@ export const DataServiceEntitySchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78106,9 +77968,6 @@ export const DataServiceEntityCreateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78131,9 +77990,6 @@ export const DataServiceEntityUpdateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78142,142 +77998,6 @@ export const DataServiceEntityUpdateSchema = {
 			"type": "string"
 		},
 		"id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const DataServiceSyncGroupSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"data_group_code",
-		"id",
-		"service_type"
-	]
-}
-export const DataServiceSyncGroupCreateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"data_group_code",
-		"service_type"
-	]
-}
-export const DataServiceSyncGroupUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
 			"type": "string"
 		}
 	},
@@ -78839,15 +78559,6 @@ export const EntitySchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -78875,6 +78586,7 @@ export const EntitySchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -79022,15 +78734,6 @@ export const EntityCreateSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -79058,6 +78761,7 @@ export const EntityCreateSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -79201,15 +78905,6 @@ export const EntityUpdateSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -79237,6 +78932,7 @@ export const EntityUpdateSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -80660,6 +80356,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -80745,6 +80442,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -80930,6 +80628,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -81015,6 +80714,7 @@ export const MapOverlaySchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -81198,6 +80898,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -81283,6 +80984,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -81848,6 +81550,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -81933,6 +81636,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -82118,6 +81822,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -82203,6 +81908,7 @@ export const MapOverlaySchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -82386,6 +82092,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -82471,6 +82178,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -82961,6 +82669,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -83046,6 +82755,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -83231,6 +82941,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -83316,6 +83027,7 @@ export const MapOverlaySchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -83499,6 +83211,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -83584,6 +83297,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -84048,6 +83762,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -84133,6 +83848,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -84318,6 +84034,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -84403,6 +84120,7 @@ export const MapOverlaySchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -84586,6 +84304,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -84671,6 +84390,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -85149,6 +84869,7 @@ export const MapOverlaySchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -85234,6 +84955,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -85419,6 +85141,7 @@ export const MapOverlaySchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -85504,6 +85227,7 @@ export const MapOverlaySchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -85687,6 +85411,7 @@ export const MapOverlaySchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -85772,6 +85497,7 @@ export const MapOverlaySchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -86303,6 +86029,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -86388,6 +86115,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -86573,6 +86301,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -86658,6 +86387,7 @@ export const MapOverlayCreateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -86841,6 +86571,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -86926,6 +86657,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -87491,6 +87223,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -87576,6 +87309,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -87761,6 +87495,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -87846,6 +87581,7 @@ export const MapOverlayCreateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -88029,6 +87765,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -88114,6 +87851,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -88604,6 +88342,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -88689,6 +88428,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -88874,6 +88614,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -88959,6 +88700,7 @@ export const MapOverlayCreateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -89142,6 +88884,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -89227,6 +88970,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -89691,6 +89435,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -89776,6 +89521,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -89961,6 +89707,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -90046,6 +89793,7 @@ export const MapOverlayCreateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -90229,6 +89977,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -90314,6 +90063,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -90792,6 +90542,7 @@ export const MapOverlayCreateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -90877,6 +90628,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -91062,6 +90814,7 @@ export const MapOverlayCreateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -91147,6 +90900,7 @@ export const MapOverlayCreateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -91330,6 +91084,7 @@ export const MapOverlayCreateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -91415,6 +91170,7 @@ export const MapOverlayCreateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -91939,6 +91695,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -92024,6 +91781,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -92209,6 +91967,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -92294,6 +92053,7 @@ export const MapOverlayUpdateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -92477,6 +92237,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -92562,6 +92323,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -93127,6 +92889,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -93212,6 +92975,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -93397,6 +93161,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -93482,6 +93247,7 @@ export const MapOverlayUpdateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -93665,6 +93431,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -93750,6 +93517,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -94240,6 +94008,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -94325,6 +94094,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -94510,6 +94280,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -94595,6 +94366,7 @@ export const MapOverlayUpdateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -94778,6 +94550,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -94863,6 +94636,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -95327,6 +95101,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -95412,6 +95187,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -95597,6 +95373,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -95682,6 +95459,7 @@ export const MapOverlayUpdateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -95865,6 +95643,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -95950,6 +95729,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -96428,6 +96208,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -96513,6 +96294,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -96698,6 +96480,7 @@ export const MapOverlayUpdateSchema = {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
 										"enum": [
 											"Asset",
+											"AssistiveDevice",
 											"BesAsset",
 											"BesOffice",
 											"Business",
@@ -96783,6 +96566,7 @@ export const MapOverlayUpdateSchema = {
 											"WishSubDistrict",
 											"World",
 											"asset",
+											"assistive_device",
 											"bes_asset",
 											"bes_office",
 											"business",
@@ -96966,6 +96750,7 @@ export const MapOverlayUpdateSchema = {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
+								"AssistiveDevice",
 								"BesAsset",
 								"BesOffice",
 								"Business",
@@ -97051,6 +96836,7 @@ export const MapOverlayUpdateSchema = {
 								"WishSubDistrict",
 								"World",
 								"asset",
+								"assistive_device",
 								"bes_asset",
 								"bes_office",
 								"business",
@@ -97586,209 +97372,6 @@ export const MeditrakSyncQueueUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const Ms1SyncLogSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"record_id",
-		"record_type"
-	]
-}
-export const Ms1SyncLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type"
-	]
-}
-export const Ms1SyncLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const Ms1SyncQueueSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"record_id",
-		"record_type",
-		"type"
-	]
-}
-export const Ms1SyncQueueCreateSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type",
-		"type"
-	]
-}
-export const Ms1SyncQueueUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const OneTimeLoginSchema = {
 	"type": "object",
 	"properties": {
@@ -98087,6 +97670,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -98210,6 +97794,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -98330,6 +97915,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -99358,102 +98944,6 @@ export const SettingUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const SupersetInstanceSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"serverName": {
-					"type": "string"
-				},
-				"baseUrl": {
-					"type": "string"
-				},
-				"insecure": {
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"baseUrl"
-			]
-		},
-		"id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"id"
-	]
-}
-export const SupersetInstanceCreateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"serverName": {
-					"type": "string"
-				},
-				"baseUrl": {
-					"type": "string"
-				},
-				"insecure": {
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"baseUrl"
-			]
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config"
-	]
-}
-export const SupersetInstanceUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"serverName": {
-					"type": "string"
-				},
-				"baseUrl": {
-					"type": "string"
-				},
-				"insecure": {
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"baseUrl"
-			]
-		},
-		"id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const SurveySchema = {
 	"type": "object",
 	"properties": {
@@ -100213,107 +99703,6 @@ export const SurveyScreenComponentUpdateSchema = {
 		},
 		"visibility_criteria": {
 			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const SyncGroupLogSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"log_message",
-		"service_type",
-		"sync_group_code"
-	]
-}
-export const SyncGroupLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"log_message",
-		"service_type",
-		"sync_group_code"
-	]
-}
-export const SyncGroupLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
 		}
 	},
 	"additionalProperties": false
@@ -101575,57 +100964,6 @@ export const UserAccountUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const UserCountryAccessAttemptSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"country_code",
-		"id",
-		"user_id"
-	]
-}
-export const UserCountryAccessAttemptCreateSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"country_code",
-		"user_id"
-	]
-}
-export const UserCountryAccessAttemptUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
@@ -101848,14 +101186,6 @@ export const TaskCommentTypeSchema = {
 	],
 	"type": "string"
 }
-export const SyncGroupSyncStatusSchema = {
-	"enum": [
-		"ERROR",
-		"IDLE",
-		"SYNCING"
-	],
-	"type": "string"
-}
 export const ServiceTypeSchema = {
 	"enum": [
 		"data-lake",
@@ -101915,6 +101245,7 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
+		"assistive_device",
 		"bes_asset",
 		"bes_office",
 		"business",
@@ -102328,15 +101659,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 								},
 								"additionalProperties": false
 							},
-							"ms1": {
-								"type": "object",
-								"properties": {
-									"distributionId": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false
-							},
 							"openStreetMaps": {
 								"type": "object",
 								"properties": {
@@ -102364,6 +101686,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"type": {
 						"enum": [
 							"asset",
+							"assistive_device",
 							"bes_asset",
 							"bes_office",
 							"business",
@@ -102699,6 +102022,7 @@ export const EntitiesResponseItemSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -103359,15 +102683,6 @@ export const EntityResponseSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -103395,6 +102710,7 @@ export const EntityResponseSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"assistive_device",
 				"bes_asset",
 				"bes_office",
 				"business",
@@ -113557,6 +112873,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -113642,6 +112959,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -113827,6 +113145,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -113912,6 +113231,7 @@ export const TranslatedMapOverlaySchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -114095,6 +113415,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -114180,6 +113501,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -114771,6 +114093,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -114856,6 +114179,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -115041,6 +114365,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -115126,6 +114451,7 @@ export const TranslatedMapOverlaySchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -115309,6 +114635,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -115394,6 +114721,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -115910,6 +115238,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -115995,6 +115324,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -116180,6 +115510,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -116265,6 +115596,7 @@ export const TranslatedMapOverlaySchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -116448,6 +115780,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -116533,6 +115866,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -117023,6 +116357,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -117108,6 +116443,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -117293,6 +116629,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -117378,6 +116715,7 @@ export const TranslatedMapOverlaySchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -117561,6 +116899,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -117646,6 +116985,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -118150,6 +117490,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -118235,6 +117576,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",
@@ -118420,6 +117762,7 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
 								"enum": [
 									"Asset",
+									"AssistiveDevice",
 									"BesAsset",
 									"BesOffice",
 									"Business",
@@ -118505,6 +117848,7 @@ export const TranslatedMapOverlaySchema = {
 									"WishSubDistrict",
 									"World",
 									"asset",
+									"assistive_device",
 									"bes_asset",
 									"bes_office",
 									"business",
@@ -118688,6 +118032,7 @@ export const TranslatedMapOverlaySchema = {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
+						"AssistiveDevice",
 						"BesAsset",
 						"BesOffice",
 						"Business",
@@ -118773,6 +118118,7 @@ export const TranslatedMapOverlaySchema = {
 						"WishSubDistrict",
 						"World",
 						"asset",
+						"assistive_device",
 						"bes_asset",
 						"bes_office",
 						"business",

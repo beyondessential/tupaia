@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/ui-map-components",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "private": true,
   "description": "A library of map components for the tupaia monorepo",
   "repository": {
@@ -33,7 +33,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
-    "react-leaflet": "^3.2.1",
+    "react-leaflet": "^3.2.5",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {

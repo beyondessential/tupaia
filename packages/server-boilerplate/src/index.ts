@@ -116,8 +116,6 @@ export {
   UserEntityPermissionRecord,
   UserModel,
   UserRecord,
-  UserCountryAccessAttemptModel,
-  UserCountryAccessAttemptRecord,
   TaskModel,
   TaskRecord,
   TaskCommentModel,

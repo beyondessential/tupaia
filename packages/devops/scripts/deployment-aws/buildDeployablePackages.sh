@@ -18,7 +18,7 @@ nvm install --default
 # PM2 is installed per Node version; reinstall if nvm switched versions
 if ! command -v pm2 &>/dev/null; then
   echo 'PM2 not found (likely because Node version changed from AMI). Installing...'
-  npm install --global pm2@^7.0.3
+  npm install --global pm2@^7.0.4
 fi
 echo "PM2 $(pm2 --version) is installed"
 pm2 install pm2-logrotate
@@ -42,6 +42,9 @@ BW_CLIENTID="$BW_CLIENTID" \
     BW_CLIENTSECRET="$BW_CLIENTSECRET" \
     BW_PASSWORD="$BW_PASSWORD" \
     yarn run download-env-vars "$deployment_name"
+
+# Bitwarden credentials are no longer needed; don’t hold them for the rest of the build
+unset BW_CLIENTID BW_CLIENTSECRET BW_PASSWORD
 
 # Build packages and their dependencies
 package_names_glob=$("$root_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
