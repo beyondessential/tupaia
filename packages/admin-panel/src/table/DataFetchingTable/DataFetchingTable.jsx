@@ -154,13 +154,7 @@ const DataFetchingTableComponent = memo(
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
-    const getSortingToUse = () => {
-      // If there is no sorting, return the default sorting, if it exists, otherwise return an empty array
-      if (!sorting) return defaultSorting ?? [];
-      return sorting;
-    };
-
-    const sortingToUse = getSortingToUse();
+    const sortingToUse = sorting ?? defaultSorting ?? [];
 
     // Listen for changes in filters in the URL and refresh the data accordingly
     const { filters, onChangeFilters } = useColumnFilters(defaultFilters);
