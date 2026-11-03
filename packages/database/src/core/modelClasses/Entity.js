@@ -4,7 +4,7 @@
  * @typedef {import('@tupaia/types').Project} Project
  */
 
-import { uniqBy } from 'es-toolkit';
+import { uniq, uniqBy } from 'es-toolkit';
 
 import { SyncDirections } from '@tupaia/constants';
 import { assertIsNotNullish } from '@tupaia/tsutils';
@@ -380,10 +380,15 @@ export class EntityRecord extends DatabaseRecord {
   /**
    * @param {EntityHierarchy['id']} hierarchyId
    * @param {*} criteria
+   * @param {*} options
    * @returns {Promise<EntityRecord[]>}
    */
-  async getChildren(hierarchyId, criteria) {
-    return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
+  async getChildren(hierarchyId, criteria, options) {
+    return await this.getDescendants(
+      hierarchyId,
+      { ...criteria, generational_distance: 1 },
+      options,
+    );
   }
 
   /**
@@ -590,7 +595,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} ancestorsOrDescendants
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
-   * @param {*} options
+   * @param {*} [options] Query options. Pass `fields` (entity field names) to select only those
+   * fields; the returned records are then partial, so must not be saved.
    * @returns {Promise<EntityRecord[]>}
    */
   async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria, options) {
@@ -599,6 +605,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
+    const { fields, ...findOptions } = options ?? {};
+    // Always select `id`; results are deduplicated by it
+    const columns = fields ? uniq(['id', ...fields]).map(this.buildColumnSpec) : undefined;
 
     const entityRecords = await this.runCachedFunction(cacheKey, async () => {
       const relations = await this.find(
@@ -610,7 +619,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           joinWith: RECORDS.ANCESTOR_DESCENDANT_RELATION,
           joinCondition: ['entity.id', joinTablesOn],
           sort: ['generational_distance ASC'],
-          ...options,
+          ...(columns && { columns }),
+          ...findOptions,
         },
       );
       const relationData = await Promise.all(relations.map(async r => r.getData()));

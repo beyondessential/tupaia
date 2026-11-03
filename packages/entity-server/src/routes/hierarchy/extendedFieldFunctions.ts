@@ -55,7 +55,11 @@ const getBounds = async (
 ) => {
   if (entity.isProject()) {
     const { hierarchyId, allowedCountries } = context;
-    const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
+    const children = await entity.getChildren(
+      hierarchyId,
+      { country_code: allowedCountries },
+      { fields: ['bounds'] },
+    );
     if (children.length > 0) {
       return calculateOuterBounds(children.map(child => child.bounds).filter(isNotNullish));
     }
