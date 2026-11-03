@@ -142,12 +142,8 @@ export const FilterableTable = ({
 
   const updateSorting = (id: string, isDesc?: boolean) => {
     const currentSorting = getSortedConfig(id);
-    if (!currentSorting) {
-      return onChangeSorting([{ id, desc: false }]);
-    }
-    if (isDesc) {
-      return onChangeSorting([]);
-    }
+    if (!currentSorting) return onChangeSorting([{ id, desc: false }]);
+    if (isDesc) return onChangeSorting([]);
     return onChangeSorting([{ id, desc: true }]);
   };
 
