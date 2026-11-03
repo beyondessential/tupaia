@@ -102,11 +102,10 @@ export const HeaderDisplayCell = ({
 
 interface TableCellProps {
   children: ReactNode;
-  width?: string;
   row: Record<string, any>;
   column?: Record<string, any>;
 }
-export const TableCell = ({ children, width, row, column, ...props }: TableCellProps) => {
+export const TableCell = ({ children, row, column, ...props }: TableCellProps) => {
   const getRowUrl = (): Partial<Pick<LinkProps, 'to' | 'state'>> => {
     if (!row) return {};
     if (row.url) return { to: row.url };
