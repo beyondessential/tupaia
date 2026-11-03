@@ -1,6 +1,7 @@
 export * from './api';
 export * from './offlineFirst';
 export * from './stream';
+export * from './streamRequest';
 export * from './queries';
 export * from './mutations';
 export * from './CurrentUserContext';
