@@ -167,11 +167,10 @@ export const FilterableTable = ({
                     const sortedConfig = getSortedConfig(id);
                     return (
                       <HeaderDisplayCell
-                        {...getHeaderProps()}
+                        {...getHeaderProps({ style: { maxWidth } })}
                         key={id}
                         canResize={canResize}
                         getResizerProps={getResizerProps}
-                        maxWidth={maxWidth}
                       >
                         {render('Header')}
                         {!disableSortBy && (
@@ -194,7 +193,7 @@ export const FilterableTable = ({
                 {visibleColumns.map(column => {
                   return (
                     <FilterCell
-                      {...column.getHeaderProps()}
+                      {...column.getHeaderProps({ style: { maxWidth: column.maxWidth } })}
                       key={column.id}
                       column={column}
                       onChangeFilters={onChangeFilters}
@@ -217,10 +216,9 @@ export const FilterableTable = ({
                       const col = visibleColumns[i] as ColumnInstance;
                       return (
                         <TableCell
-                          {...getCellProps()}
+                          {...getCellProps({ style: { maxWidth: col.maxWidth } })}
                           key={col.id}
                           row={row.original}
-                          maxWidth={col.maxWidth}
                           column={col}
                         >
                           {render('Cell')}
