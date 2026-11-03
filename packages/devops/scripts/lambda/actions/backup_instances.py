@@ -33,7 +33,7 @@ def backup_instances(event):
         print(f"Only backing up {event['InstanceName']}")
         filters.append({"Name": "tag:Name", "Values": [event["InstanceName"]]})
     else:
-        print('Backing up all instances tagged "Backup')
+        print('Backing up all instances tagged "Backup"')
         filters.append({"Name": "tag-key", "Values": ["backup", "Backup"]})
 
     reservations = ec.describe_instances(Filters=filters).get("Reservations", [])
