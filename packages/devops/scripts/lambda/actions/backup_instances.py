@@ -50,10 +50,8 @@ def backup_instances(event):
         instance_name = get_tag(instance, "Name")
         deployment_type = get_tag(instance, "DeploymentType")
         deployment_name = get_tag(instance, "DeploymentName")
-        retention_days = get_tag(instance, "Retention")
-
-        if retention_days == "":
-            retention_days = "7"  # default to 7 days of snapshot retention
+        # default to 7 days of snapshot retention
+        retention_days = get_tag(instance, "Retention") or "7"
 
         print(f"Backing up {instance_name}")
 

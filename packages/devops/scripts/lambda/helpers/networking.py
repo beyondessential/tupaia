@@ -35,9 +35,7 @@ class GatewayNotFoundError(Exception):
 def get_gateway_name(deployment_type, deployment_name):
     name = f"{deployment_type}-{deployment_name}"
     name = name[0:32]  # max 32 chars in an ELB or gateway name
-    if name.endswith("-"):
-        name = name[:-1]  # name cannot end with a hyphen
-    return name
+    return name.rstrip("-")  # name cannot end with a hyphen
 
 
 def get_gateway_elb(deployment_type, deployment_name):
@@ -55,7 +53,7 @@ def get_gateway_elb(deployment_type, deployment_name):
             raise Exception(
                 f"Multiple {deployment_type} gateway ELBs found tagged with deployment name: {deployment_name}"
             )
-        if len(matching_arns) == 1:
+        if matching_arns:
             return elb
     raise GatewayNotFoundError(
         f"No {deployment_type} gateway ELB found tagged with deployment name: {deployment_name}"
@@ -79,7 +77,7 @@ def get_gateway_target_group(deployment_type, deployment_name):
             raise Exception(
                 f"Multiple {deployment_type} target groups found tagged with deployment name: {deployment_name}"
             )
-        if len(matching_arns) == 1:
+        if matching_arns:
             return target_group
 
     raise GatewayNotFoundError(
