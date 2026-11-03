@@ -4,7 +4,7 @@ description: "Produce or refine a project-level mockup illustrating a section of
 label: "Workshop design"
 category: design
 surface: project
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Workshop design (project surface)

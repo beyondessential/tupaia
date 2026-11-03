@@ -3,7 +3,7 @@ name: start-working-doc
 description: "Start a working doc — a drafting space where spec-level and implementation thinking co-exist before splitting into specs, plan, and test cases"
 label: "Start working doc"
 category: plan
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Start a working doc
