@@ -118,6 +118,7 @@ export const FilterableTable = ({
     {
       columns,
       data: memoisedData,
+      getRowId: (row, index) => row.id ?? index.toString(),
       initialState: {
         sortBy: sorting,
         hiddenColumns,
