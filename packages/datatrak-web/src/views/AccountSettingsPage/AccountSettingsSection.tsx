@@ -44,7 +44,9 @@ export const AccountSettingsSection = ({
     <Wrapper>
       <AccountSettingsColumn>
         <Heading>{heading}</Heading>
-        <Typography color="textSecondary">{description}</Typography>
+        <Typography color="textSecondary" component={typeof description === 'string' ? 'p' : 'div'}>
+          {description}
+        </Typography>
       </AccountSettingsColumn>
       {children}
     </Wrapper>

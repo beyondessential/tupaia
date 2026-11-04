@@ -60,7 +60,7 @@ export class GETHandler extends CRUDHandler {
   }
 
   async getDbQueryOptions() {
-    const { sort: sortString, rawSort, distinct = false } = this.req.query;
+    const { sort: sortString, distinct = false } = this.req.query;
 
     // set up db query options
     const columns = await this.getProcessedColumns();
@@ -74,7 +74,7 @@ export class GETHandler extends CRUDHandler {
 
     const { limit, page } = this.getPaginationParameters();
 
-    const dbQueryOptions = { multiJoin, columns, sort, rawSort, distinct, limit };
+    const dbQueryOptions = { multiJoin, columns, sort, distinct, limit };
 
     if (Number.isInteger(limit) && Number.isInteger(page)) {
       dbQueryOptions.offset = limit * page;

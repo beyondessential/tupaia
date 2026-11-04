@@ -1,7 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { post } from '../api';
 import { PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
+import { post } from '../api';
 
 export interface ResetPasswordParams {
   oldPassword: string;
@@ -13,41 +13,35 @@ interface ResBody {
   message: string;
 }
 
-export const useResetPassword = (options?: {
-  onError?: (error: Error) => void;
-  onSettled?: () => void;
-  onSuccess?: (response: ResBody) => void;
-}) => {
+export const useResetPassword = (
+  options?: UseMutationOptions<ResBody, Error, ResetPasswordParams, unknown>,
+) => {
+  const { meta, onSuccess, ...delegated } = options ?? {};
+
   const [urlSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
   const oneTimeLoginToken = urlSearchParams.get(PASSWORD_RESET_TOKEN_PARAM);
 
-  return useMutation<any, Error, ResetPasswordParams, unknown>(
-    ({ oldPassword, newPassword, newPasswordConfirm }: ResetPasswordParams) => {
-      return post('me/changePassword', {
+  return useMutation<ResBody, Error, ResetPasswordParams, unknown>(
+    async ({ oldPassword, newPassword, newPasswordConfirm }: ResetPasswordParams) =>
+      await post('me/changePassword', {
         data: { oldPassword, newPassword, newPasswordConfirm, oneTimeLoginToken },
-      });
-    },
+      }),
     {
-      onError: (error: Error) => {
-        if (options?.onError) options.onError(error);
-      },
-      onSettled: () => {
-        if (options?.onSettled) options.onSettled();
-      },
-      onSuccess: (response: ResBody) => {
+      ...delegated,
+      meta: { ...meta, applyCustomErrorHandling: true },
+      onSuccess: (data: ResBody, variables, context) => {
         // manually navigate to the removed token - using setUrlParams seems to remove the hash as well in this one case
         urlSearchParams.delete(PASSWORD_RESET_TOKEN_PARAM);
-        navigate({
-          ...location,
-          search: urlSearchParams.toString(),
-        }, { replace: true });
-
-        if (options?.onSuccess) options.onSuccess(response);
-      },
-      meta: {
-        applyCustomErrorHandling: true,
+        navigate(
+          {
+            ...location,
+            search: urlSearchParams.toString(),
+          },
+          { replace: true },
+        );
+        onSuccess?.(data, variables, context);
       },
     },
   );

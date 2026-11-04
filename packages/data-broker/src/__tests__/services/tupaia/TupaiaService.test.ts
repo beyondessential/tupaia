@@ -157,11 +157,6 @@ describe('TupaiaService', () => {
       ).resolves.toStrictEqual(EVENTS));
   });
 
-  describe('pullSyncGroupResults()', () => {
-    it('throws an error', async () =>
-      expect(tupaiaService.pullSyncGroupResults()).toBeRejectedWith('not supported'));
-  });
-
   describe('pullMetadata()', () => {
     describe('data element', () => {
       it('single code', () =>

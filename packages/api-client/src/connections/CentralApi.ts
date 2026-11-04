@@ -40,7 +40,7 @@ export class CentralApi extends BaseApi {
   public async changeUserPassword(
     passwordChangeFields: Record<string, unknown>,
   ): Promise<{ message: string }> {
-    return this.connection.post('me/changePassword', null, passwordChangeFields);
+    return await this.connection.post('me/changePassword', null, passwordChangeFields);
   }
 
   public async verifyUserEmail(token: string) {

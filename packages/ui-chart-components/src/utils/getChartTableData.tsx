@@ -67,7 +67,7 @@ const processColumns = (report?: ChartReport, config?: ChartConfig, sortByTimest
 
   const hasNamedData = data[0]?.name;
   const hasTimeSeriesData = getIsTimeSeries(data) && config?.periodGranularity;
-  let firstColumn = null;
+  let firstColumn: LooseObject | null = null;
 
   if (hasNamedData) {
     firstColumn = makeFirstColumn(xName || 'Name', 'name');

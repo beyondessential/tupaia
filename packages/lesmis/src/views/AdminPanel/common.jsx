@@ -2,24 +2,12 @@ import React from 'react';
 
 export const SERVICE_TYPE_OPTIONS = [
   {
-    label: 'Data Lake',
-    value: 'data-lake',
-  },
-  {
     label: 'DHIS',
     value: 'dhis',
   },
   {
     label: 'Indicator',
     value: 'indicator',
-  },
-  {
-    label: 'Kobo',
-    value: 'kobo',
-  },
-  {
-    label: 'Superset',
-    value: 'superset',
   },
   {
     label: 'Tupaia',
@@ -34,9 +22,7 @@ export const SERVICE_TYPE_OPTIONS = [
 export const getDataElementFieldEditConfig = translate => ({
   type: 'json',
   default: '{}',
-  visibilityCriteria: {
-    service_type: values => ['dhis', 'superset'].includes(values.service_type),
-  },
+  visibilityCriteria: { service_type: 'dhis' },
   getJsonFieldSchema: () => [
     {
       label: 'DHIS Server',

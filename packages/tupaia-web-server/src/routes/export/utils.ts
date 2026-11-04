@@ -7,7 +7,7 @@ export const EMAIL_TIMEOUT_SETTINGS = {
 
 export const handleExportResponse = async (response: {
   headers: Headers;
-  buffer: () => Promise<string>;
+  arrayBuffer: () => Promise<ArrayBuffer>;
 }) => {
   // Extract the filename from the content-disposition header
   const contentDispositionHeader = response.headers.get('content-disposition') ?? '';
@@ -15,7 +15,7 @@ export const handleExportResponse = async (response: {
   const filePath: string | undefined = regex.exec(contentDispositionHeader)?.groups?.filename;
 
   return {
-    contents: await response.buffer(),
+    contents: Buffer.from(await response.arrayBuffer()),
     filePath,
     type: '.xlsx',
   };

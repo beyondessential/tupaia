@@ -12,14 +12,13 @@ import type {
   DataSourceTypeInstance,
   EventResults,
   ServiceType,
-  SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
 import {
   fetchAllowedOrgUnitsForDataElements,
   fetchAllowedOrgUnitsForDataGroups,
 } from './fetchAllowedOrgUnits';
-import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
+import { fetchDataElements, fetchDataGroups } from './fetchDataSources';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 import { mergeAnalytics, type AnalyticResults } from './mergeAnalytics';
 
@@ -81,7 +80,6 @@ export class DataBroker {
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
-      [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
   }
 
@@ -99,10 +97,6 @@ export class DataBroker {
 
   private fetchFromDataGroupTable = async (dataSourceSpec: FetchConditions) => {
     return this.models.dataGroup.find(dataSourceSpec);
-  };
-
-  private fetchFromSyncGroupTable = async (dataSourceSpec: FetchConditions) => {
-    return this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
   };
 
   private async fetchDataSources(dataSourceSpec: DataSourceSpec) {
@@ -225,34 +219,6 @@ export class DataBroker {
     return (nestedResults as EventResults[]).flat();
   }
 
-  public async pullSyncGroupResults(
-    syncGroupCodes: string[],
-    options: PullOptions,
-  ): Promise<SyncGroupResults> {
-    const syncGroups = await fetchSyncGroups(this.models, syncGroupCodes);
-    const organisationUnitCodes = getOrganisationUnitCodes(options);
-    const pulls = await this.getPulls(syncGroups, organisationUnitCodes);
-
-    const nestedResults = await Promise.all(
-      pulls.map(({ dataSources, serviceType, dataServiceMapping }) => {
-        const service = this.createService(serviceType);
-        return service.pullSyncGroupResults(dataSources, {
-          ...options,
-          dataServiceMapping,
-          organisationUnitCodes,
-        });
-      }),
-    );
-
-    return (nestedResults as SyncGroupResults[]).reduce(
-      (results, resultsForService) => ({
-        ...results,
-        ...resultsForService,
-      }),
-      {},
-    );
-  }
-
   public async pullDataElements(codes: string[], options?: PullMetadataOptions) {
     const dataElements = await fetchDataElements(this.models, codes);
     const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
@@ -321,8 +287,8 @@ export class DataBroker {
     // This will likely lead to problems in the future, for now this is ok because
     // our services happily ignore extra org units, and our vizes do not ask for
     // data elements that don't exist in dhis (dhis throws if it cant find it).
-    // Update 2023-01-19: At this time DHIS and superset will ignore data elements
-    // that are not relevant to them, but a proper cleanup should still be done
+    // Update 2023-01-19: At this time DHIS will ignore data elements
+    // that are not relevant to it, but a proper cleanup should still be done
     // to not even pass these services unrelated data elements in the first place.
 
     // First we get the mapping for each country, then if any two countries have the

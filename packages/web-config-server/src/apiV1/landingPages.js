@@ -1,5 +1,5 @@
 import { respond } from '@tupaia/utils';
-import { buildProjectDataForFrontend } from './projects';
+import { buildProjectsDataForFrontend } from './projects';
 
 async function buildLandingPageDataForFrontend(landingPage, req) {
   const {
@@ -25,9 +25,7 @@ async function buildLandingPageDataForFrontend(landingPage, req) {
   const applicableProjects = allProjects.filter(project => projectCodes.includes(project.code));
 
   // Build the project data for the frontend, using the method from the projects API, so that we get the same information returned, including permissions
-  const projects = await Promise.all(
-    applicableProjects.map(project => buildProjectDataForFrontend(project, req)),
-  );
+  const projects = await buildProjectsDataForFrontend(applicableProjects, req);
 
   return {
     name,

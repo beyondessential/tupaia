@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: deps
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
+    pull-request-branch-name:
+      prefix: deps
+      separator: "-"
+      word-separator: "-"
+      branch-name-case: lowercase
+      max-length: 46  # see validateBranchName.sh
+      template: "{prefix}-{dependency}"

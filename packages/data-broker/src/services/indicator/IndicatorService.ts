@@ -38,8 +38,4 @@ export class IndicatorService extends Service {
   public async pullEvents(): Promise<never> {
     throw new Error('pullEvents is not supported in IndicatorService');
   }
-
-  public async pullSyncGroupResults(): Promise<never> {
-    throw new Error('pullSyncGroupResults is not supported in IndicatorService');
-  }
 }
