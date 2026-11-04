@@ -9,10 +9,3 @@ export function getDisplayMode() {
 
   return 'unknown';
 }
-
-export const isWebApp = () => {
-  const displayMode = getDisplayMode();
-  return (
-    displayMode === 'standalone' || displayMode === 'fullscreen' || displayMode === 'minimal-ui'
-  );
-};
