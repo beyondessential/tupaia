@@ -36,6 +36,7 @@ export enum SyncFact {
   DEVICE_ID = 'deviceId',
   LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull',
   LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush',
+  LAST_SUCCESSFUL_SYNC_TIME = 'lastSuccessfulSyncTime',
   LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate',
   PERMISSIONS_CHANGED = 'permissionsChanged',
   PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId',

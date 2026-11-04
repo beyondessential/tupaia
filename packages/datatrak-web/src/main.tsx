@@ -1,3 +1,7 @@
+// Must come first: fills in Object.hasOwn for older Android WebViews, before any module
+// that calls it (es-toolkit, via @tupaia/sync) is evaluated
+import './polyfills';
+
 import React from 'react';
 import log from 'winston';
 import { render as renderReactApp } from 'react-dom';
