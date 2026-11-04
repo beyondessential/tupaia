@@ -12,14 +12,13 @@ import type {
   DataSourceTypeInstance,
   EventResults,
   ServiceType,
-  SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
 import {
   fetchAllowedOrgUnitsForDataElements,
   fetchAllowedOrgUnitsForDataGroups,
 } from './fetchAllowedOrgUnits';
-import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
+import { fetchDataElements, fetchDataGroups } from './fetchDataSources';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 import { mergeAnalytics, type AnalyticResults } from './mergeAnalytics';
 
@@ -81,7 +80,6 @@ export class DataBroker {
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
-      [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
   }
 
@@ -99,10 +97,6 @@ export class DataBroker {
 
   private fetchFromDataGroupTable = async (dataSourceSpec: FetchConditions) => {
     return this.models.dataGroup.find(dataSourceSpec);
-  };
-
-  private fetchFromSyncGroupTable = async (dataSourceSpec: FetchConditions) => {
-    return this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
   };
 
   private async fetchDataSources(dataSourceSpec: DataSourceSpec) {
@@ -223,34 +217,6 @@ export class DataBroker {
     );
 
     return (nestedResults as EventResults[]).flat();
-  }
-
-  public async pullSyncGroupResults(
-    syncGroupCodes: string[],
-    options: PullOptions,
-  ): Promise<SyncGroupResults> {
-    const syncGroups = await fetchSyncGroups(this.models, syncGroupCodes);
-    const organisationUnitCodes = getOrganisationUnitCodes(options);
-    const pulls = await this.getPulls(syncGroups, organisationUnitCodes);
-
-    const nestedResults = await Promise.all(
-      pulls.map(({ dataSources, serviceType, dataServiceMapping }) => {
-        const service = this.createService(serviceType);
-        return service.pullSyncGroupResults(dataSources, {
-          ...options,
-          dataServiceMapping,
-          organisationUnitCodes,
-        });
-      }),
-    );
-
-    return (nestedResults as SyncGroupResults[]).reduce(
-      (results, resultsForService) => ({
-        ...results,
-        ...resultsForService,
-      }),
-      {},
-    );
   }
 
   public async pullDataElements(codes: string[], options?: PullMetadataOptions) {

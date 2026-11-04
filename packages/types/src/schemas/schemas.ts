@@ -369,9 +369,6 @@ export const DataServiceEntityConfigSchema = {
 	"properties": {
 		"dhis_id": {
 			"type": "string"
-		},
-		"kobo_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -392,15 +389,6 @@ export const EntityMetadataSchema = {
 					"type": "boolean"
 				},
 				"trackedEntityId": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"ms1": {
-			"type": "object",
-			"properties": {
-				"distributionId": {
 					"type": "string"
 				}
 			},
@@ -45801,15 +45789,6 @@ export const EntityQuestionConfigFieldValueSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -45881,15 +45860,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -45946,15 +45916,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46021,15 +45982,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46086,15 +46038,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46161,15 +46104,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46226,15 +46160,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46301,15 +46226,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46366,15 +46282,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -46441,15 +46348,6 @@ export const EntityQuestionConfigSchema = {
 									},
 									"additionalProperties": false
 								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
 								"openStreetMaps": {
 									"type": "object",
 									"properties": {
@@ -46506,15 +46404,6 @@ export const EntityQuestionConfigSchema = {
 											"type": "boolean"
 										},
 										"trackedEntityId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false
-								},
-								"ms1": {
-									"type": "object",
-									"properties": {
-										"distributionId": {
 											"type": "string"
 										}
 									},
@@ -47002,15 +46891,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47067,15 +46947,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47142,15 +47013,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47207,15 +47069,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47282,15 +47135,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47347,15 +47191,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47422,15 +47257,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47487,15 +47313,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -47562,15 +47379,6 @@ export const SurveyScreenComponentConfigSchema = {
 											},
 											"additionalProperties": false
 										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
 										"openStreetMaps": {
 											"type": "object",
 											"properties": {
@@ -47627,15 +47435,6 @@ export const SurveyScreenComponentConfigSchema = {
 													"type": "boolean"
 												},
 												"trackedEntityId": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										},
-										"ms1": {
-											"type": "object",
-											"properties": {
-												"distributionId": {
 													"type": "string"
 												}
 											},
@@ -78143,9 +77942,6 @@ export const DataServiceEntitySchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78172,9 +77968,6 @@ export const DataServiceEntityCreateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78197,9 +77990,6 @@ export const DataServiceEntityUpdateSchema = {
 			"properties": {
 				"dhis_id": {
 					"type": "string"
-				},
-				"kobo_id": {
-					"type": "string"
 				}
 			},
 			"additionalProperties": false
@@ -78208,142 +77998,6 @@ export const DataServiceEntityUpdateSchema = {
 			"type": "string"
 		},
 		"id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const DataServiceSyncGroupSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"data_group_code",
-		"id",
-		"service_type"
-	]
-}
-export const DataServiceSyncGroupCreateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"config",
-		"data_group_code",
-		"service_type"
-	]
-}
-export const DataServiceSyncGroupUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {}
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_cursor": {
-			"type": "string"
-		},
-		"sync_status": {
-			"enum": [
-				"ERROR",
-				"IDLE",
-				"SYNCING"
-			],
 			"type": "string"
 		}
 	},
@@ -78905,15 +78559,6 @@ export const EntitySchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -79089,15 +78734,6 @@ export const EntityCreateSchema = {
 					},
 					"additionalProperties": false
 				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
 				"openStreetMaps": {
 					"type": "object",
 					"properties": {
@@ -79264,15 +78900,6 @@ export const EntityUpdateSchema = {
 							"type": "boolean"
 						},
 						"trackedEntityId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
 							"type": "string"
 						}
 					},
@@ -97745,209 +97372,6 @@ export const MeditrakSyncQueueUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const Ms1SyncLogSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"record_id",
-		"record_type"
-	]
-}
-export const Ms1SyncLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type"
-	]
-}
-export const Ms1SyncLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"count": {
-			"type": "number"
-		},
-		"data": {
-			"type": "string"
-		},
-		"endpoint": {
-			"type": "string"
-		},
-		"error_list": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const Ms1SyncQueueSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"record_id",
-		"record_type",
-		"type"
-	]
-}
-export const Ms1SyncQueueCreateSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type",
-		"type"
-	]
-}
-export const Ms1SyncQueueUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"bad_request_count": {
-			"type": "number"
-		},
-		"change_time": {
-			"type": "number"
-		},
-		"details": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"is_dead_letter": {
-			"type": "boolean"
-		},
-		"is_deleted": {
-			"type": "boolean"
-		},
-		"priority": {
-			"type": "number"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const OneTimeLoginSchema = {
 	"type": "object",
 	"properties": {
@@ -100281,107 +99705,6 @@ export const SurveyScreenComponentUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const SyncGroupLogSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"log_message",
-		"service_type",
-		"sync_group_code"
-	]
-}
-export const SyncGroupLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"log_message",
-		"service_type",
-		"sync_group_code"
-	]
-}
-export const SyncGroupLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"log_message": {
-			"type": "string"
-		},
-		"service_type": {
-			"enum": [
-				"data-lake",
-				"dhis",
-				"indicator",
-				"kobo",
-				"superset",
-				"tupaia",
-				"weather"
-			],
-			"type": "string"
-		},
-		"sync_group_code": {
-			"type": "string"
-		},
-		"timestamp": {
-			"type": "string",
-			"format": "date-time"
-		}
-	},
-	"additionalProperties": false
-}
 export const SyncQueuedDeviceSchema = {
 	"type": "object",
 	"properties": {
@@ -101639,57 +100962,6 @@ export const UserAccountUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const UserCountryAccessAttemptSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"country_code",
-		"id",
-		"user_id"
-	]
-}
-export const UserCountryAccessAttemptCreateSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"country_code",
-		"user_id"
-	]
-}
-export const UserCountryAccessAttemptUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
@@ -101909,14 +101181,6 @@ export const TaskCommentTypeSchema = {
 	"enum": [
 		"system",
 		"user"
-	],
-	"type": "string"
-}
-export const SyncGroupSyncStatusSchema = {
-	"enum": [
-		"ERROR",
-		"IDLE",
-		"SYNCING"
 	],
 	"type": "string"
 }
@@ -102388,15 +101652,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 										"type": "boolean"
 									},
 									"trackedEntityId": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false
-							},
-							"ms1": {
-								"type": "object",
-								"properties": {
-									"distributionId": {
 										"type": "string"
 									}
 								},
@@ -103420,15 +102675,6 @@ export const EntityResponseSchema = {
 							"type": "boolean"
 						},
 						"trackedEntityId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"ms1": {
-					"type": "object",
-					"properties": {
-						"distributionId": {
 							"type": "string"
 						}
 					},
