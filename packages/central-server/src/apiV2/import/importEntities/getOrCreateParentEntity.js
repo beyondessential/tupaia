@@ -31,6 +31,7 @@ export async function getOrCreateParentEntity(
   entityObject,
   country,
   pushToDhis,
+  projectId = null,
 ) {
   const {
     district: districtName,
@@ -67,10 +68,12 @@ export async function getOrCreateParentEntity(
       defaultMetadata,
       code,
       pushToDhis,
+      projectId,
     );
     districtEntity = await transactingModels.entity.updateOrCreate(
       {
         code,
+        project_id: projectId,
       },
       {
         name: districtName,
@@ -78,6 +81,7 @@ export async function getOrCreateParentEntity(
         parent_id: countryEntity.id,
         country_code: country.code,
         metadata: districtEntityMetadata,
+        project_id: projectId,
       },
     );
   }
@@ -99,6 +103,7 @@ export async function getOrCreateParentEntity(
       defaultMetadata,
       code,
       pushToDhis,
+      projectId,
     );
     const subDistrictEntityObject = {
       name: subDistrictName,
@@ -106,6 +111,7 @@ export async function getOrCreateParentEntity(
       parent_id: countryEntity.id,
       country_code: country.code,
       metadata: subDistrictEntityMetadata,
+      project_id: projectId,
     };
     // If a district is also being added, use as the parent of the sub_district
     if (district.id) {
@@ -116,13 +122,17 @@ export async function getOrCreateParentEntity(
     subDistrictEntity = await transactingModels.entity.updateOrCreate(
       {
         code,
+        project_id: projectId,
       },
       subDistrictEntityObject,
     );
   }
 
   if (parentCode) {
-    const parentEntity = await transactingModels.entity.findOne({ code: parentCode });
+    const parentEntity = await transactingModels.entity.findOneByCodeInProject(
+      parentCode,
+      projectId,
+    );
     if (!parentEntity) throw new Error(`No entity matching parent code ${parentCode}`);
     const parentGeographicalArea = await getGeographicalAreaFromEntity(
       parentEntity,

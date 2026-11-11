@@ -1,5 +1,12 @@
 // Exact copy of: @tupaia/meditrak-app-server/src/sync/createPermissionsBasedMeditrakSyncQueue.js
 // TODO: Tidy this up as part of RN-502
+//
+// On boot the view is only (re)built when it's missing or unpopulated (see `skipIfPopulated`
+// below) — rebuilding it on every restart held an ACCESS EXCLUSIVE lock for the whole
+// ~minute populate and blocked all MediTrak sync. Its data is kept fresh by the change
+// handler's REFRESH ... CONCURRENTLY, but a change to the view definition below is NOT
+// applied automatically: force a rebuild with the `create-meditrak-sync-view` script (or a
+// migration that drops the view) to roll it out.
 
 import { SqlQuery } from '@tupaia/database';
 
@@ -138,6 +145,19 @@ CREATE UNIQUE INDEX permissions_based_meditrak_sync_queue_id_idx ON permissions_
 CREATE INDEX permissions_based_meditrak_sync_queue_change_time_idx ON permissions_based_meditrak_sync_queue (change_time);
 `);
 
-export const createPermissionsBasedMeditrakSyncQueue = async database => {
-  return await query.executeOnDatabase(database);
+export const createPermissionsBasedMeditrakSyncQueue = async (
+  database,
+  { skipIfPopulated = false } = {},
+) => {
+  if (skipIfPopulated) {
+    const [view] = await database.executeSql(
+      `SELECT relispopulated FROM pg_class WHERE relname = 'permissions_based_meditrak_sync_queue' AND relkind = 'm';`,
+    );
+    // The change handler keeps the view's data fresh via REFRESH ... CONCURRENTLY, so a boot
+    // only needs to build the view when it's missing or unpopulated. Rebuilding it on every
+    // restart held an ACCESS EXCLUSIVE lock for the whole ~minute populate, blocking MediTrak
+    // sync reads long enough to exceed the app's request timeout.
+    if (view?.relispopulated) return undefined;
+  }
+  return query.executeOnDatabase(database);
 };

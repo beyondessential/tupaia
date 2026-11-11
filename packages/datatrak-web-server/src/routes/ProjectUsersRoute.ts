@@ -20,14 +20,10 @@ const getFilterUsersForProject = async (
     WITH
     country_list AS (
       SELECT DISTINCT country_entity.code::TEXT
-      FROM entity country_entity
-      JOIN entity_relation ON entity_relation.child_id = country_entity.id
-      WHERE entity_relation.parent_id IN (
-        SELECT e.id
-        FROM entity e
-        JOIN project p ON p.entity_id = e.id
-        WHERE p.code = ?
-      )
+      FROM project_country pc
+      JOIN project p ON p.id = pc.project_id
+      JOIN entity country_entity ON country_entity.id = pc.country_id
+      WHERE p.code = ?
     )
     SELECT u.id
     FROM user_account u

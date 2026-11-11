@@ -4,9 +4,7 @@ import { ModelRegistry } from '@tupaia/database';
 import {
   AnswerModel,
   CountryModel,
-  EntityHierarchyModel,
   EntityModel,
-  EntityParentChildRelationModel,
   LocalSystemFactModel,
   OptionModel,
   OptionSetModel,
@@ -32,8 +30,6 @@ export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly answer: AnswerModel;
   readonly country: CountryModel;
   readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-  readonly entityParentChildRelation: EntityParentChildRelationModel;
   readonly localSystemFact: LocalSystemFactModel;
   readonly option: OptionModel;
   readonly optionSet: OptionSetModel;

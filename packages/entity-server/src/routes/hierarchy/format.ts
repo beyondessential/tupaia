@@ -9,7 +9,7 @@ import {
 } from './types';
 import { extendedFieldFunctions, isExtendedField } from './extendedFieldFunctions';
 
-type FormatContext = { hierarchyId: string; allowedCountries: string[] };
+type FormatContext = { projectId: string; allowedCountries: string[] };
 
 export async function formatEntityForResponse(
   ctx: FormatContext,
@@ -77,12 +77,12 @@ export async function formatEntitiesForResponse(
   }
 
   const fields = fieldOrFields;
-  const { hierarchyId } = ctx;
+  const { projectId } = ctx;
   const childCodeToParentCode: Record<string, string> = fields.includes('parent_code')
-    ? await models.ancestorDescendantRelation.getChildCodeToParentCode(hierarchyId)
+    ? await models.ancestorDescendantRelation.getChildCodeToParentCode(projectId)
     : {};
   const parentCodeToChildCodes: Record<string, string[]> = fields.includes('child_codes')
-    ? await models.ancestorDescendantRelation.getParentCodeToChildCodes(hierarchyId)
+    ? await models.ancestorDescendantRelation.getParentCodeToChildCodes(projectId)
     : {};
 
   const responseBuilders = new Array(entities.length)

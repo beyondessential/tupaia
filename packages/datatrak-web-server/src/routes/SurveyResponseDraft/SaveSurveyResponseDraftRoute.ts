@@ -29,14 +29,15 @@ export class SaveSurveyResponseDraftRoute extends Route<SaveSurveyResponseDraftR
       );
     }
 
-    // Validate user has access to the entity if provided
+    // Validate user has access to the entity if provided. Use the single-entity
+    // endpoint (checks data-entry access to the entity's country) rather than the
+    // entities list, which is scoped to Tupaia Admin Panel countries.
     if (entityId) {
-      const entity = await ctx.services.central.fetchResources('entities', {
-        filter: { id: entityId },
-        columns: ['id'],
-      });
-
-      if (!entity || entity.length === 0) {
+      try {
+        await ctx.services.central.fetchResources(`entities/${entityId}`, {
+          columns: ['id'],
+        });
+      } catch {
         throw new PermissionsError(
           'You do not have access to this entity. If you think this is a mistake, please contact your system administrator.',
         );

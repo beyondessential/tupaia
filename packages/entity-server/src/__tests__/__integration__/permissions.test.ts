@@ -1,6 +1,6 @@
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccess, revokeCountryAccess, setupTestApp } from '../testUtilities';
-import { getEntitiesWithFields, getHierarchiesWithFields } from './fixtures';
+import { getEntitiesWithFields } from './fixtures';
 
 describe('permissions', () => {
   let app: TestableServer;
@@ -112,15 +112,5 @@ describe('permissions', () => {
       });
     });
 
-    it('filters hierarchies when requested for some with access', async () => {
-      const { body: hierarchies } = await app.get('hierarchies', {
-        query: { fields: 'code,name' },
-      });
-
-      expect(hierarchies).toBeArray();
-      expect(hierarchies).toIncludeSameMembers(
-        getHierarchiesWithFields(['goldsilver'], ['code', 'name']),
-      );
-    });
   });
 });

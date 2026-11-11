@@ -1,0 +1,83 @@
+const normaliseString = value => (value === null || value === undefined ? '' : String(value));
+
+// xlsx parsing emits null for blank cells (defval: null), so treat null like a
+// missing value everywhere.
+const isBlank = value => value === undefined || value === null || value === '';
+
+// Canonical form of a flat attribute object for comparison: sorted keys, values
+// stringified. Stringifying means a stored boolean `true` and an imported string
+// `"true"` compare equal, so a round-trip doesn't churn those rows. An empty or
+// missing object canonicalises to '' so `{}`, null and undefined all match.
+const canonicalObject = value => {
+  if (value === null || value === undefined) return '';
+  const entries = Object.entries(value);
+  if (entries.length === 0) return '';
+  return JSON.stringify(
+    entries
+      .map(([key, val]) => [key, val === null || val === undefined ? '' : String(val)])
+      .sort(([a], [b]) => a.localeCompare(b)),
+  );
+};
+
+/**
+ * True only when re-importing this row would change nothing, so the importer can
+ * skip all of its per-row work (the common "edit a few rows, re-import the whole
+ * sheet" case). `existing` is the pre-loaded current state (see
+ * loadExistingEntities). Conservative by design: anything that can't be cheaply
+ * compared here counts as changed, so a real update is never skipped.
+ */
+export const isEntityUnchanged = (row, existing) => {
+  if (!existing) return false; // new entity
+
+  if (normaliseString(row.name) !== normaliseString(existing.name)) return false;
+  if (normaliseString(row.entity_type) !== normaliseString(existing.type)) return false;
+  if (normaliseString(row.country_code) !== normaliseString(existing.country_code)) return false;
+  if (normaliseString(row.parent_code) !== normaliseString(existing.parent_code)) return false;
+  if (normaliseString(row.image_url) !== normaliseString(existing.image_url)) return false;
+
+  // Point coordinates — only written when the row supplies both, so only diffed
+  // then. Compare rounded to ~6 decimal places (~0.1m): the exporter writes full
+  // ST_X/ST_Y precision but xlsx reads cells back rounded (raw:false), so exact
+  // equality would flag every located entity as changed and defeat the skip.
+  if (!isBlank(row.longitude) && !isBlank(row.latitude)) {
+    const round = value => Math.round(Number(value) * 1e6) / 1e6;
+    if (
+      round(row.longitude) !== round(existing.longitude) ||
+      round(row.latitude) !== round(existing.latitude)
+    ) {
+      return false;
+    }
+  }
+
+  // attributes — the importer writes whenever the column is present (a blank cell
+  // clears them to {}), so a blank here is a real change. Match that: compare
+  // unless the column is entirely absent (undefined). canonicalObject treats
+  // null/{}/empty alike, so a blank cell vs an empty stored value still matches.
+  if (
+    row.attributes !== undefined &&
+    canonicalObject(row.attributes) !== canonicalObject(existing.attributes)
+  ) {
+    return false;
+  }
+  // data_service_entity — the importer only writes when the cell is truthy, so a
+  // blank leaves it untouched: skip the comparison for blanks.
+  if (
+    !isBlank(row.data_service_entity) &&
+    canonicalObject(row.data_service_entity) !== canonicalObject(existing.data_service_config)
+  ) {
+    return false;
+  }
+
+  // Polygon link — compare only when referenced by id. A code/data_source ref or
+  // screen_bounds needs resolution we don't do here, so treat as changed.
+  if (row.entity_polygon_id) {
+    if (normaliseString(row.entity_polygon_id) !== normaliseString(existing.entity_polygon_id)) {
+      return false;
+    }
+  } else if (row.entity_polygon_code || row.entity_polygon_data_source) {
+    return false;
+  }
+  if (row.screen_bounds) return false;
+
+  return true;
+};
