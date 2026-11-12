@@ -102,7 +102,7 @@ database_is_ready() {
 		reason=$("$tupaia_dir"/packages/devops/scripts/deployment-aws/rdsMasterPasswordIsSet.sh "$deployment_name") ||
 			status=$?
 		if ((status == 1)); then
-			failure=Master password not yet reset
+			failure='Master password not yet reset'
 			failure_detail=$reason
 			return 1
 		elif ((status != 0)); then
