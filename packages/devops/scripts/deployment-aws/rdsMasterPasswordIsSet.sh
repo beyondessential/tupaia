@@ -73,7 +73,9 @@ instance=$(
 		--query 'DBInstances[0].[DBInstanceStatus, PendingModifiedValues.MasterUserPassword, InstanceCreateTime]'
 ) || {
 	status=$?
-	if [[ -n $instance ]]; then echo "$instance"; fi
+	if [[ -n $instance ]]; then
+		echo "$instance"
+	fi
 	exit "$status"
 }
 read -r instance_status pending_password created_at <<<"$instance"
