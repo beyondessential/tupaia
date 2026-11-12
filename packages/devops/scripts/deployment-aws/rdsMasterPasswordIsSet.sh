@@ -61,7 +61,7 @@ query_rds() {
 
 	{
 		echo -e "${BOLD}${RED}Couldn’t query RDS about $db_id.${RESET}"
-		echo "$output"
+		printf '%s\n' "$output"
 	} >&2
 	exit 2
 }
