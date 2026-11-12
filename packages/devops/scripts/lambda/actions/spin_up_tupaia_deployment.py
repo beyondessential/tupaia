@@ -117,7 +117,7 @@ def spin_up_tupaia_deployment(event):
     )
     # set master password
     set_db_instance_master_password(
-        f"tupaia-{deployment_name}", get_db_master_password()
+        f"tupaia-{deployment_name}", get_db_master_password(deployment_name)
     )
 
     print(f"Deployed branch ‘{branch}’ to deployment ‘{deployment_name}’")

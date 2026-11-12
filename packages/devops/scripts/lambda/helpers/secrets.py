@@ -4,8 +4,16 @@ import json
 import boto3
 
 
-def get_db_master_password():
-    secret_string = get_secret("tupaiaRDS/master-password", "ap-southeast-2")
+def get_db_master_password(deployment_name):
+    """
+    Non-production deployments are cloned from production, but use a separate master password.
+    """
+    secret_name = (
+        "tupaiaRDS/master-password"
+        if deployment_name == "production"
+        else "tupaiaRDS/master-password-staging"
+    )
+    secret_string = get_secret(secret_name, "ap-southeast-2")
     secret_dict = json.loads(secret_string)
     return secret_dict["password"]
 
