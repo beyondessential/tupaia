@@ -21,7 +21,7 @@ def create_instance_from_image(
     user_data=None,
     volume_size=None,
 ):
-    print("Creating " + deployment_name + " as " + instance_type)
+    print(f"Creating {deployment_name} as {instance_type}")
 
     instance_object = create_instance(
         deployment_name,
