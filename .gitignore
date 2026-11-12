@@ -31,3 +31,6 @@ packages/.vscode/settings.json
 !.yarn/versions
 .pnp.*
 # yarn end
+
+# Python bytecode
+__pycache__/
