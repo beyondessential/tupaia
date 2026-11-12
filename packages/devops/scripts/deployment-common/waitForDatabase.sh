@@ -19,7 +19,7 @@ fi
 
 source "$tupaia_dir"/scripts/bash/mergeEnvForDB.sh
 : "${DB_PORT:=5432}"
-: "${DB_WAIT_TIMEOUT_SECONDS:=600}"
+: "${DB_WAIT_TIMEOUT_SECONDS:=900}"
 : "${DB_WAIT_INTERVAL_SECONDS:=15}"
 
 for int_var in DB_WAIT_TIMEOUT_SECONDS DB_WAIT_INTERVAL_SECONDS; do
