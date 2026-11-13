@@ -4,5 +4,9 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $SCRIPT_DIR
 
+if [[ -s $HOME/.nvm/nvm.sh ]]; then
+  source "$HOME/.nvm/nvm.sh"
+fi
+
 # Run the preaggregation
 RUN_PREAGGREGATION=all yarn start

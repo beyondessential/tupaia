@@ -1,7 +1,8 @@
 import chai from 'chai';
+
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
-import { resetTestData, TestableApp } from '../testUtilities';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import { TestableApp, resetTestData } from '../testUtilities';
 
 const { expect } = chai;
 
@@ -121,6 +122,15 @@ describe('Permissions checker for GETSurveys', async () => {
       const { body: results } = await app.get(`surveys?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(surveyIds);
+    });
+
+    it('Ignores the rawSort query parameter', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      // Would error with a division by zero if interpolated into the query
+      const rawSort = encodeURIComponent('(SELECT 1/0)');
+      const { body: results } = await app.get(`surveys?${filterString}&rawSort=${rawSort}`);
+
+      expect(results.map(r => r.id)).to.have.members([surveyIds[0], surveyIds[3]]);
     });
 
     it('Insufficient permissions: Return an empty array if users do not have access to any surveys', async () => {

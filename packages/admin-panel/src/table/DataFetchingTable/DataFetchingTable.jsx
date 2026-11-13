@@ -140,31 +140,21 @@ const DataFetchingTableComponent = memo(
         width: buttonWidths,
         disableSortBy: true,
         // eslint-disable-next-line react/prop-types
-        Cell: ({ row }) => {
-          return (
-            <ButtonCell>
-              {buttonColumns.map(({ Cell, accessor, ...col }) => {
-                return (
-                  <SingleButtonWrapper key={col.id} style={{ inlineSize: col.width }}>
-                    <Cell {...col} row={row} />
-                  </SingleButtonWrapper>
-                );
-              })}
-            </ButtonCell>
-          );
-        },
+        Cell: ({ row }) => (
+          <ButtonCell>
+            {buttonColumns.map(({ Cell, accessor, ...col }) => (
+              <SingleButtonWrapper key={col.id} style={{ inlineSize: col.width }}>
+                <Cell {...col} row={row} />
+              </SingleButtonWrapper>
+            ))}
+          </ButtonCell>
+        ),
       };
 
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
-    const getSortingToUse = () => {
-      // If there is no sorting, return the default sorting, if it exists, otherwise return an empty array
-      if (!sorting) return defaultSorting ?? [];
-      return sorting;
-    };
-
-    const sortingToUse = getSortingToUse();
+    const sortingToUse = sorting ?? defaultSorting ?? [];
 
     // Listen for changes in filters in the URL and refresh the data accordingly
     const { filters, onChangeFilters } = useColumnFilters(defaultFilters);

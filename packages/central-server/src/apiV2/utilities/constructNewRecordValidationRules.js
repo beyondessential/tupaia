@@ -232,12 +232,6 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         name: [hasContent],
       };
-    case RECORDS.DATA_SERVICE_SYNC_GROUP:
-      return {
-        data_group_code: [constructRecordExistsWithField(models.survey, 'code')],
-        service_type: [constructIsOneOf(Object.values(models.dataServiceSyncGroup.SERVICE_TYPES))],
-        config: [hasContent],
-      };
     case RECORDS.PROJECT:
       return {
         code: [
@@ -433,11 +427,6 @@ export const constructForSingle = (models, recordType) => {
       return {
         code: [isAString],
         readonly: [hasContent, isBoolean],
-        config: [hasContent],
-      };
-    case RECORDS.SUPERSET_INSTANCE:
-      return {
-        code: [isAString],
         config: [hasContent],
       };
     case RECORDS.TASK:

@@ -3,6 +3,7 @@ set -e
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 package_names_glob=$("$script_dir/getInternalDependencies.sh" --as-glob)
+vcpu_count=$("$script_dir/getVcpuCount.sh")
 
 # Build!
 
@@ -13,7 +14,7 @@ NODE_ENV=production \
     --worktree \
     --topological \
     --verbose --verbose \
-    --jobs 5 \
+    --jobs "$vcpu_count" \
     --include "@tupaia/$package_names_glob" \
     run build-dev \
     "$@" # Forward arguments (mostly for --watch flag)

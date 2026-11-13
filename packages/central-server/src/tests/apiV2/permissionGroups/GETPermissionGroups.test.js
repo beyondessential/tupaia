@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
 

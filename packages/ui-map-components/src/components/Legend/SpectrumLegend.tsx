@@ -65,7 +65,7 @@ const getSpectrumLabels = (
 const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: SpectrumSeries) => {
   if (min == null || max == null) return null;
 
-  const spectrumDivs = [];
+  const spectrumDivs: React.ReactElement[] = [];
 
   if (min === max) {
     // There will only be a single value displayed, let's just default it to the middle color (50 % of the way from 0 to 1):

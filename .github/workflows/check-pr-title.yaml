@@ -47,7 +47,7 @@ jobs:
         if: steps.release.conclusion == 'skipped'
         shell: bash
         run: |
-          if ! grep -qP '^(ci|db|deps|doc|env|feat|fix|fmt|merge|refactor|repo|revert|style|test|tweak)(\(\w+\))?:\s' <<< "$PR_TITLE"; then
+          if ! grep -qP '^(chore|ci|db|deps|doc|feat|fix|fmt|merge|perf|refactor|repo|revert|style|test|tweak)(\(\w+\))?:\s' <<<"$PR_TITLE"; then
             echo "::warning::PR title Conventional Type is not on the list; refer to CONTRIBUTING.md"
             exit 1
           fi
