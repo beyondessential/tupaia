@@ -3,7 +3,7 @@ name: run-review-hero
 description: "Drive the card's Review Hero loop by hand — trigger a review, address its comments, rerun until clean, then merge. Use in an external tool (Claude Code, Cursor) where Workhorse's automated loop isn't running."
 label: "Run Review Hero"
 category: verify
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Run Review Hero
