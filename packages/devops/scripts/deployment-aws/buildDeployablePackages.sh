@@ -43,6 +43,9 @@ BW_CLIENTID="$BW_CLIENTID" \
     BW_PASSWORD="$BW_PASSWORD" \
     yarn run download-env-vars "$deployment_name"
 
+# Bitwarden credentials are no longer needed; don’t hold them for the rest of the build
+unset BW_CLIENTID BW_CLIENTSECRET BW_PASSWORD
+
 # Build packages and their dependencies
 package_names_glob=$("$root_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
 

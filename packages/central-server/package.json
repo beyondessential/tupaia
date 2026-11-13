@@ -48,7 +48,6 @@
     "case": "^1.6.3",
     "compare-versions": "^6.1.0",
     "cors": "^2.8.5",
-    "countries-and-timezones": "^3.6.0",
     "es-toolkit": "^1.46.0",
     "express": "^4.22.3",
     "format-link-header": "^2.1.0",

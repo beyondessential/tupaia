@@ -1,16 +1,14 @@
-import { pickBy } from 'es-toolkit/compat';
 import { reduceToDictionary } from '@tupaia/utils';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
 import { Service } from '../../services/Service';
-import { DataBrokerModelRegistry, DataElement, DataGroup, DataServiceSyncGroup } from '../../types';
+import { DataBrokerModelRegistry, DataElement, DataGroup } from '../../types';
 import {
   DATA_ELEMENT_DATA_SERVICES,
   DATA_ELEMENTS,
   DATA_GROUPS,
   ENTITIES,
   MockServiceData,
-  SYNC_GROUPS,
 } from './DataBroker.fixtures';
 
 export const stubCreateService = (services: Record<string, Service>) =>
@@ -75,14 +73,6 @@ export class MockService extends Service {
       .flatMap(([, events]) => events);
   });
 
-  public pullSyncGroupResults = jest
-    .fn()
-    .mockImplementation((syncGroups: DataServiceSyncGroup[]) => {
-      const { eventsByProgram } = this.mockData;
-      const syncGroupCodes = syncGroups.map(({ code }) => code);
-      return pickBy(eventsByProgram, (_, programCode) => syncGroupCodes.includes(programCode));
-    });
-
   public push = jest.fn();
 
   public delete = jest.fn();
@@ -98,7 +88,6 @@ export const createModelsStub = () => {
         getTypes: () => ({
           DATA_ELEMENT: 'dataElement',
           DATA_GROUP: 'dataGroup',
-          SYNC_GROUP: 'syncGroup',
         }),
       },
     },
@@ -107,9 +96,6 @@ export const createModelsStub = () => {
       extraMethods: {
         getDataElementsInDataGroup: () => [],
       },
-    },
-    dataServiceSyncGroup: {
-      records: Object.values(SYNC_GROUPS),
     },
     entity: {
       records: Object.values(ENTITIES),

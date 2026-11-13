@@ -31,9 +31,9 @@ jobs:
 
       - name: Fetch environment variables
         id: fetch-env
-        # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
+        # Just using @3 doesn’t resolve 🙄 - pinning as workaround
         # See https://github.com/bitwarden/sm-action/issues/264
-        uses: bitwarden/sm-action@v3.0.0
+        uses: bitwarden/sm-action@v3.0.1
         background: true
         with:
           access_token: ${{ secrets.BW_ACCESS_TOKEN }}

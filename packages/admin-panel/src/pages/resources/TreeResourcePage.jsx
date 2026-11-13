@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
 import { PageBody, PageHeader } from '../../widgets';
-import { LogsModal } from '../../logsTable';
 import { generateTitle } from './resourceName';
 
 const Container = styled(PageBody)`
@@ -25,16 +24,13 @@ export const TreeResourcePage = ({
   ExportModalComponent,
 }) => {
   return (
-    <>
-      <Container>
-        <PageHeader
-          title={title ?? generateTitle(resourceName)}
-          ExportModalComponent={ExportModalComponent}
-        />
-        <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
-      </Container>
-      <LogsModal />
-    </>
+    <Container>
+      <PageHeader
+        title={title ?? generateTitle(resourceName)}
+        ExportModalComponent={ExportModalComponent}
+      />
+      <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
+    </Container>
   );
 };
 
