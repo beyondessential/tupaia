@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
-import { SqlEditor } from '@tupaia/ui-components';
 import { ParameterList, ParameterItem } from '../components/editing';
 import { useSqlEditor } from '../useSqlEditor';
+import { SqlEditor } from '../../widgets';
 
 export const SqlDataTableConfigEditFields = ({
   onEditField,

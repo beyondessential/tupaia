@@ -34,20 +34,38 @@ export default defineConfig(({ command, mode }) => {
     'stream/promises',
   ];
 
+  // Inline each REACT_APP_ variable on its own. Replacing `process.env` as a whole would embed
+  // every build-time variable in the bundle
+  const reactAppEnvReplacements = Object.fromEntries(
+    Object.entries(env)
+      .filter(([key]) => key.startsWith('REACT_APP_'))
+      .map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+
   const baseConfig = {
     build: {
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          manualChunks: function manualChunks(id) {
-            if (id.includes('ace-builds')) return 'ace';
-            if (id.includes('react-ace')) return 'reactAce';
-            if (id.includes('jsoneditor')) return 'jsonEditor';
-            if (id.includes('jszip')) return 'jszip';
-            if (id.includes('icons')) return 'muiIcons';
-            if (id.includes('moment-timezone')) return 'momentTimezone';
-            if (id.includes('qrcode')) return 'qrcode';
-            if (id.includes('types')) return 'tupaiaTypes';
-            if (id.includes('xlsx')) return 'xlsx';
+          codeSplitting: {
+            groups: [
+              {
+                debugName: 'namedChunks',
+                // Returning a name puts the module in that chunk; returning null leaves it to
+                // automatic code splitting
+                name: function chunkName(id) {
+                  if (id.includes('ace-builds')) return 'ace';
+                  if (id.includes('react-ace')) return 'reactAce';
+                  if (id.includes('jsoneditor')) return 'jsonEditor';
+                  if (id.includes('jszip')) return 'jszip';
+                  if (id.includes('icons')) return 'muiIcons';
+                  if (id.includes('moment-timezone')) return 'momentTimezone';
+                  if (id.includes('qrcode')) return 'qrcode';
+                  if (id.includes('types')) return 'tupaiaTypes';
+                  if (id.includes('xlsx')) return 'xlsx';
+                  return null;
+                },
+              },
+            ],
           },
         },
         ...(isDatatrakWeb && {
@@ -57,12 +75,12 @@ export default defineConfig(({ command, mode }) => {
     },
     ...(isDatatrakWeb && {
       // The PGlite worker (datatrak-web/src/database/pglite.worker.ts) is bundled in its own
-      // rollup pass, which doesn't inherit build.rollupOptions — so the externals must be
+      // bundling pass, which doesn't inherit build.rolldownOptions — so the externals must be
       // repeated here. ES format so PGlite's lazy dynamic imports of the externals stay lazy
       // (they only execute under Node); iife would try to inline them.
       worker: {
         format: 'es',
-        rollupOptions: {
+        rolldownOptions: {
           external: datatrakExternals,
         },
       },
@@ -80,13 +98,12 @@ export default defineConfig(({ command, mode }) => {
               },
             }),
             commonjs(),
-            // Replace process.env with actual values instead of using define, because define
-            // also replaces process.env in external node_modules, causing issues with knex
+            // Replace in the source rather than using `define`, which in dev only sets values on
+            // `globalThis.process`. The polyfills give each module its own `process`, so the values
+            // would never reach our code
             replace({
-              'process.env': JSON.stringify(env),
-              include: 'src/**/*',
-              exclude: 'node_modules/**',
-              preventAssignment: false,
+              ...reactAppEnvReplacements,
+              preventAssignment: true,
             }),
           ]
         : []),
@@ -105,7 +122,6 @@ export default defineConfig(({ command, mode }) => {
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
-      ...(isDatatrakWeb && { conditions: ['browser'] }),
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
@@ -113,6 +129,17 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'mock/winston.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        // The ui component packages are source-only (no build step), so resolve them to their
+        // TypeScript sources and let Vite compile them alongside the app
+        '@tupaia/ui-chart-components': path.resolve(
+          __dirname,
+          './packages/ui-chart-components/src/index.ts',
+        ),
+        '@tupaia/ui-map-components': path.resolve(
+          __dirname,
+          './packages/ui-map-components/src/index.ts',
+        ),
+        '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
         ...(isDatatrakWeb && {
           'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
           pg: path.resolve(__dirname, 'mock/pgMock.js'),
@@ -130,6 +157,8 @@ export default defineConfig(({ command, mode }) => {
             __dirname,
             'node_modules/@electric-sql/pglite/dist/worker/index.js',
           ),
+          // knex-pglite `require`s PGlite, which would otherwise resolve to its CommonJS build. Use
+          // the ES module build that our own code imports, so only one copy is bundled
           '@electric-sql/pglite': path.resolve(
             __dirname,
             'node_modules/@electric-sql/pglite/dist/index.js',
@@ -154,22 +183,16 @@ export default defineConfig(({ command, mode }) => {
         alias: {
           ...baseConfig.resolve.alias,
           '@tupaia/admin-panel': path.resolve(__dirname, './packages/admin-panel/src/library.js'),
-          // this is to allow for hot reloading in dev
-          '@tupaia/ui-chart-components': path.resolve(
-            __dirname,
-            './packages/ui-chart-components/src/index.ts',
-          ),
-          '@tupaia/ui-map-components': path.resolve(
-            __dirname,
-            './packages/ui-map-components/src/index.ts',
-          ),
-          '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           ...(isDatatrakWeb && {
             '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
             '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
             '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
             '@tupaia/tsutils': path.resolve(__dirname, './packages/tsutils/src/index.ts'),
             '@tupaia/access-policy': path.resolve(__dirname, './packages/access-policy/src/index.js'),
+            // Only imported on PGlite's Node code paths. The build marks them external, which
+            // doesn't apply to the dev server, and the browser polyfills don't provide them
+            'fs/promises': path.resolve(__dirname, 'mock/moduleMock.js'),
+            'stream/promises': path.resolve(__dirname, 'mock/moduleMock.js'),
           }),
         },
       },

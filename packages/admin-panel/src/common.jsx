@@ -1,10 +1,6 @@
 import React from 'react';
 
-export const SERVICE_TYPE_OPTIONS = [
-  {
-    label: 'Data Lake',
-    value: 'data-lake',
-  },
+export const SERVICE_TYPE_OPTIONS = /** @type {const} */ ([
   {
     label: 'DHIS',
     value: 'dhis',
@@ -14,14 +10,6 @@ export const SERVICE_TYPE_OPTIONS = [
     value: 'indicator',
   },
   {
-    label: 'Kobo',
-    value: 'kobo',
-  },
-  {
-    label: 'Superset',
-    value: 'superset',
-  },
-  {
     label: 'Tupaia',
     value: 'tupaia',
   },
@@ -29,14 +17,12 @@ export const SERVICE_TYPE_OPTIONS = [
     label: 'Weather',
     value: 'weather',
   },
-];
+]);
 
-export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
+export const DATA_ELEMENT_FIELD_EDIT_CONFIG = /** @type {const} */ ({
   type: 'json',
   default: '{}',
-  visibilityCriteria: {
-    service_type: values => ['dhis', 'superset'].includes(values.service_type),
-  },
+  visibilityCriteria: { service_type: 'dhis' },
   getJsonFieldSchema: () => [
     {
       label: 'DHIS Server',
@@ -57,25 +43,8 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
       fieldName: 'categoryOptionCombo',
       visibilityCriteria: { service_type: 'dhis' },
     },
-    {
-      label: 'Superset Instance',
-      fieldName: 'supersetInstanceCode',
-      required: true,
-      visibilityCriteria: { service_type: 'superset' },
-    },
-    {
-      label: 'Superset Chart ID',
-      fieldName: 'supersetChartId',
-      required: true,
-      visibilityCriteria: { service_type: 'superset' },
-    },
-    {
-      label: 'Superset Item Code (optional)',
-      fieldName: 'supersetItemCode',
-      visibilityCriteria: { service_type: 'superset' },
-    },
   ],
-};
+});
 
 export const DataSourceConfigView = row => {
   const localStyles = {
@@ -90,9 +59,8 @@ export const DataSourceConfigView = row => {
     },
   };
 
-  const blankString = '';
   const entries = Object.entries(row.value)
-    .filter(([, value]) => value !== blankString)
+    .filter(([, value]) => value !== '')
     .map(([key, value]) => (
       <React.Fragment key={key}>
         <dt style={localStyles.config.dt}>{key}:</dt>

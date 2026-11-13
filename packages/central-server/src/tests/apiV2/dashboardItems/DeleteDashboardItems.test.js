@@ -1,8 +1,9 @@
 import chai from 'chai';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
+
+import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 

@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { SqlEditor } from '@tupaia/ui-components';
 import { SelectedOptionWithEditor } from './SelectedOptionWithEditor';
-import { JsonEditor } from '../../../../widgets';
+import { JsonEditor, SqlEditor } from '../../../../widgets';
 
 const EditorPanel = styled.div`
   display: flex;

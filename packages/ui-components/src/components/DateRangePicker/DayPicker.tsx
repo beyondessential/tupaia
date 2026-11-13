@@ -15,7 +15,7 @@ export const DayPicker = ({
     ? maxMomentDate.date()
     : daysInMonth;
 
-  const dayOptions = [];
+  const dayOptions: React.ReactElement[] = [];
   for (let d = 1; d <= daysInMonth; d++) {
     dayOptions.push(
       <MenuItem value={d} key={d} disabled={d < minAvailableDay || d > maxAvailableDay}>

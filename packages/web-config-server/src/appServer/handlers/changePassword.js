@@ -9,5 +9,5 @@ export const changePassword = async req => {
   const { userName } = req.userJson;
   const endpoint = 'me/changePassword';
 
-  return fetchFromCentralServerUsingTokens(models, endpoint, body, null, userName);
+  return await fetchFromCentralServerUsingTokens(models, endpoint, body, null, userName);
 };

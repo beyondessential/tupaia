@@ -89,10 +89,6 @@ export class TupaiaService extends Service {
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }
 
-  public async pullSyncGroupResults(): Promise<never> {
-    throw new Error('pullSyncGroupResults is not supported in TupaiaService');
-  }
-
   public async pullMetadata(
     dataSources: DataElement[],
     type: 'dataElement',
