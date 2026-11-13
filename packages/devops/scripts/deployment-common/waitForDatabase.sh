@@ -2,6 +2,9 @@
 # Waits until this deployment’s database is accepting connections, giving up after
 # DB_WAIT_TIMEOUT_SECONDS (default 600).
 #
+# For non-production deployments, also waits until RDS has reset the master password. Their
+# databases are cloned from a production snapshot, and keep its master password until then.
+#
 # Using `pg_isready` only for simplicity; a more robust check would attempt a login with `psql`.
 set -e
 
@@ -10,13 +13,13 @@ tupaia_dir=$(realpath -- "$script_dir"/../../../..)
 
 source "$tupaia_dir"/scripts/bash/ansiControlSequences.sh
 
-if ! "$tupaia_dir"/scripts/bash/requireCommands.sh dig pg_isready; then
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh aws dig ec2metadata pg_isready; then
 	exit 1
 fi
 
 source "$tupaia_dir"/scripts/bash/mergeEnvForDB.sh
 : "${DB_PORT:=5432}"
-: "${DB_WAIT_TIMEOUT_SECONDS:=600}"
+: "${DB_WAIT_TIMEOUT_SECONDS:=900}"
 : "${DB_WAIT_INTERVAL_SECONDS:=15}"
 
 for int_var in DB_WAIT_TIMEOUT_SECONDS DB_WAIT_INTERVAL_SECONDS; do
@@ -32,6 +35,9 @@ if [[ -z $DB_URL ]]; then
 	echo -e "${BOLD}DB_URL${RESET} must be set in env/db.env." >&2
 	exit 1
 fi
+
+# (Paths relative to `tupaia_dir` because mergeEnvForDB.sh reassigns `script_dir`.)
+deployment_name=$("$tupaia_dir/packages/devops/scripts/utility/getEC2TagValue.sh" DeploymentName)
 
 # Assume `DB_URL` takes format `$DEPLOYMENT_NAME-db.tupaia.org`. Zone is constant.
 zone=tupaia.org
@@ -87,6 +93,21 @@ database_is_ready() {
 	elif ((status != 0)); then
 		failure='Database not yet accepting connections'
 		return 1
+	fi
+
+	# Production’s master password is the one in the snapshot, so there’s no reset to wait for
+	if [[ $deployment_name != production ]]; then
+		local reason
+		status=0
+		reason=$("$tupaia_dir"/packages/devops/scripts/deployment-aws/rdsMasterPasswordIsSet.sh "$deployment_name") ||
+			status=$?
+		if ((status == 1)); then
+			failure='Master password not yet reset'
+			failure_detail=$reason
+			return 1
+		elif ((status != 0)); then
+			exit 1 # Couldn’t find out (e.g. access denied), so waiting won’t help
+		fi
 	fi
 }
 

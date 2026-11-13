@@ -115,6 +115,6 @@ async def recreate_db(db_instance):
     )
 
     # set master password
-    set_db_instance_master_password(db_id, get_db_master_password())
+    set_db_instance_master_password(db_id, get_db_master_password(deployment_name))
 
     print(f"Recreated database instance {db_id}")
