@@ -43,10 +43,8 @@ def tear_down_lesmis_deployment(event):
     if not instances:
         raise Exception("No matching instances found")
 
-    print(
-        "Tearing down the instances "
-        + ", ".join([get_tag(instance, "Name") for instance in instances])
-    )
+    instance_names = ", ".join(get_tag(instance, "Name") for instance in instances)
+    print(f"Tearing down the instances {instance_names}")
 
     for instance in instances:
         teardown_instance(instance)

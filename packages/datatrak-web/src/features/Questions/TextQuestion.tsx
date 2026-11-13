@@ -1,20 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { QuestionType } from '@tupaia/types';
 import { InputHelperText, TextInput } from '../../components';
 import { DESKTOP_BREAKPOINT } from '../../constants';
 import { SurveyQuestionInputProps } from '../../types';
 import { useIsReviewScreen } from '../Survey';
 
 const Wrapper = styled.div<{
-  $type?: string;
+  $type?: QuestionType;
 }>`
   width: calc(100% - 3.5rem);
   .MuiFormControlLabel-root {
     width: 100%;
   }
   .MuiFormControl-root {
-    max-width: ${({ $type }) => ($type === 'Number' ? '25rem' : 'none')};
+    max-width: ${({ $type }) => ($type === QuestionType.Number ? '25rem' : 'none')};
     display: flex;
     flex-direction: column-reverse; // make the helper text appear above the input
   }
@@ -64,7 +65,7 @@ export const TextQuestion = ({
           placeholder,
           min,
           max,
-          multiline: type === 'FreeText',
+          multiline: type === QuestionType.FreeText,
           helperText: detailLabel,
           FormHelperTextProps: {
             component: InputHelperText,

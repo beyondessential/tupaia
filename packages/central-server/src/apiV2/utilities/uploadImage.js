@@ -1,4 +1,4 @@
-import { S3Client, S3 } from '@tupaia/server-utils';
+import { S3Client } from '@tupaia/server-utils';
 import { getStandardisedImageName } from '../../utilities';
 
 /**
@@ -22,7 +22,7 @@ export const uploadImage = async (
   // If the image is not a base64 encoded image, then it is an external URL (which we need to accept for backwards compatibility with the older way of uploading things like project images).
   // If the image is null or an empty string, we are not editing it, so return as usual.
   if (encodedImage === null || !encodedImage.includes('data:image')) return encodedImage;
-  const s3Client = new S3Client(new S3());
+  const s3Client = new S3Client();
 
   // If there is an existing image, remove it before uploading the new one so that we don't end up with extra images for the same field
   if (existingImagePath) await s3Client.deleteFile(existingImagePath);

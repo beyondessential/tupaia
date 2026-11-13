@@ -32,7 +32,7 @@ def spin_up_lesmis_deployment(event):
 
     if deployment_name == "production" and branch != "master":
         raise Exception(
-            "The production deployment needs to check out master, not " + branch
+            f"The production deployment needs to check out master, not {branch}"
         )
 
     # find current instances
@@ -88,4 +88,4 @@ def spin_up_lesmis_deployment(event):
         setup_dns=True,
     )
 
-    print("Successfully deployed branch " + branch)
+    print(f"Successfully deployed branch {branch}")

@@ -4,6 +4,12 @@ module.exports = {
   ...baseConfig,
   moduleDirectories: ['node_modules'],
   collectCoverageFrom: ['**/src/components/**/*.js'],
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+    // Needed to compile the plain-JS ESM sources of @tupaia/ui-components, which is
+    // source-only (no build step) and resolved via its src entry point
+    '^.+\\.jsx?$': '../../jestTransformer.js',
+  },
   // handle static assets @see https://jestjs.io/docs/webpack#handling-static-assets
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|css)$':

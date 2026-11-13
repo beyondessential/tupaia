@@ -159,7 +159,7 @@ export const MarkerLegend = React.memo(
       return false;
     });
 
-    let nullKey = null;
+    let nullKey: React.ReactNode = null;
     const nullItem = valueMapping?.null;
 
     if (!hasGroupedLegendIncludingNull && nullItem && !nullItem.hideFromLegend) {

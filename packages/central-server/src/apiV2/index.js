@@ -105,15 +105,6 @@ import {
   EditMapOverlayVisualisation,
   GETMapOverlayVisualisations,
 } from './mapOverlayVisualisations';
-import {
-  GETSyncGroups,
-  EditSyncGroups,
-  CreateSyncGroups,
-  DeleteSyncGroups,
-  GETSyncGroupLogs,
-  GETSyncGroupLogsCount,
-  ManuallySyncSyncGroup,
-} from './syncGroups';
 import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
 import {
   GETExternalDatabaseConnections,
@@ -251,10 +242,6 @@ apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 apiV2.get('/dhisInstances/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
-apiV2.get('/supersetInstances/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
-apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
-apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
-apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
 apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get(
   '/externalDatabaseConnections/:recordId?',
@@ -314,14 +301,11 @@ apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualis
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
 apiV2.post('/userFavouriteDashboardItems', useRouteHandler(POSTUpdateUserFavouriteDashboardItem));
 apiV2.post('/projects', useRouteHandler(CreateProject));
-apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
-apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
 apiV2.post('/tasks/:parentRecordId/taskComments', useRouteHandler(CreateTaskComment));
 /**
@@ -353,14 +337,12 @@ apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
 apiV2.put('/me', useRouteHandler(EditUserForMe));
-apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(EditEntityHierarchy));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/tasks/:recordId', useRouteHandler(EditTask));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponse));
 
@@ -395,12 +377,10 @@ apiV2.delete(
   useRouteHandler(DeleteMapOverlayGroupRelations),
 );
 apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/landingPages/:recordId', useRouteHandler(DeleteLandingPage));
 apiV2.delete('/dhisInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/supersetInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 

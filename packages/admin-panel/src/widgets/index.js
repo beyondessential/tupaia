@@ -4,6 +4,7 @@ export { Tabs } from './Tabs';
 export { PageHeader } from './PageHeader';
 export { PageBody, Footer } from '../layout';
 export { JsonEditor, JsonTreeEditor } from './JsonEditor';
+export { SqlEditor } from './SqlEditor';
 export { SecondaryNavbar } from '../layout/navigation/SecondaryNavbar';
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
 export { EntityOptionLabel } from './EntityOptionLabel';

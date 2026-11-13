@@ -4,6 +4,7 @@ import { createBasicHeader, createBearerHeader, requireEnv } from '@tupaia/utils
 
 import {
   constructAccessToken,
+  getTokenClaims,
   getTokenClaimsFromBearerAuth,
   getUserAndPassFromBasicAuth,
 } from '../userAuth';
@@ -54,7 +55,40 @@ describe('userAuth', () => {
       const authHeader = createBearerHeader(accessToken);
 
       return expect(() => getTokenClaimsFromBearerAuth(authHeader)).toThrow(
-        'Authorization token has expired, please log in again',
+        'Authorization token has expired. Please log in again.',
+      );
+    });
+
+    it('throws 401 error when decrypting expired token', async () => {
+      const accessToken = jwt.sign({ test: 'test' }, requireEnv('JWT_SECRET'), { expiresIn: 0 });
+
+      return expect(() => getTokenClaims(accessToken)).toThrow(
+        expect.objectContaining({ name: 'UnauthenticatedError', statusCode: 401 }),
+      );
+    });
+
+    // e.g. a token issued before rotating JWT_SECRET
+    it('throws 401 error when decrypting token signed with a different secret', async () => {
+      const accessToken = jwt.sign({ userId: 'user1' }, `not-${requireEnv('JWT_SECRET')}`);
+
+      return expect(() => getTokenClaims(accessToken)).toThrow(
+        expect.objectContaining({
+          name: 'UnauthenticatedError',
+          message: 'Authorization token is invalid. Please log in again.',
+          statusCode: 401,
+        }),
+      );
+    });
+
+    it('throws 401 error when decrypting malformed token', async () => {
+      const authHeader = createBearerHeader('not-a-jwt');
+
+      return expect(() => getTokenClaimsFromBearerAuth(authHeader)).toThrow(
+        expect.objectContaining({
+          name: 'UnauthenticatedError',
+          message: 'Authorization token is invalid. Please log in again.',
+          statusCode: 401,
+        }),
       );
     });
   });

@@ -7,6 +7,7 @@ import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
 import { isNotNullish } from '@tupaia/tsutils';
 import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery, EventAnswer } from './EventsFetchQuery';
+import { limitQueryConcurrency } from './limitQueryConcurrency';
 import { sanitizeMetadataValue, sanitizeAnalyticsTableValue } from './utils';
 import { eventOptionsValidator, analyticsOptionsValidator } from './validators';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
@@ -53,7 +54,9 @@ export class TupaiaDataApi {
   public async fetchEvents(optionsInput: Record<string, unknown>) {
     const validatedOptions = eventOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
-    const results = await new EventsFetchQuery(this.database, sanitizedOptions).fetch();
+    // Built outside the limiter so invalid options fail without waiting for a slot
+    const query = new EventsFetchQuery(this.database, sanitizedOptions);
+    const results = await limitQueryConcurrency(() => query.fetch());
     const answersByEventId = groupBy(results, 'eventId');
     const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(answersByEventId)
@@ -73,10 +76,11 @@ export class TupaiaDataApi {
   public async fetchAnalytics(optionsInput: Record<string, unknown>) {
     const validatedOptions = analyticsOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
-    const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
-      this.database,
-      sanitizedOptions,
-    ).fetch();
+    // Built outside the limiter so invalid options fail without waiting for a slot
+    const query = new AnalyticsFetchQuery(this.database, sanitizedOptions);
+    const { analytics, numAggregationsProcessed } = await limitQueryConcurrency(() =>
+      query.fetch(),
+    );
     return {
       analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({
         organisationUnit: entityCode,
