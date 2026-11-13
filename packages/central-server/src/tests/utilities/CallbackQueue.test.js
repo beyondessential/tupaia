@@ -1,7 +1,9 @@
 /* eslint-disable no-return-assign */
 
-import { expect } from 'chai';
+import chai from 'chai';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
+
+const { expect } = chai;
 
 describe('Callback queue', () => {
   it('Should queue one callback', async () => {

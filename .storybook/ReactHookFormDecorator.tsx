@@ -1,8 +1,7 @@
 import React from 'react';
 import { ReactNode } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Args } from '@storybook/react';
-import { DecoratorFunction } from '@storybook/csf';
+import type { Args, Decorator } from '@storybook/react-vite';
 
 const StorybookFormProvider = ({ children }: { children: ReactNode }) => {
   const formContext = useForm();
@@ -13,7 +12,7 @@ const StorybookFormProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const ReactHookFormDecorator: DecoratorFunction<any, Args> = (Story, context) => (
+const ReactHookFormDecorator: Decorator<Args> = (Story, context) => (
   <StorybookFormProvider>
     <Story {...context} />
   </StorybookFormProvider>

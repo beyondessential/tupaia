@@ -2,7 +2,7 @@ const MAX_CHARACTERS_PER_LINE = 13;
 const MAX_LINES = 3;
 
 const splitWord = (word: string) => {
-  const split = [];
+  const split: string[] = [];
 
   let remainder = word;
   while (remainder.length > MAX_CHARACTERS_PER_LINE) {

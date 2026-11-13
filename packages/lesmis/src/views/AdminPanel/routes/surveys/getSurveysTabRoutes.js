@@ -2,7 +2,6 @@ import { surveysTabRoutes } from '@tupaia/admin-panel';
 import { getSurveysPageConfig } from './getSurveysPageConfig';
 import { getQuestionPageConfig } from './getQuestionPageConfig';
 import { getDataElementsPageConfig } from './getDataElementsPageConfig';
-import { getSyncGroupsPageConfig } from './getSyncGroupsPageConfig';
 
 export const getSurveysTabRoutes = (translate, adminUrl) => {
   return {
@@ -12,7 +11,6 @@ export const getSurveysTabRoutes = (translate, adminUrl) => {
       getSurveysPageConfig(translate, adminUrl),
       getQuestionPageConfig(translate),
       getDataElementsPageConfig(translate),
-      getSyncGroupsPageConfig(translate),
     ],
   };
 };

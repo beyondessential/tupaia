@@ -107,7 +107,7 @@ def get_latest_db_snapshot(source_db_id):
 
 
 async def wait_for_db_instance(instance_id, to_be):
-    waiter = rds.get_waiter("db_instance_" + to_be)
+    waiter = rds.get_waiter(f"db_instance_{to_be}")
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None, functools.partial(waiter.wait, DBInstanceIdentifier=instance_id)

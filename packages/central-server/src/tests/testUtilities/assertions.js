@@ -1,4 +1,6 @@
-import { expect } from 'chai';
+import chai from 'chai';
+
+const { expect } = chai;
 
 const getMatch = input => (typeof input === 'string' ? new RegExp(input) : input);
 

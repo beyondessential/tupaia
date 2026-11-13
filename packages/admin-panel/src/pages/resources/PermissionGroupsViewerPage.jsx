@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
 import { useQuery } from '@tanstack/react-query';
 import { PageHeader, PageBody } from '../../widgets';
-import { LogsModal } from '../../logsTable';
 import { get } from '../../VizBuilderApp/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
@@ -50,12 +49,9 @@ export const PermissionGroupsViewerPage = () => {
   const { fetchRoot, fetchBranch } = usePermissionGroups();
 
   return (
-    <>
-      <Container>
-        <PageHeader resourceName="permission group" title="Permission Groups" />
-        <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
-      </Container>
-      <LogsModal />
-    </>
+    <Container>
+      <PageHeader resourceName="permission group" title="Permission Groups" />
+      <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
+    </Container>
   );
 };

@@ -6,7 +6,6 @@ import { optionSets } from './optionSets';
 import { dataElements } from './dataElements';
 import { dataGroups } from './dataGroups';
 import { surveyResponses } from './surveyResponses';
-import { syncGroups } from './syncGroups';
 import { dataMapping } from './dataMapping';
 
 export const surveysTabRoutes = {
@@ -21,7 +20,6 @@ export const surveysTabRoutes = {
     dataElements,
     dataGroups,
     surveyResponses,
-    syncGroups,
     dataMapping,
   ],
 };

@@ -1,5 +1,5 @@
 import * as cookie from 'cookie';
-import puppeteer, { Browser, CookieParam } from 'puppeteer';
+import type { Browser, CookieParam } from 'puppeteer';
 
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
@@ -43,6 +43,15 @@ const buildParams = (pageUrl: string, userCookie: string, cookieDomain: string |
       }) as CookieParam,
   );
   return { verifiedPageUrl, cookies: finalisedCookieObjects };
+};
+
+/**
+ * Puppeteer v25+ is ESM-only. Load it lazily so CommonJS consumers & Jest don’t try to eagerly load
+ * it.
+ */
+const loadPuppeteer = async () => {
+  const { default: puppeteer } = await import('puppeteer');
+  return puppeteer;
 };
 
 const pageNumberHTML = `
@@ -99,6 +108,7 @@ export const downloadPageAsImage = async ({
   const { cookies, verifiedPageUrl } = buildParams(pageUrl, userCookie, cookieDomain);
 
   try {
+    const puppeteer = await loadPuppeteer();
     browser = await puppeteer.launch();
     const page = await browser.newPage();
     // A4 landscape dimensions at 96 DPI (297mm × 210mm)
@@ -133,6 +143,7 @@ export const downloadPageAsPdf = async ({
   const { cookies, verifiedPageUrl } = buildParams(pageUrl, userCookie, cookieDomain);
 
   try {
+    const puppeteer = await loadPuppeteer();
     browser = await puppeteer.launch();
     const page = await browser.newPage();
 

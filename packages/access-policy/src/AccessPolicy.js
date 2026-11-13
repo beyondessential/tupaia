@@ -32,8 +32,8 @@ export class AccessPolicy {
 
   /**
    * Check if the user has access to a given permission group for all of a given set of entities.
-   * @param {*} entities
-   * @param {*} permissionGroup
+   * @param {string[]} entities
+   * @param {string} permissionGroup
    */
   allowsAll(entities, permissionGroup) {
     if (!entities || !entities.length) {

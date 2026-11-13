@@ -43,21 +43,24 @@ const projectSort = (a, b) => {
     return a.hasPendingAccess ? -1 : 1;
   }
 
-  // Otherwise, sort alphabetically by name
-  return a.name.localeCompare(b.name);
+  // Else, keep exiting sort order (Array.prototype.sort is stable)
+  return 0;
 };
 
 export const ProjectSelectModal = () => {
   const { data: userData } = useUser();
   const location = useLocation();
   const projectId = userData?.project?.id;
-  const { data: projects = [], isFetching } = useProjects();
+  const { data: projects = [], isFetching } = useProjects({
+    select: data => [...data].sort(projectSort),
+  });
   const { closeModal } = useModal();
   const navigate = useNavigate();
 
   const onSelectProject = data => {
     const { projectId } = data;
     const project = projects.find(p => p.id === projectId);
+    if (project === undefined) return; // Should never happen
     const { code, homeEntityCode } = project;
     const dashboardGroupName = project.dashboardGroupName
       ? encodeURIComponent(project.dashboardGroupName)
@@ -84,8 +87,6 @@ export const ProjectSelectModal = () => {
     );
   };
 
-  const sortedProjects = projects.sort(projectSort);
-
   return (
     <Modal isOpen={true} onClose={closeModal}>
       <ModalBody>
@@ -95,7 +96,7 @@ export const ProjectSelectModal = () => {
           projectId={projectId}
           onClose={closeModal}
           onRequestAccess={onRequestAccess}
-          projects={sortedProjects}
+          projects={projects}
           isLoading={isFetching}
           onConfirm={onConfirm}
           isConfirming={isConfirming}

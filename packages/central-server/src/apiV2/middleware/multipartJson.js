@@ -21,7 +21,7 @@ export const multipartJson =
       const parserMiddleware = multer({
         storage: multer.diskStorage({
           destination: getTempDirectory('uploads'),
-          filename: (req, file, callback) => {
+          filename: (_req, file, callback) => {
             callback(null, `${Date.now()}_${file.originalname}`);
           },
         }),

@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-import nodeFetch from 'node-fetch';
 import { CustomError } from './errors';
 
 const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
@@ -22,36 +20,31 @@ export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
 };
 
 /**
- * Wrapper around node-fetch that adds timeout
- */
-const createTimeoutPromise = maxWaitTime => {
-  let cleanup;
-  const promise = new Promise((resolve, reject) => {
-    const id = setTimeout(() => {
-      clearTimeout(id);
-      reject(new Error('Network request timed out'));
-    }, maxWaitTime);
-    cleanup = () => {
-      clearTimeout(id);
-      resolve();
-    };
-  });
-  return { promise, cleanup };
-};
-
-/**
  * @param {string} url
- * @param {} [config]
- * @param {number} [maxWaitTime]
- * @return {Promise<NodeFetchResponse>}
+ * @param {RequestInit} [requestInit]
+ * @param {number} [timeout]
+ * @return {Promise<Response>}
  */
-export const fetchWithTimeout = async (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) => {
-  const { cleanup, promise: timeoutPromise } = createTimeoutPromise(maxWaitTime);
+export const fetchWithTimeout = async (url, requestInit, timeout = DEFAULT_MAX_WAIT_TIME) => {
+  // Not simply using `AbortSignal.timeout(maxWaitTime)`, which would also abort the response body
+  // mid-read. Only time out waiting for response headers; once they arrive, let the body take as
+  // long as it needs (e.g. streamed exports, large DHIS2 responses).
+  const timeoutController = new AbortController();
+  const timer = setTimeout(
+    () => timeoutController.abort(new DOMException('Network request timed out', 'TimeoutError')),
+    timeout,
+  );
+  const signal =
+    requestInit?.signal != null
+      ? AbortSignal.any([requestInit.signal, timeoutController.signal])
+      : timeoutController.signal;
   try {
-    const response = await Promise.race([nodeFetch(url, config), timeoutPromise]);
-    return response;
+    return await fetch(url, { ...requestInit, signal });
+  } catch (error) {
+    if (error.name === 'TimeoutError') throw new Error('Network request timed out');
+    throw error;
   } finally {
-    cleanup();
+    clearTimeout(timer);
   }
 };
 

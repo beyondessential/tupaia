@@ -1,13 +1,14 @@
 import chai from 'chai';
+
 import { generateId } from '@tupaia/database';
 import {
-  resetTestData,
   TestableApp,
-  upsertEntity,
+  resetTestData,
+  upsertComment,
   upsertDataGroup,
+  upsertEntity,
   upsertSurvey,
   upsertSurveyResponse,
-  upsertComment,
   upsertSurveyResponseComment,
 } from '../testUtilities';
 
