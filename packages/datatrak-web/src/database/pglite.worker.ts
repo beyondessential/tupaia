@@ -88,8 +88,15 @@ worker({
      * "plpgsql" does not exist`). That state is permanent until storage is cleared.
      *
      * With the flag on there is no way to force a durable flush either — `syncToFs()` never awaits
-     * the real write. Off for now; if reinstating it, gate it so it is only enabled once a first
-     * startup has completed, or enable it on OPFS only.
+     * the real write.
+     *
+     * It also breaks OPFS: the opfs-ahp filesystem refills its pool of spare file handles in that
+     * same background sync, which falls behind when statements run back to back. A few large
+     * writes in a row (e.g. a survey response with several photos) drain the pool, PGlite throws
+     * "No more file handles available in the pool" mid-statement, and the connection is left
+     * stuck in an aborted transaction (`cannot drop active portal`) until the page reloads.
+     *
+     * Off. Don't reinstate it on OPFS without solving the pool refill.
      */
     // WebAssembly.compile rather than compileStreaming, so a misconfigured `Content-Type` on the
     // .wasm file can't break startup
