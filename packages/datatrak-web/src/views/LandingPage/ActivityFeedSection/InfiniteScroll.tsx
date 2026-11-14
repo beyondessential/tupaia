@@ -17,10 +17,26 @@ const Loading = styled(Typography).attrs({
   padding: 1rem;
 `;
 
-const getIsAtEndOfList = (container?: HTMLDivElement, loader?: HTMLDivElement) => {
+/**
+ * Whether the element is laid out and visible. A list hidden with `display: none`, or inside a
+ * closed dialog, has no real geometry: every rect reads as zero.
+ */
+const isRendered = (element: HTMLElement) => {
+  if (typeof element.checkVisibility === 'function') {
+    return element.checkVisibility({ checkVisibilityCSS: true });
+  }
+  return element.getClientRects().length > 0;
+};
+
+export const getIsAtEndOfList = (container?: HTMLElement | null, loader?: HTMLElement | null) => {
   if (!container || !loader) return false;
-  const loaderRect = loader.getBoundingClientRect();
+  // A hidden list's zero rects would otherwise always read as "at the end", and since each fetch
+  // re-runs the check, every page would be loaded and rendered in turn. On a project with a long
+  // feed, that runs a phone's page out of memory
+  if (!isRendered(container)) return false;
   const containerRect = container.getBoundingClientRect();
+  if (containerRect.height === 0) return false;
+  const loaderRect = loader.getBoundingClientRect();
 
   return (
     loaderRect.top >= containerRect.top - loaderRect.height &&
@@ -37,7 +53,10 @@ interface InfiniteScrollProps {
 }
 
 export const InfiniteScroll = React.forwardRef<HTMLDivElement, InfiniteScrollProps>(
-  ({ children, className, onScroll, hasNextPage, isFetchingNextPage }: InfiniteScrollProps, containerRef) => {
+  (
+    { children, className, onScroll, hasNextPage, isFetchingNextPage }: InfiniteScrollProps,
+    containerRef,
+  ) => {
     const loader = useRef<HTMLDivElement | null>(null);
 
     const handleScroll = useCallback(() => {
