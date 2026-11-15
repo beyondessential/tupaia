@@ -1,7 +1,14 @@
 import log from 'winston';
-import { SyncSnapshotAttributes } from '@tupaia/sync';
-import { post, stream } from '../api';
+import {
+  getSnapshotTableName,
+  SYNC_SESSION_DIRECTION,
+  SyncSnapshotAttributes,
+  SyncSnapshotData,
+} from '@tupaia/sync';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { post, stream } from '../api';
+import type { DatatrakDatabase } from '../database/DatatrakDatabase';
+import { paginateBySize } from './paginateBySize';
 
 // TODO: Move to config model RN-1668
 const MAX_RECORDS_PER_PAGE = 10000;
@@ -25,11 +32,11 @@ const MAX_RECORDS_PER_PAGE = 10000;
  * Mbps up, and would fail on timeout rather than size. A failed page also loses its whole page of
  * work, since we don’t retry.
  *
- * Secondly, the size we measure is a lower bound, not the real body size: `JSON.stringify().length`
- * counts UTF-16 code units, whereas `Content-Length` counts UTF-8 bytes. Base64 image data is ASCII
- * so it measures exactly, but text answers in a non-Latin script are up to three bytes per unit. If
- * this budget is ever raised close to the server’s limit, switch to counting encoded bytes first —
- * otherwise an under-measured page would be rejected in exactly those countries and nowhere else.
+ * Secondly, it bounds memory: a page is read from the snapshot table, parsed, and serialised again
+ * for the request, so several copies of it are in memory while it’s sent.
+ *
+ * Sizes are UTF-8 bytes of the stored JSON, as Postgres measures them, so they match what
+ * `Content-Length` will count.
  */
 const MAX_PAGE_BYTES = 5 * 1024 * 1024;
 
@@ -44,41 +51,52 @@ const MAX_PAGE_BYTES = 5 * 1024 * 1024;
 const OVERSIZED_RECORD_WARNING_BYTES = 25 * 1024 * 1024;
 
 export const pushOutgoingChanges = async (
+  database: DatatrakDatabase,
   sessionId: string,
-  changes: SyncSnapshotAttributes[],
   deviceId: string,
   progressCallback: (total: number, progressCount: number) => void,
 ): Promise<void> => {
-  let startOfPage = 0;
-  while (startOfPage < changes.length) {
-    // Fill the page up to whichever bound is reached first, measuring each record exactly once
-    let endOfPage = startOfPage;
-    let pageBytes = 0;
-    while (endOfPage < changes.length && endOfPage - startOfPage < MAX_RECORDS_PER_PAGE) {
-      const recordBytes = JSON.stringify(changes[endOfPage]).length;
-      // A record larger than the whole budget still has to go somewhere, so let it have a page to
-      // itself rather than stalling on an empty page
-      if (pageBytes + recordBytes > MAX_PAGE_BYTES && endOfPage > startOfPage) break;
-      pageBytes += recordBytes;
-      endOfPage += 1;
-    }
+  const tableName = getSnapshotTableName(sessionId);
 
-    const page = changes.slice(startOfPage, endOfPage);
+  // Sizes only: the records themselves are read a page at a time, so however many photos are
+  // waiting, only about one page of them is ever in memory (see snapshotOutgoingChanges)
+  const sizes: { id: number; bytes: number }[] = await database.executeSql(
+    `SELECT id::integer AS id, octet_length(data::text) AS bytes FROM ${tableName} ORDER BY id`,
+  );
+  const pages = paginateBySize(sizes, MAX_PAGE_BYTES, MAX_RECORDS_PER_PAGE);
 
-    if (page.length === 1 && pageBytes > OVERSIZED_RECORD_WARNING_BYTES) {
-      const [{ recordType, recordId }] = page;
+  let pushedCount = 0;
+  for (const page of pages) {
+    const pageBytes = page.reduce((sum, { bytes }) => sum + bytes, 0);
+    const rows: { record_type: string; is_deleted: boolean; data: SyncSnapshotData }[] =
+      await database.executeSql(
+        `SELECT record_type, is_deleted, data FROM ${tableName} WHERE id BETWEEN ? AND ? ORDER BY id`,
+        [page[0].id, page[page.length - 1].id],
+      );
+    const changes = rows.map(
+      ({ record_type, is_deleted, data }): SyncSnapshotAttributes =>
+        ({
+          direction: SYNC_SESSION_DIRECTION.OUTGOING,
+          recordType: record_type,
+          recordId: data.id,
+          isDeleted: is_deleted,
+          data,
+        }) as SyncSnapshotAttributes,
+    );
+
+    if (changes.length === 1 && pageBytes > OVERSIZED_RECORD_WARNING_BYTES) {
+      const [{ recordType, recordId }] = changes;
       log.warn(
         `pushOutgoingChanges: ${recordType} ${recordId} is ${pageBytes} bytes on its own. A single record can’t be split across pages, so this push will fail if it exceeds the server’s limit.`,
       );
     }
 
-    log.debug(`pushOutgoingChanges: pushing ${page.length} records (${pageBytes} bytes)`);
+    log.debug(`pushOutgoingChanges: pushing ${changes.length} records (${pageBytes} bytes)`);
 
-    await post(`sync/${sessionId}/push`, { data: { changes: page } });
+    await post(`sync/${sessionId}/push`, { data: { changes } });
 
-    progressCallback(changes.length, endOfPage);
-
-    startOfPage = endOfPage;
+    pushedCount += changes.length;
+    progressCallback(sizes.length, pushedCount);
   }
 
   for await (const { kind, message } of stream(() => ({

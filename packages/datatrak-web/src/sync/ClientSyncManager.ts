@@ -488,24 +488,36 @@ export class ClientSyncManager {
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
     // is underway aren't included (as this could lead to a pair of foreign records with the child in
     // the snapshot and its parent missing)
-    // as the snapshot only contains read queries, there will be no concurrent update issues :)
-    const snapshotStep = (transactingModels: DatatrakWebModelRegistry) =>
-      snapshotOutgoingChanges(
+    // as the snapshot only reads the real tables (it writes only to its own snapshot table), there
+    // will be no concurrent update issues :)
+    // the snapshot goes into the session's snapshot table rather than memory, and the push reads it
+    // back a page at a time (see snapshotOutgoingChanges). Creating the table inside the step means
+    // a cancelled attempt rolls it back too, so each attempt starts from an empty table
+    const snapshotStep = async (transactingModels: DatatrakWebModelRegistry) => {
+      await createClientSnapshotTable(transactingModels.database, sessionId);
+      return snapshotOutgoingChanges(
         getModelsForPush(transactingModels.getModels()),
+        transactingModels.database,
+        sessionId,
         pushSince,
         this.cancelIfAppIsWaiting,
       );
-    const outgoingChanges = await this.runPatiently(snapshotStep, {
+    };
+    const outgoingCount = await this.runPatiently(snapshotStep, {
       isolationLevel: 'repeatable read',
     });
 
-    if (outgoingChanges.length > 0) {
-      log.debug('ClientSyncManager.pushingOutgoingChanges', {
-        totalPushing: outgoingChanges.length,
-      });
-      await pushOutgoingChanges(sessionId, outgoingChanges, this.deviceId, (total, pushedRecords) =>
-        this.updateProgress(total, pushedRecords, 'Pushing all new changes…'),
-      );
+    try {
+      if (outgoingCount > 0) {
+        log.debug('ClientSyncManager.pushingOutgoingChanges', { totalPushing: outgoingCount });
+        await pushOutgoingChanges(this.database, sessionId, this.deviceId, (total, pushedRecords) =>
+          this.updateProgress(total, pushedRecords, 'Pushing all new changes…'),
+        );
+      }
+    } finally {
+      // pull creates its own table with the same name, and the photos shouldn't sit in a second
+      // copy on disk any longer than needed
+      await dropSnapshotTable(this.database, sessionId);
     }
 
     await this.models.localSystemFact.set(
@@ -540,6 +552,9 @@ export class ClientSyncManager {
 
       const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
 
+      // Push used a snapshot table of the same name. It drops it when done, but clear it here too, so
+      // that if that drop ever failed, pull can still create its own
+      await dropAllSnapshotTables(this.database);
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
       });
