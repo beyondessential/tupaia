@@ -15,9 +15,29 @@ export class FreeTextQuestion extends Component {
   constructor(props) {
     super(props);
 
+    // The input renders from local state rather than straight from the Redux answer. If the value
+    // reaching the native input lags a keystroke behind, Android rewrites the whole text and the
+    // cursor drifts back one character when editing mid-text.
     this.state = {
       isFocused: false,
+      text: props.answer ?? '',
     };
+    this.lastEmittedAnswer = props.answer;
+  }
+
+  componentDidUpdate(prevProps) {
+    const { answer } = this.props;
+    // Pick up answers changed from outside this input (e.g. survey reset), but not our own echoes
+    if (answer !== prevProps.answer && answer !== this.lastEmittedAnswer) {
+      this.lastEmittedAnswer = answer;
+      this.setState({ text: answer ?? '' });
+    }
+  }
+
+  onChangeText(text) {
+    this.lastEmittedAnswer = text;
+    this.setState({ text });
+    this.props.onChangeAnswer(text);
   }
 
   onFocus() {
@@ -35,23 +55,23 @@ export class FreeTextQuestion extends Component {
   }
 
   render() {
-    const { answer, onChangeAnswer, textInputProps } = this.props;
+    const { textInputProps } = this.props;
 
     const { onSubmitEditing, ...restOfTextInputProps } = textInputProps;
 
-    const { isFocused } = this.state;
+    const { isFocused, text } = this.state;
 
     return (
       <View style={[localStyles.wrapper, isFocused ? localStyles.wrapperFocussed : {}]}>
         <TextInput
           placeholder="Type your answer here"
           style={[localStyles.textInput, Platform.OS === 'ios' && localStyles.textInputFixedHeight]}
-          value={answer}
+          value={text}
           selectTextOnFocus
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlur()}
           onSubmitEditing={onSubmitEditing}
-          onChangeText={onChangeAnswer}
+          onChangeText={newText => this.onChangeText(newText)}
           placeholderTextColor={getThemeColorOneFaded(0.7)}
           {...restOfTextInputProps}
         />
