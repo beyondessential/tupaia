@@ -1,10 +1,5 @@
 import log from 'winston';
-import {
-  getSnapshotTableName,
-  SYNC_SESSION_DIRECTION,
-  SyncSnapshotAttributes,
-  SyncSnapshotData,
-} from '@tupaia/sync';
+import { getSnapshotTableName, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 import { post, stream } from '../api';
 import type { DatatrakDatabase } from '../database/DatatrakDatabase';
@@ -32,8 +27,7 @@ const MAX_RECORDS_PER_PAGE = 10000;
  * Mbps up, and would fail on timeout rather than size. A failed page also loses its whole page of
  * work, since we don’t retry.
  *
- * Secondly, it bounds memory: a page is read from the snapshot table, parsed, and serialised again
- * for the request, so several copies of it are in memory while it’s sent.
+ * Secondly, it bounds memory: while a page is sent, a few copies of it are in memory at once.
  *
  * Sizes are UTF-8 bytes of the stored JSON, as Postgres measures them, so they match what
  * `Content-Length` will count.
@@ -68,34 +62,57 @@ export const pushOutgoingChanges = async (
   let pushedCount = 0;
   for (const page of pages) {
     const pageBytes = page.reduce((sum, { bytes }) => sum + bytes, 0);
-    const rows: { record_type: string; is_deleted: boolean; data: SyncSnapshotData }[] =
-      await database.executeSql(
-        `SELECT record_type, is_deleted, data FROM ${tableName} WHERE id BETWEEN ? AND ? ORDER BY id`,
-        [page[0].id, page[page.length - 1].id],
-      );
-    const changes = rows.map(
-      ({ record_type, is_deleted, data }): SyncSnapshotAttributes =>
-        ({
-          direction: SYNC_SESSION_DIRECTION.OUTGOING,
-          recordType: record_type,
-          recordId: data.id,
-          isDeleted: is_deleted,
-          data,
-        }) as SyncSnapshotAttributes,
-    );
+    const [firstId, lastId] = [page[0].id, page[page.length - 1].id];
 
-    if (changes.length === 1 && pageBytes > OVERSIZED_RECORD_WARNING_BYTES) {
-      const [{ recordType, recordId }] = changes;
+    if (page.length === 1 && pageBytes > OVERSIZED_RECORD_WARNING_BYTES) {
+      const [{ record_type: recordType, record_id: recordId }]: {
+        record_type: string;
+        record_id: string;
+      }[] = await database.executeSql(
+        `SELECT record_type, data->>'id' AS record_id FROM ${tableName} WHERE id = ?`,
+        [firstId],
+      );
       log.warn(
         `pushOutgoingChanges: ${recordType} ${recordId} is ${pageBytes} bytes on its own. A single record can’t be split across pages, so this push will fail if it exceeds the server’s limit.`,
       );
     }
 
-    log.debug(`pushOutgoingChanges: pushing ${changes.length} records (${pageBytes} bytes)`);
+    log.debug(`pushOutgoingChanges: pushing ${page.length} records (${pageBytes} bytes)`);
 
-    await post(`sync/${sessionId}/push`, { data: { changes } });
+    /*
+     * Postgres builds the request body, and we send that one string as it is. Reading the rows
+     * as objects and letting axios serialise them again made about six copies of every photo on
+     * its way out (PGlite's, the worker's, the main thread's, the parsed object, the JSON text,
+     * the browser's), and the garbage piled up faster than it was collected: pushing 7.5 MB
+     * photos one at a time still swung the page by ~500 MB on a 2.5 GB phone.
+     *
+     * The `json` column holds the text exactly as JSON.stringify wrote it during the snapshot, so
+     * `data` goes out byte for byte as before.
+     */
+    const [{ body }]: { body: string }[] = await database.executeSql(
+      `SELECT '{"changes":[' || string_agg(
+          json_build_object(
+            'direction', ?::text,
+            'recordType', record_type,
+            'recordId', data->>'id',
+            'isDeleted', is_deleted,
+            'data', data
+          )::text,
+          ',' ORDER BY id
+        ) || ']}' AS body
+        FROM ${tableName}
+        WHERE id BETWEEN ? AND ?`,
+      [SYNC_SESSION_DIRECTION.OUTGOING, firstId, lastId],
+    );
 
-    pushedCount += changes.length;
+    await post(`sync/${sessionId}/push`, {
+      data: body,
+      headers: { 'Content-Type': 'application/json' },
+      // Send the string as is. axios’s default would JSON.parse it first, just to check it
+      transformRequest: [(data: string) => data],
+    });
+
+    pushedCount += page.length;
     progressCallback(sizes.length, pushedCount);
   }
 
