@@ -63,8 +63,7 @@ def redeploy_tupaia_server(event):
         and branch != "master"
     ):
         raise Exception(
-            "The production deployment branch should not be changed from master to "
-            + branch
+            f"The production deployment branch should not be changed from master to {branch}"
         )
 
     if branch:
@@ -92,9 +91,7 @@ def redeploy_tupaia_server(event):
             original_deployed_by = original_deployed_by.split(
                 " (latest redeploy by ", 1
             )[0]
-            deployed_by = (
-                original_deployed_by + " (latest redeploy by " + event["User"] + ")"
-            )
+            deployed_by = f"{original_deployed_by} (latest redeploy by {event['User']})"
         else:
             deployed_by = event["User"]
 
