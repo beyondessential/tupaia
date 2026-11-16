@@ -11,10 +11,10 @@ import {
   EntityModel,
   LocalSystemFactModel,
   ProjectModel,
+  ProjectCountryModel,
   SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
 import {
-  EntityParentChildRelationModel,
   QuestionModel,
   SurveyScreenComponentModel,
   SurveyScreenModel,
@@ -113,9 +113,6 @@ export interface TestSyncServerModelRegistry extends ModelRegistry {
 
   readonly syncLookup: SyncLookupModel;
   readonly country: CountryModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-  readonly entityRelation: EntityRelationModel;
-  readonly entityParentChildRelation: EntityParentChildRelationModel;
   readonly optionSet: OptionSetModel;
   readonly option: OptionModel;
   readonly permissionGroup: PermissionGroupModel;
@@ -134,6 +131,7 @@ export interface TestSyncServerModelRegistry extends ModelRegistry {
   readonly userEntityPermission: UserEntityPermissionModel;
   readonly user: UserModel;
   readonly project: ProjectModel;
+  readonly projectCountry: ProjectCountryModel;
   readonly entity: EntityModel;
   readonly syncSession: SyncSessionModel;
   readonly syncDeviceTick: SyncDeviceTickModel;

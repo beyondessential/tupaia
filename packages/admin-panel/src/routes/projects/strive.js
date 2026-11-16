@@ -6,4 +6,6 @@ export const strive = {
   path: '/strive',
   Component: StrivePage,
   requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
+  // Hidden from the sidebar unless the active project is Strive itself.
+  requiresProjectCode: 'strive',
 };

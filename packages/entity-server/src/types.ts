@@ -3,9 +3,9 @@ import { Knex } from 'knex';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   AncestorDescendantRelationModel,
-  EntityHierarchyModel,
   EntityModel,
   ProjectModel,
+  ProjectCountryModel,
 } from '@tupaia/server-boilerplate';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
@@ -13,8 +13,8 @@ export interface EntityServerModelRegistry extends ModelRegistry {
 
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
   readonly project: ProjectModel;
+  readonly projectCountry: ProjectCountryModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: EntityServerModelRegistry) => Promise<T>,
