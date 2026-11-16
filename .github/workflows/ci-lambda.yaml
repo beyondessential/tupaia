@@ -1,0 +1,34 @@
+name: Validate Lambda code
+
+on:
+  pull_request:
+    paths:
+      - packages/devops/scripts/lambda/**
+      - packages/devops/package.json
+      - .github/workflows/ci-lambda.yaml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  validate_lambda:
+    name: Assert Lambda compiles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14' # Keep in sync with the Lambda function’s runtime
+      - uses: ./.github/actions/setup-yarn
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - name: Install dependencies
+        run: yarn workspaces focus @tupaia/devops
+      - name: Check Python syntax
+        run: yarn workspace @tupaia/devops run validate-lambda
