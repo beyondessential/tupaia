@@ -183,16 +183,22 @@ export class DatabaseModel {
     // Alias field names to the table to prevent errors when joining other tables
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
-
-    return fieldNames.map(fieldName => {
-      const qualifiedName = this.fullyQualifyColumn(fieldName);
-      const customColumnSelector = this.getColumnSelector(fieldName, qualifiedName);
-      if (customColumnSelector) {
-        return { [fieldName]: customColumnSelector };
-      }
-      return qualifiedName;
-    });
+    return fieldNames.map(this.buildColumnSpec);
   }
+
+  /**
+   * @template {string} T
+   * @param {T} fieldName
+   * @returns {string | { [key in T]: string }} column spec for use in the `columns` query option
+   */
+  buildColumnSpec = fieldName => {
+    const qualifiedName = this.fullyQualifyColumn(fieldName);
+    const customColumnSelector = this.getColumnSelector(fieldName, qualifiedName);
+    if (customColumnSelector) {
+      return { [fieldName]: customColumnSelector };
+    }
+    return qualifiedName;
+  };
 
   async getQueryOptions(customQueryOptions = {}) {
     const options = {};
