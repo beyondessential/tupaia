@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import type { Handler } from 'mitt';
 
@@ -9,7 +8,7 @@ import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
 import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../../types';
-import { useIsMobile } from '../../utils';
+import { useGoBack, useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
 
@@ -75,7 +74,7 @@ function useIsSyncStarted() {
 export const SyncPage = () => {
   const syncManager = useSyncContext()?.clientSyncManager;
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
+  const goBack = useGoBack();
   const queryClient = useQueryClient();
 
   const {
@@ -94,7 +93,7 @@ export const SyncPage = () => {
 
   return (
     <Wrapper>
-      {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
+      {isMobile && <StickyMobileHeader onClose={goBack}>Sync</StickyMobileHeader>}
 
       <LayoutManager>
         <Content>

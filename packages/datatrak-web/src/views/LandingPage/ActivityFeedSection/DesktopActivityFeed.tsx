@@ -7,9 +7,6 @@ const Wrapper = styled.div`
   height: 100%;
   overflow: hidden;
   flex: 1;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 export const DesktopActivityFeed = () => {
