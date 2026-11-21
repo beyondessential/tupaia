@@ -18,6 +18,22 @@ import { paginateBySize } from './paginateBySize';
 const MAX_CHUNK_BYTES = 5 * 1024 * 1024;
 const MAX_CHUNK_RECORDS = 1000;
 
+/**
+ * Tables whose rows are copied into the snapshot by Postgres itself, without passing through
+ * JavaScript.
+ *
+ * Copying a row through JavaScript makes about six copies of it (PGlite’s, the worker’s, the main
+ * thread’s, the record object, the JSON text, and the parameter sent back to the worker), and the
+ * garbage piles up faster than it’s collected. With photos that took the page from ~480 MB to
+ * ~855 MB in the first seconds of a sync, and left a 2 GB phone with 34 MB free.
+ *
+ * Only for tables where `row_to_json` produces the same JSON that `JSON.stringify` would from the
+ * record `model.find` returns: no `customColumnSelectors`, and no column whose value JavaScript
+ * would format differently (timestamps, for instance). `answer` is all text apart from
+ * `updated_at_sync_tick`, a bigint that both write as a plain number.
+ */
+const TABLES_COPIED_IN_POSTGRES = new Set(['answer']);
+
 const snapshotChangesForModel = async (
   model: DatabaseModel,
   database: DatatrakDatabase,
@@ -40,6 +56,20 @@ const snapshotChangesForModel = async (
   let snapshotted = 0;
   for (const chunk of paginateBySize(changes, MAX_CHUNK_BYTES, MAX_CHUNK_RECORDS)) {
     cancelIfAppIsWaiting?.();
+
+    if (TABLES_COPIED_IN_POSTGRES.has(recordType)) {
+      const ids = chunk.map(({ id }) => id);
+      await database.executeSql(
+        `INSERT INTO ${tableName} (record_type, is_deleted, data)
+          SELECT ?, false, row_to_json(t)
+          FROM ?? AS t
+          WHERE id IN (${ids.map(() => '?').join(', ')})`,
+        [recordType, recordType, ...ids],
+      );
+      snapshotted += ids.length;
+      continue;
+    }
+
     const records = await model.find({ id: chunk.map(({ id }) => id) });
     if (records.length === 0) continue;
     await database.executeSql(
