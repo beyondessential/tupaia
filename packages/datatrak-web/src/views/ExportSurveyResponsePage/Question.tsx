@@ -10,6 +10,7 @@ import {
   QuestionType,
 } from '@tupaia/types';
 import { useAutocompleteOptions, useEntityById } from '../../api';
+import { usePhotoSrc } from '../../photos';
 import { SurveyScreenComponent } from '../../types';
 import { displayDate, displayDateTime, formatNumberWithTrueMinus } from '../../utils';
 
@@ -49,6 +50,11 @@ const StyledAvatar = styled(Avatar)`
   width: 8rem;
   height: 8rem;
 `;
+
+/** A photo that may still be on the device, not yet synced (see photos/photoFiles) */
+const PhotoAnswer = ({ answer }: { answer: string }) => (
+  <StyledAvatar variant="square" src={usePhotoSrc(answer)} />
+);
 
 const useDisplayAnswer = (
   surveyScreenComponent: SurveyScreenComponent,
@@ -119,7 +125,7 @@ const useDisplayAnswer = (
       return fileNameParts.slice(1).join('_');
     }
     case QuestionType.Photo: {
-      return <StyledAvatar variant="square" src={answer} />;
+      return <PhotoAnswer answer={answer} />;
     }
     case QuestionType.User:
       return (answer as DatatrakWebSubmitSurveyResponseRequest.UserAnswer).name;

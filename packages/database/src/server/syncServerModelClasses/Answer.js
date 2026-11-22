@@ -1,4 +1,5 @@
-import { S3Client } from '@tupaia/server-utils';
+import { getS3ImageUrl, S3Client } from '@tupaia/server-utils';
+import { isObjectId, isValidHttpUrl } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
 import { AnswerModel as BaseAnswerModel } from '../../core/modelClasses';
 
@@ -13,12 +14,30 @@ export class AnswerModel extends BaseAnswerModel {
     this.#s3Client = new S3Client();
   }
 
+  /**
+   * answer.text for Photo questions stores the image URL. DataTrak sends one of:
+   * - the photo itself, as a Base64 data URL, which is uploaded here;
+   * - a URL, for an answer that already had one, which needs nothing; or
+   * - the photo’s ID, if the photo went missing from the device before it could be sent (see
+   *   DataTrak’s `pushOutgoingChanges`). The answer then gets the URL the photo would have had,
+   *   as MediTrak’s answers do, rather than holding up every sync from that device.
+   *
+   * @param {string} text
+   * @param {string} answerId
+   * @returns {Promise<string | null>} The new text, or `null` to leave it as it is
+   */
+  async #getPhotoAnswerText(text, answerId) {
+    if (isObjectId(text)) return getS3ImageUrl(text);
+    if (isValidHttpUrl(text)) return null;
+    return await this.#s3Client.uploadImage(text, answerId);
+  }
+
   /** @satisfies {undefined | (records: SyncSnapshotAttributes[]) => Promise<{ inserts: SyncSnapshotAttributes[], updates: SyncSnapshotAttributes[] }>} */
   async incomingSyncHook(records) {
     const uploadPromises = records.map(async record => {
       if (record.data.type === QuestionType.Photo) {
-        // answer.text for Image questions store the image URL
-        const newAnswerText = await this.#s3Client.uploadImage(record.data.text, record.data.id);
+        const newAnswerText = await this.#getPhotoAnswerText(record.data.text, record.data.id);
+        if (newAnswerText === null) return null;
         return { ...record, data: { ...record.data, text: newAnswerText } };
       }
 

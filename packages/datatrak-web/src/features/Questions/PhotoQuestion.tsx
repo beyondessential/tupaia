@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ImageUploadField } from '@tupaia/ui-components';
 import { InputHelperText } from '../../components';
+import { usePhotoSrc } from '../../photos';
 import { SurveyQuestionInputProps } from '../../types';
 
 const Wrapper = styled.div`
@@ -36,10 +37,11 @@ export const PhotoQuestion = ({
   const handleDelete = () => {
     onChange(null);
   };
+  const imageSrc = usePhotoSrc(value);
   return (
     <Wrapper ref={ref}>
       <ImageUploadField
-        imageSrc={value!}
+        imageSrc={imageSrc!}
         onChange={onChange}
         onDelete={handleDelete}
         secondaryLabel={detailLabel!}

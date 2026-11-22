@@ -31,6 +31,7 @@ import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
+import { removePhotosNoLongerNeeded } from '../photos';
 
 const SYNC_INTERVAL_MS = 30_000;
 const URGENT_SYNC_INTERVAL_MS = 10_000;
@@ -383,6 +384,11 @@ export class ClientSyncManager {
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
+    // Photos whose answers came back from the server with URLs aren't needed on the device now
+    await removePhotosNoLongerNeeded(this.findPhotoIdsStillInAnswers, syncStartTime).catch(error =>
+      log.warn('ClientSyncManager.runSync(): Failed to remove photos', { error }),
+    );
+
     this.lastSuccessfulSyncTime = new Date();
     await this.models.localSystemFact.set(
       SyncFact.LAST_SUCCESSFUL_SYNC_TIME,
@@ -466,6 +472,7 @@ export class ClientSyncManager {
   async pushChanges(sessionId: string, newSyncClockTime: number) {
     this.setSyncStage(SYNC_STAGES.PUSH);
     this.setProgress(0, 'Pushing all new changes…');
+
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
     const currentSyncClockTime = await getSyncTick(this.models, SyncFact.CURRENT_SYNC_TICK);
@@ -746,6 +753,14 @@ export class ClientSyncManager {
       }
     }
   }
+
+  private findPhotoIdsStillInAnswers = async (ids: string[]): Promise<string[]> => {
+    const rows: { text: string }[] = await this.database.executeSql(
+      `SELECT DISTINCT text FROM answer WHERE type = 'Photo' AND text IN (${ids.map(() => '?').join(', ')})`,
+      ids,
+    );
+    return rows.map(({ text }) => text);
+  };
 
   /** Sync steps call this between their queries, to give way if the app needs the database */
   private cancelIfAppIsWaiting = () => {

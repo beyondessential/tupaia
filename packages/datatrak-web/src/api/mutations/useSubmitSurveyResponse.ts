@@ -4,7 +4,13 @@ import log from 'winston';
 
 import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
-import { DatatrakWebSubmitSurveyResponseRequest, Entity, Survey, UserAccount } from '@tupaia/types';
+import {
+  DatatrakWebSubmitSurveyResponseRequest,
+  Entity,
+  QuestionType,
+  Survey,
+  UserAccount,
+} from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 
 import { post, useCurrentUserContext, useEntityByCode } from '..';
@@ -12,6 +18,7 @@ import { useShowCoconutsPigs } from '../queries';
 import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
+import { removePhotos, storePhotoAnswersAsFiles } from '../../photos';
 import { GA_EVENT, gaEvent, successToast } from '../../utils';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { useSurvey } from '../queries';
@@ -109,52 +116,72 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
+      // Photos are kept as files, and their answers hold just their IDs (see photos/photoFiles)
+      const photoQuestionIds = surveyResponseData.questions
+        .filter(question => question.type === QuestionType.Photo)
+        .map(question => question.questionId);
+      const { answers: answersToSave, photoIds } = await storePhotoAnswersAsFiles(
+        answers,
+        photoQuestionIds,
+      );
+
       const { processedResponse, qrCodesToCreate, recentEntities, submitterId, surveyResponseId } =
-        await models.wrapInRepeatableReadTransaction(async transactingModels => {
-          const userId = user.isLoggedIn
-            ? ensure(user.id)
-            : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
+        await models
+          .wrapInRepeatableReadTransaction(async transactingModels => {
+            const userId = user.isLoggedIn
+              ? ensure(user.id)
+              : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
 
-          const data = {
-            ...surveyResponseData,
-            answers,
-            userId,
-          };
+            const data = {
+              ...surveyResponseData,
+              answers: answersToSave,
+              userId,
+            };
 
-          // Mirroring datatrak-web-server logic
-          const { qr_codes_to_create, recent_entities, ...response } =
-            await SurveyResponseModel.processSurveyResponse(
+            // Mirroring datatrak-web-server logic
+            const { qr_codes_to_create, recent_entities, ...response } =
+              await SurveyResponseModel.processSurveyResponse(
+                transactingModels,
+                data as DatatrakWebSubmitSurveyResponseRequest.ReqBody,
+              );
+
+            // Mirroring central-server logic
+            await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [response]);
+
+            // On central, EntityHierarchyCacher rebuilds entity_parent_child_relation when an entity
+            // changes. That change handler doesn't run locally, so insert the parent-child link here
+            // so the new entity is immediately visible in descendant queries.
+            const entityHierarchyId = user.project?.entityHierarchyId;
+            const entitiesUpserted = response.entities_upserted ?? [];
+            if (entityHierarchyId && entitiesUpserted.length > 0) {
+              await createEntityParentChildRelation(
+                transactingModels,
+                entityHierarchyId,
+                entitiesUpserted,
+              );
+            }
+
+            await SurveyResponseModel.validateSurveyResponses(transactingModels, [response]);
+            const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
               transactingModels,
-              data as DatatrakWebSubmitSurveyResponseRequest.ReqBody,
+              userId,
+              [response],
             );
 
-          // Mirroring central-server logic
-          await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [response]);
-
-          // On central, EntityHierarchyCacher rebuilds entity_parent_child_relation when an entity
-          // changes. That change handler doesn't run locally, so insert the parent-child link here
-          // so the new entity is immediately visible in descendant queries.
-          const entityHierarchyId = user.project?.entityHierarchyId;
-          const entitiesUpserted = response.entities_upserted ?? [];
-          if (entityHierarchyId && entitiesUpserted.length > 0) {
-            await createEntityParentChildRelation(transactingModels, entityHierarchyId, entitiesUpserted);
-          }
-
-          await SurveyResponseModel.validateSurveyResponses(transactingModels, [response]);
-          const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
-            transactingModels,
-            userId,
-            [response],
-          );
-
-          return {
-            processedResponse: response,
-            qrCodesToCreate: qr_codes_to_create,
-            recentEntities: recent_entities,
-            submitterId: userId,
-            surveyResponseId: idsCreated[0].surveyResponseId,
-          };
-        });
+            return {
+              processedResponse: response,
+              qrCodesToCreate: qr_codes_to_create,
+              recentEntities: recent_entities,
+              submitterId: userId,
+              surveyResponseId: idsCreated[0].surveyResponseId,
+            };
+          })
+          .catch(async (error: unknown) => {
+            await removePhotos(photoIds).catch((removeError: unknown) =>
+              log.warn('useSubmitSurveyResponse: failed to remove photos', { removeError }),
+            );
+            throw error;
+          });
 
       // Bookkeeping that the user shouldn't have to wait on to see the success screen. Central
       // server redoes both authoritatively when the response is pushed, so a failure here only
