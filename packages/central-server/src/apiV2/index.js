@@ -118,6 +118,7 @@ import {
 } from './landingPages';
 import { DownloadFiles } from './DownloadFiles';
 import { suggestSurveyCode } from './suggestSurveyCode';
+import { uploadSurveyPhoto } from './surveyPhotos/uploadSurveyPhoto';
 import {
   CreateDashboardMailingList,
   DeleteDashboardMailingList,
@@ -271,6 +272,12 @@ apiV2.post('/auth/resetPassword', catchAsyncErrors(requestPasswordReset));
 apiV2.post('/auth/resendEmail', catchAsyncErrors(requestResendEmail));
 apiV2.post('/auth/verifyEmail', catchAsyncErrors(verifyEmail));
 apiV2.post('/changes', catchAsyncErrors(postChanges));
+// Any signed-in user, as with MediTrak’s AddSurveyImage. Only new photos can be stored, never replaced
+apiV2.post(
+  '/surveyPhotos/:photoId',
+  express.raw({ type: 'image/*', limit: '50mb' }),
+  allowAnyone(uploadSurveyPhoto),
+);
 apiV2.post('/user', useRouteHandler(RegisterUserAccounts)); // used for user registration on tupaia.org etc.
 apiV2.post('/users', useRouteHandler(CreateUserAccounts)); // used by admin panel to directly create users
 apiV2.post('/userEntityPermissions', useRouteHandler(CreateUserEntityPermissions));

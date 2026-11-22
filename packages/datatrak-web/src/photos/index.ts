@@ -1,6 +1,8 @@
 export {
   findPhoto,
-  readPhotoAsDataUrl,
+  listPendingPhotos,
+  markPhotoUploaded,
+  readPendingPhoto,
   removePhotos,
   removePhotosNoLongerNeeded,
   storePhotoAnswersAsFiles,

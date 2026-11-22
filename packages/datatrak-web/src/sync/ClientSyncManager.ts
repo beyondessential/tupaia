@@ -31,6 +31,7 @@ import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
+import { uploadPendingPhotos } from './uploadPendingPhotos';
 import { removePhotosNoLongerNeeded } from '../photos';
 
 const SYNC_INTERVAL_MS = 30_000;
@@ -472,6 +473,11 @@ export class ClientSyncManager {
   async pushChanges(sessionId: string, newSyncClockTime: number) {
     this.setSyncStage(SYNC_STAGES.PUSH);
     this.setProgress(0, 'Pushing all new changes…');
+
+    // Photos first, so they're on the server by the time the answers that refer to them are
+    await uploadPendingPhotos((total, uploadedCount) =>
+      this.updateProgress(total, uploadedCount, 'Uploading photos…'),
+    );
 
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor

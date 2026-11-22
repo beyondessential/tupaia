@@ -198,8 +198,25 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
-    const sourceContentType = this.getContentTypeFromBase64(base64EncodedImage);
+    return await this.uploadImageBuffer(
+      this.convertEncodedFileToBuffer(base64EncodedImage),
+      this.getContentTypeFromBase64(base64EncodedImage),
+      fileId,
+      allowOverwrite,
+    );
+  }
 
+  /**
+   * Like {@link uploadImage}, for an image already in binary form, such as a request body.
+   *
+   * @param sourceContentType The image’s media type, e.g. `image/jpeg`
+   */
+  public async uploadImageBuffer(
+    sourceBuffer: Buffer,
+    sourceContentType: string,
+    fileId: string,
+    allowOverwrite = false,
+  ) {
     if (!isImageMediaTypeString(sourceContentType)) {
       // Redundant because of `isSupportedImageMediaTypeString`, but clearer error message
       throw new UnsupportedMediaTypeError(`Expected image file but got ${sourceContentType}`);
@@ -217,7 +234,7 @@ export class S3Client {
       ? 'image/webp'
       : (sourceContentType as NonconvertedImageType);
 
-    let buffer: Buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+    let buffer = sourceBuffer;
     if (shouldConvert) {
       buffer = await sharp(buffer)
         .autoOrient()
@@ -242,6 +259,16 @@ export class S3Client {
     }
 
     return this.uploadPublicImage(filePath, buffer, destinationContentType);
+  }
+
+  /**
+   * Media types {@link uploadImageBuffer} converts to WebP, so whose uploaded URL is known from the
+   * file ID alone (see `getS3ImageUrl`)
+   */
+  public static isConvertedImageType(contentType: string) {
+    return (
+      isSupportedImageMediaTypeString(contentType) && supportedImageTypes[contentType].shouldConvert
+    );
   }
 
   public async downloadFile(fileName: string) {

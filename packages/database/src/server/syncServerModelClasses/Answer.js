@@ -16,11 +16,11 @@ export class AnswerModel extends BaseAnswerModel {
 
   /**
    * answer.text for Photo questions stores the image URL. DataTrak sends one of:
-   * - the photo itself, as a Base64 data URL, which is uploaded here;
-   * - a URL, for an answer that already had one, which needs nothing; or
-   * - the photo’s ID, if the photo went missing from the device before it could be sent (see
-   *   DataTrak’s `pushOutgoingChanges`). The answer then gets the URL the photo would have had,
-   *   as MediTrak’s answers do, rather than holding up every sync from that device.
+   * - the photo’s ID, when it has already sent the photo itself as a file (see central-server’s
+   *   `uploadSurveyPhoto`), so all that’s needed is its URL;
+   * - the photo itself, as a Base64 data URL, from versions that predate that, or for image types
+   *   it doesn’t send as files, which is uploaded here; or
+   * - a URL, for an answer that already had one, which needs nothing.
    *
    * @param {string} text
    * @param {string} answerId

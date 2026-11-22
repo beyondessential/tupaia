@@ -3,7 +3,6 @@ import { getSnapshotTableName, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 import { post, stream } from '../api';
 import type { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { findPhoto, readPhotoAsDataUrl } from '../photos';
 import { paginateBySize } from './paginateBySize';
 
 // TODO: Move to config model RN-1668
@@ -45,29 +44,6 @@ const MAX_PAGE_BYTES = 5 * 1024 * 1024;
  */
 const OVERSIZED_RECORD_WARNING_BYTES = 25 * 1024 * 1024;
 
-/** Length of a file as a Base64 data URL, near enough */
-const dataUrlLength = (file: File) =>
-  `data:${file.type};base64,`.length + Math.ceil(file.size / 3) * 4;
-
-/**
- * Finds the files of photos whose answers hold just the photo’s ID (see `photos/photoFiles`), so
- * that they can be put back in before the answers are sent.
- */
-const findPhotoFiles = async (photoIds: string[]) => {
-  const files = new Map<string, File>();
-  for (const photoId of photoIds) {
-    const file = await findPhoto(photoId);
-    if (file) {
-      files.set(photoId, file);
-    } else {
-      // Nothing can bring it back, so it’s no use holding up the sync for it. The server takes the
-      // ID to be a photo it already has, so the answer ends up with a URL to nothing
-      log.error(`pushOutgoingChanges: photo ${photoId} is missing from the device`);
-    }
-  }
-  return files;
-};
-
 export const pushOutgoingChanges = async (
   database: DatatrakDatabase,
   sessionId: string,
@@ -78,24 +54,9 @@ export const pushOutgoingChanges = async (
 
   // Sizes only: the records themselves are read a page at a time, so however many photos are
   // waiting, only about one page of them is ever in memory (see snapshotOutgoingChanges)
-  const rows: { id: number; bytes: number; photo_id: string | null }[] = await database.executeSql(
-    `SELECT
-        id::integer AS id,
-        octet_length(data::text) AS bytes,
-        CASE
-          WHEN record_type = 'answer' AND data->>'type' = 'Photo' AND data->>'text' ~ '^[0-9a-f]{24}$'
-          THEN data->>'text'
-        END AS photo_id
-      FROM ${tableName}
-      ORDER BY id`,
+  const sizes: { id: number; bytes: number }[] = await database.executeSql(
+    `SELECT id::integer AS id, octet_length(data::text) AS bytes FROM ${tableName} ORDER BY id`,
   );
-
-  // A photo answer holding just an ID will be sent with the photo, so page it at that size
-  const photoFiles = await findPhotoFiles(rows.flatMap(row => row.photo_id ?? []));
-  const sizes = rows.map(row => {
-    const photoFile = row.photo_id ? photoFiles.get(row.photo_id) : undefined;
-    return photoFile ? { ...row, bytes: row.bytes + dataUrlLength(photoFile) } : row;
-  });
   const pages = paginateBySize(sizes, MAX_PAGE_BYTES, MAX_RECORDS_PER_PAGE);
 
   let pushedCount = 0;
@@ -128,7 +89,7 @@ export const pushOutgoingChanges = async (
      * The `json` column holds the text exactly as JSON.stringify wrote it during the snapshot, so
      * `data` goes out byte for byte as before.
      */
-    const [{ body: bodyFromDatabase }]: { body: string }[] = await database.executeSql(
+    const [{ body }]: { body: string }[] = await database.executeSql(
       `SELECT '{"changes":[' || string_agg(
           json_build_object(
             'direction', ?::text,
@@ -143,20 +104,6 @@ export const pushOutgoingChanges = async (
         WHERE id BETWEEN ? AND ?`,
       [SYNC_SESSION_DIRECTION.OUTGOING, firstId, lastId],
     );
-
-    /*
-     * Put each photo back in its answer, in place of its ID, so the server gets the photo as it
-     * always has. Read straight from its file into the page, it skips the database, the worker and
-     * their copies, which are what made pushing photos so costly (see photos/photoFiles). The ID
-     * is unique to that photo, so it appears in the body just once, as the answer’s text.
-     */
-    let body = bodyFromDatabase;
-    for (const { photo_id: photoId } of page) {
-      const photoFile = photoId ? photoFiles.get(photoId) : undefined;
-      if (!photoId || !photoFile) continue;
-      const dataUrl = await readPhotoAsDataUrl(photoFile);
-      body = body.replace(`"${photoId}"`, () => `"${dataUrl}"`);
-    }
 
     await post(`sync/${sessionId}/push`, {
       data: body,

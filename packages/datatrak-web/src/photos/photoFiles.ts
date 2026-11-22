@@ -9,22 +9,26 @@ import { generateId } from '@tupaia/database';
  * A Photo answer used to hold its photo inline, as a Base64 data URL several megabytes long. Every
  * read of it then went through PGlite’s WebAssembly memory, its worker and the page as text, and
  * a sync left hundreds of megabytes of those copies waiting to be collected, which got the page
- * killed on 2 GB phones. Now the answer holds just the photo’s ID, and the photo is read from its
- * file only when it’s needed: to show it, or to push it (see `pushOutgoingChanges`, which puts it
- * back in the answer on its way to the server, so the server sees what it always has).
+ * killed on 2 GB phones. Now the answer holds just the photo’s ID, and sync sends the file itself,
+ * ahead of the answers (see `uploadPendingPhotos`). The browser streams a file from disk as it
+ * sends it, so the photo never has to be read into the page’s memory. The sync server turns the ID
+ * into the photo’s URL, and the device pulls that back down.
  *
- * A photo stays here until its answer comes back from the server holding the photo’s URL instead
- * of its ID (see {@link removePhotosNoLongerNeeded}).
+ * Photos wait in `pending/` until they’re uploaded, then in `uploaded/` until their answers come
+ * back from the server holding the photo’s URL instead of its ID (see
+ * {@link removePhotosNoLongerNeeded}), so they can still be shown in the meantime.
  *
  * Files are named `<id>.<subtype>`, as in `5f1b….jpeg`, since OPFS doesn’t keep a file’s type.
  */
 
-const DIRECTORY = 'survey-photos';
+const ROOT_DIRECTORY = 'survey-photos';
+const PENDING = 'pending';
+const UPLOADED = 'uploaded';
 
-/** Image types the server accepts for photos (SVG aside, which isn’t a photo) */
+/** Image types the server converts to WebP, so whose URL is known from the ID alone */
 const FILE_TYPES = new Set(['avif', 'gif', 'jpeg', 'png', 'tiff', 'webp']);
 
-interface PhotoFileName {
+export interface PhotoFileName {
   id: string;
   name: string;
   type: string;
@@ -43,9 +47,18 @@ const canStorePhotoFiles = () =>
   typeof FileSystemFileHandle !== 'undefined' &&
   'createWritable' in FileSystemFileHandle.prototype;
 
-const getDirectory = async () => {
+const getDirectory = async (name: typeof PENDING | typeof UPLOADED) => {
   const root = await navigator.storage.getDirectory();
-  return await root.getDirectoryHandle(DIRECTORY, { create: true });
+  const photos = await root.getDirectoryHandle(ROOT_DIRECTORY, { create: true });
+  return await photos.getDirectoryHandle(name, { create: true });
+};
+
+const getDirectories = async () => [await getDirectory(PENDING), await getDirectory(UPLOADED)];
+
+const readPhoto = async (directory: FileSystemDirectoryHandle, photo: PhotoFileName) => {
+  const file = await (await directory.getFileHandle(photo.name)).getFile();
+  // Refers to the same data on disk, just with its type set
+  return new File([file], photo.name, { type: photo.type, lastModified: file.lastModified });
 };
 
 /** TypeScript 5.3’s DOM types don’t include directory iteration yet */
@@ -90,7 +103,7 @@ const storePhoto = async (dataUrl: string): Promise<string | null> => {
 
   const id: string = generateId();
   const name = `${id}.${decoded.subtype}`;
-  const directory = await getDirectory();
+  const directory = await getDirectory(PENDING);
   try {
     const writable = await (await directory.getFileHandle(name, { create: true })).createWritable();
     await writable.write(decoded.blob);
@@ -133,35 +146,57 @@ export const storePhotoAnswersAsFiles = async <T extends Record<string, unknown>
   return { answers: result as T, photoIds };
 };
 
-/** Removes photos, e.g. those of a response that failed to save */
+/** Removes photos, wherever they are, e.g. those of a response that failed to save */
 export const removePhotos = async (ids: string[]) => {
   if (ids.length === 0 || !canStorePhotoFiles()) return;
   const idSet = new Set(ids);
-  const directory = await getDirectory();
-  for (const photo of await listPhotos(directory)) {
-    if (idSet.has(photo.id)) await removeIfPresent(directory, photo.name);
+  for (const directory of await getDirectories()) {
+    for (const photo of await listPhotos(directory)) {
+      if (idSet.has(photo.id)) await removeIfPresent(directory, photo.name);
+    }
   }
 };
 
-/** Finds a photo by its ID */
+/** Finds a photo by its ID, whether it’s been uploaded yet or not */
 export const findPhoto = async (id: string): Promise<File | null> => {
   if (!canStorePhotoFiles()) return null;
-  const directory = await getDirectory();
-  const photo = (await listPhotos(directory)).find(p => p.id === id);
-  if (!photo) return null;
-  const file = await (await directory.getFileHandle(photo.name)).getFile();
-  // Refers to the same data on disk, just with its type set
-  return new File([file], photo.name, { type: photo.type, lastModified: file.lastModified });
+  for (const directory of await getDirectories()) {
+    const photo = (await listPhotos(directory)).find(p => p.id === id);
+    if (photo) return await readPhoto(directory, photo);
+  }
+  return null;
 };
 
-/** Reads a photo back into the data URL it was saved from */
-export const readPhotoAsDataUrl = async (file: File) =>
-  await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+/** Photos that haven’t been uploaded yet */
+export const listPendingPhotos = async (): Promise<PhotoFileName[]> => {
+  if (!canStorePhotoFiles()) return [];
+  return await listPhotos(await getDirectory(PENDING));
+};
+
+export const readPendingPhoto = async (photo: PhotoFileName) =>
+  await readPhoto(await getDirectory(PENDING), photo);
+
+/** Moves a photo from `pending/` to `uploaded/`, once the server has it */
+export const markPhotoUploaded = async (photo: PhotoFileName) => {
+  const pending = await getDirectory(PENDING);
+  const uploaded = await getDirectory(UPLOADED);
+  const handle = await pending.getFileHandle(photo.name);
+
+  // Chrome can move it without copying. Elsewhere, copy it, and remove the original
+  const movable = handle as FileSystemFileHandle & {
+    move?: (directory: FileSystemDirectoryHandle) => Promise<void>;
+  };
+  if (typeof movable.move === 'function') {
+    await movable.move(uploaded);
+    return;
+  }
+  const writable = await (
+    await uploaded.getFileHandle(photo.name, { create: true })
+  ).createWritable();
+  await writable.write(await handle.getFile());
+  await writable.close();
+  await pending.removeEntry(photo.name);
+};
 
 /**
  * Removes photos the device no longer needs: those whose answers have come back from the server
@@ -176,17 +211,18 @@ export const removePhotosNoLongerNeeded = async (
   savedBefore: number,
 ) => {
   if (!canStorePhotoFiles()) return;
-  const directory = await getDirectory();
 
-  const candidates: PhotoFileName[] = [];
-  for (const photo of await listPhotos(directory)) {
-    const { lastModified } = await (await directory.getFileHandle(photo.name)).getFile();
-    if (lastModified < savedBefore) candidates.push(photo);
+  const candidates: { directory: FileSystemDirectoryHandle; photo: PhotoFileName }[] = [];
+  for (const directory of await getDirectories()) {
+    for (const photo of await listPhotos(directory)) {
+      const { lastModified } = await (await directory.getFileHandle(photo.name)).getFile();
+      if (lastModified < savedBefore) candidates.push({ directory, photo });
+    }
   }
   if (candidates.length === 0) return;
 
-  const stillNeeded = new Set(await findIdsStillInAnswers(candidates.map(p => p.id)));
-  for (const photo of candidates) {
+  const stillNeeded = new Set(await findIdsStillInAnswers(candidates.map(c => c.photo.id)));
+  for (const { directory, photo } of candidates) {
     if (!stillNeeded.has(photo.id)) await removeIfPresent(directory, photo.name);
   }
 };

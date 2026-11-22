@@ -8,8 +8,8 @@ export const getS3UploadFilePath = () =>
   getIsProductionEnvironment() ? 'uploads/files/' : 'dev_uploads/files/';
 
 /**
- * URL of an image `S3Client.uploadImage` converted to WebP and stored under `fileId`, as MediTrak’s
- * survey photos are, which are uploaded ahead of their answers.
+ * URL of an image `S3Client.uploadImage` converted to WebP and stored under `fileId`. Survey photos
+ * uploaded ahead of their answers, by MediTrak and DataTrak, live here.
  */
 export const getS3ImageUrl = (fileId: string) =>
   `${S3_BUCKET_PATH}${getS3ImageFilePath()}${fileId}.webp`;
