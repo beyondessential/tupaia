@@ -118,13 +118,13 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
   const { surveys, ...restOfState } = stateProps;
   const { expandedSurveyGroupId } = ownProps;
   const menuItems = [];
-  surveys.forEach(survey => {
+  for (const survey of surveys) {
     // Some surveys are part of groups, in which case in redux they will look like
     // { id: 'surveyId', name: 'surveyName', ..., group: { id: 'groupId', name: 'groupName' }}
     const surveyGroup = survey.group; // Extract the group this survey is in, if any
 
     // If a survey group has been drilled into, filter out surveys not in the selected survey group
-    if (expandedSurveyGroupId && (!surveyGroup || surveyGroup.id !== expandedSurveyGroupId)) return;
+    if (expandedSurveyGroupId && (!surveyGroup || surveyGroup.id !== expandedSurveyGroupId)) continue;
 
     // If this survey is part of a (non-expanded) group, add a survey group to the menu
     if (surveyGroup && surveyGroup.id !== expandedSurveyGroupId) {
@@ -143,7 +143,7 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
         onSelect: () => dispatch(selectSurvey(survey.id)),
       });
     }
-  });
+  }
   return {
     ...ownProps,
     ...restOfState,
