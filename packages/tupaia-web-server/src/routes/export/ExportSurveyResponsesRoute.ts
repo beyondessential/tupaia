@@ -1,7 +1,9 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
-import { QueryParams } from './types';
+import type { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
+import { ValidationError } from '@tupaia/utils';
+import type { QueryParams } from './types';
 import { EMAIL_TIMEOUT_SETTINGS, handleExportResponse } from './utils';
 
 export type ExportSurveyResponsesRequest = Request<
@@ -15,26 +17,30 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
   protected readonly type = 'download';
 
   public async buildResponse() {
-    const { query, ctx } = this.req;
     const {
-      organisationUnitCode,
-      surveyCodes,
-      latest,
-      startDate,
-      endDate,
-      timeZone,
-      itemCode,
-      easyReadingMode,
-    } = query;
-    const dashboardItem = (
-      await ctx.services.central.fetchResources('dashboardItems', {
-        filter: { code: itemCode },
-      })
-    )[0];
+      ctx,
+      query: {
+        organisationUnitCode,
+        surveyCodes,
+        latest,
+        startDate,
+        endDate,
+        timeZone,
+        itemCode,
+        easyReadingMode,
+      },
+    } = this.req;
 
-    if (!dashboardItem) {
-      throw new Error(`Invalid itemCode ${itemCode}`);
+    // Query params may be arrays or objects at runtime (e.g. `?itemCode=a&itemCode=b`)
+    if (typeof itemCode !== 'string') throw new ValidationError('itemCode must be a string');
+    if (organisationUnitCode !== undefined && typeof organisationUnitCode !== 'string') {
+      throw new ValidationError('organisationUnitCode must be a string');
     }
+
+    const [dashboardItem] = await ctx.services.central.fetchResources('dashboardItems', {
+      filter: { code: itemCode },
+    });
+    if (!dashboardItem) throw new Error(`Invalid itemCode ${itemCode}`);
 
     const centralQuery: QueryParams<TupaiaWebExportSurveyResponsesRequest.ReqQuery> & {
       reportName: string;
