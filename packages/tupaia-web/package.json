@@ -61,7 +61,7 @@
     "@types/mapbox__polyline": "^1.0.5",
     "@types/react": "16.9.17",
     "msw": "^2.0.9",
-    "storybook": "^10.6.0",
+    "storybook": "^10.6.7",
     "vite": "^8.3.8"
   },
   "msw": {
