@@ -2,7 +2,7 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import type { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
-import { ValidationError } from '@tupaia/utils';
+import { NotFoundError, ValidationError } from '@tupaia/utils';
 import type { QueryParams } from './types';
 import { EMAIL_TIMEOUT_SETTINGS, handleExportResponse } from './utils';
 
@@ -40,7 +40,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
     const [dashboardItem] = await ctx.services.central.fetchResources('dashboardItems', {
       filter: { code: itemCode },
     });
-    if (!dashboardItem) throw new Error(`Invalid itemCode ${itemCode}`);
+    if (!dashboardItem) throw new NotFoundError(`No dashboard item found with code ${itemCode}`);
 
     const centralQuery: QueryParams<TupaiaWebExportSurveyResponsesRequest.ReqQuery> & {
       reportName: string;
