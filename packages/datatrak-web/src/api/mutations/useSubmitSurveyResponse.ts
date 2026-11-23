@@ -208,12 +208,18 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           successToast('Survey submitted successfully');
         }
         // include the survey response data in the location state, so that we can use it to generate QR codes
-        navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
-          state: {
-            ...(from && { from }),
-            surveyResponse: JSON.stringify(data),
+        navigate(
+          generatePath(ROUTES.SURVEY_SUCCESS, {
+            countryCode: params.countryCode ?? null,
+            surveyCode: params.surveyCode ?? null,
+          }),
+          {
+            state: {
+              ...(from && { from }),
+              surveyResponse: JSON.stringify(data),
+            },
           },
-        });
+        );
       },
     },
   );
