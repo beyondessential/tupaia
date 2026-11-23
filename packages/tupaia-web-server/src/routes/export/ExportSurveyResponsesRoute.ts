@@ -6,12 +6,13 @@ import { NotFoundError, ValidationError } from '@tupaia/utils';
 import type { QueryParams } from './types';
 import { EMAIL_TIMEOUT_SETTINGS, handleExportResponse } from './utils';
 
-export type ExportSurveyResponsesRequest = Request<
-  TupaiaWebExportSurveyResponsesRequest.Params,
-  TupaiaWebExportSurveyResponsesRequest.ResBody,
-  TupaiaWebExportSurveyResponsesRequest.ReqBody,
-  TupaiaWebExportSurveyResponsesRequest.ReqQuery
->;
+export interface ExportSurveyResponsesRequest
+  extends Request<
+    TupaiaWebExportSurveyResponsesRequest.Params,
+    TupaiaWebExportSurveyResponsesRequest.ResBody,
+    TupaiaWebExportSurveyResponsesRequest.ReqBody,
+    TupaiaWebExportSurveyResponsesRequest.ReqQuery
+  > {}
 
 export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesRequest> {
   protected readonly type = 'download';
