@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import type { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
