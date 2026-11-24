@@ -180,7 +180,7 @@ describe('POST /changes', () => {
         { action: SUBMIT_SURVEY_RESPONSE, payload: surveyResponse },
       ]);
 
-      expect(response.statusCode).to.not.equal(200);
+      expect(response.statusCode).to.equal(403);
       await expectNotSubmitted(surveyResponse);
     });
 
