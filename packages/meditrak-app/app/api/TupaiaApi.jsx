@@ -225,12 +225,17 @@ export class TupaiaApi {
     let responseJson;
     try {
       responseJson = await response.json();
-    } catch {
+    } catch (cause) {
       // Body wasn’t JSON, e.g. an HTML error page from a proxy in front of the server. Report the
       // status code, which is more useful than the parser’s “Unexpected character: <”.
       const message = `Server didn’t respond with JSON (HTTP ${response.status})`;
       analytics.trackEvent('Request failed', { requestMethod, apiEndpoint, error: message });
-      throw new Error(message);
+      const error = new Error(message);
+      // Keep the parser’s error (distinguishes empty body from HTML, etc.) for Bugsnag and
+      // debugging. Assigned rather than passed as `{ cause }` so it doesn’t depend on Hermes
+      // supporting the ES2022 constructor option.
+      error.cause = cause;
+      throw error;
     }
     // If server responded with 410, i.e. old API version, log the user out and get them to update
     if (response.status === 410 && this.reduxStore) {
