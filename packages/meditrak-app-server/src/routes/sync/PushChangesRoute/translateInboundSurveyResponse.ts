@@ -60,15 +60,17 @@ const translateObjectFields = async <T extends RawSurveyResponseObject>(
 ) => {
   await Promise.all(
     Object.entries(object).map(async ([field, value]) => {
-      const translator = objectTranslators[field];
+      const translator = Object.hasOwn(objectTranslators, field)
+        ? objectTranslators[field]
+        : undefined;
       if (translator) {
         const newFields = await translator(value);
         // eslint-disable-next-line no-param-reassign
         delete object[field];
-        Object.entries(newFields).forEach(([newField, newValue]) => {
+        for (const [newField, newValue] of Object.entries(newFields)) {
           // eslint-disable-next-line no-param-reassign
           object[newField as keyof T] = newValue as T[keyof T];
-        });
+        }
       }
     }),
   );
