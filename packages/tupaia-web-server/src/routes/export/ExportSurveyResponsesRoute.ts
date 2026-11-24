@@ -28,8 +28,10 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       return exportSurveyResponsesQuerySchema.parse(this.req.query);
     } catch (error) {
       if (!(error instanceof ZodError)) throw error;
-      const problems = error.issues.map(({ path, message }) => `- ${path.join('.')}: ${message}`);
-      throw new ValidationError(`Invalid query parameters:\n${problems.join('\n')}`);
+      // Keep the message free of colons: tupaia-web strips everything up to the first `: `
+      const invalidParams = [...new Set(error.issues.map(({ path }) => path.join('.')))];
+      const details = error.issues.map(({ path, message }) => `${path.join('.')}: ${message}`);
+      throw new ValidationError(`Invalid query parameters (${invalidParams.join(', ')})`, details);
     }
   }
 
