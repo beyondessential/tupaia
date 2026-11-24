@@ -29,6 +29,10 @@ export const translateSurveyCodeToId = async (surveyModel, code) => {
  * survey question’s config to `{ questionId }`.
  */
 export const translateAnswerQuestionCodeToId = async (questionModel, code) => {
-  const question = await questionModel.findOneOrThrow({ code });
+  const question = await questionModel.findOneOrThrow(
+    { code },
+    { columns: ['id'] },
+    `No question found with code ${code}`,
+  );
   return { question_id: question.id };
 };
