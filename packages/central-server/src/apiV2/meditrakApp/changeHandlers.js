@@ -137,8 +137,8 @@ async function translateSurveyResponseObject(models, surveyResponseObject) {
 
   const { answers } = translatedSurveyResponseObject;
   if (Array.isArray(answers)) {
-    for (let i = 0; i < answers.length; i++) {
-      await translateObjectFields(answers[i], answerTranslators);
+    for (const answer of answers) {
+      await translateObjectFields(answer, answerTranslators);
     }
   }
 
