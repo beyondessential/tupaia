@@ -132,17 +132,17 @@ async function translateSurveyResponseObject(models, surveyResponseObject) {
     return surveyResponseObject;
   }
 
-  const translatedSurveyResponseObject = cloneDeep(surveyResponseObject);
-  await translateObjectFields(translatedSurveyResponseObject, surveyResponseTranslators);
+  const translated = cloneDeep(surveyResponseObject);
+  await translateObjectFields(translated, surveyResponseTranslators);
 
-  const { answers } = translatedSurveyResponseObject;
+  const { answers } = translated;
   if (Array.isArray(answers)) {
     for (const answer of answers) {
       await translateObjectFields(answer, answerTranslators);
     }
   }
 
-  return translatedSurveyResponseObject;
+  return translated;
 }
 
 const requiresSurveyResponseTranslation = (
