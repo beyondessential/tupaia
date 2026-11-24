@@ -40,12 +40,25 @@ describe('exportSurveyResponsesQuerySchema', () => {
   const invalidQueries: [string, Record<string, unknown>, string][] = [
     ['missing itemCode', { itemCode: undefined }, 'itemCode'],
     ['repeated itemCode', { itemCode: ['a', 'b'] }, 'itemCode'],
-    ['repeated organisationUnitCode', { organisationUnitCode: ['TO', 'FJ'] }, 'organisationUnitCode'],
-    ['nested organisationUnitCode', { organisationUnitCode: { length: '2' } }, 'organisationUnitCode'],
+    ['empty organisationUnitCode', { organisationUnitCode: '' }, 'organisationUnitCode'],
+    [
+      'repeated organisationUnitCode',
+      { organisationUnitCode: ['TO', 'FJ'] },
+      'organisationUnitCode',
+    ],
+    [
+      'nested organisationUnitCode',
+      { organisationUnitCode: { length: '2' } },
+      'organisationUnitCode',
+    ],
     ['nested surveyCodes', { surveyCodes: { comparator: 'like' } }, 'surveyCodes'],
     ['non-boolean latest', { latest: 'yes' }, 'latest'],
     ['nested easyReadingMode', { easyReadingMode: { a: 'b' } }, 'easyReadingMode'],
     ['repeated startDate', { startDate: ['2026-01-01', '2026-01-02'] }, 'startDate'],
+    ['repeated endDate', { endDate: ['2026-01-30', '2026-01-31'] }, 'endDate'],
+    ['repeated timeZone', { timeZone: ['Pacific/Tongatapu', 'UTC'] }, 'timeZone'],
+    ['nested timeZone', { timeZone: { a: 'b' } }, 'timeZone'],
+    ['repeated latest', { latest: ['true', 'false'] }, 'latest'],
   ];
 
   it.each(invalidQueries)('rejects %s', (_description, overrides, invalidParam) => {
