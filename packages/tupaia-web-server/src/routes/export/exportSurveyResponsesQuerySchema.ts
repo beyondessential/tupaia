@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
+
 /** Query params arrive as strings; central-server compares against `'true'` */
 const booleanString = z.enum(['true', 'false']);
 
@@ -17,6 +19,6 @@ export const exportSurveyResponsesQuerySchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   timeZone: z.string().optional(),
-});
+}) satisfies z.ZodType<TupaiaWebExportSurveyResponsesRequest.ReqQuery>;
 
 export type ExportSurveyResponsesQuery = z.infer<typeof exportSurveyResponsesQuerySchema>;
