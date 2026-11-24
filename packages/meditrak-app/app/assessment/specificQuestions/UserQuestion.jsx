@@ -8,39 +8,15 @@ import { Autocomplete } from '../../widgets/Autocomplete/Autocomplete';
 
 const OPTIONS_PER_PAGE = 10;
 
-const generateSearchRegexp = searchTerm => {
-  if (!searchTerm) {
-    return null;
-  }
-  // if includes an apostrophe, search all variations of the apostrophe
-  if (searchTerm.includes("'")) {
-    return `((${searchTerm.replace("'", "\\'")})|(${searchTerm.replace(
-      "'",
-      '\\‘',
-    )})|(${searchTerm.replace("'", '\\‘')}))`;
-  }
+/** @param {string} str */
+const normalize = str =>
+  str
+    .replace(/[‘’]/g, "'") // Treat educated quotes as equivalent to straight quotes
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
 
-  // if includes a left single quote, search all variations of the left single quote
-  if (searchTerm.includes('‘')) {
-    return `((${searchTerm.replace('‘', '\\’')})|(${searchTerm.replace(
-      '‘',
-      "\\'",
-    )})|(${searchTerm.replace('‘', '\\‘')})))`;
-  }
-
-  // if includes a right single quote, search all variations of the right single quote
-  if (searchTerm.includes('’')) {
-    return `((${searchTerm.replace('’', "\\'")})|(${searchTerm.replace(
-      '’',
-      '\\‘',
-    )})|(${searchTerm.replace('’', '\\‘')})))`;
-  }
-
-  return searchTerm;
-};
-
-const UserQuestionComponent = props => {
-  const { selectedUserId, users, onSelectUser, scrollIntoFocus } = props;
+const UserQuestionComponent = ({ onSelectUser, scrollIntoFocus, selectedUserId, users }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxResults, setMaxResults] = useState(OPTIONS_PER_PAGE);
 
@@ -49,18 +25,19 @@ const UserQuestionComponent = props => {
   const userList = sortList(users?.map(user => user.name) ?? []);
 
   const generateOptionList = () => {
-    if (!searchTerm) {
-      return userList.slice(0, maxResults);
+    if (!searchTerm) return userList.slice(0, maxResults);
+
+    const normalisedSearchTerm = normalize(searchTerm);
+    const usersThatStartWithSearchTerm = [];
+    const usersThatContainSearchTerm = [];
+    for (const user of userList) {
+      const normalisedName = normalize(user);
+      if (normalisedName.startsWith(normalisedSearchTerm)) {
+        usersThatStartWithSearchTerm.push(user);
+      } else if (normalisedName.includes(normalisedSearchTerm)) {
+        usersThatContainSearchTerm.push(user);
+      }
     }
-    const searchRegexp = generateSearchRegexp(searchTerm);
-    const startsWithSearchTerm = new RegExp(`^${searchRegexp}`, 'i');
-    const containsSearchTerm = new RegExp(searchRegexp, 'gi');
-
-    const usersThatStartWithSearchTerm = userList.filter(user => startsWithSearchTerm.test(user));
-
-    const usersThatContainSearchTerm = userList.filter(
-      user => containsSearchTerm.test(user) && !usersThatStartWithSearchTerm.includes(user),
-    );
 
     // return first the users that start with the search term, then the users that contain the search term
     return [...usersThatStartWithSearchTerm, ...usersThatContainSearchTerm].slice(0, maxResults);
