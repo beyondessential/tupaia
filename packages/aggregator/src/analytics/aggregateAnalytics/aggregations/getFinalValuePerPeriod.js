@@ -34,7 +34,7 @@ class FinalValueCache {
       const currentValue = cache[dataElementId][organisationUnit][period];
       const preferredPeriod = getPreferredPeriod(
         responseElement.period,
-        (currentValue && currentValue.period) || undefined,
+        currentValue?.period || undefined,
         preferredPeriodType,
       );
 
