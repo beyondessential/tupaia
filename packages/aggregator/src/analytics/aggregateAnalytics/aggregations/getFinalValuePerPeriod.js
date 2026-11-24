@@ -15,7 +15,7 @@ class FinalValueCache {
     const periodTypes = [];
     const cache = {};
 
-    analytics.forEach(responseElement => {
+    for (const responseElement of analytics) {
       const {
         dataElement: dataElementId,
         organisationUnit,
@@ -40,7 +40,7 @@ class FinalValueCache {
 
       if (preferredPeriod !== responseElement.period) {
         // Existing value is preferred over the current one, skip
-        return;
+        continue;
       }
       cache[dataElementId][organisationUnit][period] = responseElement;
 
@@ -48,7 +48,7 @@ class FinalValueCache {
       if (!periodTypes.includes(currentPeriodType)) {
         periodTypes.push(currentPeriodType);
       }
-    });
+    }
 
     this.cache = cache;
 
