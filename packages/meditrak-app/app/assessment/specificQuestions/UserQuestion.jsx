@@ -26,6 +26,8 @@ const UserQuestionComponent = ({ onSelectUser, scrollIntoFocus, selectedUserId, 
     if (!searchTerm) return sortedNames.slice(0, maxResults);
 
     const normalizedSearchTerm = normalize(searchTerm);
+    if (normalizedSearchTerm === '') return [];
+
     const prefixMatches = [];
     const substringMatches = [];
     for (const name of sortedNames) {
