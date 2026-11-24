@@ -1,7 +1,9 @@
 import log from 'winston';
-import { SyncSnapshotAttributes } from '@tupaia/sync';
-import { post, stream } from '../api';
+import { getSnapshotTableName, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { post, stream } from '../api';
+import type { DatatrakDatabase } from '../database/DatatrakDatabase';
+import { paginateBySize } from './paginateBySize';
 
 // TODO: Move to config model RN-1668
 const MAX_RECORDS_PER_PAGE = 10000;
@@ -25,11 +27,10 @@ const MAX_RECORDS_PER_PAGE = 10000;
  * Mbps up, and would fail on timeout rather than size. A failed page also loses its whole page of
  * work, since we don’t retry.
  *
- * Secondly, the size we measure is a lower bound, not the real body size: `JSON.stringify().length`
- * counts UTF-16 code units, whereas `Content-Length` counts UTF-8 bytes. Base64 image data is ASCII
- * so it measures exactly, but text answers in a non-Latin script are up to three bytes per unit. If
- * this budget is ever raised close to the server’s limit, switch to counting encoded bytes first —
- * otherwise an under-measured page would be rejected in exactly those countries and nowhere else.
+ * Secondly, it bounds memory: while a page is sent, a few copies of it are in memory at once.
+ *
+ * Sizes are UTF-8 bytes of the stored JSON, as Postgres measures them, so they match what
+ * `Content-Length` will count.
  */
 const MAX_PAGE_BYTES = 5 * 1024 * 1024;
 
@@ -44,29 +45,33 @@ const MAX_PAGE_BYTES = 5 * 1024 * 1024;
 const OVERSIZED_RECORD_WARNING_BYTES = 25 * 1024 * 1024;
 
 export const pushOutgoingChanges = async (
+  database: DatatrakDatabase,
   sessionId: string,
-  changes: SyncSnapshotAttributes[],
   deviceId: string,
   progressCallback: (total: number, progressCount: number) => void,
 ): Promise<void> => {
-  let startOfPage = 0;
-  while (startOfPage < changes.length) {
-    // Fill the page up to whichever bound is reached first, measuring each record exactly once
-    let endOfPage = startOfPage;
-    let pageBytes = 0;
-    while (endOfPage < changes.length && endOfPage - startOfPage < MAX_RECORDS_PER_PAGE) {
-      const recordBytes = JSON.stringify(changes[endOfPage]).length;
-      // A record larger than the whole budget still has to go somewhere, so let it have a page to
-      // itself rather than stalling on an empty page
-      if (pageBytes + recordBytes > MAX_PAGE_BYTES && endOfPage > startOfPage) break;
-      pageBytes += recordBytes;
-      endOfPage += 1;
-    }
+  const tableName = getSnapshotTableName(sessionId);
 
-    const page = changes.slice(startOfPage, endOfPage);
+  // Sizes only: the records themselves are read a page at a time, so however many photos are
+  // waiting, only about one page of them is ever in memory (see snapshotOutgoingChanges)
+  const sizes: { id: number; bytes: number }[] = await database.executeSql(
+    `SELECT id::integer AS id, octet_length(data::text) AS bytes FROM ${tableName} ORDER BY id`,
+  );
+  const pages = paginateBySize(sizes, MAX_PAGE_BYTES, MAX_RECORDS_PER_PAGE);
+
+  let pushedCount = 0;
+  for (const page of pages) {
+    const pageBytes = page.reduce((sum, { bytes }) => sum + bytes, 0);
+    const [firstId, lastId] = [page[0].id, page[page.length - 1].id];
 
     if (page.length === 1 && pageBytes > OVERSIZED_RECORD_WARNING_BYTES) {
-      const [{ recordType, recordId }] = page;
+      const [{ record_type: recordType, record_id: recordId }]: {
+        record_type: string;
+        record_id: string;
+      }[] = await database.executeSql(
+        `SELECT record_type, data->>'id' AS record_id FROM ${tableName} WHERE id = ?`,
+        [firstId],
+      );
       log.warn(
         `pushOutgoingChanges: ${recordType} ${recordId} is ${pageBytes} bytes on its own. A single record can’t be split across pages, so this push will fail if it exceeds the server’s limit.`,
       );
@@ -74,11 +79,41 @@ export const pushOutgoingChanges = async (
 
     log.debug(`pushOutgoingChanges: pushing ${page.length} records (${pageBytes} bytes)`);
 
-    await post(`sync/${sessionId}/push`, { data: { changes: page } });
+    /*
+     * Postgres builds the request body, and we send that one string as it is. Reading the rows
+     * as objects and letting axios serialise them again made about six copies of every photo on
+     * its way out (PGlite's, the worker's, the main thread's, the parsed object, the JSON text,
+     * the browser's), and the garbage piled up faster than it was collected: pushing 7.5 MB
+     * photos one at a time still swung the page by ~500 MB on a 2.5 GB phone.
+     *
+     * The `json` column holds the text exactly as JSON.stringify wrote it during the snapshot, so
+     * `data` goes out byte for byte as before.
+     */
+    const [{ body }]: { body: string }[] = await database.executeSql(
+      `SELECT '{"changes":[' || string_agg(
+          json_build_object(
+            'direction', ?::text,
+            'recordType', record_type,
+            'recordId', data->>'id',
+            'isDeleted', is_deleted,
+            'data', data
+          )::text,
+          ',' ORDER BY id
+        ) || ']}' AS body
+        FROM ${tableName}
+        WHERE id BETWEEN ? AND ?`,
+      [SYNC_SESSION_DIRECTION.OUTGOING, firstId, lastId],
+    );
 
-    progressCallback(changes.length, endOfPage);
+    await post(`sync/${sessionId}/push`, {
+      data: body,
+      headers: { 'Content-Type': 'application/json' },
+      // Send the string as is. axios’s default would JSON.parse it first, just to check it
+      transformRequest: [(data: string) => data],
+    });
 
-    startOfPage = endOfPage;
+    pushedCount += page.length;
+    progressCallback(sizes.length, pushedCount);
   }
 
   for await (const { kind, message } of stream(() => ({

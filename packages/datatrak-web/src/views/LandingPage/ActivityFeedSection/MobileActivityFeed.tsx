@@ -9,12 +9,6 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import { StickyMobileHeader } from '../../../layout';
 import { InfiniteActivityFeed } from './InfiniteActivityFeed';
 
-const Wrapper = styled.div`
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: none;
-  }
-`;
-
 const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' })`
   float: right;
   padding-block-start: 1rem;
@@ -51,14 +45,10 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
     }
   };
 
+  // Not `keepMounted`: a closed dialog would keep the whole infinite feed mounted (and loading)
+  // behind the landing page
   return (
-    <Dialog
-      open={expanded}
-      TransitionComponent={Transition}
-      keepMounted
-      onClose={onClose}
-      fullScreen
-    >
+    <Dialog open={expanded} TransitionComponent={Transition} onClose={onClose} fullScreen>
       <ExpandedWrapper>
         <StickyMobileHeader onBack={onClose} onClick={scrollToTop}>
           Activity feed
@@ -79,12 +69,12 @@ export const MobileActivityFeed = () => {
   // Only show first page of items on mobile when not expanded
   const firstPageItems = activityFeed?.pages[0]?.items ?? [];
   return (
-    <Wrapper>
+    <div>
       <ActivityFeedList items={firstPageItems} />
       {hasNextPage && (
         <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed…</ViewMoreButton>
       )}
       <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} />
-    </Wrapper>
+    </div>
   );
 };

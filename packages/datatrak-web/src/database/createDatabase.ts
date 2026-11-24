@@ -28,7 +28,8 @@ export const createDatabase = async (
   // slow first run (initdb, then persisting the data directory) that can take longer than knex's
   // 60-second connection-acquisition timeout, and the first query would fail with 'Knex: Timeout
   // acquiring a connection'. Wait for PGlite directly, with no deadline, before any query runs.
-  await getConnectionConfig().pglite.waitReady;
+  const { pglite, startupFailure } = getConnectionConfig();
+  await Promise.race([pglite.waitReady, startupFailure]);
 
   onStage?.('migrating');
   await migrate(database);
