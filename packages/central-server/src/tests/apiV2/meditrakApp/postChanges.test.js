@@ -120,6 +120,8 @@ describe('POST /changes', () => {
       await expectNotSubmitted(surveyResponse);
     });
 
+    // If coerced to a string key, `['SubmitSurveyResponse']` would resolve to the handler yet fail
+    // the strict equality that selects survey responses for the permissions check, bypassing it
     it('returns an error when the action is an array containing a supported action', async () => {
       const surveyResponse = generateSurveyResponse();
       const response = await postChanges([
@@ -181,16 +183,6 @@ describe('POST /changes', () => {
       ]);
 
       expect(response.statusCode).to.equal(403);
-      await expectNotSubmitted(surveyResponse);
-    });
-
-    it('does not let an array action bypass the permissions check', async () => {
-      const surveyResponse = generateSurveyResponse();
-      const response = await postChanges([
-        { action: [SUBMIT_SURVEY_RESPONSE], payload: surveyResponse },
-      ]);
-
-      expect(response.statusCode).to.equal(400);
       await expectNotSubmitted(surveyResponse);
     });
   });
