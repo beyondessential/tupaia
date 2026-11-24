@@ -11,7 +11,7 @@ const booleanString = z.enum(['true', 'false']);
  */
 export const exportSurveyResponsesQuerySchema = z.object({
   itemCode: z.string().min(1),
-  organisationUnitCode: z.string().min(1).optional(),
+  organisationUnitCode: z.string().min(1),
   /** Comma-separated string, or repeated param (`?surveyCodes=a&surveyCodes=b`) */
   surveyCodes: z.union([z.string(), z.array(z.string())]).optional(),
   latest: booleanString.optional(),

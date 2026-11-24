@@ -66,7 +66,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       ...EMAIL_TIMEOUT_SETTINGS,
     };
 
-    if (organisationUnitCode?.length === 2) {
+    if (organisationUnitCode.length === 2) {
       // The code is only two characters, must be the 2 character country ISO code
       centralQuery.countryCode = organisationUnitCode;
     } else {

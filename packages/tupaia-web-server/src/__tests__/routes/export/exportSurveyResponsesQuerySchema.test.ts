@@ -31,8 +31,11 @@ describe('exportSurveyResponsesQuerySchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('accepts a query with only itemCode', () => {
-    const result = exportSurveyResponsesQuerySchema.safeParse({ itemCode: 'raw_data_download' });
+  it('accepts a query with only itemCode and organisationUnitCode', () => {
+    const result = exportSurveyResponsesQuerySchema.safeParse({
+      itemCode: 'raw_data_download',
+      organisationUnitCode: 'TO',
+    });
 
     expect(result.success).toBe(true);
   });
@@ -40,6 +43,7 @@ describe('exportSurveyResponsesQuerySchema', () => {
   const invalidQueries: [string, Record<string, unknown>, string][] = [
     ['missing itemCode', { itemCode: undefined }, 'itemCode'],
     ['repeated itemCode', { itemCode: ['a', 'b'] }, 'itemCode'],
+    ['missing organisationUnitCode', { organisationUnitCode: undefined }, 'organisationUnitCode'],
     ['empty organisationUnitCode', { organisationUnitCode: '' }, 'organisationUnitCode'],
     [
       'repeated organisationUnitCode',
