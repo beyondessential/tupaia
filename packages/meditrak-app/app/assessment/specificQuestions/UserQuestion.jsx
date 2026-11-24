@@ -1,10 +1,10 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { takeScrollControl, releaseScrollControl } from '../actions';
-import { getQuestion } from '../selectors';
 import { Autocomplete } from '../../widgets/Autocomplete/Autocomplete';
+import { releaseScrollControl, takeScrollControl } from '../actions';
+import { getQuestion } from '../selectors';
 
 const OPTIONS_PER_PAGE = 10;
 
