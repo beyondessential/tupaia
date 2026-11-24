@@ -10,8 +10,11 @@ const valueTranslators = {
 const translateValues = async (config, models) => {
   const translatedValuesWithFields = await Promise.all(
     Object.entries(config).map(async ([field, value]) => {
-      if (valueTranslators[field]) {
-        const translatedValue = await valueTranslators[field](value, models);
+      const translator = Object.hasOwn(valueTranslators, field)
+        ? valueTranslators[field]
+        : undefined;
+      if (typeof translator === 'function') {
+        const translatedValue = await translator(value, models);
         return [field, translatedValue];
       }
       return [field, value];
