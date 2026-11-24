@@ -51,23 +51,45 @@ for (const level of LEVELS) {
   };
 }
 
+/**
+ * Where the Postgres data directory actually lives.
+ *
+ * `idb://` is Emscripten's IDBFS, which is MEMFS with IndexedDB bolted on for durability: every
+ * file is held as a JS `Uint8Array` for the life of the session, so the *whole database* is
+ * resident in this renderer's memory — hundreds of megabytes for a large project, invisible to
+ * both `performance.memory` (which ignores ArrayBuffers) and the WASM heap size.
+ *
+ * `opfs-ahp://` keeps the files in the Origin Private File System instead, so Postgres reads and
+ * writes pages on demand the way it would on a real disk, and only the working set is in memory.
+ * We use it wherever it is available, and fall back to IndexedDB otherwise: when the capability
+ * check fails (Chrome below 102), or when PGlite fails to start on OPFS anyway (Safari, where the
+ * access-handle pool aborts even though every check passes).
+ *
+ * Note the two are separate stores. A device that switches starts from an empty database and
+ * re-syncs from scratch.
+ */
+const canUseOpfs = () =>
+  typeof FileSystemFileHandle !== 'undefined' &&
+  'createSyncAccessHandle' in FileSystemFileHandle.prototype &&
+  typeof navigator.storage?.getDirectory === 'function';
+
+const toOpfsDataDir = (dataDir: string) => dataDir.replace(/^idb:\/\//, 'opfs-ahp://');
+
 worker({
   init: async options => {
     /*
-     * Note on `relaxedDurability`: it makes every write to IndexedDB fire-and-forget, which is a
-     * large speed-up, but it is unsafe during first-run setup. PGlite creates the database cluster,
-     * then persists the whole data directory with `await syncToFs()` — and under relaxed durability
-     * that await returns before the write lands. Setup reports success, the app carries on, and if
-     * anything closes or reloads the page before the background write finishes, IndexedDB is left
-     * holding a partial data directory. PGlite then finds it on the next launch, takes its "found
-     * DB, resuming" path instead of running initdb again, and the database comes up missing pieces
-     * (which surfaces as errors like `language "plpgsql" does not exist`). That state is permanent
-     * until storage is cleared.
+     * Note on `relaxedDurability`: it makes every filesystem write fire-and-forget, which is a large
+     * speed-up, but it is unsafe during first-run setup. PGlite creates the database cluster, then
+     * persists the whole data directory with `await syncToFs()` — and under relaxed durability that
+     * await returns before the write lands. If anything closes or reloads the page before the
+     * background write finishes, storage is left holding a partial data directory. PGlite then
+     * finds it on the next launch, takes its "found DB, resuming" path instead of running initdb
+     * again, and the database comes up missing pieces (which surfaces as errors like `language
+     * "plpgsql" does not exist`). That state is permanent until storage is cleared.
      *
-     * Note also that with the flag on there is no way to force a durable flush: `syncToFs()` never
-     * awaits the real write, so an explicit call at a safe point doesn’t help.
-     *
-     * If reinstating it, gate it so it is only enabled once a first startup has completed.
+     * With the flag on there is no way to force a durable flush either — `syncToFs()` never awaits
+     * the real write. Off for now; if reinstating it, gate it so it is only enabled once a first
+     * startup has completed, or enable it on OPFS only.
      */
     // WebAssembly.compile rather than compileStreaming, so a misconfigured `Content-Type` on the
     // .wasm file can't break startup
@@ -78,21 +100,45 @@ worker({
       fetch(fsBundleUrl).then(response => response.blob()),
     ]);
 
-    const db = new PGlite({
-      dataDir: options.dataDir,
-      debug: options.debug,
-      wasmModule,
-      fsBundle,
-      // Fire-and-forget IndexedDB writes — a large speed-up, especially for bulk writes like
-      // sync. Only enabled once a first startup has fully completed (see getConnectionConfig),
-      // because during first-run setup it is dangerous: PGlite persists the freshly created data
-      // directory with `await syncToFs()`, and under relaxed durability that await returns before
-      // the write lands — anything closing the page at the wrong moment leaves IndexedDB holding
-      // a partial data directory, which PGlite then "resumes" on every later launch, permanently
-      // broken (e.g. `language "plpgsql" does not exist`) until storage is cleared.
-      relaxedDurability: true,
-    });
-    await db.waitReady;
+    const openDatabase = async (dataDir: string | undefined) => {
+      const db = new PGlite({
+        dataDir,
+        debug: options.debug,
+        wasmModule,
+        fsBundle,
+        relaxedDurability: false,
+      });
+      await db.waitReady;
+      return db;
+    };
+
+    const openWithOpfsFallback = async (): Promise<{ db: PGlite; dataDir: string | undefined }> => {
+      const requested = options.dataDir;
+      if (!requested?.startsWith('idb://') || !canUseOpfs()) {
+        return { db: await openDatabase(requested), dataDir: requested };
+      }
+
+      const opfsDataDir = toOpfsDataDir(requested);
+      try {
+        const db = await openDatabase(opfsDataDir);
+        return { db, dataDir: opfsDataDir };
+      } catch (error) {
+        console.warn('PGlite could not start on OPFS, falling back to IndexedDB', error);
+        return { db: await openDatabase(requested), dataDir: requested };
+      }
+    };
+
+    const { db, dataDir } = await openWithOpfsFallback();
+
+    /*
+     * Reported only once the database is actually up, so the log line describes what started
+     * rather than what we asked for.
+     *
+     * Rides the console forwarding above, so it reaches the app's log too.
+     */
+    console.log(
+      `PGlite filesystem: ${dataDir?.split('://')[0] ?? 'memory'} (requested ${options.dataDir})`,
+    );
 
     // Default parser for TIMESTAMP (without time zone) is the `Date` constructor, but that
     // interprets the input string in UTC. We want to treat these as floating times. Must be set
