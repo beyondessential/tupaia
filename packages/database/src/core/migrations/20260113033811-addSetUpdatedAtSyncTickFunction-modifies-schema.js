@@ -15,7 +15,11 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  return db.runSql(`
+  await db.runSql(`
+    CREATE EXTENSION IF NOT EXISTS plpgsql;
+  `);
+
+  return await db.runSql(`
     CREATE OR REPLACE FUNCTION set_updated_at_sync_tick()
       RETURNS trigger
       LANGUAGE plpgsql AS
