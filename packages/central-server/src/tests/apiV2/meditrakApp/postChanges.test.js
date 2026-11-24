@@ -162,6 +162,20 @@ describe('POST /changes', () => {
       const response = await postChanges([{ action: SUBMIT_SURVEY_RESPONSE }]);
       expect(response.statusCode).to.equal(400);
     });
+
+    const malformedAnswers = [null, {}, 'answers', 1, [null], ['answer'], [[]]];
+
+    for (const answers of malformedAnswers) {
+      it(`returns an error when the answers are ${JSON.stringify(answers)}`, async () => {
+        const surveyResponse = { ...generateSurveyResponse(), answers };
+        const response = await postChanges([
+          { action: SUBMIT_SURVEY_RESPONSE, payload: surveyResponse },
+        ]);
+
+        expect(response.statusCode).to.equal(400);
+        await expectNotSubmitted(surveyResponse);
+      });
+    }
   });
 
   describe('Permissions', () => {

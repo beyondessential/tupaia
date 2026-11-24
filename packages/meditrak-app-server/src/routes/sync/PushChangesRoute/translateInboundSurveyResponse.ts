@@ -1,6 +1,7 @@
 import { cloneDeep } from 'es-toolkit/compat';
 import { QuestionModel, SurveyModel } from '@tupaia/database';
 import { EntityModel, UserModel } from '@tupaia/server-boilerplate';
+import { isObject } from '@tupaia/tsutils';
 import { ValidationError } from '@tupaia/utils';
 import { Entity } from '@tupaia/types';
 import { MeditrakAppServerModelRegistry } from '../../../types';
@@ -99,6 +100,17 @@ const requiresSurveyResponseTranslation = (
   return false;
 };
 
+/**
+ * Translation reads into the answers, so their shape has to be checked before the survey response
+ * as a whole is validated. Absent answers are left for validation to reject.
+ */
+const assertAnswersAreTranslatable = ({ answers }: RawSurveyResponseObject) => {
+  if (answers === undefined) return;
+  if (!Array.isArray(answers) || !answers.every(isObject)) {
+    throw new ValidationError('Survey response answers must be an array of objects');
+  }
+};
+
 export async function translateSurveyResponseObject(
   models: MeditrakAppServerModelRegistry,
   surveyResponseObject?: RawSurveyResponseObject,
@@ -106,6 +118,7 @@ export async function translateSurveyResponseObject(
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
   }
+  assertAnswersAreTranslatable(surveyResponseObject);
 
   const surveyResponseTranslators = constructSurveyResponseTranslators(models);
   const answerTranslators = constructAnswerTranslators(models);

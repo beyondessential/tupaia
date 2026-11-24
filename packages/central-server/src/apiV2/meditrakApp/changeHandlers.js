@@ -1,5 +1,6 @@
 import { cloneDeep } from 'es-toolkit/compat';
 
+import { isObject } from '@tupaia/tsutils';
 import {
   constructEveryItem,
   constructIsEmptyOr,
@@ -114,10 +115,22 @@ async function validateSurveyResponseObject(models, surveyResponseObject) {
   }
 }
 
+/**
+ * Translation reads into the answers, so their shape has to be checked before the survey response
+ * as a whole is validated. Absent answers are left for validation to reject.
+ */
+function assertAnswersAreTranslatable({ answers }) {
+  if (answers === undefined) return;
+  if (!Array.isArray(answers) || !answers.every(isObject)) {
+    throw new ValidationError('Survey response answers must be an array of objects');
+  }
+}
+
 async function translateSurveyResponseObject(models, surveyResponseObject) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
   }
+  assertAnswersAreTranslatable(surveyResponseObject);
 
   const surveyResponseTranslators = constructSurveyResponseTranslators(models);
   const answerTranslators = constructAnswerTranslators(models);

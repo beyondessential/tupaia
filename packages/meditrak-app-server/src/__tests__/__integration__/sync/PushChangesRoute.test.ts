@@ -386,6 +386,24 @@ describe('changes (POST)', () => {
 
         expect(response.statusCode).toBe(400);
       });
+
+      const malformedAnswers = [null, {}, 'answers', 1, [null], ['answer'], [[]]];
+
+      it.each(malformedAnswers.map(answers => ({ answers })))(
+        'rejects if the answers are $answers',
+        async ({ answers }) => {
+          const surveyResponseObject = generateDummySurveyResponse({ answers });
+
+          const response = await app.post('changes', {
+            headers: {
+              Authorization: authHeader,
+            },
+            body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
+          });
+
+          expect(response.statusCode).toBe(400);
+        },
+      );
     });
   });
 });
