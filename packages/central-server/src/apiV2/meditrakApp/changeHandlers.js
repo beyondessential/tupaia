@@ -150,20 +150,18 @@ const requiresSurveyResponseTranslation = (
   surveyResponseTranslators,
   answerTranslators,
 ) => {
-  const surveyResponseTranslatorFields = Object.keys(surveyResponseTranslators);
   if (
-    Object.keys(surveyResponseObject).some(field => surveyResponseTranslatorFields.includes(field))
+    Object.keys(surveyResponseObject).some(field => Object.hasOwn(surveyResponseTranslators, field))
   ) {
     return true;
   }
 
-  const answerTranslatorFields = Object.keys(answerTranslators);
   const { answers } = surveyResponseObject;
   if (Array.isArray(answers)) {
     return answers.some(
       answer =>
         answer.body === '' ||
-        Object.keys(answer).some(field => answerTranslatorFields.includes(field)),
+        Object.keys(answer).some(field => Object.hasOwn(answerTranslators, field)),
     );
   }
 
