@@ -186,4 +186,29 @@ describe('POST /changes', () => {
       await expectNotSubmitted(surveyResponse);
     });
   });
+
+  describe('Codes matching no record', () => {
+    const testCases = [
+      { codeField: 'survey_code', idField: 'survey_id' },
+      { codeField: 'entity_code', idField: 'entity_id' },
+      { codeField: 'user_email', idField: 'user_id' },
+    ];
+
+    for (const { codeField, idField } of testCases) {
+      it(`returns an error naming the unmatched ${codeField}`, async () => {
+        const unmatchedValue = `TEST_POST_CHANGES_UNMATCHED_${codeField}`;
+        const surveyResponse = generateSurveyResponse();
+        delete surveyResponse[idField];
+        surveyResponse[codeField] = unmatchedValue;
+
+        const response = await postChanges([
+          { action: SUBMIT_SURVEY_RESPONSE, payload: surveyResponse },
+        ]);
+
+        expect(response.statusCode).to.equal(500);
+        expect(response.body.error).to.include(unmatchedValue);
+        await expectNotSubmitted(surveyResponse);
+      });
+    }
+  });
 });

@@ -26,7 +26,7 @@ const translateEntityCodeToId = async (entityModel: EntityModel, code: string) =
  * { survey_code: "PSSS_Confirmed_WNR" } => { entity_id: "5fb5ff5b61f76a7cdf06233f" }
  */
 const translateSurveyCodeToId = async (surveyModel: SurveyModel, code: string) => {
-  const survey = await surveyModel.findOne({ code });
+  const survey = await surveyModel.findOneOrThrow({ code });
   return { survey_id: survey.id };
 };
 
@@ -34,7 +34,7 @@ const translateSurveyCodeToId = async (surveyModel: SurveyModel, code: string) =
  * { question_code: "RHS1UNFPA68" } => { question_id: "5e01604261f76a4835c6600c" }
  */
 export const translateQuestionCodeToId = async (questionModel: QuestionModel, code: string) => {
-  const question = await questionModel.findOne({ code });
+  const question = await questionModel.findOneOrThrow({ code });
   return { question_id: question.id };
 };
 

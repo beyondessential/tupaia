@@ -215,6 +215,39 @@ describe('changes (POST)', () => {
       });
     });
 
+    describe('Codes matching no record', () => {
+      const submitSurveyResponse = (surveyResponseObject: RawSurveyResponseObject) =>
+        app.post('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
+        });
+
+      it('returns an error naming the unmatched survey_code', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        delete surveyResponseObject.survey_id;
+        surveyResponseObject.survey_code = 'TEST_UNMATCHED_SURVEY';
+
+        const response = await submitSurveyResponse(surveyResponseObject);
+
+        expect(response.statusCode).toBe(500);
+        expect(response.body.error).toContain('TEST_UNMATCHED_SURVEY');
+      });
+
+      it('returns an error naming the unmatched question_code', async () => {
+        const answerObject: Answer = generateDummyAnswer();
+        delete answerObject.question_id;
+        answerObject.question_code = 'TEST_UNMATCHED_QUESTION';
+        const surveyResponseObject = generateDummySurveyResponse({ answers: [answerObject] });
+
+        const response = await submitSurveyResponse(surveyResponseObject);
+
+        expect(response.statusCode).toBe(500);
+        expect(response.body.error).toContain('TEST_UNMATCHED_QUESTION');
+      });
+    });
+
     describe('Survey responses containing images', () => {
       it('correctly uploads an image', async () => {
         const id = generateId();
