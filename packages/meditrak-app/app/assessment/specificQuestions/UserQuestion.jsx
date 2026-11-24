@@ -75,7 +75,7 @@ const UserQuestionComponent = ({ onSelectUser, scrollIntoFocus, selectedUserId, 
   return (
     <View>
       <Autocomplete
-        placeholder="Search users..."
+        placeholder="Search users…"
         selectedOption={selectedUser?.name ?? null}
         handleSelectOption={handleSelectOption}
         options={optionList}
