@@ -229,7 +229,6 @@ export class TupaiaApi {
       // Body wasn’t JSON, e.g. an HTML error page from a proxy in front of the server. Report the
       // status code, which is more useful than the parser’s “Unexpected character: <”.
       const message = `Server didn’t respond with JSON (HTTP ${response.status})`;
-      analytics.trackEvent('Request failed', { requestMethod, apiEndpoint, error: message });
       const error = new Error(message);
       // Keep the parser’s error (distinguishes empty body from HTML, etc.) for Bugsnag and
       // debugging. Assigned rather than passed as `{ cause }` so it doesn’t depend on Hermes
