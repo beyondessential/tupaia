@@ -19,7 +19,7 @@ env:
 jobs:
   validate_branch_name:
     name: Validate branch name
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     steps:
       - uses: actions/checkout@v5
       - name: Validate branch name
@@ -27,7 +27,7 @@ jobs:
 
   validate_migration:
     name: Validate new migrations
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     steps:
       - uses: actions/checkout@v5
       - name: Validate new migration
@@ -35,7 +35,7 @@ jobs:
 
   validate_tests:
     name: Validate tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-yarn
@@ -50,7 +50,7 @@ jobs:
 
   validate_types:
     name: Validate types
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     env:
       DB_NAME: tupaia_test
       DB_PASSWORD: opensesame1
@@ -89,7 +89,7 @@ jobs:
 
   validate_lockfile:
     name: Validate lockfile
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-yarn
@@ -101,7 +101,7 @@ jobs:
 
   package_list:
     name: Generate package list
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     outputs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
@@ -119,7 +119,7 @@ jobs:
     name: Build & test
     needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     env:
       # common
       DB_NAME: tupaia_test
@@ -190,7 +190,7 @@ jobs:
       - validate_tests
       - validate_types
       - run_tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     steps:
       - name: Green if all jobs are green
         uses: re-actors/alls-green@release/v1
