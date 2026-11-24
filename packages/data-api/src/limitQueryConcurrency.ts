@@ -1,4 +1,6 @@
-import pLimit from 'p-limit';
+import { limitAsync } from 'es-toolkit';
+
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 type Limiter = <T>(fn: () => Promise<T>) => Promise<T>;
 
@@ -17,13 +19,15 @@ let limiter: Limiter | undefined;
  */
 const getLimiter = (): Limiter => {
   if (!limiter) {
-    const raw = process.env.ANALYTICS_QUERY_CONCURRENCY;
+    const raw = getEnvVarOrDefault('ANALYTICS_QUERY_CONCURRENCY', undefined);
     if (!raw) {
       limiter = runImmediately;
-    } else if (/^\d+$/.test(raw) && Number(raw) > 0) {
-      limiter = pLimit(Number(raw));
     } else {
-      throw new Error(`ANALYTICS_QUERY_CONCURRENCY must be a positive integer, got "${raw}"`);
+      const concurrency = Number.parseInt(raw, 10);
+      if (!/^\d+$/.test(raw) || !Number.isFinite(concurrency) || concurrency <= 0) {
+        throw new Error(`ANALYTICS_QUERY_CONCURRENCY must be a positive integer, got "${raw}"`);
+      }
+      limiter = limitAsync<Limiter>(runImmediately, concurrency);
     }
   }
   return limiter;

@@ -154,10 +154,10 @@ install_pm2() {
   # Ideally match version in root package.json, which devs use locally
   if ! command -v pm2 &>/dev/null; then
     echo 'PM2 not installed. Installing...'
-    npm install --global pm2@^7.0.4
+    npm install --global --min-release-age=7 pm2@^7.1.2
   elif (($(pm2 --version | cut -d . -f 1) != 7)); then
-    echo "PM2 $(pm2 --version) is installed. Replacing with ^7.0.4..."
-    npm install --global pm2@^7.0.4
+    echo "PM2 $(pm2 --version) is installed. Replacing with ^7.1.2..."
+    npm install --global --min-release-age=7 pm2@^7.1.2
   fi
   echo "PM2 $(pm2 --version) is installed"
 
