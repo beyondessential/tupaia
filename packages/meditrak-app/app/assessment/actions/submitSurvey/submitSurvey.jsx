@@ -23,7 +23,7 @@ const getValidatedScreens = (dispatch, getState) => {
 
 export const submitSurvey =
   (surveyId, userId, startTime, questions, shouldRepeat) =>
-  async (dispatch, getState, { database, analytics }) => {
+  async (dispatch, getState, { database }) => {
     const validatedScreens = getValidatedScreens(dispatch, getState);
     if (validatedScreens.some(screen => doesScreenHaveValidationErrors(screen))) {
       return; // Early return, do not submit if there are validation errors
@@ -71,7 +71,6 @@ export const submitSurvey =
         entityObjects: upsertEntityObjects,
         optionObjects: newOptions,
       });
-      analytics.trackEvent('Submit Survey', response);
     }
 
     const isGeneratingQrCodes = qrCodes.length > 0;

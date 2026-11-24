@@ -58,7 +58,6 @@ export class HomeHeader extends PureComponent {
     return (
       <View style={[localStyles.section, localStyles.rewardSection]}>
         <TouchableOpacity
-          analyticsLabel="Home Header: Coconut"
           style={[localStyles.rewardSectionItem, localStyles.rewardSectionItemFirst]}
           onPress={() => this.setState({ isCoconutsInfoVisible: !isCoconutsInfoVisible })}
         >
@@ -81,7 +80,6 @@ export class HomeHeader extends PureComponent {
           ) : null}
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel="Home Header: Pig"
           style={localStyles.rewardSectionItem}
           onPress={() => this.setState({ isPigsInfoVisible: !isPigsInfoVisible })}
         >
@@ -130,7 +128,7 @@ export class HomeHeader extends PureComponent {
           {isFeedLoading ? (
             <ActivityIndicator />
           ) : (
-            <TouchableOpacity analyticsLabel="Home Header: Reload feed" onPress={onFetchFeedLatest}>
+            <TouchableOpacity onPress={onFetchFeedLatest}>
               <Icon name="refresh" size={20} color={THEME_TEXT_COLOR_FOUR} />
             </TouchableOpacity>
           )}

@@ -51,7 +51,7 @@ export const setSyncComplete = lastSyncTime => async dispatch => {
 
 export const synchroniseDatabase =
   () =>
-  async (dispatch, getState, { database, analytics }) => {
+  async (dispatch, getState, { database }) => {
     dispatch(setSyncProgress(PROGRESS_LOADING));
     return database.synchronise(dispatch);
   };

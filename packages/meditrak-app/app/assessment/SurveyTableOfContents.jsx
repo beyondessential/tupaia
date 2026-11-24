@@ -20,7 +20,6 @@ export const SurveyTableOfContents = ({
   <View>
     {screens.map(({ screenNumber, components }, index) => (
       <TouchableOpacity
-        analyticsLabel={`Table of Contents: ${screenNumber}`}
         key={screenNumber}
         style={styles.screenItem}
         onPress={() => onSelectScreen(index)}
@@ -36,10 +35,7 @@ export const SurveyTableOfContents = ({
         </Text>
       </TouchableOpacity>
     ))}
-    <TouchableOpacity
-      onPress={() => onSelectScreen(screens.length)}
-      analyticsLabel="Table of Contents: Submit survey"
-    >
+    <TouchableOpacity onPress={() => onSelectScreen(screens.length)}>
       <Text
         style={[
           styles.screenTextBold,

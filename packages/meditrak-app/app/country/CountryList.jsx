@@ -28,11 +28,7 @@ export class CountryList extends PureComponent {
     const { onRequestCountryAccess } = this.props;
 
     return (
-      <TouchableOpacity
-        onPress={onRequestCountryAccess}
-        style={localStyles.option}
-        analyticsLabel="Clinic Country List: Request Access"
-      >
+      <TouchableOpacity onPress={onRequestCountryAccess} style={localStyles.option}>
         <Text style={localStyles.requestAccessButtonText}>Request access to more countries</Text>
       </TouchableOpacity>
     );
@@ -52,7 +48,6 @@ export class CountryList extends PureComponent {
       <ScrollView style={localStyles.list}>
         {countryAvailableOptions.map(({ key, label }) => (
           <TouchableOpacity
-            analyticsLabel={`Clinic Country List: ${label}`}
             onPress={() => onChangeCountry(key, label)}
             key={key}
             style={localStyles.option}

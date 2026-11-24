@@ -25,7 +25,6 @@ export const ProgressActionBar = ({
 }) => (
   <View style={[localStyles.wrapper, style]}>
     <TouchableOpacity
-      analyticsLabel="Progress Action Bar: Previous"
       style={localStyles.buttonWrapper}
       onPress={onPressPrevious}
       disabled={!isPreviousEnabled}
@@ -35,7 +34,6 @@ export const ProgressActionBar = ({
       </View>
     </TouchableOpacity>
     <TouchableOpacity
-      analyticsLabel="Progress Action Bar: Table of Contents"
       style={localStyles.progressWrapper}
       onPress={onPressToc}
       disabled={!isTableOfContentsEnabled}
@@ -48,7 +46,6 @@ export const ProgressActionBar = ({
       </View>
     </TouchableOpacity>
     <TouchableOpacity
-      analyticsLabel="Progress Action Bar: Next"
       style={localStyles.buttonWrapper}
       onPress={onPressNext}
       disabled={!isNextEnabled}

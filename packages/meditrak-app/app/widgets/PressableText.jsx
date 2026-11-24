@@ -6,7 +6,7 @@ import { TouchableOpacity } from './Touchable';
 import { Text } from './index';
 
 export const PressableText = ({ children, onPress, style }) => (
-  <TouchableOpacity analyticsLabel="Pressable Text" onPress={onPress} style={style}>
+  <TouchableOpacity onPress={onPress} style={style}>
     <Text>{children}</Text>
   </TouchableOpacity>
 );

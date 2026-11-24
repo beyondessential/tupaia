@@ -10,20 +10,12 @@ import { getIsSyncing } from '../sync';
 
 const DumbHeaderToolbar = ({ onShowMenu, onPressSyncStatus, isSyncing }) => (
   <View style={localStyles.container}>
-    <TouchableOpacity
-      analyticsLabel="Header Toolbar: Sync"
-      onPress={onPressSyncStatus}
-      style={localStyles.rightButton}
-    >
+    <TouchableOpacity onPress={onPressSyncStatus} style={localStyles.rightButton}>
       <AnimatedView style={localStyles.rightButtonIcon} shouldAnimate={isSyncing}>
         <Icon name="refresh" style={[localStyles.icon]} />
       </AnimatedView>
     </TouchableOpacity>
-    <TouchableOpacity
-      analyticsLabel="Header Toolbar: Menu"
-      onPress={onShowMenu}
-      style={localStyles.rightButton}
-    >
+    <TouchableOpacity onPress={onShowMenu} style={localStyles.rightButton}>
       <Icon name="bars" style={[localStyles.icon, localStyles.rightButtonIcon]} />
     </TouchableOpacity>
   </View>
