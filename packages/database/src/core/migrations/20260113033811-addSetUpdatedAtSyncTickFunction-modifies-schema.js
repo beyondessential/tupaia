@@ -14,7 +14,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
+exports.up = async function (db) {
   return db.runSql(`
     CREATE OR REPLACE FUNCTION set_updated_at_sync_tick()
       RETURNS trigger
