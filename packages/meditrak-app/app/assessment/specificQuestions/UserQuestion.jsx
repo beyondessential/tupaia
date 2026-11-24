@@ -42,9 +42,7 @@ const UserQuestionComponent = ({ onSelectUser, scrollIntoFocus, selectedUserId, 
 
   const optionList = generateOptionList();
 
-  const getSelectedUser = () => users.find(user => user.id === selectedUserId);
-
-  const selectedUser = getSelectedUser();
+  const selectedUser = users.find(user => user.id === selectedUserId)();
 
   const handleEndReached = () => {
     // If we've reached the end of the list, don't try to load more
