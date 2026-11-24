@@ -24,6 +24,7 @@ describe('POST /changes', () => {
 
   const generateSurveyResponse = () => ({
     id: generateId(),
+    assessor_name: generateValueOfType('text'),
     start_time: generateValueOfType('date'),
     end_time: generateValueOfType('date'),
     timestamp: generateValueOfType('date'),
