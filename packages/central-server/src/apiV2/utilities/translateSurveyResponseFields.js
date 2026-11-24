@@ -5,6 +5,7 @@ export const translateUserEmailToIdAndAssessorName = async (userModel, email) =>
   const user = await userModel.findOneOrThrow(
     { email },
     { columns: ['id', 'first_name', 'last_name'] }, // Names are needed for fullName
+    `No user found with email ${email}`,
   );
   return { user_id: user.id, assessor_name: user.fullName };
 };
@@ -13,7 +14,11 @@ export const translateUserEmailToIdAndAssessorName = async (userModel, email) =>
  * { entity_code: "TO" } => { entity_id: "5d3f884471bb2e31bfacae23" }
  */
 export const translateEntityCodeToId = async (entityModel, code) => {
-  const entity = await entityModel.findOneOrThrow({ code }, { columns: ['id'] });
+  const entity = await entityModel.findOneOrThrow(
+    { code },
+    { columns: ['id'] },
+    `No entity found with code ${code}`,
+  );
   return { entity_id: entity.id };
 };
 
@@ -21,6 +26,10 @@ export const translateEntityCodeToId = async (entityModel, code) => {
  * { survey_code: "PSSS_Confirmed_WNR" } => { entity_id: "5fb5ff5b61f76a7cdf06233f" }
  */
 export const translateSurveyCodeToId = async (surveyModel, code) => {
-  const survey = await surveyModel.findOneOrThrow({ code }, { columns: ['id'] });
+  const survey = await surveyModel.findOneOrThrow(
+    { code },
+    { columns: ['id'] },
+    `No survey found with code ${code}`,
+  );
   return { survey_id: survey.id };
 };
