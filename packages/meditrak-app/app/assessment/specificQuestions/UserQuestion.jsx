@@ -20,27 +20,24 @@ const UserQuestionComponent = ({ onSelectUser, scrollIntoFocus, selectedUserId, 
   const [searchTerm, setSearchTerm] = useState('');
   const [maxResults, setMaxResults] = useState(OPTIONS_PER_PAGE);
 
-  const sortList = list => list.sort((a, b) => a.localeCompare(b));
-
-  const userList = sortList(users?.map(user => user.name) ?? []);
+  const sortedNames = users?.map(user => user.name).sort((a, b) => a.localeCompare(b)) ?? [];
 
   const generateOptionList = () => {
-    if (!searchTerm) return userList.slice(0, maxResults);
+    if (!searchTerm) return sortedNames.slice(0, maxResults);
 
-    const normalisedSearchTerm = normalize(searchTerm);
-    const usersThatStartWithSearchTerm = [];
-    const usersThatContainSearchTerm = [];
-    for (const user of userList) {
-      const normalisedName = normalize(user);
-      if (normalisedName.startsWith(normalisedSearchTerm)) {
-        usersThatStartWithSearchTerm.push(user);
-      } else if (normalisedName.includes(normalisedSearchTerm)) {
-        usersThatContainSearchTerm.push(user);
+    const normalizedSearchTerm = normalize(searchTerm);
+    const prefixMatches = [];
+    const substringMatches = [];
+    for (const name of sortedNames) {
+      const normalizedName = normalize(name);
+      if (normalizedName.startsWith(normalizedSearchTerm)) {
+        prefixMatches.push(name);
+      } else if (normalizedName.includes(normalizedSearchTerm)) {
+        substringMatches.push(name);
       }
     }
 
-    // return first the users that start with the search term, then the users that contain the search term
-    return [...usersThatStartWithSearchTerm, ...usersThatContainSearchTerm].slice(0, maxResults);
+    return [...prefixMatches, ...substringMatches].slice(0, maxResults);
   };
 
   const optionList = generateOptionList();
