@@ -16,16 +16,6 @@ const DEVELOPER_EMAIL_ADDRESSES = [
   'edmofro@gmail.com',
 ];
 
-/**
- * These must keep a stable reference between calls to mapStateToProps. This container is an
- * ancestor of every screen, so if its mapped props look changed on every Redux action, react-redux
- * delays the store update to everything beneath it by one render. Controlled text inputs then get
- * a stale value for a render, which makes the cursor drift back when editing mid-text on Android.
- *
- * For the same reason, mapStateToProps must not return any state that a text input writes on each
- * keystroke. `emailAddress` (written by the login screen) is read there only to choose the
- * sections, and deliberately not passed on.
- */
 const SECTIONS = /** @type {const} */ ([
   [
     {
