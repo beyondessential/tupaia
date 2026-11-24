@@ -15,6 +15,7 @@ class DumbQuestionScreen extends React.Component {
 
     this.textInputRefs = {};
     this.questionLayouts = {};
+    this.scrollViewRef = React.createRef();
 
     this.state = {
       focusedQuestionId: null,
@@ -49,7 +50,7 @@ class DumbQuestionScreen extends React.Component {
     if (!layout) {
       return;
     }
-    this.scrollViewRef.scrollTo({ y: layout.y });
+    this.scrollViewRef.current?.scrollTo({ y: layout.y });
   };
 
   renderQuestions(questions) {
@@ -106,9 +107,7 @@ class DumbQuestionScreen extends React.Component {
   render() {
     return (
       <ScrollView
-        ref={scrollViewRef => {
-          this.scrollViewRef = scrollViewRef;
-        }}
+        ref={this.scrollViewRef}
         style={localStyles.scrollView}
         scrollEnabled={!this.props.isChildScrolling}
         nestedScrollEnabled
