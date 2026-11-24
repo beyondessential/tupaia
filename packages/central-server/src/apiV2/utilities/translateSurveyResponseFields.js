@@ -21,3 +21,14 @@ export const translateSurveyCodeToId = async (surveyModel, code) => {
   const survey = await surveyModel.findOne({ code });
   return { survey_id: survey.id };
 };
+
+/**
+ * { question_code: "RHS1UNFPA68" } => { question_id: "5e01604261f76a4835c6600c" }
+ *
+ * Not to be confused with `translateQuestionCodeToId`, which translates question codes within a
+ * survey question’s config to `{ questionId }`.
+ */
+export const translateAnswerQuestionCodeToId = async (questionModel, code) => {
+  const question = await questionModel.findOneOrThrow({ code });
+  return { question_id: question.id };
+};

@@ -22,6 +22,7 @@ export { replaceQuestionIdsWithCodes } from './replaceQuestionIdsWithCodes';
 export { translateExpression } from './translateExpression';
 export { getDollarPrefixedExpressionVariables } from './getDollarPrefixedExpressionVariables';
 export {
+  translateAnswerQuestionCodeToId,
   translateEntityCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,

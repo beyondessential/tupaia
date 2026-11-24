@@ -14,9 +14,9 @@ import {
   ValidationError,
 } from '@tupaia/utils';
 import {
+  translateAnswerQuestionCodeToId,
   translateEntityCodeToId,
   translateObjectFields,
-  translateQuestionCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
 } from '../utilities';
@@ -183,7 +183,7 @@ const constructSurveyResponseTranslators = models => ({
 });
 
 const constructAnswerTranslators = models => ({
-  question_code: questionCode => translateQuestionCodeToId(models.question, questionCode),
+  question_code: questionCode => translateAnswerQuestionCodeToId(models.question, questionCode),
 });
 
 const constructEntitiesUpsertedValidators = models => ({

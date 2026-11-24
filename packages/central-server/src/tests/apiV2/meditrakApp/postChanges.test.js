@@ -91,6 +91,23 @@ describe('POST /changes', () => {
     });
   });
 
+  describe('Translating survey responses', () => {
+    it('translates the question_code of an answer to its question_id', async () => {
+      const surveyResponse = generateSurveyResponse();
+      const [answer] = surveyResponse.answers;
+      delete answer.question_id;
+      answer.question_code = 'TEST_POST_CHANGES_QUESTION';
+
+      const response = await postChanges([
+        { action: SUBMIT_SURVEY_RESPONSE, payload: surveyResponse },
+      ]);
+
+      expect(response.statusCode).to.equal(200);
+      const record = await models.answer.findOne({ survey_response_id: surveyResponse.id });
+      expect(record.question_id).to.equal(questionId);
+    });
+  });
+
   describe('Unsupported change actions', () => {
     const unsupportedActions = [
       'NotAnAction',
