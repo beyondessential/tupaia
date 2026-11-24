@@ -222,7 +222,20 @@ export class TupaiaApi {
       return this.request(requestMethod, apiEndpoint, queryParameters, body, null, false);
     }
 
-    const responseJson = await response.json();
+    let responseJson;
+    try {
+      responseJson = await response.json();
+    } catch {
+      // Body wasn’t JSON, e.g. an HTML error page from a proxy in front of the server. Report the
+      // status code, which is more useful than the parser’s “Unexpected character: <”.
+      const message = `Server didn’t respond with JSON (HTTP ${response.status})`;
+      analytics.trackEvent('Request failed', {
+        requestMethod,
+        apiEndpoint,
+        error: message,
+      });
+      throw new Error(message);
+    }
     // If server responded with 410, i.e. old API version, log the user out and get them to update
     if (response.status === 410 && this.reduxStore) {
       this.reduxStore.dispatch(logoutWithError(responseJson.error));
