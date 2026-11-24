@@ -24,7 +24,11 @@ export const snapshotOutgoingChanges = async (
   let totalCount = 0;
   const snapshotTableName = getSnapshotTableName(sessionId);
   const CHUNK_SIZE = config.maxRecordsPerSnapshotChunk;
-  const avoidRepull = config.lookupTable.avoidRepull;
+  // Records this device pushed are skipped, as it already has them. Except in a full pull (since -1),
+  // where the device has no data: it may have been wiped (e.g. on logging in as someone else) and
+  // kept its device ID. Skipping them then would lose them, and fail the pull on other records that
+  // reference them (TUP-3161)
+  const avoidRepull = config.lookupTable.avoidRepull && Boolean(deviceId) && since !== -1;
   const recordTypes = models.map(m => m.databaseRecord);
 
   if (config.pauseSnapshotProcess) {
@@ -82,7 +86,7 @@ export const snapshotOutgoingChanges = async (
         AND record_type IN ${SqlQuery.record(recordTypes)}
         ${since === -1 ? 'AND is_deleted IS FALSE' : ''}
         ${
-          avoidRepull && deviceId
+          avoidRepull
             ? 'AND (pushed_by_device_id <> ? OR pushed_by_device_id IS NULL)'
             : ''
         }
@@ -101,7 +105,7 @@ export const snapshotOutgoingChanges = async (
         ...includeProjectIds,
         ...(excludeProjectIds.length > 0 ? excludeProjectIds : []),
         ...recordTypes,
-        ...(avoidRepull && deviceId ? [deviceId] : []),
+        ...(avoidRepull ? [deviceId] : []),
         CHUNK_SIZE,
       ],
     )) as SnapshotOutgoingChangesResult[];

@@ -404,7 +404,7 @@ describe('Sync Lookup data', () => {
   });
 
   describe('avoidRepull', () => {
-    const snapshotOutgoingRecordsForFacility = async (avoidRepull: boolean) => {
+    const snapshotOutgoingRecordsForFacility = async (avoidRepull: boolean, since = 0) => {
       const deviceId = 'facility-a';
       await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
       await findOrCreateDummyRecord(models.user, {
@@ -447,7 +447,7 @@ describe('Sync Lookup data', () => {
       await snapshotOutgoingChanges(
         models.database,
         models.getModels(),
-        -1,
+        since,
         sessionId,
         deviceId,
         { ...SYNC_CONFIG, lookupTable: { ...SYNC_CONFIG.lookupTable, avoidRepull } },
@@ -489,6 +489,21 @@ describe('Sync Lookup data', () => {
 
       expect(snapshotPushedPatientFromCurrentFacility).toBeDefined();
       expect(snapshotPatientFromAnotherFacility).toBeDefined();
+    });
+
+    // TUP-3161: a device whose database was wiped keeps its device ID, so it needs its own pushes back
+    it('Repulls data for a device on a full pull, even when avoidRepull is enabled', async () => {
+      const { outgoingSnapshotRecords, pushedUserFromCurrentDevice, pushedUserFromAnotherDevice } =
+        await snapshotOutgoingRecordsForFacility(true, -1);
+      const snapshotPushedUserFromCurrentDevice = outgoingSnapshotRecords.find(
+        r => r.recordId === pushedUserFromCurrentDevice.id,
+      );
+      const snapshotPushedUserFromAnotherDevice = outgoingSnapshotRecords.find(
+        r => r.recordId === pushedUserFromAnotherDevice.id,
+      );
+
+      expect(snapshotPushedUserFromCurrentDevice).toBeDefined();
+      expect(snapshotPushedUserFromAnotherDevice).toBeDefined();
     });
   });
 });
