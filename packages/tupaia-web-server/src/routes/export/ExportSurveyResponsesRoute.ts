@@ -53,11 +53,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
 
     const centralQuery: QueryParams<
       Omit<ExportSurveyResponsesQuery, 'itemCode' | 'organisationUnitCode'>
-    > & {
-      reportName: string;
-      countryCode?: string;
-      entityCode?: string;
-    } = {
+    > & { countryCode?: string; entityCode?: string; reportName: string } = {
       latest,
       surveyCodes,
       startDate,
