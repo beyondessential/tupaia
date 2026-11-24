@@ -23,12 +23,7 @@ export function Button(props) {
   }
 
   return (
-    <TouchableOpacity
-      style={[localStyles.button, style]}
-      activeOpacity={0.6}
-      analyticsLabel={title}
-      onPress={onPress}
-    >
+    <TouchableOpacity activeOpacity={0.6} onPress={onPress} style={[localStyles.button, style]}>
       {Label}
     </TouchableOpacity>
   );

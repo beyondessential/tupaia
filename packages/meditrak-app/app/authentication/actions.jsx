@@ -35,9 +35,8 @@ export const changePassword = password => ({
  */
 export const login =
   (emailAddress, password) =>
-  async (dispatch, getState, { api, database, analytics }) => {
+  async (dispatch, getState, { api, database }) => {
     dispatch(requestLogin());
-    analytics.trackEvent('Request login');
     const installId = await getInstallId();
 
     const loginCredentials = {
@@ -71,16 +70,12 @@ export const login =
 
 export const offlineLogin =
   (emailAddress, password) =>
-  (dispatch, getState, { database, analytics }) => {
-    analytics.trackEvent('Request offline login');
-
+  (dispatch, getState, { database }) => {
     const user = database.getUser(emailAddress);
     if (user && saltAndHash(password) === user.passwordHash) {
       dispatch(receiveLogin(emailAddress, user, user.accessPolicy));
-      analytics.trackEvent('Succeed offline login');
     } else {
       dispatch(receiveLoginError(UNABLE_TO_CONNECT_MESSAGE));
-      analytics.trackEvent('Fail offline login');
     }
   };
 
@@ -125,16 +120,12 @@ export const receiveLoginError = errorMessage => ({
   errorMessage,
 });
 
-export const logout =
-  () =>
-  (dispatch, getState, { analytics }) => {
-    dispatch(resetToLogin());
-    dispatch({
-      type: LOGOUT,
-    });
-
-    analytics.trackEvent('Log out');
-  };
+export const logout = () => dispatch => {
+  dispatch(resetToLogin());
+  dispatch({
+    type: LOGOUT,
+  });
+};
 
 export const logoutWithError =
   errorMessage =>

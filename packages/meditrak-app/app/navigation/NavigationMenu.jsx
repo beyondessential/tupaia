@@ -18,11 +18,7 @@ import {
 const REWARD_ICON_SIZE = 25;
 
 const renderMenuItem = ({ key, label, subLabel, icon }, isSelected, callback) => (
-  <TouchableHighlight
-    analyticsLabel={`Navigation Menu: ${label}`}
-    onPress={() => callback(key)}
-    key={key}
-  >
+  <TouchableHighlight onPress={() => callback(key)} key={key}>
     <View style={[localStyles.menuItem, isSelected ? localStyles.menuItemSelected : null]}>
       {icon ? (
         <View style={localStyles.menuItemIcon}>

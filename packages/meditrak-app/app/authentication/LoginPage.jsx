@@ -22,7 +22,7 @@ import {
 const renderCreateAccountLink = onCreateAccount => (
   <View style={localStyles.linkButton}>
     <Text>or </Text>
-    <TouchableOpacity onPress={onCreateAccount} analyticsLabel="Login: Create an Account">
+    <TouchableOpacity onPress={onCreateAccount}>
       <Text style={localStyles.linkButtonEmphasis}>Create an account</Text>
     </TouchableOpacity>
   </View>
@@ -111,7 +111,7 @@ export class LoginPage extends React.Component {
             />
           </View>
           <View style={[localStyles.linkButton, localStyles.forgotPasswordButton]}>
-            <TouchableOpacity onPress={onForgotPassword} analyticsLabel="Login: Forgot Password">
+            <TouchableOpacity onPress={onForgotPassword}>
               <Text style={localStyles.linkButtonEmphasis}>Forgot password?</Text>
             </TouchableOpacity>
           </View>

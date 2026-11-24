@@ -61,11 +61,7 @@ const renderMarkdownFeedItem = (templateVariables, onFeedItemPress) => {
   const { title, image, body, link } = templateVariables;
 
   return (
-    <TouchableOpacity
-      analyticsLabel={`Feed Item: ${title}`}
-      onPress={() => onFeedItemPress(link)}
-      disabled={!link}
-    >
+    <TouchableOpacity onPress={() => onFeedItemPress(link)} disabled={!link}>
       {title ? <Text style={localStyles.feedItemTitle}>{title}</Text> : null}
       {image ? (
         <Image source={{ uri: image }} style={localStyles.image} resizeMode="cover" />
@@ -80,11 +76,7 @@ const renderSurveyResponseFeedItem = (templateVariables, creationDate, onFeedIte
   const location = getLocation(templateVariables);
 
   return (
-    <TouchableOpacity
-      analyticsLabel={`Feed Item: Survey ${surveyName}`}
-      onPress={() => onFeedItemPress(link)}
-      disabled={!link}
-    >
+    <TouchableOpacity onPress={() => onFeedItemPress(link)} disabled={!link}>
       {photos && photos.length > 0 ? (
         <Image source={{ uri: photos[0] }} style={localStyles.image} resizeMode="cover" />
       ) : null}
