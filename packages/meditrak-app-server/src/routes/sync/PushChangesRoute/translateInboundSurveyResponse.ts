@@ -10,7 +10,7 @@ import { RawSurveyResponseObject } from './types';
  * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1" }
  */
 const translateUserEmailToId = async (userModel: UserModel, email: string) => {
-  const user = await userModel.findOneOrThrow({ email });
+  const user = await userModel.findOneOrThrow({ email }, { columns: ['id'] });
   return { user_id: user.id };
 };
 
@@ -18,7 +18,7 @@ const translateUserEmailToId = async (userModel: UserModel, email: string) => {
  * { entity_code: "TO" } => { entity_id: "5d3f884471bb2e31bfacae23" }
  */
 const translateEntityCodeToId = async (entityModel: EntityModel, code: string) => {
-  const entity = await entityModel.findOneOrThrow({ code });
+  const entity = await entityModel.findOneOrThrow({ code }, { columns: ['id'] });
   return { entity_id: entity.id };
 };
 
@@ -26,7 +26,7 @@ const translateEntityCodeToId = async (entityModel: EntityModel, code: string) =
  * { survey_code: "PSSS_Confirmed_WNR" } => { entity_id: "5fb5ff5b61f76a7cdf06233f" }
  */
 const translateSurveyCodeToId = async (surveyModel: SurveyModel, code: string) => {
-  const survey = await surveyModel.findOneOrThrow({ code });
+  const survey = await surveyModel.findOneOrThrow({ code }, { columns: ['id'] });
   return { survey_id: survey.id };
 };
 
@@ -34,7 +34,7 @@ const translateSurveyCodeToId = async (surveyModel: SurveyModel, code: string) =
  * { question_code: "RHS1UNFPA68" } => { question_id: "5e01604261f76a4835c6600c" }
  */
 export const translateQuestionCodeToId = async (questionModel: QuestionModel, code: string) => {
-  const question = await questionModel.findOneOrThrow({ code });
+  const question = await questionModel.findOneOrThrow({ code }, { columns: ['id'] });
   return { question_id: question.id };
 };
 
