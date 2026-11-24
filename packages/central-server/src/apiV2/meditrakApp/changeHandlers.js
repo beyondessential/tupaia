@@ -170,7 +170,7 @@ const requiresSurveyResponseTranslation = (
   return false;
 };
 
-const clinicOrEntityIdExist = (id, obj) => {
+const clinicOrEntityIdExist = (_id, obj) => {
   if (!(obj.clinic_id || obj.entity_id)) {
     throw new Error('Either clinic_id or entity_id are required.');
   }
