@@ -197,6 +197,23 @@ describe('changes (POST)', () => {
 
         expect(response.statusCode).toBe(400);
       });
+
+      // Unlike the ids above, entity_id isn’t required by the request schema (legacy clients send
+      // clinic_id instead), so this isn’t rejected here. central-server’s /surveyResponse resolves
+      // or rejects entity_code itself.
+      it('forwards entity_code without translating it to an id', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        delete surveyResponseObject.entity_id;
+        surveyResponseObject.entity_code = 'TEST_ENTITY';
+
+        const response = await submitSurveyResponse(surveyResponseObject);
+
+        expect(response.statusCode).toBe(200);
+        const [forwardedSurveyResponse] = upsertSurveyResponsesMock.mock.lastCall[0];
+        expect(forwardedSurveyResponse).toHaveProperty('id', surveyResponseObject.id);
+        expect(forwardedSurveyResponse).toHaveProperty('entity_code', 'TEST_ENTITY');
+        expect(forwardedSurveyResponse).not.toHaveProperty('entity_id');
+      });
     });
 
     describe('Survey responses containing images', () => {
