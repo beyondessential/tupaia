@@ -3804,7 +3804,12 @@ export const BaseChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -4683,7 +4688,12 @@ export const CartesianChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -5503,7 +5513,12 @@ export const PieChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -6071,7 +6086,12 @@ export const BarChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -7031,7 +7051,12 @@ export const LineChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -7987,7 +8012,12 @@ export const ComposedChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -8764,7 +8794,12 @@ export const GaugeChartConfigSchema = {
 		"ticks": {
 			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 			"type": "array",
-			"items": {}
+			"items": {
+				"type": [
+					"string",
+					"number"
+				]
+			}
 		},
 		"startDate": {
 			"type": "string"
@@ -9240,7 +9275,12 @@ export const ChartConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -9750,7 +9790,12 @@ export const ChartConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -10536,7 +10581,12 @@ export const ChartConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -11320,7 +11370,12 @@ export const ChartConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -12097,7 +12152,12 @@ export const ChartConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -24023,7 +24083,12 @@ export const DashboardItemConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -24533,7 +24598,12 @@ export const DashboardItemConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -25319,7 +25389,12 @@ export const DashboardItemConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -26103,7 +26178,12 @@ export const DashboardItemConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -26880,7 +26960,12 @@ export const DashboardItemConfigSchema = {
 				"ticks": {
 					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 					"type": "array",
-					"items": {}
+					"items": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
 				},
 				"startDate": {
 					"type": "string"
@@ -51436,7 +51521,12 @@ export const DashboardItemSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -51946,7 +52036,12 @@ export const DashboardItemSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -52732,7 +52827,12 @@ export const DashboardItemSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -53516,7 +53616,12 @@ export const DashboardItemSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -54293,7 +54398,12 @@ export const DashboardItemSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -60454,7 +60564,12 @@ export const DashboardItemCreateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -60964,7 +61079,12 @@ export const DashboardItemCreateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -61750,7 +61870,12 @@ export const DashboardItemCreateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -62534,7 +62659,12 @@ export const DashboardItemCreateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -63311,7 +63441,12 @@ export const DashboardItemCreateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -69466,7 +69601,12 @@ export const DashboardItemUpdateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -69976,7 +70116,12 @@ export const DashboardItemUpdateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -70762,7 +70907,12 @@ export const DashboardItemUpdateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -71546,7 +71696,12 @@ export const DashboardItemUpdateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -72323,7 +72478,12 @@ export const DashboardItemUpdateSchema = {
 						"ticks": {
 							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 							"type": "array",
-							"items": {}
+							"items": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
 						},
 						"startDate": {
 							"type": "string"
@@ -105094,7 +105254,12 @@ export const DashboardWithMetadataSchema = {
 									"ticks": {
 										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 										"type": "array",
-										"items": {}
+										"items": {
+											"type": [
+												"string",
+												"number"
+											]
+										}
 									},
 									"startDate": {
 										"type": "string"
@@ -105604,7 +105769,12 @@ export const DashboardWithMetadataSchema = {
 									"ticks": {
 										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 										"type": "array",
-										"items": {}
+										"items": {
+											"type": [
+												"string",
+												"number"
+											]
+										}
 									},
 									"startDate": {
 										"type": "string"
@@ -106390,7 +106560,12 @@ export const DashboardWithMetadataSchema = {
 									"ticks": {
 										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 										"type": "array",
-										"items": {}
+										"items": {
+											"type": [
+												"string",
+												"number"
+											]
+										}
 									},
 									"startDate": {
 										"type": "string"
@@ -107174,7 +107349,12 @@ export const DashboardWithMetadataSchema = {
 									"ticks": {
 										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 										"type": "array",
-										"items": {}
+										"items": {
+											"type": [
+												"string",
+												"number"
+											]
+										}
 									},
 									"startDate": {
 										"type": "string"
@@ -107951,7 +108131,12 @@ export const DashboardWithMetadataSchema = {
 									"ticks": {
 										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
 										"type": "array",
-										"items": {}
+										"items": {
+											"type": [
+												"string",
+												"number"
+											]
+										}
 									},
 									"startDate": {
 										"type": "string"

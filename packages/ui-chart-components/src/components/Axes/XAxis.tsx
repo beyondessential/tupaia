@@ -126,7 +126,7 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
       );
     }
 
-    return null;
+    return <></>;
   };
 
   const getXAxisTickMethod = () => {

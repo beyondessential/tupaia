@@ -1,7 +1,7 @@
 import React from 'react';
 import { CartesianChartConfig } from '@tupaia/types';
 import styled from 'styled-components';
-import { TooltipPayload } from 'recharts';
+import { DefaultLegendContentProps } from 'recharts';
 import Tooltip from '@material-ui/core/Tooltip';
 import { LegendPosition } from '../../types';
 import { isMobile } from '../../utils';
@@ -56,12 +56,12 @@ interface CartesianLegendProps {
 
 export const getCartesianChartLegend =
   ({ chartConfig, onClick, getIsActiveKey, isExporting, legendPosition }: CartesianLegendProps) =>
-  ({ payload }: any) => {
+  ({ payload }: DefaultLegendContentProps) => {
     const isMobileSize = isMobile(isExporting);
     return (
       <LegendContainer $position={isExporting ? 'top' : legendPosition}>
-        {payload.map(({ color, value, dataKey }: TooltipPayload) => {
-          // check the type here because according to TooltipPayload, value can be a number or a readonly string | number array
+        {payload?.map(({ color, value, dataKey }) => {
+          // check the type here because the legend payload’s value is not guaranteed to be a string
           const displayValue = (typeof value === 'string' && chartConfig?.[value]?.label) || value;
 
           return (
