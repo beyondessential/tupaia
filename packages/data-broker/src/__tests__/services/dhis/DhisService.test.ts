@@ -410,9 +410,4 @@ describe('DhisService', () => {
       );
     });
   });
-
-  describe('pullSyncGroupResults()', () => {
-    it('throws an error', async () =>
-      expect(dhisService.pullSyncGroupResults()).toBeRejectedWith('not supported'));
-  });
 });

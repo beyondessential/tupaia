@@ -10,13 +10,6 @@ To run locally, run from the monorepo root:
 yarn start-stack tupaia-web
 ```
 
-If you want to connect to a local aggregation server/DHIS2 instance, clone the [docker-dhis2](https://github.com/beyondessential/docker-dhis2) repository.
-
-### [DHIS2 Docker](https://github.com/sussol/docker-dhis2)
-
-- Read DHIS2 Docker’s [README](https://github.com/beyondessential/docker-dhis2#readme).
-- `./dhis-start.sh` to start Docker DHIS.
-
 ## Directory structure and explanation
 
 ### [./src](src)

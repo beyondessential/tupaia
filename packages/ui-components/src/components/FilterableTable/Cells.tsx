@@ -2,16 +2,9 @@ import { TableCell as MuiTableCell } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import { Link, LinkProps } from 'react-router-dom';
 import { TableResizerProps } from 'react-table';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-const Cell = styled(MuiTableCell)<{
-  $maxWidth?: number;
-}>`
-  ${props =>
-    props.$maxWidth &&
-    css`
-      max-width: ${props.$maxWidth}px;
-    `};
+const Cell = styled(MuiTableCell)`
   font-size: 0.75rem;
   padding: 0;
   border: none;
@@ -91,18 +84,16 @@ const ColResize = styled.div.attrs({
 export interface HeaderDisplayCellProps extends React.ComponentPropsWithoutRef<typeof HeaderCell> {
   canResize?: boolean;
   getResizerProps?: (props?: Partial<TableResizerProps>) => TableResizerProps;
-  maxWidth?: number;
 }
 
 export const HeaderDisplayCell = ({
   children,
   canResize,
   getResizerProps = () => ({}),
-  maxWidth,
   ...props
 }: HeaderDisplayCellProps) => {
   return (
-    <HeaderCell {...props} $maxWidth={maxWidth}>
+    <HeaderCell {...props}>
       <CellContentContainer>{children}</CellContentContainer>
       {canResize && <ColResize {...getResizerProps()} />}
     </HeaderCell>
@@ -111,12 +102,10 @@ export const HeaderDisplayCell = ({
 
 interface TableCellProps {
   children: ReactNode;
-  width?: string;
   row: Record<string, any>;
-  maxWidth?: number;
   column?: Record<string, any>;
 }
-export const TableCell = ({ children, width, row, maxWidth, column, ...props }: TableCellProps) => {
+export const TableCell = ({ children, row, column, ...props }: TableCellProps) => {
   const getRowUrl = (): Partial<Pick<LinkProps, 'to' | 'state'>> => {
     if (!row) return {};
     if (row.url) return { to: row.url };
@@ -125,7 +114,7 @@ export const TableCell = ({ children, width, row, maxWidth, column, ...props }: 
   };
   const { to, state } = getRowUrl();
   return (
-    <Cell {...props} $maxWidth={maxWidth}>
+    <Cell {...props}>
       <FilterableTableCellContent as={to ? CellLink : 'div'} to={to} state={state}>
         <CellContentContainer>{children}</CellContentContainer>
       </FilterableTableCellContent>

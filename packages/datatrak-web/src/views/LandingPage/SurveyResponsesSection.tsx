@@ -65,7 +65,7 @@ const SurveyResponseTile = ({
       heading={surveyName}
       leadingIcons={<SurveyTickIcon />}
       // TODO: Uncomment and de-hard-code when sync is implemented
-      // trailingIcons={isWebApp() ? <SyncIndicator syncStatus="onlineOnly" /> : null}
+      // trailingIcons={isOfflineFirst ? <SyncIndicator syncStatus="onlineOnly" /> : null}
       to={`?responseId=${id}`}
       tooltip={tooltip}
     >

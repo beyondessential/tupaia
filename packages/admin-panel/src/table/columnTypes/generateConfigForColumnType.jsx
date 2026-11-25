@@ -3,8 +3,6 @@ import { DeleteButton } from './DeleteButton';
 import { ExportButton } from '../../importExport';
 import { BooleanSelectFilter } from './columnFilters';
 import { Tooltip, JSONTooltip } from './Tooltip';
-import { LogsButton } from '../../logsTable';
-import { SyncStatus } from '../../sync';
 import { EditButton } from './EditButton';
 import { BulkEditButton } from './BulkEditButton';
 import { TestDatabaseConnectionButton } from './TestDatabaseConnectionButton';
@@ -33,8 +31,6 @@ const CUSTOM_CELL_COMPONENTS = {
   boolean: ({ value }) => (value ? 'Yes' : 'No'),
   tooltip: Tooltip,
   jsonTooltip: JSONTooltip,
-  logs: LogsButton,
-  sync: SyncStatus,
   testDatabaseConnection: TestDatabaseConnectionButton,
   qrCode: QrCodeButton,
   resubmitSurveyResponse: ResubmitSurveyResponseButton,
@@ -46,13 +42,11 @@ const BUTTON_COLUMN_TYPES = [
   'edit',
   'export',
   'delete',
-  'logs',
   'resubmitSurveyResponse',
   'qrCode',
   'testDatabaseConnection',
   'bulkEdit',
   'externalLink',
-  'sync',
   'archive',
 ];
 

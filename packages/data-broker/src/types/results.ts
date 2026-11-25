@@ -62,8 +62,6 @@ export interface RawAnalyticResults {
 
 export type EventResults = Event[];
 
-export type SyncGroupResults = Record<string, Event[]>;
-
 export interface Diagnostics {
   counts: {
     imported: number;

@@ -71,8 +71,4 @@ export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './Surve
 export { TaskModel, TaskRecord } from './Task';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { UserModel, UserRecord } from './User';
-export {
-  UserCountryAccessAttemptModel,
-  UserCountryAccessAttemptRecord,
-} from './UserCountryAccessAttempt';
 export { UserEntityPermissionModel, UserEntityPermissionRecord } from './UserEntityPermission';

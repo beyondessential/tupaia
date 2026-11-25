@@ -6,7 +6,7 @@ import { DataServiceMapping } from '../../services/DataServiceMapping';
 import { Service } from '../../services/Service';
 import { DataBrokerModelRegistry, DataElement, ServiceType } from '../../types';
 import { DATA_SOURCE_TYPES } from '../../utils';
-import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS, SYNC_GROUPS } from './DataBroker.fixtures';
+import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, MockService } from './DataBroker.stubs';
 
 const mockModels = createModelsStub();
@@ -28,12 +28,6 @@ jest.mock('../../DataBroker/fetchDataSources', () => ({
   fetchDataGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_GROUPS).filter(({ code }) => codes.includes(code));
-    assert(results.length > 0);
-    return results;
-  },
-  fetchSyncGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
-    assert(codes.length > 0);
-    const results = Object.values(SYNC_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
@@ -236,9 +230,9 @@ describe('DataBroker', () => {
       // For each data element, a different data service can be defined per country, see
       // "mapped by country" above. If the org units are in different countries, then a data
       // element could resolve to multiple services. E.g. Data Element Patient_Age could be
-      // in DHIS-tonga for Tonga, and in the data lake for Fiji. This logic then
+      // in DHIS-tonga for Tonga, and in Tupaia for Fiji. This logic then
       // attempts to minimise the number of calls to any one service type, in the example
-      // above there should only be one call to DHIS and one to the data lake.
+      // above there should only be one call to DHIS and one to Tupaia.
       //
       // Note: all resulting pull calls to a data service are given ALL org unit codes and
       // ALL data element codes. Some data services are ok with this, and some will throw
@@ -528,51 +522,6 @@ describe('DataBroker', () => {
         ...DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_02,
         ...DATA_BY_SERVICE.tupaia.eventsByProgram.TUPAIA_PROGRAM_01,
       ]);
-    });
-  });
-
-  describe('pullSyncGroupResults()', () => {
-    it('same service', async () => {
-      const dataBroker = new DataBroker();
-      const data = await dataBroker.pullSyncGroupResults(
-        ['DHIS_SYNC_GROUP_01', 'DHIS_SYNC_GROUP_02'],
-        options,
-      );
-
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pullSyncGroupResults).toHaveBeenCalledOnceWith(
-        [SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02],
-        expect.objectContaining(options),
-      );
-      expect(data).toStrictEqual({
-        DHIS_SYNC_GROUP_01: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_01,
-        DHIS_SYNC_GROUP_02: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_02,
-      });
-    });
-
-    it('multiple services', async () => {
-      const dataBroker = new DataBroker();
-      const data = await dataBroker.pullSyncGroupResults(
-        ['DHIS_SYNC_GROUP_01', 'TUPAIA_SYNC_GROUP_01', 'DHIS_SYNC_GROUP_02'],
-        options,
-      );
-
-      expect(createServiceMock).toHaveBeenCalledTimes(2);
-      expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
-      expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
-      expect(SERVICES.dhis.pullSyncGroupResults).toHaveBeenCalledOnceWith(
-        [SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02],
-        expect.objectContaining(options),
-      );
-      expect(SERVICES.tupaia.pullSyncGroupResults).toHaveBeenCalledOnceWith(
-        [SYNC_GROUPS.TUPAIA_SYNC_GROUP_01],
-        expect.objectContaining(options),
-      );
-      expect(data).toStrictEqual({
-        DHIS_SYNC_GROUP_01: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_01,
-        DHIS_SYNC_GROUP_02: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_02,
-        TUPAIA_SYNC_GROUP_01: DATA_BY_SERVICE.tupaia.eventsByProgram.TUPAIA_SYNC_GROUP_01,
-      });
     });
   });
 

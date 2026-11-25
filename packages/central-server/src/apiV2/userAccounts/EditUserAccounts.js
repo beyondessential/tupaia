@@ -1,5 +1,5 @@
 import { encryptPassword } from '@tupaia/auth';
-import { S3, S3Client } from '@tupaia/server-utils';
+import { S3Client } from '@tupaia/server-utils';
 import { ValidationError } from '@tupaia/utils';
 
 import {
@@ -59,7 +59,7 @@ export class EditUserAccounts extends EditHandler {
 
     if (profileImage) {
       if (profileImage.data && profileImage.fileId) {
-        const s3Client = new S3Client(new S3());
+        const s3Client = new S3Client();
         const profileImagePath = await s3Client.uploadImage(profileImage.data, profileImage.fileId);
         updatedFields = {
           ...updatedFields,

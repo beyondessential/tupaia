@@ -379,7 +379,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   flattenColumnCategories = columns => {
     return this.hasColumnsInCategories(columns)
-      ? [].concat(...columns.map(categories => categories.columns))
+      ? columns.flatMap(categories => categories.columns)
       : columns;
   };
 

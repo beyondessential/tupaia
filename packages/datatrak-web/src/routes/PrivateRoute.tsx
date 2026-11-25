@@ -7,7 +7,6 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 
 import { useCurrentUserContext } from '../api';
 import { isAdminOnlyRoute, ROUTES } from '../constants';
-import { isWebApp } from '../utils';
 import { useDatabaseContext } from '../hooks/database';
 import { useIsOfflineFirst } from '../api/offlineFirst';
 
@@ -48,7 +47,7 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
   // If the user is logged in and has not seen the welcome screen, redirect to the welcome screen
   if (
     isFeatureEnabled('DATATRAK_OFFLINE') &&
-    isWebApp() &&
+    isOfflineFirst &&
     !hideWelcomeScreen &&
     pathname !== ROUTES.WELCOME
   ) {

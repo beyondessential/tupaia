@@ -8,12 +8,18 @@ import {
 } from '@material-ui/core';
 import { ChevronUp } from 'lucide-react';
 import React, { useMemo } from 'react';
-import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
+import {
+  type Column,
+  type SortingRule,
+  useFlexLayout,
+  useResizeColumns,
+  useTable,
+} from 'react-table';
 import styled from 'styled-components';
 
 import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
-import { FilterCell, FilterCellProps, Filters } from './FilterCell';
+import { FilterCell, type FilterCellProps, type Filters } from './FilterCell';
 import { Pagination } from './Pagination';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -118,6 +124,7 @@ export const FilterableTable = ({
     {
       columns,
       data: memoisedData,
+      getRowId: (row, index) => row.id ?? index.toString(),
       initialState: {
         sortBy: sorting,
         hiddenColumns,
@@ -136,12 +143,8 @@ export const FilterableTable = ({
 
   const updateSorting = (id: string, isDesc?: boolean) => {
     const currentSorting = getSortedConfig(id);
-    if (!currentSorting) {
-      return onChangeSorting([{ id, desc: false }]);
-    }
-    if (isDesc) {
-      return onChangeSorting([]);
-    }
+    if (!currentSorting) return onChangeSorting([{ id, desc: false }]);
+    if (isDesc) return onChangeSorting([]);
     return onChangeSorting([{ id, desc: true }]);
   };
 
@@ -150,9 +153,8 @@ export const FilterableTable = ({
       <TableContainer>
         <Table {...getTableProps()} stickyHeader className="data-fetching-table">
           <TableHead>
-            {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
+            {headerGroups.map(({ getHeaderGroupProps, headers }) => (
+              <TableRow {...getHeaderGroupProps()}>
                 {headers.map(
                   ({
                     getHeaderProps,
@@ -166,16 +168,15 @@ export const FilterableTable = ({
                     const sortedConfig = getSortedConfig(id);
                     return (
                       <HeaderDisplayCell
-                        {...getHeaderProps()}
-                        key={`header-${id}`}
+                        {...getHeaderProps({ style: { maxWidth } })}
+                        key={id}
                         canResize={canResize}
                         getResizerProps={getResizerProps}
-                        maxWidth={maxWidth}
                       >
                         {render('Header')}
                         {!disableSortBy && (
                           <TableSortLabel
-                            active={!!sortedConfig}
+                            active={sortedConfig !== undefined}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
                             // Lucide declares wider `className` type than MUI’s IconComponent
                             IconComponent={ChevronUp as React.ComponentType<{ className: string }>}
@@ -193,7 +194,7 @@ export const FilterableTable = ({
                 {visibleColumns.map(column => {
                   return (
                     <FilterCell
-                      {...column.getHeaderProps()}
+                      {...column.getHeaderProps({ style: { maxWidth: column.maxWidth } })}
                       key={column.id}
                       column={column}
                       onChangeFilters={onChangeFilters}
@@ -211,15 +212,14 @@ export const FilterableTable = ({
               rows.map(row => {
                 prepareRow(row);
                 return (
-                  <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
+                  <TableRow {...row.getRowProps()} key={row.id}>
                     {row.cells.map(({ getCellProps, render }, i) => {
                       const col = visibleColumns[i] as ColumnInstance;
                       return (
                         <TableCell
-                          {...getCellProps()}
-                          key={`table-row-${row.id}-cell-${col.id}`}
+                          {...getCellProps({ style: { maxWidth: col.maxWidth } })}
+                          key={col.id}
                           row={row.original}
-                          maxWidth={col.maxWidth}
                           column={col}
                         >
                           {render('Cell')}

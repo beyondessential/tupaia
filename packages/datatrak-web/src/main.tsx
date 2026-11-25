@@ -4,11 +4,13 @@ import { render as renderReactApp } from 'react-dom';
 
 import { App } from './App';
 import { setUpdateReady } from './components/UpdateConfirmation';
-import { useIsOfflineFirst } from './api/offlineFirst';
-import { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './utils';
+import { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties, getDataMode } from './utils';
+import { reloadOnDataModeChange } from './utils/dataMode';
 import { getDisplayMode } from './utils/displayMode';
 
 renderReactApp(<App />, document.getElementById('root'));
+
+reloadOnDataModeChange();
 
 // Set GA user properties on every session
 gaSetUserProperties({
@@ -20,7 +22,7 @@ const promptUserToUpdate = (registration: ServiceWorkerRegistration) => {
   setUpdateReady(registration);
 };
 
-if (useIsOfflineFirst()) {
+if (getDataMode() === 'offlineFirst') {
   window.addEventListener('load', async () => {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.register('/sw.js', {
@@ -84,8 +86,7 @@ if (useIsOfflineFirst()) {
   }, UPDATE_CHECK_INTERVAL);
 }
 
-// Track and reload the pwa when it is installed
+/**  Track PWA installs. */
 window.addEventListener('appinstalled', () => {
   gaEvent(GA_EVENT.APP_INSTALLED, GA_CATEGORY.APP);
-  window.location.reload();
 });

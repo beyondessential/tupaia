@@ -22,9 +22,7 @@ import { createApp } from './createApp';
 import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
-import { startSyncWithKoBo } from './kobo';
 import winston from './log';
-import { startSyncWithMs1 } from './ms1';
 import { RepeatingTaskDueDateHandler, TaskOverdueChecker } from './scheduledTasks';
 import { startFeedScraper } from './social';
 
@@ -100,16 +98,6 @@ configureEnv();
    * Regularly sync data to the aggregation servers
    */
   startSyncWithDhis(models);
-
-  /**
-   * Regularly sync data to MS1
-   */
-  startSyncWithMs1(models);
-
-  /**
-   * Regularly sync data from KoBoToolbox
-   */
-  startSyncWithKoBo(models);
 
   /**
    * Regularly sync actions that have happened on server with the app social feed.

@@ -16,7 +16,7 @@ ec = boto3.client("ec2")
 
 
 async def wait_for_volume(volume_id, to_be):
-    volume_available_waiter = ec.get_waiter("volume_" + to_be)
+    volume_available_waiter = ec.get_waiter(f"volume_{to_be}")
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id])

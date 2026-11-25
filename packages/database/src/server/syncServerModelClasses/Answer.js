@@ -1,4 +1,4 @@
-import { S3, S3Client } from '@tupaia/server-utils';
+import { S3Client } from '@tupaia/server-utils';
 import { QuestionType } from '@tupaia/types';
 import { AnswerModel as BaseAnswerModel } from '../../core/modelClasses';
 
@@ -10,7 +10,7 @@ export class AnswerModel extends BaseAnswerModel {
 
   constructor(...args) {
     super(...args);
-    this.#s3Client = new S3Client(new S3());
+    this.#s3Client = new S3Client();
   }
 
   /** @satisfies {undefined | (records: SyncSnapshotAttributes[]) => Promise<{ inserts: SyncSnapshotAttributes[], updates: SyncSnapshotAttributes[] }>} */

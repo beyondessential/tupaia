@@ -11,7 +11,6 @@ configureWinston();
 configureDotEnv([
   path.resolve(__dirname, '../../../env/aggregation.env'),
   path.resolve(__dirname, '../../../env/dhis.env'),
-  path.resolve(__dirname, '../../../env/data-lake.env'),
   path.resolve(__dirname, '../../../env/servers.env'),
   path.resolve(__dirname, '../../../env/db.env'),
   path.resolve(__dirname, '../../../env/api-client.env'),

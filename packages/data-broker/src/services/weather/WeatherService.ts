@@ -42,10 +42,6 @@ export class WeatherService extends Service {
     return this.pull(dataGroups, 'dataGroup', options);
   }
 
-  public async pullSyncGroupResults(): Promise<never> {
-    throw new Error('pullSyncGroupResults is not supported in WeatherService');
-  }
-
   /**
    * Note, if no period specified will return current weather
    */

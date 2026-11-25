@@ -12,16 +12,13 @@ export type DataServiceMappingEntry = {
 export class DataServiceMapping {
   public dataElementMapping: DataServiceMappingEntry[];
   public dataGroupMapping: DataServiceMappingEntry[];
-  public syncGroupMapping: DataServiceMappingEntry[];
 
   public constructor(
     dataElementMapping: DataServiceMappingEntry[] = [],
     dataGroupMapping: DataServiceMappingEntry[] = [],
-    syncGroupMapping: DataServiceMappingEntry[] = [],
   ) {
     this.dataElementMapping = dataElementMapping;
     this.dataGroupMapping = dataGroupMapping;
-    this.syncGroupMapping = syncGroupMapping;
   }
 
   public uniqueServiceTypes(): ServiceType[] {
@@ -31,9 +28,6 @@ export class DataServiceMapping {
     }
     for (const dgMapping of this.dataGroupMapping) {
       set.add(dgMapping.service_type);
-    }
-    for (const sgMapping of this.syncGroupMapping) {
-      set.add(sgMapping.service_type);
     }
     return Array.from(set);
   }
@@ -49,14 +43,11 @@ export class DataServiceMapping {
     for (const dgMapping of this.dataGroupMapping) {
       map[dgMapping.service_type].push(dgMapping.dataSource);
     }
-    for (const sgMapping of this.syncGroupMapping) {
-      map[sgMapping.service_type].push(sgMapping.dataSource);
-    }
     return map;
   }
 
   public allMappings(): DataServiceMappingEntry[] {
-    return [...this.dataElementMapping, ...this.dataGroupMapping, ...this.syncGroupMapping];
+    return [...this.dataElementMapping, ...this.dataGroupMapping];
   }
 
   public mappingForDataSource(dataSource: DataSource): DataServiceMappingEntry | null {
@@ -82,12 +73,6 @@ export class DataServiceMapping {
       if (mA.dataSource.code !== mB.dataSource.code) return false;
       if (mA.service_type != mB.service_type) return false;
       if (!isEqual(mA.config, mB.config)) return false;
-    }
-    for (let i = 0; i < this.syncGroupMapping.length; i++) {
-      const mA = this.syncGroupMapping[i];
-      const mB = other.syncGroupMapping[i];
-      if (mA.dataSource.code !== mB.dataSource.code) return false;
-      if (mA.service_type != mB.service_type) return false;
     }
     return true;
   }

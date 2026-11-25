@@ -2,14 +2,19 @@ import {
   CompleteMultipartUploadOutput,
   GetObjectCommandInput,
   PutObjectCommandInput,
+  S3,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import sharp from 'sharp';
 
-import { ConflictError, UnprocessableContentError, UnsupportedMediaTypeError } from '@tupaia/utils';
+import {
+  ConflictError,
+  requireEnv,
+  UnprocessableContentError,
+  UnsupportedMediaTypeError,
+} from '@tupaia/utils';
 import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
-import { S3 } from './S3';
 
 const MAX_IMAGE_SIZE = 3_000;
 
@@ -50,8 +55,12 @@ function isSupportedImageMediaTypeString(val: string): val is keyof typeof suppo
 export class S3Client {
   private readonly s3: S3;
 
-  public constructor(s3Instance: S3) {
-    this.s3 = s3Instance;
+  public constructor() {
+    /**
+     * Credentials come from the SDK’s default provider chain: `AWS_ACCESS_KEY_ID` and
+     * `AWS_SECRET_ACCESS_KEY` when set (local dev), otherwise the EC2 instance role.
+     */
+    this.s3 = new S3({ region: requireEnv('AWS_REGION') });
   }
 
   private async checkIfFileExists(fileName: string) {
