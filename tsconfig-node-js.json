@@ -3,12 +3,13 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
+    "lib": ["es2023"],
     "sourceMap": true,
     "skipLibCheck": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es2022",
+    "module": "nodenext",
+    "target": "esnext",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   }
 }
