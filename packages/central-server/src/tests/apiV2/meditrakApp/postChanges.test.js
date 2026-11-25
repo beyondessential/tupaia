@@ -187,26 +187,38 @@ describe('POST /changes', () => {
     });
   });
 
-  describe('Codes matching no record', () => {
-    const testCases = [
-      { codeField: 'survey_code', idField: 'survey_id' },
-      { codeField: 'entity_code', idField: 'entity_id' },
-      { codeField: 'user_email', idField: 'user_id' },
-    ];
+  // Only PSSS ever sent codes in place of ids, and it now uses /surveyResponse instead
+  describe('Codes in place of ids', () => {
+    const replaceIdWithCode = {
+      survey_code: surveyResponse => {
+        delete surveyResponse.survey_id;
+        surveyResponse.survey_code = 'TEST_POST_CHANGES_SURVEY';
+      },
+      entity_code: surveyResponse => {
+        delete surveyResponse.entity_id;
+        surveyResponse.entity_code = 'TEST_POST_CHANGES_ENTITY';
+      },
+      user_email: surveyResponse => {
+        delete surveyResponse.user_id;
+        surveyResponse.user_email = TEST_USER_EMAIL;
+      },
+      question_code: surveyResponse => {
+        const [answer] = surveyResponse.answers;
+        delete answer.question_id;
+        answer.question_code = 'TEST_POST_CHANGES_QUESTION';
+      },
+    };
 
-    for (const { codeField, idField } of testCases) {
-      it(`returns an error naming the unmatched ${codeField}`, async () => {
-        const unmatchedValue = `TEST_POST_CHANGES_UNMATCHED_${codeField}`;
+    for (const [codeField, replace] of Object.entries(replaceIdWithCode)) {
+      it(`does not translate ${codeField} to an id`, async () => {
         const surveyResponse = generateSurveyResponse();
-        delete surveyResponse[idField];
-        surveyResponse[codeField] = unmatchedValue;
+        replace(surveyResponse);
 
         const response = await postChanges([
           { action: SUBMIT_SURVEY_RESPONSE, payload: surveyResponse },
         ]);
 
-        expect(response.statusCode).to.equal(500);
-        expect(response.body.error).to.include(unmatchedValue);
+        expect(response.statusCode).to.equal(400);
         await expectNotSubmitted(surveyResponse);
       });
     }

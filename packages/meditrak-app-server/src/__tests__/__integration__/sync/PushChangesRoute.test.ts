@@ -156,66 +156,8 @@ describe('changes (POST)', () => {
       await upsertEntity(models, { id: entityId, code: 'TEST_ENTITY' });
     });
 
-    describe('Translating survey responses', () => {
-      it('correctly translates entity_code to entity_id', async () => {
-        const answerObject = generateDummyAnswer();
-        const surveyResponseObject = generateDummySurveyResponse({
-          answers: [answerObject],
-        });
-        const entityCode = 'TEST_ENTITY';
-        const surveyResponseEntityId = surveyResponseObject.entity_id;
-        delete surveyResponseObject.entity_id;
-        surveyResponseObject.entity_code = entityCode;
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', {
-          headers: {
-            Authorization: authHeader,
-          },
-          body: [action],
-        });
-
-        expect(response.statusCode).toBe(200);
-        expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
-          expect.arrayContaining([expect.objectContaining({ entity_id: surveyResponseEntityId })]),
-        );
-      });
-
-      it('correctly translates question_code to question_id', async () => {
-        const answerObject: Answer = generateDummyAnswer();
-        const questionCode = 'TEST_QUESTION_1';
-        delete answerObject.question_id;
-        answerObject.question_code = questionCode;
-        const surveyResponseObject = generateDummySurveyResponse({ answers: [answerObject] });
-
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', {
-          headers: {
-            Authorization: authHeader,
-          },
-          body: [action],
-        });
-
-        const question = await models.question.findOne({ code: questionCode });
-        expect(response.statusCode).toEqual(200);
-        expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            expect.objectContaining({
-              answers: expect.arrayContaining([
-                expect.objectContaining({ question_id: question.id }),
-              ]),
-            }),
-          ]),
-        );
-      });
-    });
-
-    describe('Codes matching no record', () => {
+    // Only PSSS ever sent codes in place of ids, and it now uses /surveyResponse instead
+    describe('Codes in place of required ids', () => {
       const submitSurveyResponse = (surveyResponseObject: RawSurveyResponseObject) =>
         app.post('changes', {
           headers: {
@@ -224,27 +166,36 @@ describe('changes (POST)', () => {
           body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
         });
 
-      it('returns an error naming the unmatched survey_code', async () => {
+      it('does not translate survey_code to an id', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         delete surveyResponseObject.survey_id;
-        surveyResponseObject.survey_code = 'TEST_UNMATCHED_SURVEY';
+        surveyResponseObject.survey_code = 'TEST_SURVEY';
 
         const response = await submitSurveyResponse(surveyResponseObject);
 
-        expect(response.statusCode).toBe(500);
-        expect(response.body.error).toContain('TEST_UNMATCHED_SURVEY');
+        expect(response.statusCode).toBe(400);
       });
 
-      it('returns an error naming the unmatched question_code', async () => {
+      it('does not translate user_email to an id', async () => {
+        const user = await models.user.findByIdOrThrow(userId);
+        const surveyResponseObject = generateDummySurveyResponse();
+        delete surveyResponseObject.user_id;
+        surveyResponseObject.user_email = user.email;
+
+        const response = await submitSurveyResponse(surveyResponseObject);
+
+        expect(response.statusCode).toBe(400);
+      });
+
+      it('does not translate question_code to an id', async () => {
         const answerObject: Answer = generateDummyAnswer();
         delete answerObject.question_id;
-        answerObject.question_code = 'TEST_UNMATCHED_QUESTION';
+        answerObject.question_code = 'TEST_QUESTION_1';
         const surveyResponseObject = generateDummySurveyResponse({ answers: [answerObject] });
 
         const response = await submitSurveyResponse(surveyResponseObject);
 
-        expect(response.statusCode).toBe(500);
-        expect(response.body.error).toContain('TEST_UNMATCHED_QUESTION');
+        expect(response.statusCode).toBe(400);
       });
     });
 
