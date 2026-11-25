@@ -13,13 +13,7 @@ import {
   takesIdForm,
   ValidationError,
 } from '@tupaia/utils';
-import {
-  translateEntityCodeToId,
-  translateObjectFields,
-  translateQuestionCodeToId,
-  translateSurveyCodeToId,
-  translateUserEmailToIdAndAssessorName,
-} from '../utilities';
+import { translateObjectFields } from '../utilities';
 import { addSurveyFile, addSurveyImage, updateOrCreateSurveyResponse } from './utilities';
 
 export const ACTIONS = /** @type {const} */ ({
@@ -45,8 +39,8 @@ export const CHANGE_HANDLERS = new Map([
     ACTIONS.SubmitSurveyResponse,
     {
       // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
-      translate: async (models, payload) =>
-        translateSurveyResponseObject(models, payload?.survey_response || payload),
+      translate: async (_models, payload) =>
+        translateSurveyResponseObject(payload?.survey_response || payload),
       validate: async (models, payload) =>
         validateSurveyResponseObject(models, payload?.survey_response || payload),
       handle: async (models, payload) =>
@@ -114,55 +108,33 @@ async function validateSurveyResponseObject(models, surveyResponseObject) {
   }
 }
 
-async function translateSurveyResponseObject(models, surveyResponseObject) {
+async function translateSurveyResponseObject(surveyResponseObject) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
   }
 
-  const surveyResponseTranslators = constructSurveyResponseTranslators(models);
-  const answerTranslators = constructAnswerTranslators(models);
-
-  if (
-    !requiresSurveyResponseTranslation(
-      surveyResponseObject,
-      surveyResponseTranslators,
-      answerTranslators,
-    )
-  ) {
+  if (!requiresSurveyResponseTranslation(surveyResponseObject)) {
     return surveyResponseObject;
   }
 
   const translated = cloneDeep(surveyResponseObject);
-  await translateObjectFields(translated, surveyResponseTranslators);
-
-  const { answers } = translated;
-  if (Array.isArray(answers)) {
-    for (const answer of answers) {
-      await translateObjectFields(answer, answerTranslators);
-    }
-  }
+  await translateObjectFields(translated, SURVEY_RESPONSE_TRANSLATORS);
 
   return translated;
 }
 
-const requiresSurveyResponseTranslation = (
-  surveyResponseObject,
-  surveyResponseTranslators,
-  answerTranslators,
-) => {
+const requiresSurveyResponseTranslation = surveyResponseObject => {
   if (
-    Object.keys(surveyResponseObject).some(field => Object.hasOwn(surveyResponseTranslators, field))
+    Object.keys(surveyResponseObject).some(field =>
+      Object.hasOwn(SURVEY_RESPONSE_TRANSLATORS, field),
+    )
   ) {
     return true;
   }
 
   const { answers } = surveyResponseObject;
   if (Array.isArray(answers)) {
-    return answers.some(
-      answer =>
-        answer.body === '' ||
-        Object.keys(answer).some(field => Object.hasOwn(answerTranslators, field)),
-    );
+    return answers.some(answer => answer.body === '');
   }
 
   return false;
@@ -174,17 +146,10 @@ const clinicOrEntityIdExist = (_id, obj) => {
   }
 };
 
-const constructSurveyResponseTranslators = models => ({
-  user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
-  entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
-  survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
+const SURVEY_RESPONSE_TRANSLATORS = {
   entities_created: entitiesCreated => ({ entities_upserted: entitiesCreated }),
   answers: answers => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
-});
-
-const constructAnswerTranslators = models => ({
-  question_code: questionCode => translateQuestionCodeToId(models.question, questionCode),
-});
+};
 
 const constructEntitiesUpsertedValidators = models => ({
   id: [hasContent, takesIdForm],

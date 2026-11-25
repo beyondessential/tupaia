@@ -186,4 +186,41 @@ describe('POST /changes', () => {
       await expectNotSubmitted(surveyResponse);
     });
   });
+
+  // Only PSSS ever sent codes in place of ids, and it now uses /surveyResponse instead
+  describe('Codes in place of ids', () => {
+    const replaceIdWithCode = {
+      survey_code: surveyResponse => {
+        delete surveyResponse.survey_id;
+        surveyResponse.survey_code = 'TEST_POST_CHANGES_SURVEY';
+      },
+      entity_code: surveyResponse => {
+        delete surveyResponse.entity_id;
+        surveyResponse.entity_code = 'TEST_POST_CHANGES_ENTITY';
+      },
+      user_email: surveyResponse => {
+        delete surveyResponse.user_id;
+        surveyResponse.user_email = TEST_USER_EMAIL;
+      },
+      question_code: surveyResponse => {
+        const [answer] = surveyResponse.answers;
+        delete answer.question_id;
+        answer.question_code = 'TEST_POST_CHANGES_QUESTION';
+      },
+    };
+
+    for (const [codeField, replace] of Object.entries(replaceIdWithCode)) {
+      it(`does not translate ${codeField} to an id`, async () => {
+        const surveyResponse = generateSurveyResponse();
+        replace(surveyResponse);
+
+        const response = await postChanges([
+          { action: SUBMIT_SURVEY_RESPONSE, payload: surveyResponse },
+        ]);
+
+        expect(response.statusCode).to.equal(400);
+        await expectNotSubmitted(surveyResponse);
+      });
+    }
+  });
 });
