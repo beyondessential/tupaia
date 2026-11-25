@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -12,6 +12,7 @@ import {
   Tooltip,
   TooltipProps,
 } from 'recharts';
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { ChartReport, PieChartConfig, PieChartSegmentConfig } from '@tupaia/types';
 import { CHART_COLOR_PALETTE, OFF_WHITE } from '../../constants';
 import { isMobile } from '../../utils';
@@ -67,7 +68,7 @@ const getFormattedValue = (config: PieChartConfig, data: any) => {
 
 const makeCustomTooltip =
   (config: PieChartConfig) =>
-  ({ active, payload }: TooltipProps) => {
+  ({ active, payload }: TooltipProps<ValueType, NameType>) => {
     if (!active || !payload || !payload.length) {
       return null;
     }
@@ -112,7 +113,6 @@ export const PieChart = ({
   onItemClick = () => {},
   legendPosition = 'bottom',
 }: PieChartProps) => {
-  const [activeIndex, setActiveIndex] = useState(-1);
   const { data } = report;
   const segmentConfig = 'segmentConfig' in config ? config.segmentConfig : undefined;
   const presentationOptions =
@@ -128,9 +128,6 @@ export const PieChart = ({
       setLoaded(true);
     }, 50);
   }, []);
-
-  const handleMouseEnter = (_event: MouseEvent, index: number) => setActiveIndex(index);
-  const handleMouseOut = () => setActiveIndex(-1);
 
   const getSegmentConfig = (
     key?: keyof PieChartSegmentConfig,
@@ -177,7 +174,6 @@ export const PieChart = ({
         <Pie
           dataKey="value"
           data={validData}
-          activeIndex={isExporting ? undefined : activeIndex}
           isAnimationActive={!isExporting && isEnlarged}
           onClick={item => onItemClick(item.originalItem)}
           label={
@@ -204,8 +200,6 @@ export const PieChart = ({
             legendPosition,
             config,
           })}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseOut}
         />
       </BasePieChart>
     </ResponsiveContainer>

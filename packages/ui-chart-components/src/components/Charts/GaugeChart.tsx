@@ -30,6 +30,12 @@ const Text = styled(RechartText)<{ $isExporting: boolean }>`
   }};
 `;
 
+const getCentre = (viewBox: LabelProps['viewBox']) => {
+  if (!viewBox || !('cx' in viewBox)) return { cx: 0, cy: 0 };
+  const { cx = 0, cy = 0 } = viewBox;
+  return { cx, cy };
+};
+
 const getHeight = (isExporting?: boolean, isEnlarged?: boolean, isMobileSize?: boolean) => {
   if (isExporting) {
     return 420;
@@ -109,22 +115,24 @@ export const GaugeChart = ({
           {/* Coordinate graph for Gauge chart: https://beyond-essential.slab.com/posts/gauge-chart-2f6rrxnj#h5p3r-how-to-add-labels-into-pie-chart-in-rechart */}
           {/* Value label on the center */}
           <Label
-            content={props =>
-              getLabelContent({
-                x: props.viewBox.cx,
-                y: props.viewBox.cy,
+            content={props => {
+              const { cx, cy } = getCentre(props.viewBox);
+              return getLabelContent({
+                x: cx,
+                y: cy,
                 value: formatDataValueByType({ value: elements[0].value }, 'percentage'),
                 fontSize: 30,
-              })
-            }
+              });
+            }}
           />
           {/* 0 label on the left */}
           <Label
             content={props => {
               const fontSize = 15;
+              const { cx, cy } = getCentre(props.viewBox);
               return getLabelContent({
-                x: props.viewBox.cx - outerRadius + (outerRadius - innerRadius) / 2,
-                y: props.viewBox.cy + fontSize,
+                x: cx - outerRadius + (outerRadius - innerRadius) / 2,
+                y: cy + fontSize,
                 value: 0,
                 fontSize,
               });
@@ -134,9 +142,10 @@ export const GaugeChart = ({
           <Label
             content={props => {
               const fontSize = 15;
+              const { cx, cy } = getCentre(props.viewBox);
               return getLabelContent({
-                x: props.viewBox.cx + outerRadius - (outerRadius - innerRadius) / 2,
-                y: props.viewBox.cy + fontSize,
+                x: cx + outerRadius - (outerRadius - innerRadius) / 2,
+                y: cy + fontSize,
                 value: '100%',
                 fontSize,
               });
