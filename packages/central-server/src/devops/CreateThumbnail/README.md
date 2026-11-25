@@ -2,7 +2,7 @@ Based off http://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-deployment
 
 To deploy:
 
-1. `cd` to `packages/central-server/src/devops/CreateThumbnail/`
+1. `cd -- packages/central-server/src/devops/CreateThumbnail/`
 2. `yarn run package`
 3. Use the ‘Update from a .zip file’ option to upload the code to the [CreateThumbnail](https://console.aws.amazon.com/lambda/home?region=ap-southeast-2#/functions/CreateThumbnail) Lambda Event Function
 
