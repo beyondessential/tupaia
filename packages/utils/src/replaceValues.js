@@ -14,10 +14,9 @@ export const replaceValues = (target, replacements) => {
   const isString = typeof target === 'string';
 
   let replacedString = isString ? target : JSON.stringify(target);
-  Object.entries(replacements).forEach(([key, value]) => {
-    if (replacedString.includes(`{${key}}`)) {
-      replacedString = replacedString.replace(new RegExp(`\{${key}\}`, 'g'), value);
-    }
-  });
+  for (const [variable, replacement] of Object.entries(replacements)) {
+    // Literal match and replacer function, so neither is interpreted as a pattern
+    replacedString = replacedString.replaceAll(`{${variable}}`, () => replacement);
+  }
   return isString ? replacedString : JSON.parse(replacedString);
 };
