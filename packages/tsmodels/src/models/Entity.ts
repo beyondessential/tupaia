@@ -8,6 +8,11 @@ export interface EntityFilterFields extends Entity {
 
 export type EntityFilter = DbFilter<EntityFilterFields>;
 
+export type EntityRelationsQueryOptions = {
+  /** Select only these fields. The returned records are partial, so must not be saved. */
+  fields?: (keyof Entity)[];
+} & Record<string, unknown>;
+
 export type ParentFieldsByChildId = Record<
   Entity['id'],
   {
@@ -18,7 +23,11 @@ export type ParentFieldsByChildId = Record<
 
 // allow the possibility of passing in own fields
 export interface EntityRecord extends Entity, BaseEntityRecord {
-  getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getChildren: (
+    hierarchyId: string,
+    criteria?: EntityFilter,
+    options?: EntityRelationsQueryOptions,
+  ) => Promise<EntityRecord[]>;
   getParentFromParentChildRelation: (hierarchyId: string) => Promise<EntityRecord | undefined>;
   getChildrenFromParentChildRelation: (
     hierarchyId: string,
@@ -28,7 +37,7 @@ export interface EntityRecord extends Entity, BaseEntityRecord {
   getDescendants: (
     hierarchyId: string,
     criteria?: EntityFilter,
-    options?: Record<string, unknown>,
+    options?: EntityRelationsQueryOptions,
   ) => Promise<EntityRecord[]>;
   getAncestors: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
   getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityRecord | undefined>;
