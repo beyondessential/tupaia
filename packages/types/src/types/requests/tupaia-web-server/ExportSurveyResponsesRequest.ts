@@ -6,9 +6,10 @@ export type ResBody = {
 };
 export type ReqBody = Record<string, never>;
 export type ReqQuery = {
-  organisationUnitCode?: string;
-  surveyCodes?: string[];
-  latest?: boolean;
+  organisationUnitCode: string;
+  /** Comma-separated, e.g. `SURVEY_A,SURVEY_B` */
+  surveyCodes: string;
+  latest?: 'true' | 'false';
   /**
    * @format iso-date-time
    */
@@ -18,6 +19,6 @@ export type ReqQuery = {
    */
   endDate?: string;
   timeZone?: string;
-  itemCode?: string;
-  easyReadingMode?: boolean;
+  itemCode: string;
+  easyReadingMode?: 'true' | 'false';
 };

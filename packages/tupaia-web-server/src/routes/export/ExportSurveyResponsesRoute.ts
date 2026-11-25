@@ -1,21 +1,42 @@
-import { Request } from 'express';
+import type { Request } from 'express';
+import { ZodError } from 'zod';
+
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
-import { QueryParams } from './types';
+import type { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
+import { NotFoundError, ValidationError } from '@tupaia/utils';
+import {
+  type ExportSurveyResponsesQuery,
+  exportSurveyResponsesQuerySchema,
+} from './exportSurveyResponsesQuerySchema';
+import type { QueryParams } from './types';
 import { EMAIL_TIMEOUT_SETTINGS, handleExportResponse } from './utils';
 
-export type ExportSurveyResponsesRequest = Request<
-  TupaiaWebExportSurveyResponsesRequest.Params,
-  TupaiaWebExportSurveyResponsesRequest.ResBody,
-  TupaiaWebExportSurveyResponsesRequest.ReqBody,
-  TupaiaWebExportSurveyResponsesRequest.ReqQuery
->;
+export interface ExportSurveyResponsesRequest
+  extends Request<
+    TupaiaWebExportSurveyResponsesRequest.Params,
+    TupaiaWebExportSurveyResponsesRequest.ResBody,
+    TupaiaWebExportSurveyResponsesRequest.ReqBody,
+    TupaiaWebExportSurveyResponsesRequest.ReqQuery
+  > {}
 
 export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesRequest> {
   protected readonly type = 'download';
 
+  /** Query params may be arrays or objects at runtime (e.g. `?itemCode=a&itemCode=b`) */
+  private parseQuery(): ExportSurveyResponsesQuery {
+    try {
+      return exportSurveyResponsesQuerySchema.parse(this.req.query);
+    } catch (error) {
+      if (!(error instanceof ZodError)) throw error;
+      // Keep the message free of colons: tupaia-web strips everything up to the first `: `
+      const invalidParams = [...new Set(error.issues.map(({ path }) => path.join('.')))];
+      const details = error.issues.map(({ path, message }) => `${path.join('.')}: ${message}`);
+      throw new ValidationError(`Invalid query parameters (${invalidParams.join(', ')})`, details);
+    }
+  }
+
   public async buildResponse() {
-    const { query, ctx } = this.req;
+    const { ctx } = this.req;
     const {
       organisationUnitCode,
       surveyCodes,
@@ -25,22 +46,16 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       timeZone,
       itemCode,
       easyReadingMode,
-    } = query;
-    const dashboardItem = (
-      await ctx.services.central.fetchResources('dashboardItems', {
-        filter: { code: itemCode },
-      })
-    )[0];
+    } = this.parseQuery();
 
-    if (!dashboardItem) {
-      throw new Error(`Invalid itemCode ${itemCode}`);
-    }
+    const [dashboardItem] = await ctx.services.central.fetchResources('dashboardItems', {
+      filter: { code: itemCode },
+    });
+    if (!dashboardItem) throw new NotFoundError(`No dashboard item found with code ${itemCode}`);
 
-    const centralQuery: QueryParams<TupaiaWebExportSurveyResponsesRequest.ReqQuery> & {
-      reportName: string;
-      countryCode?: string;
-      entityCode?: string;
-    } = {
+    const centralQuery: QueryParams<
+      Omit<ExportSurveyResponsesQuery, 'itemCode' | 'organisationUnitCode'>
+    > & { countryCode?: string; entityCode?: string; reportName: string } = {
       latest,
       surveyCodes,
       startDate,
@@ -51,7 +66,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       ...EMAIL_TIMEOUT_SETTINGS,
     };
 
-    if (organisationUnitCode?.length === 2) {
+    if (organisationUnitCode.length === 2) {
       // The code is only two characters, must be the 2 character country ISO code
       centralQuery.countryCode = organisationUnitCode;
     } else {
