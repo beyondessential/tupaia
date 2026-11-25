@@ -128,6 +128,10 @@ export class BaseDatabase {
         this.connection = knex({
           client: clientType,
           connection: getConnectionConfigFn(),
+          // Knex defaults to { min: 2, max: 10 }. With several pools per server process, the
+          // min-2 floor holds dozens of idle connections open per app server (including old
+          // servers mid-redeploy), so let idle pools drain to zero.
+          pool: { min: 0, max: 10 },
         });
         return true;
       };

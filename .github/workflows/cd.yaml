@@ -9,6 +9,14 @@ permissions:
   contents: read
   id-token: write # OIDC token for AWS
 
+# One deploy per branch at a time. Each redeploy boots a new server against the same database and
+# only terminates the old one once the new one is ready, so overlapping deploys (e.g. a burst of
+# merges to dev) multiply connections and can exhaust max_connections. Don’t cancel in progress:
+# that would orphan a half-built server. Queued runs are superseded by newer ones.
+concurrency:
+  group: deploy-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Deploy
