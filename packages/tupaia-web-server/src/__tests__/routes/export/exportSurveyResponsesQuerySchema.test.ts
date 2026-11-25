@@ -22,19 +22,11 @@ describe('exportSurveyResponsesQuerySchema', () => {
     expect(result.data).toStrictEqual(validQuery);
   });
 
-  it('accepts surveyCodes as a repeated param', () => {
-    const result = exportSurveyResponsesQuerySchema.safeParse({
-      ...validQuery,
-      surveyCodes: ['SURVEY_A', 'SURVEY_B'],
-    });
-
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts a query with only itemCode and organisationUnitCode', () => {
+  it('accepts a query with only itemCode, organisationUnitCode and a single survey code', () => {
     const result = exportSurveyResponsesQuerySchema.safeParse({
       itemCode: 'raw_data_download',
       organisationUnitCode: 'TO',
+      surveyCodes: 'SURVEY_A',
     });
 
     expect(result.success).toBe(true);
@@ -56,6 +48,13 @@ describe('exportSurveyResponsesQuerySchema', () => {
       'organisationUnitCode',
     ],
     ['nested surveyCodes', { surveyCodes: { comparator: 'like' } }, 'surveyCodes'],
+    ['missing surveyCodes', { surveyCodes: undefined }, 'surveyCodes'],
+    ['empty surveyCodes', { surveyCodes: '' }, 'surveyCodes'],
+    ['repeated surveyCodes', { surveyCodes: ['SURVEY_A', 'SURVEY_B'] }, 'surveyCodes'],
+    ['surveyCodes of only a comma', { surveyCodes: ',' }, 'surveyCodes'],
+    ['surveyCodes with an empty segment', { surveyCodes: 'SURVEY_A,,SURVEY_B' }, 'surveyCodes'],
+    ['surveyCodes with a leading comma', { surveyCodes: ',SURVEY_A' }, 'surveyCodes'],
+    ['surveyCodes with a trailing comma', { surveyCodes: 'SURVEY_A,' }, 'surveyCodes'],
     ['non-boolean latest', { latest: 'yes' }, 'latest'],
     ['nested easyReadingMode', { easyReadingMode: { a: 'b' } }, 'easyReadingMode'],
     ['repeated startDate', { startDate: ['2026-01-01', '2026-01-02'] }, 'startDate'],

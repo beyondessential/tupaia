@@ -7,8 +7,8 @@ export type ResBody = {
 export type ReqBody = Record<string, never>;
 export type ReqQuery = {
   organisationUnitCode: string;
-  /** Comma-separated string, or repeated param (`?surveyCodes=a&surveyCodes=b`) */
-  surveyCodes?: string | string[];
+  /** Comma-separated, e.g. `SURVEY_A,SURVEY_B` */
+  surveyCodes: string;
   latest?: 'true' | 'false';
   /**
    * @format iso-date-time
