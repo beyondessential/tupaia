@@ -39,7 +39,8 @@ if grep -q errorMessage "$response_file"; then
   exit 1
 fi
 
-deployments=$(cat "$response_file" | jq -r '.[] | @base64')
+deployments_base64=$(jq -r '.[] | @base64' "$response_file")
+readarray -t deployments < <(printf '%s' "$deployments_base64")
 for deployment_base64 in "${deployments[@]}"; do
   deployment=$(echo "$deployment_base64" | base64 --decode)
   deployment_name=$(echo "$deployment" | jq -r '.DeploymentName')
