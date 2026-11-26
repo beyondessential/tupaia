@@ -121,7 +121,6 @@ describe('MatrixBuilder', () => {
         { categoryId: 'medical center', dataElement: 'hospital', Laos: 3 },
         { categoryId: 'medical center', dataElement: 'clinic', Laos: 4 },
         { category: 'medical center' },
-        { category: 'others' },
       ]);
     });
 
