@@ -1,4 +1,7 @@
 import { createJestMockInstance } from '@tupaia/utils';
+// Load the data builder index first: importing the module below directly enters an import cycle
+// (helpers → getDataBuilder → index → percentagesOfValueCountsPerPeriod) at the wrong point
+import '/apiV1/dataBuilders';
 import {
   PercentagesOfValueCountsBuilder,
   percentagesOfAllValueCounts,
@@ -131,7 +134,7 @@ describe('PercentagesOfValueCountsBuilder', () => {
       ).toBe(1);
     });
 
-    it('compares nested value counts and returns false when the first set is empty', () => {
+    it('counts no groups when the first compared set is empty', () => {
       const builder = getBuilder({ dataClasses: {} });
 
       expect(
@@ -139,14 +142,15 @@ describe('PercentagesOfValueCountsBuilder', () => {
           {
             compare: '$count',
             valueOfInterest: 'Yes',
+            groupBy: 'organisationUnit',
             dataValues: [['DE_MISSING'], ['DE_B']],
           },
           ANALYTICS,
         ),
-      ).toBe(false);
+      ).toBe(0);
     });
 
-    it('compares nested value counts when both sets have matching counts', () => {
+    it('counts groups whose compared sets have matching counts', () => {
       const builder = getBuilder({ dataClasses: {} });
 
       expect(
@@ -154,14 +158,15 @@ describe('PercentagesOfValueCountsBuilder', () => {
           {
             compare: '$count',
             valueOfInterest: 'Yes',
+            groupBy: 'organisationUnit',
             dataValues: [['DE_A'], ['DE_B']],
           },
           ANALYTICS,
         ),
-      ).toBe(true);
+      ).toBe(1);
     });
 
-    it('compares nested value counts when counts differ', () => {
+    it('counts no groups when the compared counts differ', () => {
       const builder = getBuilder({ dataClasses: {} });
 
       expect(
@@ -169,11 +174,12 @@ describe('PercentagesOfValueCountsBuilder', () => {
           {
             compare: '$count',
             valueOfInterest: 'Yes',
+            groupBy: 'organisationUnit',
             dataValues: [['DE_A', 'DE_B'], ['DE_C']],
           },
           ANALYTICS,
         ),
-      ).toBe(false);
+      ).toBe(0);
     });
 
     it('throws when nested compare config is invalid', () => {
@@ -224,12 +230,12 @@ describe('PercentagesOfValueCountsBuilder', () => {
       ).toBe(1);
     });
 
-    it('throws when compare and operation are both absent', () => {
+    it('throws when the compare type is unknown and there is no operation', () => {
       const builder = getBuilder({ dataClasses: {} });
 
-      expect(() => builder.calculateFractionPart({ dataValues: ['DE_A'] }, ANALYTICS)).toThrow(
-        'Could not parse calculation for: [object Object]',
-      );
+      expect(() =>
+        builder.calculateFractionPart({ compare: '$unknown', dataValues: ['DE_A'] }, ANALYTICS),
+      ).toThrow('Could not parse calculation for: [object Object]');
     });
   });
 
@@ -252,24 +258,25 @@ describe('PercentagesOfValueCountsBuilder', () => {
       const builder = getBuilder({
         dataClasses: {
           metric: {
-            numerator: { dataValues: ['DE_A'] },
+            numerator: { dataValues: ['DE_A', 'DE_B'] },
             denominator: { dataValues: ['DE_A', 'DE_C'] },
           },
         },
       });
 
       await expect(builder.fetchResults()).resolves.toEqual([
+        ANALYTICS[2],
         ANALYTICS[0],
         ANALYTICS[1],
+        ANALYTICS[3],
         ANALYTICS[4],
-        ANALYTICS[5],
       ]);
       expect(fetchAnalytics).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('build()', () => {
-    it('builds percentage data sorted by sortOrder and returns empty data when unavailable', async () => {
+    it('builds percentage data sorted by sortOrder, keeping unavailable classes if any data is available', async () => {
       const builder = getBuilder({
         dataClasses: {
           second: {
@@ -291,6 +298,11 @@ describe('PercentagesOfValueCountsBuilder', () => {
             name: 'first',
             value: 0.5,
             first_metadata: { numerator: 1, denominator: 2 },
+          },
+          {
+            name: 'second',
+            value: 'No data',
+            second_metadata: { numerator: 0, denominator: 0 },
           },
         ],
       });
@@ -335,6 +347,7 @@ describe('percentagesOfValueCounts exports', () => {
     expect(fetchAnalytics).toHaveBeenCalledWith(
       expect.anything(),
       expect.anything(),
+      expect.anything(), // query
       expect.objectContaining({ aggregationType: undefined }),
     );
   });
@@ -361,6 +374,7 @@ describe('percentagesOfValueCounts exports', () => {
     expect(fetchAnalytics).toHaveBeenCalledWith(
       expect.anything(),
       expect.anything(),
+      expect.anything(), // query
       expect.objectContaining({ aggregationType: 'RAW' }),
     );
   });
