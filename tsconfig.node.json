@@ -1,19 +1,14 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "allowUnreachableCode": false,
-    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
-    "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "resolveJsonModule": true,
     "sourceMap": true,
     "allowJs": false,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strictNullChecks": true
+    "noUnusedParameters": true
   }
 }

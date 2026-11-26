@@ -1,15 +1,13 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
     "lib": ["es2023"],
     "sourceMap": true,
-    "skipLibCheck": true,
     "module": "nodenext",
     "target": "esnext",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
     "types": ["node"]
   }
 }
