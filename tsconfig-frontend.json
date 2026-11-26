@@ -28,10 +28,5 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": false, // this fixes the issue with the `any` type from third party libraries
-    },
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ]
+    }
 }
