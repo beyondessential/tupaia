@@ -11,7 +11,7 @@
   "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && yarn run package:build:types",
+    "build": "rimraf dist && yarn run package:build:node-js",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",

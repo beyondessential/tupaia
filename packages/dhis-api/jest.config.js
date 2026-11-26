@@ -1,9 +1,6 @@
-const baseConfig = require('../../jest.config-js.json');
+const baseConfig = require('../../jest.config-node-js.json');
 
 module.exports = async () => ({
   ...baseConfig,
   rootDir: '.',
-  transform: {
-    '^.+\\.jsx?$': ['ts-jest', { isolatedModules: true, tsconfig: '<rootDir>/tsconfig.json' }],
-  },
 });
