@@ -34,7 +34,7 @@ AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   "$response_file"
 
 if grep -q errorMessage "$response_file"; then
-  echo "::error::Error while trying to redeploy"
+  echo '::error::Error while trying to redeploy'
   cat "$response_file"
   exit 1
 fi
@@ -80,7 +80,7 @@ for deployment_base64 in "${deployments[@]}"; do
         --cli-read-timeout 900 \
         "$swap_out_response_file"
       if grep -q errorMessage "$swap_out_response_file"; then
-        echo "Error while trying to swap out instances"
+        echo '::error::Error while trying to swap out instances'
         cat "$swap_out_response_file"
         exit 1
       fi
