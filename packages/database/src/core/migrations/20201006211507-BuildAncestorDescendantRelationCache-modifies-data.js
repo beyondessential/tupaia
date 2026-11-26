@@ -1,16 +1,16 @@
 'use strict';
 
-import { TupaiaDatabase } from '../../server/TupaiaDatabase';
-import { ModelRegistry } from '../ModelRegistry';
-import { EntityHierarchyCacher } from '../../server/changeHandlers/entityHierarchyCacher/EntityHierarchyCacher';
-
 var dbm;
 var type;
 var seed;
 
 /**
- * We receive the dbmigrate dependency from dbmigrate initially.
- * This enables us to not have to rely on NODE_PATH.
+ * Originally this migration constructed the EntityHierarchyCacher and warmed
+ * `ancestor_descendant_relation` via `buildAndCacheHierarchies()`. TUP-3065
+ * removed the cacher subsystem (entity hierarchies are now read directly via
+ * `entity.parent_id`), so this old migration is reduced to a no-op shell — it
+ * has long since been applied to every environment, but the file still has to
+ * load cleanly when db-migrate scans the migrations directory.
  */
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
@@ -19,11 +19,6 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function () {
-  const db = new TupaiaDatabase();
-  const models = new ModelRegistry(db);
-  const hierarchyCacher = new EntityHierarchyCacher(models);
-  await hierarchyCacher.buildAndCacheHierarchies();
-  db.closeConnections();
   return null;
 };
 

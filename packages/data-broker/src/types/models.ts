@@ -108,6 +108,11 @@ export type EntityHierarchy = {
   canonical_types: string[];
 };
 
+export type Project = {
+  id: string;
+  code: string;
+};
+
 export type DataSourceTypeInstance = DataSource & {
   databaseRecord: typeof RECORDS.DATA_ELEMENT | typeof RECORDS.DATA_GROUP;
 };
@@ -139,10 +144,12 @@ type EntityModel = DatabaseModel<Entity, EntityRecord, BaseEntityModel>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;
 type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
+type ProjectModel = DatabaseModel<Project>;
 
 export interface DataBrokerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
+  readonly project: ProjectModel;
   readonly dataElementDataService: DataElementDataServiceModel;
   readonly dataElement: DataElementModel;
   readonly dataGroup: DataGroupModel;

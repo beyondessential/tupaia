@@ -17,6 +17,12 @@ export class DhisChangeValidator extends ChangeValidator {
       )
     ).map(r => r.user_id);
 
+    // An empty user list would render `IN ()`, which is invalid SQL. Drop the term
+    // when there are no non-Public DemoLand users — it would match nothing anyway.
+    const demoLandUserClause = nonPublicDemoLandUsers.length
+      ? `OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})`
+      : '';
+
     const validSurveyResponseIds = [];
     const batchSize = this.models.database.maxBindingsPerQuery - nonPublicDemoLandUsers.length;
     for (let i = 0; i < surveyResponseIds.length; i += batchSize) {
@@ -32,7 +38,7 @@ export class DhisChangeValidator extends ChangeValidator {
           AND data_group.service_type = 'dhis'
           AND (
             entity.country_code <> 'DL'
-            OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
+            ${demoLandUserClause}
           )
           ${
             excludeEventBased

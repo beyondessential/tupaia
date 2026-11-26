@@ -92,14 +92,14 @@ class SumPerPeriodBuilder extends DataBuilder {
     // After that remove this file and anything related to it
     if (allDataElementsAreDhisIndicators) {
       const { entityAggregation } = this.config;
-      const hierarchyId = await this.fetchEntityHierarchyId();
+      const projectId = await this.fetchProjectId();
       const result = await fetchAggregatedAnalyticsByDhisIds(
         this.models,
         this.dhisApi,
         dataElementCodes,
         this.query,
         entityAggregation,
-        hierarchyId,
+        projectId,
       );
 
       return result;

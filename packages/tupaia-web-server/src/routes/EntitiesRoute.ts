@@ -49,6 +49,10 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const { filter = DEFAULT_FILTER, fields = DEFAULT_FIELDS } = query;
     const { type, ...restOfFilter } = parseFilter(filter);
 
+    // A bare single-id lookup is a QR scan. Capture it to fall back to a code
+    // lookup if the id doesn't resolve within the project (see below).
+    const scannedId = typeof restOfFilter.id === 'string' ? restOfFilter.id : undefined;
+
     const frontendExcludedFilter = await generateFrontendExcludedFilter(
       models,
       accessPolicy,
@@ -56,7 +60,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       type,
     );
 
-    const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
+    let flatEntities = await ctx.services.entity.getDescendantsOfEntity(
       projectCode,
       rootEntityCode,
       {
@@ -68,6 +72,35 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       },
       query.includeRootEntity || false,
     );
+
+    // Printed QR codes encode an entity's pre-epic id. Sub-country entities are now
+    // duplicated per project, and each project's copy has a new id sharing the old
+    // `code`, so scanning finds nothing in projects where the entity was duplicated.
+    // Resolve the scanned id → code (the canonical row is still on central) and
+    // re-query by code to pick up the project's copy. Gated on an empty result so
+    // in-project scans stay zero-behaviour-change.
+    if (flatEntities.length === 0 && scannedId && !('code' in restOfFilter)) {
+      // Non-throwing lookup: a genuinely-invalid scan should surface as an empty
+      // result, not a 500.
+      const entity = await models.entity.findById(scannedId);
+      const code = entity?.code;
+      if (code) {
+        const { id: _omit, ...filterWithoutId } = restOfFilter;
+        flatEntities = await ctx.services.entity.getDescendantsOfEntity(
+          projectCode,
+          rootEntityCode,
+          {
+            filter: {
+              ...filterWithoutId,
+              code,
+              ...frontendExcludedFilter,
+            },
+            fields,
+          },
+          query.includeRootEntity || false,
+        );
+      }
+    }
 
     // The child_codes list won't have been filtered for frontendExcludedTypes
     // Since we fetch two layers at a time, we can clean up child_codes in the

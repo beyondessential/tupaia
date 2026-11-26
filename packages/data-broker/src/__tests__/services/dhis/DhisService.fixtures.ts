@@ -51,9 +51,9 @@ export const ENTITIES = {
   }),
 };
 
-export const ENTITY_HIERARCHIES = {
+export const PROJECTS = {
   explore: {
-    name: 'explore',
+    code: 'explore',
     id: '1234',
   },
 };
