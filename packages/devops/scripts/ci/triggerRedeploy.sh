@@ -69,7 +69,7 @@ for deployment_base64 in "${deployments[@]}"; do
       echo "New instance ${new_instance_id} is ready, swapping over ELB"
       swap_out_response_file=lambda_swap_out_response.json
       swap_out_payload=$(jq -n \
-        --arg user "${CI_COMMITTER_NAME} via GitHub Actions" \
+        --arg user "$CI_COMMITTER_NAME via GitHub Actions" \
         --arg deploymentName "$deployment_name" \
         --arg newInstanceId "$new_instance_id" \
         '{Action: "swap_out_tupaia_server", User: $user, DeploymentName: $deploymentName, NewInstanceId: $newInstanceId}')
