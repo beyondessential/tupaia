@@ -40,6 +40,7 @@ export {
   SyncServerPullRequest,
   SyncServerPushCompleteRequest,
   SyncServerPushRequest,
+  SyncServerPushStreamRequest,
   SyncServerPushStatusRequest,
   SyncServerStartSessionRequest,
   SyncServerSyncMetadataRequest,

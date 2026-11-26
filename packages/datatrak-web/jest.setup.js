@@ -1,3 +1,13 @@
+// jsdom does not provide TextEncoder/TextDecoder, which the sync stream framing code (and the
+// browser it targets) relies on. Polyfill them from Node's util module.
+const { TextEncoder, TextDecoder } = require('util');
+if (typeof global.TextEncoder === 'undefined') {
+  global.TextEncoder = TextEncoder;
+}
+if (typeof global.TextDecoder === 'undefined') {
+  global.TextDecoder = TextDecoder;
+}
+
 /**
  * This is the Jest-sanctioned workaround
  * @see https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom

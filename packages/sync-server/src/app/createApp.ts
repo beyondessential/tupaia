@@ -15,6 +15,7 @@ import { SyncPullMetadataRequest, SyncPullMetadataRoute } from '../routes/SyncPu
 import { SyncPullRequest, SyncPullRoute } from '../routes/SyncPullRoute';
 import { SyncEndSessionRequest, SyncEndSessionRoute } from '../routes/SyncEndSessionRoute';
 import { SyncPushRequest, SyncPushRoute } from '../routes/SyncPushRoute';
+import { SyncPushStreamRequest, SyncPushStreamRoute } from '../routes/SyncPushStreamRoute';
 import { SyncPushStatusRequest, SyncPushStatusRoute } from '../routes/SyncPushStatusRoute';
 import { SyncPushCompleteRequest, SyncPushCompleteRoute } from '../routes/SyncPushCompleteRoute';
 
@@ -47,6 +48,7 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     )
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
+    .post<SyncPushStreamRequest>('sync/:sessionId/push/stream', handleWith(SyncPushStreamRoute))
     .put<SyncPushCompleteRequest>(
       'sync/:sessionId/push/complete',
       handleWith(SyncPushCompleteRoute),
