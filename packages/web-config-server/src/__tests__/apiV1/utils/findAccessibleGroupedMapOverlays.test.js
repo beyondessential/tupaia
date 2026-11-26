@@ -1,7 +1,11 @@
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+
 import {
   findAccessibleGroupedMapOverlays,
   findAccessibleMapOverlays,
 } from '/apiV1/utils/findAccessibleGroupedMapOverlays';
+
+const { AND, RAW } = QUERY_CONJUNCTIONS;
 
 const makeOverlay = (id, { hideFromMenu = false, reference, name = `Overlay ${id}` } = {}) => ({
   id,
@@ -64,11 +68,11 @@ describe('findAccessibleMapOverlays', () => {
 
     expect(models.mapOverlay.find).toHaveBeenCalledOnceWith(
       expect.objectContaining({
-        RAW: expect.objectContaining({
+        [RAW]: expect.objectContaining({
           parameters: ['Public', 'Admin'],
         }),
-        AND: expect.objectContaining({
-          AND: expect.objectContaining({
+        [AND]: expect.objectContaining({
+          [AND]: expect.objectContaining({
             project_codes: expect.objectContaining({
               comparisonValue: ['explore'],
             }),
@@ -116,7 +120,6 @@ describe('findAccessibleGroupedMapOverlays', () => {
         children: [
           {
             mapOverlayCode: 'CODE_overlay-1',
-            code: 'CODE_overlay-1',
             name: 'Beta overlay',
             hideFromMenu: false,
             reportCode: 'REPORT_overlay-1',
@@ -124,7 +127,6 @@ describe('findAccessibleGroupedMapOverlays', () => {
           },
           {
             mapOverlayCode: 'CODE_overlay-3',
-            code: 'CODE_overlay-3',
             name: 'Alpha overlay',
             hideFromMenu: false,
             reportCode: 'REPORT_overlay-3',
@@ -135,7 +137,7 @@ describe('findAccessibleGroupedMapOverlays', () => {
     ]);
   });
 
-  it('returns nested groups and hoists a shared child reference to the group', async () => {
+  it('returns nested groups and hoists a shared child reference to the top-level group', async () => {
     const sharedReference = { source: 'WHO', year: 2024 };
     const accessibleMapOverlays = {
       'overlay-3': makeOverlay('overlay-3', { reference: sharedReference }),
@@ -172,7 +174,6 @@ describe('findAccessibleGroupedMapOverlays', () => {
             children: [
               {
                 mapOverlayCode: 'CODE_overlay-3',
-                code: 'CODE_overlay-3',
                 name: 'Overlay overlay-3',
                 hideFromMenu: false,
                 reportCode: 'REPORT_overlay-3',
@@ -181,7 +182,6 @@ describe('findAccessibleGroupedMapOverlays', () => {
               },
               {
                 mapOverlayCode: 'CODE_overlay-4',
-                code: 'CODE_overlay-4',
                 name: 'Overlay overlay-4',
                 hideFromMenu: false,
                 reportCode: 'REPORT_overlay-4',
@@ -189,9 +189,10 @@ describe('findAccessibleGroupedMapOverlays', () => {
                 info: {},
               },
             ],
-            info: { reference: sharedReference },
+            info: {},
           },
         ],
+        info: { reference: sharedReference },
       },
     ]);
   });
