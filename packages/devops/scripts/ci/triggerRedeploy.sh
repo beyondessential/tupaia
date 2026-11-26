@@ -88,7 +88,7 @@ for deployment_base64 in "${deployments[@]}"; do
       echo "ELB for $deployment_name now points to $new_instance_id"
       break
     else
-      if ((wait_attempts >= 18)); then # 18 × 200 seconds = 1 hour
+      if ((wait_attempts > 18)); then # 18 × 200 seconds = 1 hour
         echo "::error::Build failed! Waited 18 times, but new instance $new_instance_id is still not reachable"
         exit 1
       else
