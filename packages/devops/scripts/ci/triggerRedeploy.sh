@@ -86,8 +86,8 @@ for deployment_base64 in "${deployments[@]}"; do
       echo "ELB for ${deployment_name} now points to ${new_instance_id}"
       break
     else
-      if ((wait_attempts >= 75)); then # 75 * 200 seconds = 4.16 hours, sitting within codeship's 5 hour timeout
-        echo "::error::Build failed! Waited 75 times, but new instance is still not reachable"
+      if ((wait_attempts >= 18)); then # 18 × 200 seconds = 1 hour
+        echo "::error::Build failed! Waited 18 times, but new instance ${new_instance_id} is still not reachable"
         exit 1
       else
         echo "Still waiting for $deployment_name startup build to complete. To watch detailed progress, connect to instance $new_instance_id and run tail -f ~/logs/deployment.log"
