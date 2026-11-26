@@ -3,7 +3,7 @@ name: review-testing-notes
 description: "Review the product engineer's post-implementation testing notes for how thoroughly they cover the card's requirements and risk, and whether regression-worthy cases are automated at the right level of the test hierarchy"
 label: "Review testing notes"
 category: verify
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Review testing notes

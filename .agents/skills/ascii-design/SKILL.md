@@ -3,7 +3,7 @@ name: ascii-design
 description: "Run a quick UX/UI workshop using ASCII-art sketches"
 label: "ASCII design chat"
 category: design
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: ASCII design chat

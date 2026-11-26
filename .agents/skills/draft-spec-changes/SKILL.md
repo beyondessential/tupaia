@@ -3,7 +3,7 @@ name: draft-spec-changes
 description: "Draft edits to existing specs (or a new spec if no existing one fits) from the card description"
 label: "Draft spec changes"
 category: spec
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Draft spec changes
@@ -23,3 +23,13 @@ Produce spec edits directly from the card description — no extended interview.
 Do NOT start by asking questions or exploring the codebase. Go straight to drafting. If the description is too thin for meaningful acceptance criteria, write what you can and list the gaps as open questions.
 
 **Generate mockups** for any UI-facing specs as part of the draft. Before writing mockup HTML, follow the Design sourcing process from your system prompt: read the section's actual implementation first, then similar components, then cross-check against `.workhorse/design/`. Do not skip this reading pass.
+
+### Last step: the progress summary
+
+When this stage's work is done, finish by bringing the card's progress summary up to date, so people who were not in this conversation can see where the card stands.
+
+1. Read the current summary with `get_card`, and the comments posted since its `readThrough` with `list_comments` (`since`), so decisions made in the discussion are not missed
+2. Revise it with `revise_progress`, passing back the `readAt` `get_card` reported and carrying over the sections this stage did not change, with a one-line note on what changed
+3. Tell the user in a line what you recorded; they can edit it from the card home
+
+Skip it when nothing has changed since the summary was last revised.

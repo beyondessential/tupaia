@@ -4,7 +4,7 @@ description: "Interview me about this card to develop the acceptance criteria"
 label: "Spec interview"
 category: spec
 surface: both
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Interview me
@@ -30,3 +30,13 @@ Ask focused questions — one or two at a time, not long lists. **Number your qu
 2. Should there be a confirmation step before it happens?
 
 **Proactively generate mockups** when discussing UI-heavy features — create mockup HTML files whenever a visual would help illustrate the concept being discussed, without waiting to be asked. Before writing any mockup HTML, follow the Design sourcing process from your system prompt: read the section's actual implementation first, then similar components, then cross-check against `.workhorse/design/`. Do not skip this reading pass just because you are mid-interview.
+
+### Last step: the progress summary
+
+When this stage's work is done, finish by bringing the card's progress summary up to date, so people who were not in this conversation can see where the card stands.
+
+1. Read the current summary with `get_card`, and the comments posted since its `readThrough` with `list_comments` (`since`), so decisions made in the discussion are not missed
+2. Revise it with `revise_progress`, passing back the `readAt` `get_card` reported and carrying over the sections this stage did not change, with a one-line note on what changed
+3. Tell the user in a line what you recorded; they can edit it from the card home
+
+Skip it when nothing has changed since the summary was last revised.

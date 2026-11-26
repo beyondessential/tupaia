@@ -3,7 +3,7 @@ name: handoff
 description: "Generate a context-rich briefing prompt for an external agent (Claude Code, Cursor, etc.)"
 label: "Handoff"
 category: other
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Hand off to an external agent
@@ -43,7 +43,7 @@ Whether delivered inline or written to `handoff.md`, the briefing contains these
 
 **3. Branch instructions** — tell the agent to check the card's branch out in a **git worktree** (e.g. `git fetch origin` then `git worktree add ../<repo>-{card-id} <card-branch>`) rather than switching branches in place, so the user's working tree is left undisturbed, and to diff the branch against the upstream base branch to understand what specs and mockups have been added or changed
 
-**4. Journal summary** — summarise what has happened so far on this card based on the conversation history (what was discussed, what decisions were made, what work was done)
+**4. Progress** — where the work stands, taken from the card's progress summary: read it with `get_card` and carry its sections (where it's at, decided, open) into the prompt. Leave this section out when the card has no progress summary
 
 **5. Conversation context** — compress the key points from the conversation: decisions made, open threads, areas explored, any unresolved questions. This gives the external agent continuity
 

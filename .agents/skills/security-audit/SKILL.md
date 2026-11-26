@@ -3,7 +3,7 @@ name: security-audit
 description: "Review implementation for common security vulnerabilities"
 label: "Security audit"
 category: verify
-workhorse-version: 0.3.0
+workhorse-version: 0.7.2
 ---
 
 ## Your task: Security audit
