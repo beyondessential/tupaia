@@ -1,13 +1,14 @@
-import { TransformTable } from '../../../reportBuilder/transform';
 import { MatrixBuilder } from '../../../reportBuilder/output/functions/matrix/matrixBuilder';
-import { MatrixParams } from '../../../reportBuilder/output/functions/matrix/types';
+import type { MatrixParams } from '../../../reportBuilder/output/functions/matrix/types';
+import { TransformTable } from '../../../reportBuilder/transform';
+import type { Row } from '../../../reportBuilder/types';
 import {
   MULTIPLE_TRANSFORMED_DATA,
-  MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES,
   MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS,
+  MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES,
 } from './output.fixtures';
 
-const buildMatrix = (rows: Record<string, unknown>[], params: MatrixParams) =>
+const buildMatrix = (rows: Row[], params: MatrixParams) =>
   new MatrixBuilder(TransformTable.fromRows(rows), params).build();
 
 describe('MatrixBuilder', () => {
