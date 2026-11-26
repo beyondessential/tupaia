@@ -25,5 +25,4 @@ export { translateObjectFields } from './translateObjectFields';
 export { getUserInfoInString } from './getUserInfoInString';
 export { getPermissionListWithWildcard } from './getPermissionListWithWildcard';
 export { uploadImage } from './uploadImage';
-export { uploadStorage } from './uploadStorage';
 export { zipMultipleFiles } from './zipMultipleFiles';

@@ -2,8 +2,8 @@ import express from 'express';
 import multer from 'multer';
 
 import { emailAfterTimeout } from '@tupaia/server-boilerplate';
+import { uploadStorage } from '@tupaia/server-utils';
 import { catchAsyncErrors } from '../middleware';
-import { uploadStorage } from '../utilities/uploadStorage';
 import { importDataElementDataServices } from './importDataElementDataServices';
 import { importDataElements } from './importDataElements';
 import { importEntities } from './importEntities';

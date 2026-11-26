@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { uploadStorage } from '../utilities/uploadStorage';
+import { uploadStorage } from '@tupaia/server-utils';
 
 /**
  * Parses a multipartJson request where:
