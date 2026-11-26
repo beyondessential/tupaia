@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Waits until this deployment’s database is accepting connections, giving up after
-# DB_WAIT_TIMEOUT_SECONDS (default 600).
+# DB_WAIT_TIMEOUT_SECONDS (default 900).
 #
 # For non-production deployments, also waits until RDS has reset the master password. Their
-# databases are cloned from a production snapshot, and keep its master password until then.
+# databases are cloned from a production snapshot, and keep its master password until then. This
+# wait counts towards the same timeout.
 #
 # Using `pg_isready` only for simplicity; a more robust check would attempt a login with `psql`.
 set -e
