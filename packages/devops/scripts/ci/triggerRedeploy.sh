@@ -4,7 +4,7 @@ stopped_instances=$(aws ec2 describe-instances \
   --filters "Name=tag:Branch,Values=${CI_BRANCH}" Name=tag:DeploymentType,Values=tupaia Name=instance-state-name,Values=stopped \
   --no-cli-pager)
 
-if [[ $stopped_instances == *"Instances"* ]]; then
+if [[ $stopped_instances = *Instances* ]]; then
   echo "::warning::Can’t redeploy while a deployment for $CI_BRANCH is stopped. Try again inside office hours, or start the app server and database then restart the build."
   exit 1
 fi
@@ -13,7 +13,7 @@ running_instances=$(aws ec2 describe-instances \
   --filters "Name=tag:Branch,Values=${CI_BRANCH}" Name=tag:DeploymentType,Values=tupaia Name=instance-state-name,Values=running \
   --no-cli-pager)
 
-if [[ $running_instances != *"Instances"* ]]; then
+if [[ $running_instances != *Instances* ]]; then
   echo "No deployment running, skipping redeploy"
   exit 0
 fi
@@ -44,7 +44,7 @@ for deployment_base64 in "${deployments[@]}"; do
   deployment_name=$(echo "$deployment" | jq -r '.DeploymentName')
   new_instance_id=$(echo "$deployment" | jq -r '.NewInstanceId')
 
-  wait_attempts=0
+  declare -i wait_attempts=0
   echo "Waiting for $deployment_name to run its startup build script. To watch detailed progress, connect to instance $new_instance_id and run tail -f ~/logs/deployment.log"
   echo
   echo "  https://ap-southeast-2.console.aws.amazon.com/ec2/home?region=ap-southeast-2#ConnectToInstance:instanceId=$new_instance_id"
@@ -60,7 +60,7 @@ for deployment_base64 in "${deployments[@]}"; do
         --instance-ids "$new_instance_id" \
         --filters Name=tag:StartupBuildProgress,Values=errored \
         --no-cli-pager)
-      if [[ $instance_errored_response == *"Instances"* ]]; then
+      if [[ $instance_errored_response = *Instances* ]]; then
         echo "::error::Build failed! Connect to instance $new_instance_id and check the logs at ~/logs/deployment.log and /var/log/cloud-init-output.log"
         exit 1
       fi
@@ -86,7 +86,7 @@ for deployment_base64 in "${deployments[@]}"; do
       echo "ELB for ${deployment_name} now points to ${new_instance_id}"
       break
     else
-      if [ "$wait_attempts" -ge 75 ]; then # 75 * 200 seconds = 4.16 hours, sitting within codeship's 5 hour timeout
+      if ((wait_attempts >= 75)); then # 75 * 200 seconds = 4.16 hours, sitting within codeship's 5 hour timeout
         echo "::error::Build failed! Waited 75 times, but new instance is still not reachable"
         exit 1
       else
