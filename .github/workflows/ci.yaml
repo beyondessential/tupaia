@@ -21,7 +21,7 @@ jobs:
     name: Validate branch name
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Validate branch name
         run: packages/devops/scripts/ci/validateBranchName.sh
 
@@ -29,7 +29,7 @@ jobs:
     name: Validate new migrations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Validate new migration
         run: packages/devops/scripts/ci/validateNewMigrations.sh
 
@@ -37,11 +37,11 @@ jobs:
     name: Validate tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: '.node-version'
           cache: yarn
       - run: yarn install
       - run: yarn workspace @tupaia/utils run build # /scripts/node/validateTests.js uses utils package
@@ -75,11 +75,11 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: '.node-version'
           cache: yarn
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/types
@@ -91,11 +91,11 @@ jobs:
     name: Validate lockfile
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
 
@@ -105,7 +105,7 @@ jobs:
     outputs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-yarn
       - id: set-matrix
         run: |
@@ -166,11 +166,11 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: '.node-version'
           cache: yarn
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - name: Build subtree
