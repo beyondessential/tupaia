@@ -2,8 +2,8 @@ import express from 'express';
 import multer from 'multer';
 
 import { emailAfterTimeout } from '@tupaia/server-boilerplate';
-import { getTempDirectory } from '@tupaia/server-utils';
 import { catchAsyncErrors } from '../middleware';
+import { uploadStorage } from '../utilities/uploadStorage';
 import { importDataElementDataServices } from './importDataElementDataServices';
 import { importDataElements } from './importDataElements';
 import { importEntities } from './importEntities';
@@ -14,14 +14,7 @@ import { importUserPermissions } from './importUserPermissions';
 import { importUsers } from './importUsers';
 
 // create upload handler
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: getTempDirectory('uploads'),
-    filename: (req, file, callback) => {
-      callback(null, `${Date.now()}_${file.originalname}`);
-    },
-  }),
-});
+const upload = multer({ storage: uploadStorage });
 
 const importRoutes = express.Router();
 
