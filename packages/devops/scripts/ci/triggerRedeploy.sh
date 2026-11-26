@@ -19,7 +19,7 @@ if [[ $running_instances != *Instances* ]]; then
   exit 0
 fi
 
-echo "At least one running deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
+echo "At least one running deployment, triggering redeploy of any tagged with Branch $CI_BRANCH"
 response_file=lambda_redeploy_response.json
 redeploy_payload=$(jq -n \
   --arg user "$CI_COMMITTER_NAME via GitHub Actions" \
