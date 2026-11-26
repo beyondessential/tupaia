@@ -31,4 +31,7 @@ jobs:
           aws-region: ap-southeast-2
           role-to-assume: arn:aws:iam::843218180240:role/Tupaia_GHA
           role-session-name: GHA@Tupaia
-      - run: CI_BRANCH=${{ github.event.workflow_run.head_branch }} CI_COMMITTER_NAME=${{ github.event.workflow_run.actor.name }} CI_BUILD_ID=$GITHUB_RUN_ID packages/devops/scripts/ci/triggerRedeploy.sh
+      - env:
+          CI_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          CI_COMMITTER_NAME: ${{ github.event.workflow_run.actor.login }}
+        run: packages/devops/scripts/ci/triggerRedeploy.sh
