@@ -23,7 +23,6 @@ export * from './SearchBar';
 export * from './ScrollToTopButton';
 export * from './SignUpLink';
 export * from './Tabs';
-export * from './ThemeTest';
 export * from './VitalsLoader';
 export * from './YearSelector';
 export * from './MarkerLayer';

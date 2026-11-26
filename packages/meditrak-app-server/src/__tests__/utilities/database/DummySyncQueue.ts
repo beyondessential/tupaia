@@ -1,14 +1,7 @@
-import { sleep } from '@tupaia/utils';
-
 type ChangeRecord = { record_id: string; record_type: string; type: string };
 
 export class DummySyncQueue {
   private queue: Record<string, ChangeRecord> = {};
-
-  public async getChange(recordId: string) {
-    await sleep(100); // wait in case the change is still coming in through db notification
-    return this.queue[recordId];
-  }
 
   public add(change: ChangeRecord) {
     this.queue[change.record_id] = change;

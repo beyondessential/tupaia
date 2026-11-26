@@ -47,27 +47,11 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     });
   }
 
-  async getChildIdToParentId(hierarchyId) {
-    const cacheKey = this.getCacheKey(this.getChildIdToParentId.name, hierarchyId);
-    return this.runCachedFunction(cacheKey, async () => {
-      const relationRecords = await this.getImmediateRelations(hierarchyId);
-      return reduceToDictionary(relationRecords, 'descendant_id', 'ancestor_id');
-    });
-  }
-
   async getChildCodeToParentCode(hierarchyId) {
     const cacheKey = this.getCacheKey(this.getChildCodeToParentCode.name, hierarchyId);
     return this.runCachedFunction(cacheKey, async () => {
       const relationRecords = await this.getImmediateRelations(hierarchyId);
       return reduceToDictionary(relationRecords, 'descendant_code', 'ancestor_code');
-    });
-  }
-
-  async getParentIdToChildIds(hierarchyId) {
-    const cacheKey = this.getCacheKey(this.getParentIdToChildIds.name, hierarchyId);
-    return this.runCachedFunction(cacheKey, async () => {
-      const relationRecords = await this.getImmediateRelations(hierarchyId);
-      return reduceToArrayDictionary(relationRecords, 'ancestor_id', 'descendant_id');
     });
   }
 

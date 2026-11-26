@@ -27,5 +27,3 @@ export const updateUser = data =>
   });
 
 export const updatePassword = data => post('me/changePassword', { data });
-
-export const doTest = () => get('test');

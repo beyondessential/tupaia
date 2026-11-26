@@ -60,11 +60,6 @@ export interface EventMetaData {
   dataElements: { code: string; name: string; text: string }[];
 }
 
-export interface AggregationType {
-  code: string;
-  description: string;
-}
-
 export interface TransformSchema {
   code: string;
   alias?: boolean;

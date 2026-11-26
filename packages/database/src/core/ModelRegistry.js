@@ -38,10 +38,6 @@ export class ModelRegistry {
     }
   }
 
-  async getIsConnected() {
-    return this.database.connectionPromise;
-  }
-
   generateModels(schemata) {
     // Add models
     Object.entries(this.modelClasses).forEach(([modelName, ModelClass]) => {

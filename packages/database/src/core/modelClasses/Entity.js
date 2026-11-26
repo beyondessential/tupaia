@@ -139,10 +139,6 @@ export class EntityRecord extends DatabaseRecord {
     return this.type === EntityTypeEnum.facility;
   }
 
-  isCountry() {
-    return this.type === EntityTypeEnum.country;
-  }
-
   isWorld() {
     return this.type === EntityTypeEnum.world;
   }
@@ -189,11 +185,6 @@ export class EntityRecord extends DatabaseRecord {
     const { dhis = {} } = this.metadata || {};
     const { push = true } = dhis; // by default push = true, if an entity shouldn't be pushed to DHIS2, set it to false
     return push;
-  }
-
-  /** @returns {Promise<EntityRecord | null>} */
-  async countryEntity() {
-    return this.model.findOne({ code: this.country_code });
   }
 
   getBounds() {
@@ -850,13 +841,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       'SELECT unnest(enum_range(NULL::entity_type)::TEXT[]) AS type ORDER BY type;',
     );
     return entityTypes.map(({ type }) => type);
-  }
-
-  /**
-   * @param {Entity['id']} id
-   */
-  async getCodeFromId(id) {
-    return await this.findById(id, { fields: ['code'] });
   }
 
   async buildSyncLookupQueryDetails() {

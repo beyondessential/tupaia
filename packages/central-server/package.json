@@ -9,7 +9,6 @@
     "directory": "packages/central-server"
   },
   "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
-  "main": "handler.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && run-p -c \"build:* {@}\" --",
@@ -38,7 +37,6 @@
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
-    "@tupaia/sync": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",

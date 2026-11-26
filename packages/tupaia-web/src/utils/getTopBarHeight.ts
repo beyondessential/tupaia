@@ -1,5 +1,5 @@
 import { ENV_BANNER_HEIGHT } from '@tupaia/ui-components';
-import { TOP_BAR_HEIGHT, TOP_BAR_HEIGHT_MOBILE } from '../constants';
+import { TOP_BAR_HEIGHT_MOBILE } from '../constants';
 
 const envBannerIsVisible = () => {
   const deploymentName = process.env.REACT_APP_DEPLOYMENT_NAME;
@@ -15,12 +15,4 @@ export const getMobileTopBarHeight = () => {
     return `${height}px`;
   }
   return TOP_BAR_HEIGHT_MOBILE;
-};
-
-export const getTopBarHeight = () => {
-  if (envBannerIsVisible()) {
-    const height = parseInt(TOP_BAR_HEIGHT) + ENV_BANNER_HEIGHT;
-    return `${height}px`;
-  }
-  return TOP_BAR_HEIGHT;
 };
