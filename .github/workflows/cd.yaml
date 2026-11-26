@@ -24,9 +24,9 @@ jobs:
       group: deploy-${{ github.event.workflow_run.head_branch }}${{ github.event.workflow_run.conclusion != 'success' && format('-skip-{0}', github.run_id) || '' }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ap-southeast-2
           role-to-assume: arn:aws:iam::843218180240:role/Tupaia_GHA
