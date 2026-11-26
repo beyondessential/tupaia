@@ -98,4 +98,4 @@ for deployment_base64 in "${deployments[@]}"; do
   done
 done
 
-echo "Redeploy complete"
+echo Redeployed
