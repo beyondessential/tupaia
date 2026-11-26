@@ -27,8 +27,8 @@
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
-    "@langchain/anthropic": "^0.3.21",
-    "@langchain/core": "^0.3.80",
+    "@langchain/anthropic": "^1.6.5",
+    "@langchain/core": "^1.4.1",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/api-client": "workspace:*",
     "@tupaia/database": "workspace:*",
@@ -39,7 +39,7 @@
     "camelcase-keys": "^7.0.0",
     "es-toolkit": "^1.46.0",
     "express": "^4.22.3",
-    "langchain": "^0.3.37",
+    "langchain": "^1.6.6",
     "multer": "^2.4.0",
     "winston": "^3.17.0",
     "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"

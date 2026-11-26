@@ -34,7 +34,6 @@ export class EntityItem extends Component {
 
     return (
       <Container
-        analyticsLabel={`Entity List: ${entity.name} (${entity.parent?.name})`}
         style={isSelected ? localStyles.selectedRow : localStyles.row}
         onPress={this.onPress}
       >
@@ -50,7 +49,7 @@ export class EntityItem extends Component {
           )}
         </View>
         {onDeselect && (
-          <TouchableOpacity analyticsLabel="Selected Entity: Clear" onPress={onDeselect}>
+          <TouchableOpacity onPress={onDeselect}>
             <Icon name="close" size={32} color={THEME_COLOR_ONE} library="Material" />
           </TouchableOpacity>
         )}

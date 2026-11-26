@@ -35,7 +35,6 @@ class DumbSurveysMenuScreen extends React.PureComponent {
 
     return (
       <TouchableOpacity
-        analyticsLabel="Survey menu: Country header"
         style={localStyles.countryHeader}
         onPress={this.onToggleCountryMenu}
         activeOpacity={0.9}

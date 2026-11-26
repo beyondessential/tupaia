@@ -5,8 +5,6 @@ import Config from 'react-native-config';
 import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
 import { isBeta, betaBranch, centralApiUrl, getDeviceAppVersion } from '../version';
 
-import { analytics } from '../utilities';
-
 const AUTH_API_ENDPOINT = 'auth';
 const CREATE_USER_ENDPOINT = 'user';
 const CHANGE_USER_PASSWORD_ENDPOINT = 'me/changePassword';
@@ -200,16 +198,7 @@ export class TupaiaApi {
   ) {
     const authHeader = overriddenAuthHeader || (await this.getBearerAuthHeader());
 
-    analytics.trackEvent('Request attempted', {
-      requestMethod,
-      apiEndpoint,
-    });
-
     if (!this.connectionStatus) {
-      analytics.trackEvent('Request attempted offline', {
-        requestMethod,
-        apiEndpoint,
-      });
       throw new Error('Network not connected');
     }
 
@@ -233,7 +222,20 @@ export class TupaiaApi {
       return this.request(requestMethod, apiEndpoint, queryParameters, body, null, false);
     }
 
-    const responseJson = await response.json();
+    let responseJson;
+    try {
+      responseJson = await response.json();
+    } catch (cause) {
+      // Body wasn’t JSON, e.g. an HTML error page from a proxy in front of the server. Report the
+      // status code, which is more useful than the parser’s “Unexpected character: <”.
+      const message = `Server didn’t respond with JSON (HTTP ${response.status})`;
+      const error = new Error(message);
+      // Keep the parser’s error (distinguishes empty body from HTML, etc.) for Bugsnag and
+      // debugging. Assigned rather than passed as `{ cause }` so it doesn’t depend on Hermes
+      // supporting the ES2022 constructor option.
+      error.cause = cause;
+      throw error;
+    }
     // If server responded with 410, i.e. old API version, log the user out and get them to update
     if (response.status === 410 && this.reduxStore) {
       this.reduxStore.dispatch(logoutWithError(responseJson.error));
@@ -246,17 +248,6 @@ export class TupaiaApi {
       !responseJson.error
     ) {
       responseJson.error = responseJson.message || `Network error ${response.status}`;
-
-      analytics.trackEvent('Request failed', {
-        requestMethod,
-        apiEndpoint,
-        error: responseJson.error,
-      });
-    } else {
-      analytics.trackEvent('Request succeeded', {
-        requestMethod,
-        apiEndpoint,
-      });
     }
     return responseJson;
   }

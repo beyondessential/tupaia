@@ -166,11 +166,7 @@ class GeolocateQuestionComponent extends React.Component {
 
   renderSaveLocationButton() {
     return (
-      <TouchableOpacity
-        analyticsLabel="Geolocate: Save"
-        onPress={() => this.onLockLocation()}
-        style={localStyles.actionButton}
-      >
+      <TouchableOpacity onPress={() => this.onLockLocation()} style={localStyles.actionButton}>
         {getMaterialIcon('check')}
         <Text>Save location</Text>
       </TouchableOpacity>
@@ -179,11 +175,7 @@ class GeolocateQuestionComponent extends React.Component {
 
   renderRefreshButton() {
     return (
-      <TouchableOpacity
-        analyticsLabel="Geolocate: Retry"
-        onPress={() => this.onPressFindLocation()}
-        style={localStyles.actionButton}
-      >
+      <TouchableOpacity onPress={() => this.onPressFindLocation()} style={localStyles.actionButton}>
         {getMaterialIcon('refresh')}
         <Text>Retry</Text>
       </TouchableOpacity>
@@ -218,7 +210,6 @@ class GeolocateQuestionComponent extends React.Component {
       <View>
         <View style={localStyles.wrapper}>
           <TouchableOpacity
-            analyticsLabel={`Geolocate: ${label}`}
             style={localStyles.field}
             onPress={() => this.onPressFindLocation()}
             disabled={hasAnswer || isFindingLocation}
@@ -228,7 +219,6 @@ class GeolocateQuestionComponent extends React.Component {
           </TouchableOpacity>
           {hasAnswer && !errorMessage && (
             <TouchableOpacity
-              analyticsLabel="Geolocate: Clear"
               style={localStyles.removeButton}
               onPress={() => this.onRemoveLocation()}
             >

@@ -21,7 +21,6 @@ export class AutocompleteOption extends PureComponent {
       <TouchableHighlight
         style={localStyles.wrapper}
         underlayColor={getThemeColorOneFaded(0.1)}
-        analyticsLabel={`Autoselect Option: ${option}`}
         onPress={this.handlePress}
       >
         <Text style={localStyles.optionText}>{option}</Text>

@@ -1,4 +1,3 @@
-export { analytics } from './analytics';
 export { checkIfObjectsAreEqual } from './checkIfObjectsAreEqual';
 export { createReducer } from './createReducer';
 export { formatDate, formatDateAgo, formatPlural } from './format';

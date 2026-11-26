@@ -1,76 +1,50 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { takeScrollControl, releaseScrollControl } from '../actions';
-import { getQuestion } from '../selectors';
 import { Autocomplete } from '../../widgets/Autocomplete/Autocomplete';
+import { releaseScrollControl, takeScrollControl } from '../actions';
+import { getQuestion } from '../selectors';
 
 const OPTIONS_PER_PAGE = 10;
 
-const generateSearchRegexp = searchTerm => {
-  if (!searchTerm) {
-    return null;
-  }
-  // if includes an apostrophe, search all variations of the apostrophe
-  if (searchTerm.includes("'")) {
-    return `((${searchTerm.replace("'", "\\'")})|(${searchTerm.replace(
-      "'",
-      '\\‘',
-    )})|(${searchTerm.replace("'", '\\‘')}))`;
-  }
+/** @param {string} str */
+const normalize = str =>
+  str
+    .replace(/[‘’]/g, "'") // Treat educated quotes as equivalent to straight quotes
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
 
-  // if includes a left single quote, search all variations of the left single quote
-  if (searchTerm.includes('‘')) {
-    return `((${searchTerm.replace('‘', '\\’')})|(${searchTerm.replace(
-      '‘',
-      "\\'",
-    )})|(${searchTerm.replace('‘', '\\‘')})))`;
-  }
-
-  // if includes a right single quote, search all variations of the right single quote
-  if (searchTerm.includes('’')) {
-    return `((${searchTerm.replace('’', "\\'")})|(${searchTerm.replace(
-      '’',
-      '\\‘',
-    )})|(${searchTerm.replace('’', '\\‘')})))`;
-  }
-
-  return searchTerm;
-};
-
-const UserQuestionComponent = props => {
-  const { selectedUserId, users, onSelectUser, scrollIntoFocus } = props;
+const UserQuestionComponent = ({ onSelectUser, scrollIntoFocus, selectedUserId, users }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxResults, setMaxResults] = useState(OPTIONS_PER_PAGE);
 
-  const sortList = list => list.sort((a, b) => a.localeCompare(b));
-
-  const userList = sortList(users?.map(user => user.name) ?? []);
+  const sortedNames = users?.map(user => user.name).sort((a, b) => a.localeCompare(b)) ?? [];
 
   const generateOptionList = () => {
-    if (!searchTerm) {
-      return userList.slice(0, maxResults);
+    if (!searchTerm) return sortedNames.slice(0, maxResults);
+
+    const normalizedSearchTerm = normalize(searchTerm);
+    if (normalizedSearchTerm === '') return [];
+
+    const prefixMatches = [];
+    const substringMatches = [];
+    for (const name of sortedNames) {
+      const normalizedName = normalize(name);
+      if (normalizedName.startsWith(normalizedSearchTerm)) {
+        prefixMatches.push(name);
+      } else if (normalizedName.includes(normalizedSearchTerm)) {
+        substringMatches.push(name);
+      }
     }
-    const searchRegexp = generateSearchRegexp(searchTerm);
-    const startsWithSearchTerm = new RegExp(`^${searchRegexp}`, 'i');
-    const containsSearchTerm = new RegExp(searchRegexp, 'gi');
 
-    const usersThatStartWithSearchTerm = userList.filter(user => startsWithSearchTerm.test(user));
-
-    const usersThatContainSearchTerm = userList.filter(
-      user => containsSearchTerm.test(user) && !usersThatStartWithSearchTerm.includes(user),
-    );
-
-    // return first the users that start with the search term, then the users that contain the search term
-    return [...usersThatStartWithSearchTerm, ...usersThatContainSearchTerm].slice(0, maxResults);
+    return [...prefixMatches, ...substringMatches].slice(0, maxResults);
   };
 
   const optionList = generateOptionList();
 
-  const getSelectedUser = () => users.find(user => user.id === selectedUserId);
-
-  const selectedUser = getSelectedUser();
+  const selectedUser = users.find(user => user.id === selectedUserId);
 
   const handleEndReached = () => {
     // If we've reached the end of the list, don't try to load more
@@ -101,7 +75,7 @@ const UserQuestionComponent = props => {
   return (
     <View>
       <Autocomplete
-        placeholder="Search users..."
+        placeholder="Search users…"
         selectedOption={selectedUser?.name ?? null}
         handleSelectOption={handleSelectOption}
         options={optionList}

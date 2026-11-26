@@ -12,12 +12,7 @@ import {
 } from '../globalStyles';
 
 export const MenuItem = ({ imageSource, onPress, width, height, text, style }) => (
-  <TouchableOpacity
-    analyticsLabel={`Menu Item: ${text}`}
-    onPress={onPress}
-    style={[localStyles.wrapper, style]}
-    activeOpacity={0.8}
-  >
+  <TouchableOpacity onPress={onPress} style={[localStyles.wrapper, style]} activeOpacity={0.8}>
     {imageSource ? (
       <Image
         source={imageSource}

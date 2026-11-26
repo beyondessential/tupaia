@@ -1,6 +1,6 @@
 import React from 'react';
 import { PieChartConfig } from '@tupaia/types';
-import { TooltipPayload } from 'recharts';
+import { DefaultLegendContentProps } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { LegendPosition } from '../../types';
 import { isMobile } from '../../utils';
@@ -53,8 +53,10 @@ interface PieLegendProps {
   config: PieChartConfig;
 }
 
+type LegendPayload = NonNullable<DefaultLegendContentProps['payload']>[number];
+
 const getPieLegendDisplayValue = (
-  value: TooltipPayload['value'],
+  value: LegendPayload['value'],
   item: any,
   config: PieLegendProps['config'],
   isEnlarged?: PieLegendProps['isEnlarged'],
@@ -69,11 +71,11 @@ const getPieLegendDisplayValue = (
 
 export const getPieChartLegend =
   ({ isEnlarged, isExporting, legendPosition, config }: PieLegendProps) =>
-  ({ payload }: any) => {
+  ({ payload }: DefaultLegendContentProps) => {
     const isMobileSize = isMobile(isExporting);
     return (
       <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
-        {payload.map(({ color, value, payload: item }: TooltipPayload) => {
+        {payload?.map(({ color, value, payload: item }) => {
           const displayValue = getPieLegendDisplayValue(
             value,
             item,

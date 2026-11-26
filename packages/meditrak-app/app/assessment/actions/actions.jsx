@@ -106,7 +106,7 @@ const findPrimaryEntityComponent = (screens, primaryEntityQuestionId) => {
 
 export const selectSurvey =
   (surveyId, isRepeating = false) =>
-  (dispatch, getState, { database, analytics }) => {
+  (dispatch, getState, { database }) => {
     const survey = database.findOne('Survey', surveyId);
     if (!survey) throw new Error(`No survey found with id ${surveyId}`);
     const { screens, questions } = survey.getDataForReduxStore();
@@ -166,10 +166,6 @@ export const selectSurvey =
       dispatch(openSurvey());
       dispatch(watchUserLocation());
     }
-
-    analytics.trackEvent('Select survey', {
-      surveyId,
-    });
   };
 
 export const selectSurveyGroup = openSurveyGroup;

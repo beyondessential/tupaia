@@ -255,7 +255,6 @@ export class EntityList extends PureComponent {
           />
           {searchTerm.length > 0 && (
             <TouchableOpacity
-              analyticsLabel="Clinic List: Search box close"
               style={localStyles.searchBoxCloseButton}
               onPress={() => this.handleSearchChange('')}
             >

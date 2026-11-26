@@ -63,25 +63,17 @@ export class DateQuestion extends PureComponent {
   }
 
   render() {
-    const { answer, datePickerMode, questionText, maximumDate } = this.props;
+    const { answer, datePickerMode, maximumDate } = this.props;
     const hasAnswer = answer === 0 || !!answer;
 
     return (
       <View style={localStyles.wrapper}>
-        <TouchableOpacity
-          analyticsLabel={`Date: ${questionText}`}
-          style={localStyles.field}
-          onPress={() => this.onOpenDatePicker()}
-        >
+        <TouchableOpacity onPress={() => this.onOpenDatePicker()} style={localStyles.field}>
           <Icon library="Ionic" name="calendar-outline" size={20} style={localStyles.icon} />
           {this.renderInput()}
         </TouchableOpacity>
         {hasAnswer && (
-          <TouchableOpacity
-            analyticsLabel="Date: Clear"
-            style={localStyles.removeButton}
-            onPress={() => this.onClearDate()}
-          >
+          <TouchableOpacity onPress={() => this.onClearDate()} style={localStyles.removeButton}>
             <Icon library="Material" name="close" size={14} />
           </TouchableOpacity>
         )}
@@ -102,14 +94,12 @@ DateQuestion.propTypes = {
   answer: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   datePickerMode: PropTypes.oneOf(['date', 'time', 'datetime']),
   onChangeAnswer: PropTypes.func.isRequired,
-  questionText: PropTypes.string,
   maximumDate: PropTypes.instanceOf(Date),
 };
 
 DateQuestion.defaultProps = {
   answer: '',
   datePickerMode: 'date',
-  questionText: null,
   maximumDate: undefined,
 };
 

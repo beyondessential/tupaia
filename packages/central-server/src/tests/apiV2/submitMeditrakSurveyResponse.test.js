@@ -264,9 +264,7 @@ describe('POST /surveyResponse', async () => {
 
       it('returns an error when question_id is empty', async () => {
         const answerObject = generateDummyAnswer();
-        const questionCode = 'TEST_QUESTION_1';
         delete answerObject.question_id;
-        answerObject.question_code = questionCode;
         const surveyResponseObject = generateDummySurveyResponse([answerObject]);
         const response = await app.post('changes', { body: [surveyResponseObject] });
 
@@ -276,7 +274,6 @@ describe('POST /surveyResponse', async () => {
       it('returns an error when survey_id is empty', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         delete surveyResponseObject.survey_id;
-        surveyResponseObject.survey_code = 'TEST_SURVEY';
         surveyResponseObject.answers.push(generateDummyAnswer());
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });

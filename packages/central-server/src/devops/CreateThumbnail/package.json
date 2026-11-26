@@ -11,13 +11,14 @@
   "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "index.js",
   "scripts": {
-    "package-for-lambda": "rm -f CreateThumbnail.zip && zip -r CreateThumbnail.zip ./ && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip",
+    "package": "yarn workspaces focus --production && zip --quiet --recurse-paths CreateThumbnail.zip CreateThumbnail.mjs node_modules && printf '\\nWrote %s\\n' \"$PWD/CreateThumbnail.zip\"",
+    "package-for-lambda": "yarn run package && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip",
     "test": "echo \"No tests specified\" && exit 0",
     "test-lambda": "lambda-local -l CreateThumbnail.mjs -h handler -e ./testEvent.json -t 20"
   },
   "dependencies": {
     "aws-sdk": "^2.1693.0",
-    "sharp": "^0.34.5"
+    "sharp": "~0.35.5"
   },
   "devDependencies": {
     "lambda-local": "^2.2.0"
