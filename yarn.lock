@@ -7159,7 +7159,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/central-server@workspace:packages/central-server"
   dependencies:
-    "@babel/eslint-parser": "npm:^7.27.5"
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/constants": "workspace:*"
