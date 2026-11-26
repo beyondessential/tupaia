@@ -15,7 +15,7 @@ running_instances=$(aws ec2 describe-instances \
   --no-cli-pager)
 
 if [[ $running_instances != *Instances* ]]; then
-  echo "No deployment running, skipping redeploy"
+  echo 'Nothing to redeploy'
   exit 0
 fi
 
