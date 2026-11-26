@@ -9,20 +9,20 @@ permissions:
   contents: read
   id-token: write # OIDC token for AWS
 
-# One deploy per branch at a time. Each redeploy boots a new server against the same database and
-# only terminates the old one once the new one is ready, so overlapping deploys (e.g. a burst of
-# merges to dev) multiply connections and can exhaust max_connections. Don’t cancel in progress:
-# that would orphan a half-built server. Queued runs are superseded by newer ones.
-concurrency:
-  group: deploy-${{ github.event.workflow_run.head_branch }}
-  cancel-in-progress: false
-
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     # Only run if Tupaia CI passed
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # One deploy per branch at a time. Each redeploy boots a new server against the same database
+    # and only terminates the old one once the new one is ready, so overlapping deploys (e.g. a
+    # burst of merges to dev) multiply connections and can exhaust max_connections. Don’t cancel in
+    # progress: that would orphan a half-built server. A queued deploy is superseded by a newer one,
+    # so runs for CI that didn’t pass get a group of their own and can never displace a good deploy.
+    concurrency:
+      group: deploy-${{ github.event.workflow_run.head_branch }}${{ github.event.workflow_run.conclusion != 'success' && format('-skip-{0}', github.run_id) || '' }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
       - name: Configure AWS Credentials
