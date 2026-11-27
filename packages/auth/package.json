@@ -35,6 +35,6 @@
     "@beyondessential/tupaia-access-policy": "^2.5.1",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/database": "workspace:*",
-    "rimraf": "^6.1.3"
+    "rimraf": "^6.1.4"
   }
 }
