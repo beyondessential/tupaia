@@ -1,4 +1,4 @@
-import randomToken from 'rand-token';
+import { nanoid } from 'nanoid';
 import compareVersions from 'semver-compare';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
@@ -168,7 +168,7 @@ export class Authenticator {
 
   async upsertRefreshToken(userId, device, meditrakDevice) {
     // Generate refresh token and save in db
-    const refreshToken = randomToken.generate(REFRESH_TOKEN_LENGTH);
+    const refreshToken = nanoid(REFRESH_TOKEN_LENGTH);
     try {
       return this.models.refreshToken.updateOrCreate(
         {
