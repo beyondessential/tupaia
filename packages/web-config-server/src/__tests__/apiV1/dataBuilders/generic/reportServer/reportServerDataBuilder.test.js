@@ -1,4 +1,4 @@
-import { ReportServerBuilder } from '/apiV1/dataBuilders/generic/reportServer/reportServerDataBuilder';
+import { ReportServerBuilder } from '../../../../../apiV1/dataBuilders/generic/reportServer/reportServerDataBuilder';
 
 const reportRequestKey = (reportCode, query = {}, body = {}) =>
   `reportCode:${reportCode},${Object.entries(query)

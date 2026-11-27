@@ -3,9 +3,9 @@ import { groupBy, keyBy } from 'es-toolkit/compat';
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES } from '@tupaia/tsutils';
 import { parsePeriodType, reduceToDictionary, sortFields } from '@tupaia/utils';
-import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
-import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
-import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
+import { DataPerPeriodBuilder } from '../../DataPerPeriodBuilder';
+import { PercentagesOfValueCountsBuilder } from './percentagesOfValueCounts';
+import { divideValues, mapAnalyticsToCountries } from '../../helpers';
 
 const filterFacility = async (models, filterCriteria, analytics) => {
   const facilities = await models.facility.find({

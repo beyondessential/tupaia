@@ -5,7 +5,7 @@ set -e
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 . "$script_dir"/utils.sh
 
-INVALID_CHARS=('/' '\' '.' '&' '?' '_')
+INVALID_CHARS=('/' '\' '.' '&' '?' '_' ',')
 
 SUBDOMAIN_SUFFIXES=(
     admin

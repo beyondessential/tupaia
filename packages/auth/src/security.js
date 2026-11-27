@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
-import randomize from 'randomatic';
+import { nanoid } from 'nanoid';
 
 import { requireEnv } from '@tupaia/utils';
 
 export function generateSecretKey() {
-  return randomize('*', 20);
+  return nanoid();
 }
 
 /**

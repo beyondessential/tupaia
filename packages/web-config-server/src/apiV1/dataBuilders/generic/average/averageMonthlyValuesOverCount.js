@@ -1,6 +1,6 @@
 import { PERIOD_TYPES } from '@tupaia/tsutils';
 import { convertToPeriod, periodToTimestamp } from '@tupaia/utils';
-import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
+import { aggregateOperationalFacilityValues, getFacilityStatuses } from '../../../utils';
 
 const periodToMonthTimestamp = period =>
   periodToTimestamp(convertToPeriod(period, PERIOD_TYPES.MONTH));

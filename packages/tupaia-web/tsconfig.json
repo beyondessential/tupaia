@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-frontend.json",
+  "extends": "../../tsconfig.web.json",
   "include": [
     "src",
     "index.d.ts",

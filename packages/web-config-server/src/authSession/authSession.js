@@ -73,9 +73,7 @@ const addUserAccessHelper = (req, res, next) => {
 
     const entity =
       typeof entityOrCode === 'string'
-        ? await req.models.entity.findOne({
-            code: entityOrCode,
-          })
+        ? await req.models.entity.findOneOrThrow({ code: entityOrCode })
         : entityOrCode;
 
     // Assume user always has access to all world items.
@@ -85,7 +83,10 @@ const addUserAccessHelper = (req, res, next) => {
 
     // project access rights are determined by their children
     if (entity.isProject()) {
-      const project = await req.models.project.findOne({ code: entity.code });
+      const project = await req.models.project.findOneOrThrow(
+        { code: entity.code },
+        { columns: ['entity_hierarchy_id'] },
+      );
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
 
       return accessPolicy.allowsSome(
@@ -107,13 +108,14 @@ const addUserAccessHelper = (req, res, next) => {
       return [];
     }
 
-    const entity = await req.models.entity.findOne({
-      code: entityCode,
-    });
+    const entity = await req.models.entity.findOneOrThrow({ code: entityCode });
 
     // project access rights are determined by their children
     if (entity.isProject()) {
-      const project = await req.models.project.findOne({ code: entity.code });
+      const project = await req.models.project.findOneOrThrow(
+        { code: entity.code },
+        { columns: ['entity_hierarchy_id'] },
+      );
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
       const childCodes = uniq(projectChildren.map(c => c.country_code));
       return accessPolicy.getPermissionGroups(childCodes);
@@ -126,7 +128,7 @@ const addUserAccessHelper = (req, res, next) => {
 const USER_SESSION_COOKIE_TIMEOUT = 24 * 60 * 60 * 1000;
 const LAST_USER_SESSION_COOKIE_TIMEOUT = 7 * 24 * 60 * 60 * 1000;
 
-export const USER_SESSION_CONFIG = {
+export const USER_SESSION_CONFIG = /** @type {const} */ ({
   cookieName: 'sessionV2', // changed name to ignore old sessions after access policy refactor
   requestKey: 'session', // use it as `req.session` rather than `req.sessionV2`
   secret: process.env.USER_SESSION_COOKIE_SECRET,
@@ -134,15 +136,15 @@ export const USER_SESSION_CONFIG = {
   httpOnly: false,
   duration: USER_SESSION_COOKIE_TIMEOUT,
   activeDuration: USER_SESSION_COOKIE_TIMEOUT,
-};
+});
 
-const LAST_USER_SESSION_CONFIG = {
+const LAST_USER_SESSION_CONFIG = /** @type {const} */ ({
   cookieName: 'lastuser',
   secret: process.env.LAST_USER_SESSION_COOKIE_SECRET,
   secure: false,
   httpOnly: false,
   duration: LAST_USER_SESSION_COOKIE_TIMEOUT,
-};
+});
 
 export const bindUserSessions = app => {
   // main session

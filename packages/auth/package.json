@@ -12,9 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && run-p \"build:* {@}\" --",
-    "build:src": "yarn run package:build:js",
-    "build:types": "yarn run package:build:types",
+    "build": "rimraf dist && yarn run package:build:node-js",
     "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -27,18 +25,15 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "jsonwebtoken": "^9.0.3",
-    "rand-token": "^1.0.1",
-    "randomatic": "^3.1.1",
+    "nanoid": "^3.3.20",
     "semver-compare": "^1.0.0",
     "sha256": "^0.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.10",
     "@babel/eslint-parser": "^7.27.5",
     "@beyondessential/tupaia-access-policy": "^2.5.1",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/database": "workspace:*",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^6.1.3"
+    "rimraf": "^6.1.4"
   }
 }

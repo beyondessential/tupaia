@@ -1,4 +1,4 @@
-import { transformValue } from 'apiV1/dataBuilders/transform';
+import { transformValue } from '../transform';
 
 export const translateEventEntityIdsToNames = async (models, events, dataElementCodes) => {
   return Promise.all(

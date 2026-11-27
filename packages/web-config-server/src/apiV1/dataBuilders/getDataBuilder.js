@@ -1,3 +1,3 @@
-import * as dataBuilders from '/apiV1/dataBuilders';
+import * as dataBuilders from './';
 
 export const getDataBuilder = name => dataBuilders[name];

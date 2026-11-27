@@ -1,4 +1,4 @@
-import { getDataElementCodesInGroup } from '/apiV1/utils';
+import { getDataElementCodesInGroup } from '../../../utils';
 
 /**
  * Return either the data element name, or the value stored by the user if the name matches the

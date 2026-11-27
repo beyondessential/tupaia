@@ -62,7 +62,6 @@ class WebBrowser extends PureComponent {
     return (
       <View style={localStyles.navbar}>
         <TouchableOpacity
-          analyticsLabel="Web Browser: Back"
           disabled={!canGoBack}
           onPress={() => this.webView.goBack()}
           style={localStyles.navbarButton}
@@ -74,7 +73,6 @@ class WebBrowser extends PureComponent {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel="Web Browser: Reload"
           disabled={isLoading}
           onPress={() => this.webView.reload()}
           style={localStyles.navbarButton}
@@ -86,7 +84,6 @@ class WebBrowser extends PureComponent {
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel="Web Browser: Browser"
           onPress={() => Linking.openURL(currentUrl)}
           style={localStyles.navbarButton}
         >
@@ -97,7 +94,6 @@ class WebBrowser extends PureComponent {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel="Web Browser: Forward"
           disabled={!canGoForward}
           onPress={() => this.webView.goForward()}
           style={localStyles.navbarButton}

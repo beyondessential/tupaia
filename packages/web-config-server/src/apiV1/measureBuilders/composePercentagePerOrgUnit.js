@@ -1,8 +1,8 @@
 import { keyBy } from 'es-toolkit/compat';
 
-import { divideValues } from '/apiV1/dataBuilders/helpers';
-import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
-import { getAggregatePeriod } from '/apiV1/utils';
+import { divideValues } from '../dataBuilders/helpers';
+import { fetchComposedData } from './helpers';
+import { getAggregatePeriod } from '../utils';
 
 /**
  * Configuration schema

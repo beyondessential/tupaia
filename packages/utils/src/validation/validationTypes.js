@@ -1,6 +1,6 @@
 import { getArticle } from '../string';
 
-export const VALIDATION_TYPES = {
+export const VALIDATION_TYPES = /** @type {const} */ ({
   ARRAY: 'array',
   OBJECT: 'object',
   NUMBER: 'number',
@@ -8,7 +8,7 @@ export const VALIDATION_TYPES = {
   BOOLEAN: 'boolean',
   UNDEFINED: 'undefined',
   NULL: 'null',
-};
+});
 
 // Conditional taken from https://github.com/bttmly/is-pojo/blob/master/lib/index.js
 const isPojo = value =>

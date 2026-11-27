@@ -15,6 +15,7 @@ const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
+  GS: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
   KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
   SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
   VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Donor'],
@@ -39,8 +40,9 @@ const expectAccessibleExportDataHeaderRow = exportData => {
 describe('exportSurveyResponses(): GET export/surveysResponses', () => {
   const app = new TestableApp();
   const { models } = app;
-  let vanuatuCountry;
-  let kiribatiCountry;
+  let vuCountry;
+  let kiCountry;
+  let gsCountry;
   let survey1;
   let survey2;
   let user;
@@ -63,20 +65,24 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     const donorPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Donor',
     });
-    ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+    ({ country: vuCountry } = await findOrCreateDummyCountryEntity(models, {
       code: 'VU',
       name: 'Vanuatu',
     }));
-    ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+    ({ country: kiCountry } = await findOrCreateDummyCountryEntity(models, {
       code: 'KI',
       name: 'Kiribati',
+    }));
+    ({ country: gsCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'GS',
+      name: 'South Georgia and the South Sandwich Islands', // > 30 characters
     }));
 
     [{ survey: survey1 }, { survey: survey2 }] = await buildAndInsertSurveys(models, [
       {
         code: TEST_SURVEY_1_CODE,
         name: TEST_SURVEY_1_NAME,
-        country_ids: [vanuatuCountry.id],
+        country_ids: [vuCountry.id, gsCountry.id],
         permission_group_id: adminPermissionGroup.id,
         questions: [
           { code: 'question_1_test', text: 'Question 1 Test', type: 'FreeText' },
@@ -88,7 +94,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       {
         code: TEST_SURVEY_2_CODE,
         name: TEST_SURVEY_2_NAME,
-        country_ids: [vanuatuCountry.id],
+        country_ids: [vuCountry.id],
         permission_group_id: donorPermissionGroup.id,
         questions: [
           { code: 'question_5_test', text: 'Question 5 Test', type: 'FreeText' },
@@ -102,7 +108,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     await buildAndInsertSurveyResponses(models, [
       {
         surveyCode: survey1.code,
-        entityCode: vanuatuCountry.code,
+        entityCode: vuCountry.code,
         data_time: new Date(),
         answers: {
           question_1_test: 'question_1_test answer',
@@ -111,7 +117,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       },
       {
         surveyCode: survey1.code,
-        entityCode: vanuatuCountry.code,
+        entityCode: vuCountry.code,
         data_time: new Date(),
         answers: {
           question_3_test: 'question_3_test answer',
@@ -119,8 +125,16 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         },
       },
       {
+        surveyCode: survey1.code,
+        entityCode: gsCountry.code,
+        data_time: new Date(),
+        answers: {
+          question_1_test: 'question_1_test answer',
+        },
+      },
+      {
         surveyCode: survey2.code,
-        entityCode: vanuatuCountry.code,
+        entityCode: vuCountry.code,
         data_time: new Date(),
         answers: {
           question_5_test: 'question_5_test answer',
@@ -129,7 +143,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       },
       {
         surveyCode: survey2.code,
-        entityCode: kiribatiCountry.code,
+        entityCode: kiCountry.code,
         outdated: true,
         data_time: new Date(),
         answers: {
@@ -154,7 +168,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       it('one survey', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.get(
-          `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
+          `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vuCountry.code}`,
         );
 
         expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
@@ -166,7 +180,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       it('multiple surveys', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.get(
-          `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
+          `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vuCountry.code}`,
         );
 
         // Has access to both survey1 and survey2
@@ -181,7 +195,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       it('ignores outdated survey responses', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.get(
-          `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${kiribatiCountry.code}`,
+          `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${kiCountry.code}`,
         );
 
         // Should not fetch outdated survey response so there should be no export data
@@ -201,7 +215,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
 
         await app.grantAccess(policy);
         await app.get(
-          `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
+          `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vuCountry.code}`,
         );
 
         expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
@@ -222,7 +236,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
 
         await app.grantAccess(policy);
         await app.get(
-          `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
+          `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vuCountry.code}`,
         );
 
         expect(xlsx.utils.aoa_to_sheet).to.have.been.calledTwice;
@@ -254,7 +268,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     it('should export the user answers with name and id', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       await app.get(
-        `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
+        `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vuCountry.code}`,
       );
 
       expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
@@ -268,7 +282,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     it('should ignore the entry if the user id is invalid', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       await app.get(
-        `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
+        `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${vuCountry.code}`,
       );
 
       expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
@@ -279,5 +293,19 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
 
       expect(userAnswerRow.includes('Could not find user with id unknown_user_id')).to.be.true;
     });
+  });
+
+  it('should export entity names in full', async () => {
+    await app.grantAccess(DEFAULT_POLICY);
+    await app.get(
+      `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${gsCountry.code}`,
+    );
+
+    expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
+
+    const exportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
+
+    const entityNameRow = exportData.find(row => row.includes('Entity Name'));
+    expect(entityNameRow.includes(gsCountry.name)).to.be.true;
   });
 });

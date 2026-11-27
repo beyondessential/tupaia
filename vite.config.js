@@ -126,7 +126,6 @@ export default defineConfig(({ command, mode }) => {
         ),
         '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
         ...(isDatatrakWeb && {
-          'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
           pg: path.resolve(__dirname, 'mock/pgMock.js'),
           'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
           '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),

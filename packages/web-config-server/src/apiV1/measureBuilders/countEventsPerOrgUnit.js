@@ -1,5 +1,5 @@
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
-import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvents';
+import { CountEventsBuilder } from '../dataBuilders/generic/count/countEvents';
 
 export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;

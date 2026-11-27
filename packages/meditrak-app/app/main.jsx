@@ -14,7 +14,6 @@ import { database } from './database';
 import { reducers } from './reducers';
 import { createMiddleware } from './middleware';
 import { NavigationConnectedApp } from './navigation';
-import { analytics } from './utilities';
 import { isBeta, betaBranch } from './version';
 
 const composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -23,7 +22,6 @@ const enhancers = composer(
   createMiddleware({
     api,
     database,
-    analytics,
   }),
 );
 

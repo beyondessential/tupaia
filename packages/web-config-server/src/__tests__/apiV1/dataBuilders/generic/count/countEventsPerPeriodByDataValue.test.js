@@ -1,5 +1,5 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { CountEventsPerPeriodByDataValueBuilder } from '/apiV1/dataBuilders/generic/count/countEventsPerPeriodByDataValue';
+import { CountEventsPerPeriodByDataValueBuilder } from '../../../../../apiV1/dataBuilders/generic/count/countEventsPerPeriodByDataValue';
 
 const EVENTS = [
   {

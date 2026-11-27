@@ -1,5 +1,5 @@
-import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
-import { CONDITION, AVERAGE } from '/apiV1/dataBuilders/constants';
+import { getCategoryPresentationOption } from '../../../../helpers';
+import { CONDITION, AVERAGE } from '../../../../constants';
 import { groupBy } from 'es-toolkit/compat';
 
 const CATEGORY_AGGREGATION_TYPES = [AVERAGE, CONDITION];

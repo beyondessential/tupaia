@@ -1,4 +1,4 @@
-import { createReducer, analytics } from '../utilities';
+import { createReducer } from '../utilities';
 import {
   AUTH_STATUSES,
   EMAIL_ADDRESS_CHANGE,
@@ -64,11 +64,6 @@ const onRehydrate = (incomingState, versionDidUpdate) => {
     incomingAuthenticationState.status === AUTHENTICATING ||
     incomingAuthenticationState.status === ERROR
   ) {
-    analytics.trackEvent('Set to unauthenticated during rehydration', {
-      incomingAuthenticationState,
-      versionDidUpdate,
-    });
-
     return {
       ...incomingAuthenticationState,
       status: UNAUTHENTICATED,

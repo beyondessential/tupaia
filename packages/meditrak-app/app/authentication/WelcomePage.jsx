@@ -16,7 +16,7 @@ export const WelcomePage = ({ syncMessage, total, progress, isSyncing, onCancel 
         style={localStyles.progressBar}
       />
       <Text style={localStyles.syncMessageText}>{syncMessage}</Text>
-      <TouchableOpacity onPress={onCancel} analyticsLabel="Welcome: Cancel">
+      <TouchableOpacity onPress={onCancel}>
         <Text style={localStyles.cancelLink}>Cancel and logout</Text>
       </TouchableOpacity>
     </TupaiaBackground>

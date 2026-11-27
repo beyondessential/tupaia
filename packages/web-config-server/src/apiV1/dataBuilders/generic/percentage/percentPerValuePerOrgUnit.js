@@ -2,7 +2,7 @@ import {
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
   getDataElementCodesInGroup,
-} from '/apiV1/utils';
+} from '../../../utils';
 
 export const percentPerValuePerOrgUnit = async (
   { models, dataBuilderConfig, query, entity, fetchHierarchyId },

@@ -5,6 +5,8 @@ export { generateUnsubscribeToken, verifyUnsubscribeToken } from './unsubscribeT
 export { configureDotEnv } from './configureDotEnv';
 export { constructExportEmail } from './constructExportEmail';
 export { getTempDirectory } from './getTempDirectory';
+export { getUniqueUploadFileName } from './getUniqueUploadFileName';
+export { uploadStorage } from './uploadStorage';
 export { getExportPathForUser } from './getExportPathForUser';
 export * from './files';
 export * from './ScheduledTask';

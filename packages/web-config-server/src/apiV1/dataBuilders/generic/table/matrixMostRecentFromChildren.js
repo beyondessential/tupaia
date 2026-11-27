@@ -4,7 +4,7 @@ import {
   getDataElementsInGroupSet,
   getChildOrganisationUnits,
   mapOrgUnitCodeToGroup,
-} from '/apiV1/utils';
+} from '../../../utils';
 import { buildCategories } from './buildCategories';
 
 export const matrixMostRecentFromChildren = async (

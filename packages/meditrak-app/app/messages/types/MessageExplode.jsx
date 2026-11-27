@@ -74,11 +74,7 @@ export class MessageExplode extends PureComponent {
           },
         ]}
       >
-        <TouchableOpacity
-          analyticsLabel="Message Explode"
-          style={localStyles.message}
-          onPress={onDismiss}
-        >
+        <TouchableOpacity onPress={onDismiss} style={localStyles.message}>
           {svgName ? renderSvg(svgName) : null}
           {title ? (
             <Text style={[localStyles.messageText, localStyles.messageTitleText]}>{title}</Text>

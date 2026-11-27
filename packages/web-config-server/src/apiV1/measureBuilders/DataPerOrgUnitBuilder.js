@@ -1,6 +1,6 @@
 import { groupBy } from 'es-toolkit/compat';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../dataBuilders/DataBuilder';
 
 /**
  * @abstract

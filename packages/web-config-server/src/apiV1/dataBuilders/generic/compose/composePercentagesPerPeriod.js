@@ -1,7 +1,7 @@
 import { set } from 'es-toolkit/compat';
 
-import { composeDataPerPeriod } from '/apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { composeDataPerPeriod } from './composeDataPerPeriod';
+import { divideValues } from '../../helpers';
 
 /**
  * Configuration schema

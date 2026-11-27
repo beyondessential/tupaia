@@ -1,5 +1,5 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvents';
+import { CountEventsBuilder } from '../../../../../apiV1/dataBuilders/generic/count/countEvents';
 
 const MOCK_EVENTS = [
   {

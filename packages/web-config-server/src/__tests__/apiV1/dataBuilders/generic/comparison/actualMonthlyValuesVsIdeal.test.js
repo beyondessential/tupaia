@@ -1,5 +1,5 @@
-import { actualMonthlyValuesVsIdeal } from '/apiV1/dataBuilders/generic/comparison/actualMonthlyValuesVsIdeal';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { actualMonthlyValuesVsIdeal } from '../../../../../apiV1/dataBuilders/generic/comparison/actualMonthlyValuesVsIdeal';
+import { NO_DATA_AVAILABLE } from '../../../../../apiV1/dataBuilders/constants';
 
 const dataBuilderConfig = {
   pairs: {

@@ -37,7 +37,7 @@ export const createUserSuccess = () => ({
  */
 export const createUser =
   userFields =>
-  async (dispatch, getState, { api, analytics }) => {
+  async (dispatch, getState, { api }) => {
     dispatch(requestCreateUser());
 
     const fields = {

@@ -1,9 +1,7 @@
-const EMAIL_TIMEOUT = 30 * 1000; // 30 seconds
-
 export const EMAIL_TIMEOUT_SETTINGS = {
-  respondWithEmailTimeout: EMAIL_TIMEOUT,
+  respondWithEmailTimeout: 30_000, // 30 seconds
   platform: 'tupaia',
-};
+} as const;
 
 export const handleExportResponse = async (response: {
   headers: Headers;

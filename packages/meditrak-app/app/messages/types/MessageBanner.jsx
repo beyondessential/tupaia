@@ -63,11 +63,7 @@ export class MessageBanner extends PureComponent {
           },
         ]}
       >
-        <TouchableOpacity
-          analyticsLabel="Message Banner"
-          style={localStyles.message}
-          onPress={onDismiss}
-        >
+        <TouchableOpacity onPress={onDismiss} style={localStyles.message}>
           <Text style={localStyles.messageText}>{message}</Text>
         </TouchableOpacity>
       </Animated.View>

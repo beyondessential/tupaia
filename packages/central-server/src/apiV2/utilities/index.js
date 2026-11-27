@@ -21,11 +21,6 @@ export { nestConfig, translateQuestionCodeToId } from './nestConfig';
 export { replaceQuestionIdsWithCodes } from './replaceQuestionIdsWithCodes';
 export { translateExpression } from './translateExpression';
 export { getDollarPrefixedExpressionVariables } from './getDollarPrefixedExpressionVariables';
-export {
-  translateEntityCodeToId,
-  translateSurveyCodeToId,
-  translateUserEmailToIdAndAssessorName,
-} from './translateSurveyResponseFields';
 export { translateObjectFields } from './translateObjectFields';
 export { getUserInfoInString } from './getUserInfoInString';
 export { getPermissionListWithWildcard } from './getPermissionListWithWildcard';

@@ -1,13 +1,13 @@
 import { uniq } from 'es-toolkit';
 import { flatten, groupBy } from 'es-toolkit/compat';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import {
   countAnalyticsGroupsThatSatisfyConditions,
   countAnalyticsThatSatisfyConditions,
   divideValues,
   multiplyValues,
-} from '/apiV1/dataBuilders/helpers';
+} from '../../helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {

@@ -98,7 +98,7 @@ export type BaseChartConfig = BaseConfig & {
   /**
    * @description Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks
    */
-  ticks?: unknown[];
+  ticks?: (string | number)[];
 
   startDate?: string;
   endDate?: string;

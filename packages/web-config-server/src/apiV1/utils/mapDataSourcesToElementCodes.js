@@ -1,4 +1,4 @@
-import { DataElementMapper } from '/apiV1/dataBuilders/DataElementMapper';
+import { DataElementMapper } from '../dataBuilders/DataElementMapper';
 
 /**
  *

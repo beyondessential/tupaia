@@ -44,7 +44,6 @@ export const Checkbox = ({
   const iconName = ICON_NAMES[type][isChecked ? 'checked' : 'unchecked'];
   return (
     <TouchableOpacity
-      analyticsLabel={`Checkbox: ${label}`}
       onPress={onToggle}
       style={[localStyles.container, extraContainerStyle, style]}
     >
