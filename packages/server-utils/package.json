@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "copy-templates": "copyfiles -u 1 src/email/templates/**/**/* ./dist",
+    "copy-templates": "cp -R src/email/templates dist/email/",
     "build": "rimraf dist && yarn run package:build:ts && yarn run copy-templates",
     "build-dev": "yarn run build",
     "lint": "yarn package:lint",
@@ -27,7 +27,6 @@
     "@tupaia/constants": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "cookie": "^1.0.2",
-    "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",
     "express": "^4.22.3",
     "fs-extra": "^11.3.0",
