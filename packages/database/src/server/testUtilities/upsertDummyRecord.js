@@ -1,4 +1,5 @@
 import pluralize from 'pluralize';
+import { getSyncQueueChangeTime } from '@tupaia/tsutils';
 import { generateValueOfType } from './generateValueOfType';
 import { generateId, RECORDS } from '../../core';
 
@@ -14,6 +15,12 @@ const CUSTOM_DUMMY_VALUES = {
   },
 };
 
+/**
+ * Never reset, so consecutive dummy sync queue records get strictly increasing `change_time`s, even
+ * when generated within the same millisecond (`change_time` is unique in each sync queue table)
+ */
+let changeIndex = 0;
+
 const processDefaultValue = (defaultValue, columnType) => {
   const [preColonValue, type] = defaultValue.split('::');
   const value = preColonValue.replace(/^'/, '').replace(/'$/, '');
@@ -26,8 +33,8 @@ const processDefaultValue = (defaultValue, columnType) => {
       return JSON.parse(value);
     case 'text[]':
       return value === '{}' ? [] : value.substring(1, value.length - 1).split(','); // '{a,b}' -> [ 'a', 'b' ]
-    case 'text, clock_timestamp()) * (1000)':
-      return Date.now();
+    case 'text, clock_timestamp()) * (1000)': // change_time of a sync queue record
+      return getSyncQueueChangeTime(changeIndex++);
     default:
       return value;
   }
