@@ -9,7 +9,6 @@ import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
   toFilename,
-  truncateString,
 } from '@tupaia/utils';
 import { findAnswersInSurveyResponse } from '../../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
@@ -212,7 +211,7 @@ export async function exportResponsesToFile(
 
     const idCell = easyReadingMode ? undefined : response.id;
     const entityCodeCell = entity.code;
-    const responseNameCell = truncateString(entity.name, 30);
+    const responseNameCell = entity.name;
     const dateCell = moment(response.dataTime()).format(EXPORT_DATE_FORMAT);
     return [idCell, entityCodeCell, responseNameCell, dateCell];
   };
