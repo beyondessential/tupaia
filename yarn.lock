@@ -3117,9 +3117,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bitwarden/cli@npm:2026.10.1":
-  version: 2026.10.1
-  resolution: "@bitwarden/cli@npm:2026.10.1"
+"@bitwarden/cli@npm:~2026.11.0":
+  version: 2026.11.0
+  resolution: "@bitwarden/cli@npm:2026.11.0"
   dependencies:
     "@koa/multer": "npm:4.0.0"
     "@koa/router": "npm:15.7.0"
@@ -3138,11 +3138,11 @@ __metadata:
     koa-json: "npm:2.0.2"
     lowdb: "npm:1.0.0"
     lunr: "npm:2.3.9"
-    multer: "npm:2.3.0"
+    multer: "npm:2.4.0"
     node-fetch: "npm:2.7.0"
     node-forge: "npm:1.4.0"
     open: "npm:8.4.2"
-    papaparse: "npm:5.5.3"
+    papaparse: "npm:5.7.0"
     proper-lockfile: "npm:4.1.2"
     rxjs: "npm:7.8.1"
     semver: "npm:7.7.3"
@@ -3150,7 +3150,7 @@ __metadata:
     zxcvbn: "npm:4.4.2"
   bin:
     bw: build/bw.js
-  checksum: 10c0/de9e0a0f490e29d491df82314edda6df0957416b594f301c412e96db4474b82224a5e36937a7ea024ef0393348c93fb4c3511e28889eed6475ab3b2b75b2023f
+  checksum: 10c0/ab532c3ad224fcd5f184cde2b6a20e58ab7608dbe1e4fd4c57729869ff5b5476c047a04299db2ffb074f6819df60978df339fb6f0ff55599597d3cce2d23931b
   languageName: node
   linkType: hard
 
@@ -11987,18 +11987,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concat-stream@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "concat-stream@npm:2.0.0"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    inherits: "npm:^2.0.3"
-    readable-stream: "npm:^3.0.2"
-    typedarray: "npm:^0.0.6"
-  checksum: 10c0/29565dd9198fe1d8cf57f6cc71527dbc6ad67e12e4ac9401feb389c53042b2dceedf47034cbe702dfc4fd8df3ae7e6bfeeebe732cc4fa2674e484c13f04c219a
-  languageName: node
-  linkType: hard
-
 "configstore@npm:^5.0.1":
   version: 5.0.1
   resolution: "configstore@npm:5.0.1"
@@ -20672,15 +20660,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:2.3.0":
-  version: 2.3.0
-  resolution: "multer@npm:2.3.0"
+"multer@npm:2.4.0":
+  version: 2.4.0
+  resolution: "multer@npm:2.4.0"
   dependencies:
     append-field: "npm:^1.0.0"
     busboy: "npm:^1.6.0"
-    concat-stream: "npm:^2.0.0"
     type-is: "npm:^1.6.18"
-  checksum: 10c0/e78fe6b1fe2132cdd33eeec4146643b906046edc1bbbcc90a43ea3d3aed6a7271272897a6d2e40e711e595a156d99b6761848a76fecca6ae3b9a7ee4892ee30c
+  checksum: 10c0/4e271959ba4c9184f26dbd98a06eeb2ee8008e8ca2d1d30cb7856f642678648c085ed064627e9db01ae07442adfd275a7124fb409335a8f754ec41df51f1f1d0
   languageName: node
   linkType: hard
 
@@ -21839,10 +21826,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"papaparse@npm:5.5.3":
-  version: 5.5.3
-  resolution: "papaparse@npm:5.5.3"
-  checksum: 10c0/623aae6a35703308fd5a39d616fb3837231ebc70697346355ea508154d3f24df75b6554b736afc1924192205518a5db14e75f5e1cf35d154326050a37cdd9447
+"papaparse@npm:5.7.0":
+  version: 5.7.0
+  resolution: "papaparse@npm:5.7.0"
+  checksum: 10c0/aeea2122ffa7abf33206ab9465e1adcb678ca0e9b08fbd3cea53bf6dc07d5903e69f387dc4dde2498e2478130ba3db79d1fd3956bf638c00be802f0d275e006d
   languageName: node
   linkType: hard
 
@@ -24084,7 +24071,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.0.2, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
+"readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:
@@ -27208,7 +27195,7 @@ __metadata:
     "@beyondessential/eslint-config-jest": "npm:^1.0.0"
     "@beyondessential/eslint-config-js": "npm:^1.1.1"
     "@beyondessential/eslint-config-ts": "npm:^2.0.0"
-    "@bitwarden/cli": "npm:2026.10.1"
+    "@bitwarden/cli": "npm:~2026.11.0"
     "@rollup/plugin-replace": "npm:^6.0.3"
     "@storybook/addon-docs": "npm:^10.6.0"
     "@storybook/builder-vite": "npm:^10.6.0"
@@ -27445,13 +27432,6 @@ __metadata:
   dependencies:
     is-typedarray: "npm:^1.0.0"
   checksum: 10c0/4ac5b7a93d604edabf3ac58d3a2f7e07487e9f6e98195a080e81dbffdc4127817f470f219d794a843b87052cedef102b53ac9b539855380b8c2172054b7d5027
-  languageName: node
-  linkType: hard
-
-"typedarray@npm:^0.0.6":
-  version: 0.0.6
-  resolution: "typedarray@npm:0.0.6"
-  checksum: 10c0/6005cb31df50eef8b1f3c780eb71a17925f3038a100d82f9406ac2ad1de5eb59f8e6decbdc145b3a1f8e5836e17b0c0002fb698b9fe2516b8f9f9ff602d36412
   languageName: node
   linkType: hard
 
