@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "copy-templates": "cp -R src/email/templates dist/email/",
+    "copy-templates": "mkdir -p dist/email && cp -R src/email/templates dist/email/",
     "build": "rimraf dist && yarn run package:build:ts && yarn run copy-templates",
     "build-dev": "yarn run build",
     "lint": "yarn package:lint",
