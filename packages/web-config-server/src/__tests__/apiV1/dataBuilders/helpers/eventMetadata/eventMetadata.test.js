@@ -2,7 +2,7 @@ import {
   isMetadataKey,
   metadataKeysToDataElementMap,
   METADATA_KEYS,
-} from '/apiV1/dataBuilders/helpers/eventMetadata';
+} from '../../../../../apiV1/dataBuilders/helpers/eventMetadata';
 import { testAddMetadataToEvents } from './testAddMetadataToEvents';
 
 describe('eventMetadata', () => {

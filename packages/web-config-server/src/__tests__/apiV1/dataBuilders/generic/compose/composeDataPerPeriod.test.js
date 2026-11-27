@@ -1,8 +1,8 @@
 import { when } from 'jest-when';
 
 import { createJestMockInstance } from '@tupaia/utils';
-import { composeDataPerPeriod } from '/apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
-import * as FetchComposedData from '/apiV1/dataBuilders/helpers/fetchComposedData';
+import { composeDataPerPeriod } from '../../../../../apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
+import * as FetchComposedData from '../../../../../apiV1/dataBuilders/helpers/fetchComposedData';
 
 const aggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator');
 const dhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi');

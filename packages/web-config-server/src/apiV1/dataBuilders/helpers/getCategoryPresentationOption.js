@@ -1,5 +1,5 @@
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
-import { CONDITION } from '/apiV1/dataBuilders/constants';
+import { CONDITION } from '../constants';
 
 const PRESENTATION_TYPES = {
   CONDITION,

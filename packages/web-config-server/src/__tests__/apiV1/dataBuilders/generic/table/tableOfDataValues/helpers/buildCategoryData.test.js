@@ -1,4 +1,4 @@
-import { buildCategoryData } from '/apiV1/dataBuilders/generic/table/tableOfDataValues/helpers';
+import { buildCategoryData } from '../../../../../../../apiV1/dataBuilders/generic/table/tableOfDataValues/helpers';
 
 const rows = [
   { categoryId: 'ACT', dataElement: 'ACT 6x1', Col1: 1, Col2: 1 },

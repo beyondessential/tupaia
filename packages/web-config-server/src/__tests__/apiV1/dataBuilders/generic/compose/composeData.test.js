@@ -1,6 +1,6 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import * as FetchComposedData from '/apiV1/dataBuilders/helpers/fetchComposedData';
-import { composeData } from '/apiV1/dataBuilders/generic/compose';
+import * as FetchComposedData from '../../../../../apiV1/dataBuilders/helpers/fetchComposedData';
+import { composeData } from '../../../../../apiV1/dataBuilders/generic/compose';
 
 const aggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator');
 const dhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi');

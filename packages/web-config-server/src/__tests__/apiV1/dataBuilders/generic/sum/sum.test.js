@@ -1,7 +1,7 @@
 import { when } from 'jest-when';
 
 import { createJestMockInstance } from '@tupaia/utils';
-import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
+import { SumBuilder } from '../../../../../apiV1/dataBuilders/generic/sum/sum';
 
 const AGGREGATE_ANALYTICS = [
   { dataElement: 'AGGR01', value: 1 },

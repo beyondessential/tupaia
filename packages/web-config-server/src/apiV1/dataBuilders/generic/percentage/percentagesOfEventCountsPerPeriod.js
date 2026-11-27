@@ -1,6 +1,6 @@
 import { groupEventsByPeriod } from '@tupaia/dhis-api';
-import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
-import { PercentagesOfEventCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfEventCounts';
+import { DataPerPeriodBuilder } from '../../DataPerPeriodBuilder';
+import { PercentagesOfEventCountsBuilder } from './percentagesOfEventCounts';
 
 /**
  * Configuration schema

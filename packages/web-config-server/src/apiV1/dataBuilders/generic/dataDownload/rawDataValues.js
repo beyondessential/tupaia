@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { reduceToDictionary } from '@tupaia/utils';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { mergeTableDataOnKey, sortByColumns, transposeMatrix } from '/apiV1/utils';
+import { DataBuilder } from '../../DataBuilder';
+import { mergeTableDataOnKey, sortByColumns, transposeMatrix } from '../../../utils';
 
 const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
 const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataElement' for historical reasons

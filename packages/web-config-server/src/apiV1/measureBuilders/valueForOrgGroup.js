@@ -1,4 +1,4 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../dataBuilders/DataBuilder';
 import { analyticsToMeasureData } from './helpers';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';

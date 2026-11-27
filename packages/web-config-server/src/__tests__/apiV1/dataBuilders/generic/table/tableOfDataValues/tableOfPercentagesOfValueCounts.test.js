@@ -1,6 +1,6 @@
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfPercentagesOfValueCounts.fixtures';
-import { tableOfPercentagesOfValueCounts } from '/apiV1/dataBuilders';
+import { tableOfPercentagesOfValueCounts } from '../../../../../../apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
   tableOfPercentagesOfValueCounts,

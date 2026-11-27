@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    // Deliberately off: enabling it changes the declarations emitted for default imports of
+    // CommonJS modules (e.g. `any` becomes `string`), which downstream packages then type-check against
+    "esModuleInterop": false
+  }
+}

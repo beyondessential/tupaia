@@ -1,11 +1,11 @@
 import { getSortByKey } from '@tupaia/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import {
   countEventsThatSatisfyConditions,
   groupEvents,
   getAllDataElementCodes,
   composeDataByDataClass,
-} from '/apiV1/dataBuilders/helpers';
+} from '../../helpers';
 
 /**
  * Configuration schema

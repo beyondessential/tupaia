@@ -1,6 +1,6 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { fetchComposedData } from '/apiV1/dataBuilders/helpers/fetchComposedData';
-import * as GetDataBuilder from '/apiV1/dataBuilders/getDataBuilder';
+import { fetchComposedData } from '../../../../apiV1/dataBuilders/helpers/fetchComposedData';
+import * as GetDataBuilder from '../../../../apiV1/dataBuilders/getDataBuilder';
 
 const DATA_RESPONSES = {
   countBuilder: [{ value: 1 }],
