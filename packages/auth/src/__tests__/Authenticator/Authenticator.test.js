@@ -1,11 +1,11 @@
-import randomToken from 'rand-token';
+import { nanoid } from 'nanoid';
 import { refreshToken } from './Authenticator.fixtures';
 import { testAuthenticatePassword } from './testAuthenticatePassword';
 import { testAuthenticateOneTimeLogin } from './testAuthenticateOneTimeLogin';
 import { testAuthenticateRefreshToken } from './testAuthenticateRefreshToken';
 
-jest.mock('rand-token');
-randomToken.generate.mockReturnValue(refreshToken);
+jest.mock('nanoid');
+nanoid.mockReturnValue(refreshToken);
 
 beforeAll(() => {
   jest.useFakeTimers('modern');

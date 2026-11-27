@@ -1,5 +1,5 @@
-import randomToken from 'rand-token';
 import moment from 'moment';
+import { nanoid } from 'nanoid';
 
 import { UnauthenticatedError } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
@@ -30,7 +30,7 @@ export class OneTimeLoginModel extends DatabaseModel {
   async create(fields) {
     return super.create({
       ...fields,
-      token: randomToken.generate(20),
+      token: nanoid(20),
     });
   }
 
