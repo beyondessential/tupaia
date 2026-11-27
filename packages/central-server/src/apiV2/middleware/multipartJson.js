@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { getTempDirectory } from '@tupaia/server-utils';
+import { uploadStorage } from '@tupaia/server-utils';
 
 /**
  * Parses a multipartJson request where:
@@ -18,14 +18,7 @@ export const multipartJson =
   (addFilesToBody = true) =>
   async (req, res, next) => {
     if (req.headers['content-type'].startsWith('multipart/form-data')) {
-      const parserMiddleware = multer({
-        storage: multer.diskStorage({
-          destination: getTempDirectory('uploads'),
-          filename: (_req, file, callback) => {
-            callback(null, `${Date.now()}_${file.originalname}`);
-          },
-        }),
-      }).any();
+      const parserMiddleware = multer({ storage: uploadStorage }).any();
 
       parserMiddleware(req, res, () => {
         req.body = JSON.parse(req?.body?.payload || '{}');

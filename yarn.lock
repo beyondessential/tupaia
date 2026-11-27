@@ -7036,14 +7036,14 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
-    "@types/multer": "npm:^2.0.0"
+    "@types/multer": "npm:^2.3.0"
     camelcase-keys: "npm:^7.0.0"
     copyfiles: "npm:^2.4.1"
     es-toolkit: "npm:^1.46.0"
     express: "npm:^4.22.3"
     jest: "npm:^29.7.0"
     langchain: "npm:^1.6.6"
-    multer: "npm:^2.4.0"
+    multer: "npm:^2.5.0"
     rimraf: "npm:^6.1.3"
     winston: "npm:^3.17.0"
     xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
@@ -7192,7 +7192,7 @@ __metadata:
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
     morgan: "npm:^1.12.1"
-    multer: "npm:^2.4.0"
+    multer: "npm:^2.5.0"
     node-schedule: "npm:^2.1.1"
     public-ip: "npm:4.0.4"
     rate-limiter-flexible: "npm:^5.0.3"
@@ -7806,6 +7806,7 @@ __metadata:
     "@types/express": "npm:^4.17.25"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/jest": "npm:^29.5.14"
+    "@types/multer": "npm:^2.3.0"
     "@types/node-schedule": "npm:^2.1.7"
     "@types/sha256": "npm:^0.2.2"
     cookie: "npm:^1.0.2"
@@ -7816,6 +7817,7 @@ __metadata:
     handlebars: "npm:^4.7.10"
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
+    multer: "npm:^2.5.0"
     node-schedule: "npm:^2.1.1"
     nodemailer: "npm:^10.0.10"
     puppeteer: "npm:^25.18.1"
@@ -8720,12 +8722,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/multer@npm:2.0.0"
+"@types/multer@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@types/multer@npm:2.3.0"
   dependencies:
     "@types/express": "npm:*"
-  checksum: 10c0/375b0e77c4675c2ff27d1170e469df48dced928cc9fcd077ead111a20d0f2c01921fd25e20e25426604d6d3e311b37da2bc03ce47523d06adafba5c4b8077b67
+  checksum: 10c0/a66cfeede9efc71b75054a4c550c76f2886c862595dc3492dd759d02598baf3f0f3541177a64388f3a78c36b3a954c917ded5e182bbc6d4f6d04f7f9c75e26da
   languageName: node
   linkType: hard
 
@@ -20719,7 +20721,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^2.4.0":
+"multer@npm:^2.5.0":
   version: 2.5.0
   resolution: "multer@npm:2.5.0"
   dependencies:
