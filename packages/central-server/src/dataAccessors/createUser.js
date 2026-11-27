@@ -1,5 +1,6 @@
 import { encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { DatabaseError } from '@tupaia/utils';
+import { UnexpectedNullishValueError } from '@tupaia/tsutils';
+import { DatabaseError, UnprocessableContentError } from '@tupaia/utils';
 
 export const createUser = async (
   models,
@@ -18,21 +19,18 @@ export const createUser = async (
 ) => {
   try {
     return await models.wrapInTransaction(async transactingModels => {
-      const permissionGroup = await transactingModels.permissionGroup.findOne({
-        name: permissionGroupName,
-      });
-      const country = await transactingModels.entity.findOne({
-        name: countryName,
-        type: 'country',
-      });
-
-      if (!permissionGroup) {
-        throw new Error(`No such permission group: ${permissionGroupName}`);
-      }
-
-      if (!country) {
-        throw new Error(`No such country: ${countryName}`);
-      }
+      const [permissionGroup, country] = await Promise.all([
+        transactingModels.permissionGroup.findOneOrThrow(
+          { name: permissionGroupName },
+          { columns: ['id'] },
+          `No permission group found with name ‘${permissionGroupName}’`,
+        ),
+        transactingModels.entity.findOneOrThrow(
+          { name: countryName, type: 'country' },
+          { columns: ['id'] },
+          `No country found with name ‘${countryName}’`,
+        ),
+      ]);
 
       const newPasswordHash = await encryptPassword(password);
 
@@ -65,6 +63,9 @@ export const createUser = async (
       return { userId: user.id, secretKey };
     });
   } catch (error) {
+    if (error instanceof UnexpectedNullishValueError) {
+      throw new UnprocessableContentError(error.message);
+    }
     throw new DatabaseError('creating user', error);
   }
 };
