@@ -30,7 +30,7 @@ export class OneTimeLoginModel extends DatabaseModel {
   async create(fields) {
     return super.create({
       ...fields,
-      token: nanoid(20),
+      token: nanoid(),
     });
   }
 

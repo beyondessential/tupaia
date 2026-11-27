@@ -37,7 +37,7 @@ export class CreateUserAccounts extends CreateHandler {
 
       let secretKey;
       if (isApiClient) {
-        secretKey = await generateSecretKey();
+        secretKey = generateSecretKey();
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
